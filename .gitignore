@@ -52,4 +52,13 @@
 /.web-server-pid
 
 # IDE folders
-.idea
+.idea/
+.vscode/
+
+# Env
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db

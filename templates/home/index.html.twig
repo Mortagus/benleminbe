@@ -1,31 +1,258 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Benjamin Lemin - Développeur Web{% endblock %}
+{% block title %}Benjamin Lemin - Senior Backend Developer PHP{% endblock %}
 
 {% block body %}
     <main class="landing-page">
-        <section class="profile-card">
-            <h1>Benjamin Lemin</h1>
-            <h2>Senior PHP Developer & Web Consultant</h2>
 
-            <p>
-                Spécialisé dans les applications web existantes (Symfony / Drupal) :
-                maintenance, stabilisation, évolution et accompagnement technique.
+        <section class="hero-section">
+            <p class="eyebrow">Disponible pour missions freelance — 20 à 25h/semaine</p>
+
+            <h1>Benjamin Lemin</h1>
+
+            <h2>Senior Backend Developer — PHP, Symfony, Drupal</h2>
+
+            <p class="hero-intro">
+                J’aide les équipes à faire évoluer des applications web complexes
+                sans compromettre leur stabilité.
+            </p>
+
+            <p class="hero-details">
+                Développeur web senior avec plus de 15 ans d’expérience, spécialisé dans
+                la maintenance, l’évolution et l’amélioration progressive de plateformes
+                web existantes.
             </p>
 
             <div class="buttons">
-                <a href="{{ asset('cv/benjamin_lemin_freelance_consultant.pdf') }}" class="button" target="_blank">
+                <a href="mailto:benjamin@lemin.be" class="button">
+                    Me contacter
+                </a>
+
+                <a href="{{ asset('cv/benjamin_lemin_freelance_consultant.pdf') }}" class="button button-secondary" target="_blank">
                     Télécharger mon CV
                 </a>
+            </div>
+        </section>
 
-                <a href="https://www.linkedin.com/in/benlem" class="button button-secondary" target="_blank" rel="noopener noreferrer">
-                    LinkedIn
-                </a>
+        <section class="content-section">
+            <h2>Je peux vous aider si…</h2>
+
+            <div class="cards-grid">
+                <article class="card">
+                    <h3>Votre application est difficile à faire évoluer</h3>
+                    <p>
+                        Vous avez une plateforme existante, utile, mais devenue complexe avec le temps.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <h3>Votre codebase manque de clarté</h3>
+                    <p>
+                        Le système fonctionne, mais il est difficile de comprendre où modifier quoi sans risque.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <h3>Vous devez livrer sans casser l’existant</h3>
+                    <p>
+                        Vous avez besoin d’ajouter des fonctionnalités tout en gardant une application stable.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <h3>Votre équipe a besoin de renfort backend</h3>
+                    <p>
+                        Je peux intégrer une équipe existante, comprendre le contexte et contribuer progressivement.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section class="content-section content-section-highlight">
+            <h2>Ce que je fais concrètement</h2>
+
+            <ul class="feature-list">
+                <li>Développement backend sur applications PHP existantes</li>
+                <li>Maintenance et évolution de plateformes Symfony et Drupal</li>
+                <li>Debugging de problèmes complexes en production</li>
+                <li>Intégration d’APIs, services externes et systèmes métier</li>
+                <li>Amélioration progressive de la qualité et de la maintenabilité du code</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>Quelques repères</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <strong>15+</strong>
+                    <span>années d’expérience</span>
+                </div>
+
+                <div class="stat-card">
+                    <strong>PHP</strong>
+                    <span>Symfony, Drupal, plateformes sur mesure</span>
+                </div>
+
+                <div class="stat-card">
+                    <strong>Production</strong>
+                    <span>maintenance, stabilité, évolution</span>
+                </div>
+
+                <div class="stat-card">
+                    <strong>Équipes</strong>
+                    <span>collaboration produit, métier et technique</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Projets représentatifs</h2>
+
+            <div class="project-list">
+                <article class="project-card">
+                    <p class="project-tag">Marketplace / Symfony</p>
+                    <h3>Delcampe</h3>
+                    <p>
+                        Maintenance et évolution d’une marketplace internationale dédiée aux collectionneurs.
+                        Travail sur une large application Symfony en production, avec exigences de qualité,
+                        code review et tests automatisés.
+                    </p>
+                </article>
+
+                <article class="project-card">
+                    <p class="project-tag">E-commerce / Drupal</p>
+                    <h3>Stanhome</h3>
+                    <p>
+                        Contribution à l’évolution d’une plateforme e-commerce Drupal Commerce :
+                        optimisation du catalogue, intégration ElasticSearch, Salesforce et Google Maps API.
+                    </p>
+                </article>
+
+                <article class="project-card">
+                    <p class="project-tag">SSO / Microservices</p>
+                    <h3>Rossel — MoveIT</h3>
+                    <p>
+                        Participation au développement de microservices Go pour une nouvelle plateforme
+                        d’authentification SSO destinée à plusieurs marques médias.
+                    </p>
+                </article>
             </div>
 
-            <p class="footer">
-                Disponible pour missions freelance (temps partiel)
-            </p>
+            {# À activer quand la page /projets existera #}
+            {# <a href="{{ path('app_projects') }}" class="text-link">Voir plus de projets</a> #}
         </section>
+
+        <section class="content-section content-section-highlight">
+            <h2>Ma façon de travailler</h2>
+
+            <div class="split-content">
+                <div>
+                    <h3>Comprendre avant de modifier</h3>
+                    <p>
+                        Avant d’intervenir, je prends le temps de comprendre le système existant :
+                        structure du code, flux de données, contraintes métier et historique technique.
+                    </p>
+                </div>
+
+                <div>
+                    <h3>Avancer de manière progressive</h3>
+                    <p>
+                        J’aime améliorer les systèmes par étapes : résoudre les problèmes concrets,
+                        réduire la complexité quand c’est possible, et éviter les réécritures inutiles.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Compétences principales</h2>
+
+            <div class="skills-groups">
+                <div class="skills-group">
+                    <h3>Backend</h3>
+                    <p>PHP, Symfony, Drupal, Laravel, architectures web sur mesure</p>
+                </div>
+
+                <div class="skills-group">
+                    <h3>Données & APIs</h3>
+                    <p>REST, SOAP, MySQL, MariaDB, PostgreSQL, SQL Server, MongoDB</p>
+                </div>
+
+                <div class="skills-group">
+                    <h3>Qualité & outils</h3>
+                    <p>Git, Docker, CI/CD, PHPUnit, PHPStan, code review, debugging</p>
+                </div>
+
+                <div class="skills-group">
+                    <h3>Collaboration</h3>
+                    <p>Équipes agiles, product owners, métiers, consultants, développeurs</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Coaching & transmission</h2>
+
+            <p>
+                En parallèle de mon activité de développeur, j’accompagne depuis plusieurs années
+                des étudiants, personnes en reconversion et développeurs dans leur apprentissage
+                de la programmation.
+            </p>
+
+            <p>
+                Cette activité renforce ma capacité à expliquer clairement des concepts techniques,
+                à relire du code et à aider d’autres personnes à progresser sur des projets concrets.
+            </p>
+
+            {# À activer quand la page /coaching existera #}
+            {# <a href="{{ path('app_coaching') }}" class="text-link">En savoir plus sur le coaching</a> #}
+        </section>
+
+        <section class="content-section links-section">
+            <h2>Me retrouver en ligne</h2>
+
+            <div class="external-links">
+                <a href="https://www.linkedin.com/in/benlem/" target="_blank" rel="noopener noreferrer">
+                    LinkedIn
+                </a>
+
+                <a href="https://fr.malt.be/profile/benjaminlemin" target="_blank" rel="noopener noreferrer">
+                    Malt
+                </a>
+
+                <a href="https://github.com/Mortagus" target="_blank" rel="noopener noreferrer">
+                    GitHub
+                </a>
+
+                <a href="https://www.superprof.be/coach-programmation-senior-php-dev-envie-accompagner-apprentissage-projets.html" target="_blank" rel="noopener noreferrer">
+                    Superprof
+                </a>
+
+                <a href="https://www.apprentus.com/en-be/in/benjamin.lem" target="_blank" rel="noopener noreferrer">
+                    Apprentus
+                </a>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <h2>Vous cherchez un renfort backend fiable ?</h2>
+
+            <p>
+                Je suis disponible pour des missions freelance à temps partiel,
+                principalement en remote ou hybride depuis la Belgique.
+            </p>
+
+            <div class="buttons">
+                <a href="mailto:benjamin@lemin.be" class="button">
+                    Me contacter par email
+                </a>
+
+                <a href="{{ asset('cv/benjamin_lemin_freelance_consultant.pdf') }}" class="button button-secondary" target="_blank">
+                    Télécharger mon CV
+                </a>
+            </div>
+        </section>
+
     </main>
 {% endblock %}

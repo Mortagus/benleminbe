@@ -7,13 +7,15 @@
     <title>{% block title %}Benjamin Lemin{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}Site personnel de Benjamin Lemin, développeur web indépendant spécialisé en PHP, Symfony et Drupal.{% endblock %}">
     <link rel="icon" type="image/jpg" href="{{ asset('favicon.jpg') }}">
-    <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
 
-    {% block stylesheets %}{% endblock %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+    {% endblock %}
 </head>
 <body>
 {% block body %}{% endblock %}
 
 {% block javascripts %}{% endblock %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
 </body>
 </html>

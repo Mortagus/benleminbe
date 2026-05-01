@@ -71,3 +71,9 @@ Thumbs.db
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+/node_modules/
+
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###

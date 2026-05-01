@@ -1,0 +1,247 @@
+:root {
+    color-scheme: light dark;
+
+    --bg: #f2e3c6;
+    --bg-soft: #f8f1e4;
+    --card: #fff;
+    --text: #2b2b2b;
+    --muted: #6b7280;
+    --accent: #7db9de;
+    --accent-hover: #5aa3c7;
+    --accent-soft: #e6c79c;
+    --border: #e0cda9;
+    --shadow: rgb(80 60 30 / 12%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1d1f;
+        --bg-soft: #252a2e;
+        --card: #252a2e;
+        --text: #e6e1d9;
+        --muted: #a8a29e;
+        --accent: #5aa3c7;
+        --accent-hover: #7db9de;
+        --border: #3a3f44;
+        --shadow: rgb(0 0 0 / 28%);
+    }
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, var(--bg) 0%, var(--bg-soft) 100%);
+    color: var(--text);
+}
+
+a {
+    color: inherit;
+}
+
+.landing-page {
+    width: min(1120px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 56px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+}
+
+.hero-section,
+.content-section,
+.contact-section {
+    width: 100%;
+}
+
+.hero-section {
+    max-width: 760px;
+}
+
+.eyebrow,
+.project-tag {
+    margin-bottom: 12px;
+    color: var(--accent-hover);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.hero-section h1 {
+    margin-bottom: 12px;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1;
+}
+
+.hero-section h2 {
+    margin-bottom: 24px;
+    color: var(--accent-hover);
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    font-weight: 600;
+}
+
+.hero-intro {
+    max-width: 720px;
+    margin-bottom: 18px;
+    font-size: 1.35rem;
+    line-height: 1.5;
+}
+
+.hero-details,
+.content-section p,
+.contact-section p {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.hero-details {
+    max-width: 680px;
+}
+
+.content-section h2,
+.contact-section h2 {
+    margin-bottom: 24px;
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+}
+
+.content-section h3,
+.contact-section h3 {
+    margin-bottom: 10px;
+    font-size: 1.15rem;
+}
+
+.cards-grid,
+.stats-grid,
+.project-list,
+.skills-groups,
+.external-links,
+.split-content {
+    display: grid;
+    gap: 24px;
+}
+
+.cards-grid,
+.project-list {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.stats-grid,
+.skills-groups {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.split-content {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.card,
+.project-card,
+.stat-card,
+.skills-group,
+.content-section-highlight,
+.contact-section {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--card);
+    box-shadow: 0 16px 40px var(--shadow);
+}
+
+.feature-list {
+    padding-left: 1.2rem;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.feature-list li + li {
+    margin-top: 12px;
+}
+
+.stat-card strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--accent-hover);
+    font-size: 1.8rem;
+}
+
+.stat-card span {
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.external-links {
+    grid-template-columns: repeat(auto-fit, minmax(120px, max-content));
+    align-items: center;
+}
+
+.external-links a,
+.text-link {
+    color: var(--accent-hover);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.external-links a:hover,
+.text-link:hover {
+    text-decoration: underline;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 18px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #10202a;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.button-secondary {
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent-hover);
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    background: var(--accent-hover);
+    color: #fff;
+    box-shadow: 0 8px 18px rgb(90 163 199 / 25%);
+}
+
+.button-secondary:hover {
+    background: rgb(125 185 222 / 12%);
+    color: var(--accent-hover);
+}
+
+@media (width <= 700px) {
+    .landing-page {
+        width: min(100% - 32px, 1120px);
+        padding: 32px 0;
+        gap: 40px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    .button {
+        width: 100%;
+    }
+}

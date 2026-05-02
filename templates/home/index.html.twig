@@ -14,7 +14,8 @@
 
             <p class="hero-intro">{{ 'home.hero.intro'|trans }}</p>
 
-            <p class="hero-details">{{ 'home.hero.details'|trans }}</p>
+            <p class="hero-details">{{ 'home.hero.details_p1'|trans }}</p>
+            <p class="hero-details">{{ 'home.hero.details_p2'|trans }}</p>
 
             <div class="buttons">
                 <a href="mailto:benjamin@lemin.be" class="button">
@@ -165,27 +166,34 @@
         </section>
 
         <section class="content-section">
-            <h2>{{ 'home.coaching.title'|trans }}</h2>
+            <div class="card">
+                <h2>{{ 'home.coaching.title'|trans }}</h2>
 
-            <p>{{ 'home.coaching.paragraph_1'|trans }}</p>
+                <p>{{ 'home.coaching.paragraph_1'|trans }}</p>
 
-            <p>{{ 'home.coaching.paragraph_2'|trans }}</p>
+                <p>{{ 'home.coaching.paragraph_2'|trans }}</p>
 
-            {# À activer quand la page /coaching existera #}
-            {# <a href="{{ path('app_coaching') }}" class="text-link">En savoir plus sur le coaching</a> #}
+                {# À activer quand la page /coaching existera #}
+                {# <a href="{{ path('app_coaching') }}" class="text-link">En savoir plus sur le coaching</a> #}
+            </div>
         </section>
 
         <section class="content-section links-section">
             <h2>{{ 'home.links.title'|trans }}</h2>
 
-            <div class="external-links">
-                <a href="https://www.linkedin.com/in/benlem/" target="_blank" rel="noopener noreferrer">
-                    LinkedIn
+            <div class="external-links external-links--featured">
+                <a href="https://www.linkedin.com/in/benlem/" target="_blank" rel="noopener noreferrer" class="external-link-card">
+                    <span class="external-link-card__label">LinkedIn</span>
+                    <span class="external-link-card__description">{{ 'home.links.linkedin'|trans }}</span>
                 </a>
 
-                <a href="https://fr.malt.be/profile/benjaminlemin" target="_blank" rel="noopener noreferrer">
-                    Malt
+                <a href="https://fr.malt.be/profile/benjaminlemin" target="_blank" rel="noopener noreferrer" class="external-link-card">
+                    <span class="external-link-card__label">Malt</span>
+                    <span class="external-link-card__description">{{ 'home.links.malt'|trans }}</span>
                 </a>
+            </div>
+
+            <div class="external-links external-links--secondary">
 
                 <a href="https://github.com/Mortagus" target="_blank" rel="noopener noreferrer">
                     GitHub

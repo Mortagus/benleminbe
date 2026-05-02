@@ -11,6 +11,12 @@
     --accent-soft: #e6c79c;
     --border: #e0cda9;
     --shadow: rgb(80 60 30 / 12%);
+
+    --link-card-bg: var(--card);
+    --link-card-border: var(--border);
+    --link-card-shadow: 0 8px 24px var(--shadow);
+    --link-card-hover-bg: var(--bg-soft);
+    --link-card-hover-border: var(--accent-hover);
 }
 
 :root[data-theme="dark"] {
@@ -25,6 +31,12 @@
     --accent-hover: #7db9de;
     --border: #3a3f44;
     --shadow: rgb(0 0 0 / 28%);
+
+    --link-card-bg: rgb(255 255 255 / 4%);
+    --link-card-border: rgb(255 255 255 / 8%);
+    --link-card-shadow: none;
+    --link-card-hover-bg: rgb(255 255 255 / 8%);
+    --link-card-hover-border: rgb(125 185 222 / 40%);
 }
 
 @media (prefers-color-scheme: dark) {

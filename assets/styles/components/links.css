@@ -1,4 +1,7 @@
 .external-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
     grid-template-columns: repeat(auto-fit, minmax(120px, max-content));
     align-items: center;
 }
@@ -12,5 +15,58 @@
 
 .external-links a:hover,
 .text-link:hover {
+    text-decoration: underline;
+}
+
+.external-links--featured {
+    margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.external-link-card {
+    display: block;
+    min-width: 220px;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--link-card-border);
+    border-radius: 12px;
+    background: var(--link-card-bg);
+    box-shadow: var(--link-card-shadow);
+    text-decoration: none;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.external-link-card:hover {
+    background: var(--link-card-hover-bg);
+    border-color: var(--link-card-hover-border);
+    transform: translateY(-2px);
+}
+
+.external-link-card__label {
+    display: block;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.external-link-card__description {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.external-links--secondary a {
+    color: var(--accent-hover);
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.external-links--secondary a:hover {
     text-decoration: underline;
 }

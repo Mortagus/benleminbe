@@ -1,14 +1,15 @@
 home:
     meta:
-        title: "Benjamin Lemin - Senior Backend Developer PHP"
-        description: "Site personnel de Benjamin Lemin, développeur web indépendant spécialisé en PHP, Symfony et Drupal."
+        title: "Benjamin Lemin - Développeur backend senior pour applications PHP existantes"
+        description: "J’accompagne les équipes dans la maintenance, l’évolution et la stabilisation d’applications web PHP, Symfony et Drupal existantes, avec une approche progressive et fiable."
 
     hero:
-        eyebrow: "Disponible pour missions freelance — 20 à 25h/semaine"
+        eyebrow: "Disponible pour missions freelance (20 à 25h/semaine) — intégration rapide dans vos équipes"
         name: "Benjamin Lemin"
-        subtitle: "Senior Backend Developer — PHP, Symfony, Drupal"
-        intro: "J’aide les équipes à faire évoluer des applications web complexes sans compromettre leur stabilité."
-        details: "Développeur web senior avec plus de 15 ans d’expérience, spécialisé dans la maintenance, l’évolution et l’amélioration progressive de plateformes web existantes."
+        subtitle: "Développeur backend senior — PHP, Symfony, Drupal"
+        intro: "J’aide les équipes à maintenir et faire évoluer des applications web existantes, dans le respect du travail déjà fait."
+        details_p1: "Développeur backend senior avec plus de 15 ans d’expérience, j’interviens sur des plateformes PHP, Symfony et Drupal en production."
+        details_p2: "J’ajoute des fonctionnalités, clarifie le code et améliore progressivement la maintenabilité."
 
     actions:
         contact: "Me contacter"
@@ -18,93 +19,99 @@ home:
     help:
         title: "Je peux vous aider si…"
         card_1:
-            title: "Votre application est difficile à faire évoluer"
-            text: "Vous avez une plateforme existante, utile, mais devenue complexe avec le temps."
+            title: "Chaque évolution devient compliquée"
+            text: "Votre application rend encore service, mais chaque nouvelle fonctionnalité demande de comprendre beaucoup de contexte avant d’agir."
         card_2:
-            title: "Votre codebase manque de clarté"
-            text: "Le système fonctionne, mais il est difficile de comprendre où modifier quoi sans risque."
+            title: "Le code est difficile à lire avec confiance"
+            text: "Le système fonctionne, mais il devient compliqué de savoir où intervenir, quoi tester et quels effets de bord éviter."
         card_3:
-            title: "Vous devez livrer sans casser l’existant"
-            text: "Vous avez besoin d’ajouter des fonctionnalités tout en gardant une application stable."
+            title: "Vous devez livrer sans fragiliser la production"
+            text: "Vous avez besoin d’ajouter, corriger ou intégrer des fonctionnalités tout en limitant les régressions et les interruptions."
         card_4:
-            title: "Votre équipe a besoin de renfort backend"
-            text: "Je peux intégrer une équipe existante, comprendre le contexte et contribuer progressivement."
+            title: "Votre équipe a besoin d’un renfort autonome"
+            text: "Je peux rejoindre une équipe existante, comprendre le contexte progressivement et contribuer sans imposer une refonte inutile."
 
     concrete:
         title: "Ce que je fais concrètement"
-        item_1: "Développement backend sur applications PHP existantes"
-        item_2: "Maintenance et évolution de plateformes Symfony et Drupal"
-        item_3: "Debugging de problèmes complexes en production"
-        item_4: "Intégration d’APIs, services externes et systèmes métier"
-        item_5: "Amélioration progressive de la qualité et de la maintenabilité du code"
+        item_1: "Faire évoluer des applications PHP existantes sans perturber leur fonctionnement"
+        item_2: "Maintenir et améliorer des plateformes Symfony et Drupal déjà en production"
+        item_3: "Résoudre des problèmes complexes en production de manière fiable"
+        item_4: "Intégrer des APIs et services externes dans des systèmes existants"
+        item_5: "Améliorer progressivement la lisibilité, la qualité et la maintenabilité du code"
 
     stats:
-        title: "Quelques repères"
+        title: "Expérience terrain"
         experience:
             value: "15+"
-            label: "années d’expérience"
+            label: "années à travailler sur des applications web en production"
         stack:
-            value: "PHP"
-            label: "Symfony, Drupal, plateformes sur mesure"
+            value: "Projets"
+            label: "interventions sur des plateformes existantes, souvent en évolution continue"
         production:
             value: "Production"
-            label: "maintenance, stabilité, évolution"
+            label: "systèmes utilisés au quotidien, avec des contraintes réelles de stabilité"
         teams:
             value: "Équipes"
-            label: "collaboration produit, métier et technique"
+            label: "intégration dans des équipes produit et techniques, en collaboration directe"
 
     projects:
         title: "Projets représentatifs"
         delcampe:
             tag: "Marketplace / Symfony"
             title: "Delcampe"
-            text: "Maintenance et évolution d’une marketplace internationale dédiée aux collectionneurs. Travail sur une large application Symfony en production, avec exigences de qualité, code review et tests automatisés."
+            text: "Intervention sur une marketplace internationale en production, dédiée aux collectionneurs. Maintenance, évolution fonctionnelle et contribution à la qualité d’une large application Symfony avec code review et tests automatisés."
         stanhome:
             tag: "E-commerce / Drupal"
             title: "Stanhome"
-            text: "Contribution à l’évolution d’une plateforme e-commerce Drupal Commerce : optimisation du catalogue, intégration ElasticSearch, Salesforce et Google Maps API."
+            text: "Contribution à l’évolution d’une plateforme e-commerce Drupal Commerce. Travail sur le catalogue et les intégrations (ElasticSearch, Salesforce, Google Maps API) dans un contexte métier existant."
         moveit:
             tag: "SSO / Microservices"
             title: "Rossel — MoveIT"
-            text: "Participation au développement de microservices Go pour une nouvelle plateforme d’authentification SSO destinée à plusieurs marques médias."
+            text: "Participation au développement de microservices Go pour une plateforme d’authentification SSO utilisée par plusieurs marques médias du groupe Rossel."
 
     work_style:
         title: "Ma façon de travailler"
         understand:
             title: "Comprendre avant de modifier"
-            text: "Avant d’intervenir, je prends le temps de comprendre le système existant : structure du code, flux de données, contraintes métier et historique technique."
+            text: "Avant d’intervenir, je prends le temps de comprendre le système existant : structure du code, flux de données, contraintes métier et historique technique, afin de limiter les risques et éviter les effets de bord, en m’appuyant sur des tests automatisés pour sécuriser les évolutions."
         progressive:
             title: "Avancer de manière progressive"
-            text: "J’aime améliorer les systèmes par étapes : résoudre les problèmes concrets, réduire la complexité quand c’est possible, et éviter les réécritures inutiles."
+            text: "J’améliore les systèmes par étapes : résoudre les problèmes concrets, réduire la complexité quand c’est possible, et faire évoluer l’existant sans imposer de réécritures inutiles."
 
     skills:
-        title: "Compétences principales"
+        title: "Domaines d’intervention"
         backend:
-            title: "Backend"
-            text: "PHP, Symfony, Drupal, Laravel, architectures web sur mesure"
+            title: "Backend PHP"
+            text: "Développement et évolution d’applications Symfony, Drupal et architectures web sur mesure"
         data:
             title: "Données & APIs"
-            text: "REST, SOAP, MySQL, MariaDB, PostgreSQL, MongoDB"
+            text: "Conception et intégration d’APIs (REST, SOAP) et gestion de bases de données relationnelles et documentaires"
         quality:
-            title: "Qualité & outils"
-            text: "Git, Docker, CI/CD, PHPUnit, PHPStan, code review, debugging"
+            title: "Qualité & fiabilité"
+            text: "Mise en place de bonnes pratiques : tests automatisés, code review, CI/CD et amélioration continue du code"
         collaboration:
-            title: "Collaboration"
-            text: "Équipes agiles, product owners, métiers, consultants, développeurs"
+            title: "Travail en équipe"
+            text: "Collaboration avec équipes produit, métier et techniques, intégration dans des environnements existants"
 
     coaching:
         title: "Coaching & transmission"
-        paragraph_1: "En parallèle de mon activité de développeur, j’accompagne depuis plusieurs années des étudiants, personnes en reconversion et développeurs dans leur apprentissage de la programmation."
-        paragraph_2: "Cette activité renforce ma capacité à expliquer clairement des concepts techniques, à relire du code et à aider d’autres personnes à progresser sur des projets concrets."
+        paragraph_1: "Depuis plusieurs années, j’accompagne des étudiants, personnes en reconversion et développeurs dans leur apprentissage de la programmation et la progression sur leurs projets."
+        paragraph_2: "Cette activité renforce ma capacité à expliquer clairement, relire du code, identifier les blocages et accompagner d’autres développeurs avec pédagogie — des qualités utiles aussi en équipe projet. J’y trouve un vrai plaisir : rendre des concepts plus accessibles et aider les autres à progresser efficacement."
 
     links:
         title: "Me retrouver en ligne"
+        linkedin: "Profil professionnel, parcours et recommandations"
+        malt: "Profil freelance et disponibilité"
+        github: "Projets personnels et expérimentations techniques"
+        superprof: "Coaching en programmation"
+        apprentus: "Accompagnement et cours particuliers"
 
     contact:
-        title: "Vous cherchez un renfort backend fiable ?"
-        text: "Je suis disponible pour des missions freelance à temps partiel, principalement en remote ou hybride depuis la Belgique."
+        title: "Besoin de faire évoluer une application existante ?"
+        text: "Je peux rejoindre votre équipe en freelance, à temps partiel, côté backend, pour contribuer progressivement sans perturber ce qui fonctionne déjà."
 
 layout:
     footer:
-        handmade: "fait maison"
+        handmade: "site conçu et développé par mes soins"
+        signature: "Développeur backend spécialisé dans l’évolution d’applications web existantes"
         disclaimer_tracking: "Ce site utilise un outil de mesure d’audience respectueux de la vie privée."

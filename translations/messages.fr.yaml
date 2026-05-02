@@ -103,3 +103,7 @@ home:
     contact:
         title: "Vous cherchez un renfort backend fiable ?"
         text: "Je suis disponible pour des missions freelance à temps partiel, principalement en remote ou hybride depuis la Belgique."
+
+layout:
+    footer:
+        handmade: "fait maison"

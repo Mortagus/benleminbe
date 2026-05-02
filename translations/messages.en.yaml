@@ -103,3 +103,7 @@ home:
     contact:
         title: "Looking for reliable backend reinforcement?"
         text: "I am available for part-time freelance missions, mainly remote or hybrid from Belgium."
+
+layout:
+    footer:
+        handmade: "home made"

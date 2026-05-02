@@ -2,6 +2,8 @@
 @import url("./base/init.css");
 @import url("./base/typography.css");
 
+@import url("./layout/footer.css");
+
 @import url("./components/cards.css");
 @import url("./components/buttons.css");
 @import url("./components/lang-switcher.css");

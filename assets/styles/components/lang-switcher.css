@@ -1,15 +1,12 @@
 .lang-switcher {
-    position: fixed;
-    top: 16px;
-    right: 120px; /* à côté du theme switcher */
-    display: flex;
+    display: inline-flex;
     gap: 8px;
 }
 
 .lang-switcher a {
-    text-decoration: none;
     color: var(--muted);
-    font-weight: 600;
+    font-weight: 700;
+    text-decoration: none;
 }
 
 .lang-switcher a.active {

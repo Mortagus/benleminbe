@@ -13,9 +13,19 @@
     {% endblock %}
 </head>
 <body>
+
+<div class="theme-switcher" aria-label="Choix du thème">
+    <button type="button" data-theme-choice="system">Auto</button>
+    <button type="button" data-theme-choice="light">Clair</button>
+    <button type="button" data-theme-choice="dark">Sombre</button>
+</div>
+
 {% block body %}{% endblock %}
 
+<script src="{{ asset('scripts/theme-switcher.js') }}" defer></script>
 {% block javascripts %}{% endblock %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+
+{% block importmap %}{{ importmap('app') }}{% endblock %}
+
 </body>
 </html>

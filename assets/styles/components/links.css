@@ -1,0 +1,16 @@
+.external-links {
+    grid-template-columns: repeat(auto-fit, minmax(120px, max-content));
+    align-items: center;
+}
+
+.external-links a,
+.text-link {
+    color: var(--accent-hover);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.external-links a:hover,
+.text-link:hover {
+    text-decoration: underline;
+}

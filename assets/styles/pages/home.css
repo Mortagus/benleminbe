@@ -1,0 +1,121 @@
+.eyebrow,
+.project-tag {
+    margin-bottom: 12px;
+    color: var(--accent-hover);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.feature-list {
+    padding-left: 1.2rem;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.feature-list li + li {
+    margin-top: 12px;
+}
+
+.landing-page {
+    width: min(1120px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 56px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+}
+
+.hero-section,
+.content-section,
+.contact-section {
+    width: 100%;
+}
+
+.hero-section {
+    max-width: 760px;
+}
+
+.hero-section h1 {
+    margin-bottom: 12px;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1;
+}
+
+.hero-section h2 {
+    margin-bottom: 24px;
+    color: var(--accent-hover);
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    font-weight: 600;
+}
+
+.hero-intro {
+    max-width: 720px;
+    margin-bottom: 18px;
+    font-size: 1.35rem;
+    line-height: 1.5;
+}
+
+.hero-details,
+.content-section p,
+.contact-section p {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.hero-details {
+    max-width: 680px;
+}
+
+.content-section h2,
+.contact-section h2 {
+    margin-bottom: 24px;
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+}
+
+.content-section h3,
+.contact-section h3 {
+    margin-bottom: 10px;
+    font-size: 1.15rem;
+}
+
+.cards-grid,
+.stats-grid,
+.project-list,
+.skills-groups,
+.external-links,
+.split-content {
+    display: grid;
+    gap: 24px;
+}
+
+.cards-grid,
+.project-list {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.stats-grid,
+.skills-groups {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.split-content {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (width <= 700px) {
+    .landing-page {
+        width: min(100% - 32px, 1120px);
+        padding: 32px 0;
+        gap: 40px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    .button {
+        width: 100%;
+    }
+}

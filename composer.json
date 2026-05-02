@@ -18,7 +18,8 @@
         "symfony/http-kernel": "^8.0",
         "symfony/console": "^8.0",
         "symfony/asset-mapper": "^8.0",
-        "symfony/translation": "^8.0"
+        "symfony/translation": "^8.0",
+        "symfony/apache-pack": "*"
     },
     "license": "MIT",
     "autoload": {

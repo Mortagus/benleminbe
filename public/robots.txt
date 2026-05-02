@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+Disallow: /track/
+Disallow: /_profiler/
+
 Sitemap: https://benlemin.be/sitemap.xml

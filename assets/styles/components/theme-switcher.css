@@ -86,4 +86,22 @@
         padding: 0;
         font-size: 1rem;
     }
+
+    .theme-switcher__options button {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .theme-switcher__icon {
+        font-size: 1.3rem; /* ← augmente ici */
+        line-height: 1;
+    }
+
+    .theme-switcher__toggle {
+        font-size: 1.3rem; /* même taille que les options */
+    }
 }

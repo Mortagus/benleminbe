@@ -1,5 +1,28 @@
-<div class="theme-switcher" aria-label="Choix du thème">
-    <button type="button" data-theme-choice="system">Auto</button>
-    <button type="button" data-theme-choice="light">Clair</button>
-    <button type="button" data-theme-choice="dark">Sombre</button>
+<div class="theme-switcher" data-theme-switcher>
+    <button
+        type="button"
+        class="theme-switcher__toggle"
+        data-theme-toggle
+        aria-label="Changer le thème"
+        aria-expanded="false"
+    >
+        <span data-theme-icon>◐</span>
+    </button>
+
+    <div class="theme-switcher__options">
+        <button type="button" data-theme-choice="system" data-theme-icon-value="◐">
+            <span class="theme-switcher__label">Auto</span>
+            <span class="theme-switcher__icon">◐</span>
+        </button>
+
+        <button type="button" data-theme-choice="light" data-theme-icon-value="☀">
+            <span class="theme-switcher__label">Clair</span>
+            <span class="theme-switcher__icon">☀</span>
+        </button>
+
+        <button type="button" data-theme-choice="dark" data-theme-icon-value="☾">
+            <span class="theme-switcher__label">Sombre</span>
+            <span class="theme-switcher__icon">☾</span>
+        </button>
+    </div>
 </div>

@@ -1,5 +1,8 @@
 const STORAGE_KEY = 'preferred-theme';
 const root = document.documentElement;
+const switcher = document.querySelector('[data-theme-switcher]');
+const toggle = document.querySelector('[data-theme-toggle]');
+const currentIcon = document.querySelector('[data-theme-icon]');
 const buttons = document.querySelectorAll('[data-theme-choice]');
 
 function applyTheme(theme) {
@@ -10,10 +13,13 @@ function applyTheme(theme) {
     }
 
     buttons.forEach((button) => {
-        button.setAttribute(
-            'aria-pressed',
-            button.dataset.themeChoice === theme ? 'true' : 'false'
-        );
+        const isActive = button.dataset.themeChoice === theme;
+
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+
+        if (isActive && currentIcon) {
+            currentIcon.textContent = button.dataset.themeIconValue;
+        }
     });
 }
 
@@ -27,5 +33,14 @@ buttons.forEach((button) => {
 
         localStorage.setItem(STORAGE_KEY, theme);
         applyTheme(theme);
+
+        switcher?.classList.remove('is-open');
+        toggle?.setAttribute('aria-expanded', 'false');
     });
+});
+
+toggle?.addEventListener('click', () => {
+    const isOpen = switcher?.classList.toggle('is-open');
+
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 });

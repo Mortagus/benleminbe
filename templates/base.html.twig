@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="{% block lang %}fr{% endblock %}">
+<html lang="{{ app.request.locale|default('fr') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>{% block title %}Benjamin Lemin{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Site personnel de Benjamin Lemin, développeur web indépendant spécialisé en PHP, Symfony et Drupal.{% endblock %}">
     <link rel="icon" type="image/jpg" href="{{ asset('favicon.jpg') }}">
+
+    <title>{% block title %}{{ 'home.meta.title'|trans }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{{ 'home.meta.description'|trans }}{% endblock %}">
 
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
@@ -14,16 +14,10 @@
 </head>
 <body>
 
-<div class="theme-switcher" aria-label="Choix du thème">
-    <button type="button" data-theme-choice="system">Auto</button>
-    <button type="button" data-theme-choice="light">Clair</button>
-    <button type="button" data-theme-choice="dark">Sombre</button>
-</div>
+{% include 'components/_lang_switcher.html.twig' %}
+{% include 'components/_theme_switcher.html.twig' %}
 
 {% block body %}{% endblock %}
-
-<script src="{{ asset('scripts/theme-switcher.js') }}" defer></script>
-{% block javascripts %}{% endblock %}
 
 {% block importmap %}{{ importmap('app') }}{% endblock %}
 

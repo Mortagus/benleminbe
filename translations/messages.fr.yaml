@@ -1,0 +1,105 @@
+home:
+    meta:
+        title: "Benjamin Lemin - Senior Backend Developer PHP"
+        description: "Site personnel de Benjamin Lemin, développeur web indépendant spécialisé en PHP, Symfony et Drupal."
+
+    hero:
+        eyebrow: "Disponible pour missions freelance — 20 à 25h/semaine"
+        name: "Benjamin Lemin"
+        subtitle: "Senior Backend Developer — PHP, Symfony, Drupal"
+        intro: "J’aide les équipes à faire évoluer des applications web complexes sans compromettre leur stabilité."
+        details: "Développeur web senior avec plus de 15 ans d’expérience, spécialisé dans la maintenance, l’évolution et l’amélioration progressive de plateformes web existantes."
+
+    actions:
+        contact: "Me contacter"
+        contact_email: "Me contacter par email"
+        download_cv: "Télécharger mon CV"
+
+    help:
+        title: "Je peux vous aider si…"
+        card_1:
+            title: "Votre application est difficile à faire évoluer"
+            text: "Vous avez une plateforme existante, utile, mais devenue complexe avec le temps."
+        card_2:
+            title: "Votre codebase manque de clarté"
+            text: "Le système fonctionne, mais il est difficile de comprendre où modifier quoi sans risque."
+        card_3:
+            title: "Vous devez livrer sans casser l’existant"
+            text: "Vous avez besoin d’ajouter des fonctionnalités tout en gardant une application stable."
+        card_4:
+            title: "Votre équipe a besoin de renfort backend"
+            text: "Je peux intégrer une équipe existante, comprendre le contexte et contribuer progressivement."
+
+    concrete:
+        title: "Ce que je fais concrètement"
+        item_1: "Développement backend sur applications PHP existantes"
+        item_2: "Maintenance et évolution de plateformes Symfony et Drupal"
+        item_3: "Debugging de problèmes complexes en production"
+        item_4: "Intégration d’APIs, services externes et systèmes métier"
+        item_5: "Amélioration progressive de la qualité et de la maintenabilité du code"
+
+    stats:
+        title: "Quelques repères"
+        experience:
+            value: "15+"
+            label: "années d’expérience"
+        stack:
+            value: "PHP"
+            label: "Symfony, Drupal, plateformes sur mesure"
+        production:
+            value: "Production"
+            label: "maintenance, stabilité, évolution"
+        teams:
+            value: "Équipes"
+            label: "collaboration produit, métier et technique"
+
+    projects:
+        title: "Projets représentatifs"
+        delcampe:
+            tag: "Marketplace / Symfony"
+            title: "Delcampe"
+            text: "Maintenance et évolution d’une marketplace internationale dédiée aux collectionneurs. Travail sur une large application Symfony en production, avec exigences de qualité, code review et tests automatisés."
+        stanhome:
+            tag: "E-commerce / Drupal"
+            title: "Stanhome"
+            text: "Contribution à l’évolution d’une plateforme e-commerce Drupal Commerce : optimisation du catalogue, intégration ElasticSearch, Salesforce et Google Maps API."
+        moveit:
+            tag: "SSO / Microservices"
+            title: "Rossel — MoveIT"
+            text: "Participation au développement de microservices Go pour une nouvelle plateforme d’authentification SSO destinée à plusieurs marques médias."
+
+    work_style:
+        title: "Ma façon de travailler"
+        understand:
+            title: "Comprendre avant de modifier"
+            text: "Avant d’intervenir, je prends le temps de comprendre le système existant : structure du code, flux de données, contraintes métier et historique technique."
+        progressive:
+            title: "Avancer de manière progressive"
+            text: "J’aime améliorer les systèmes par étapes : résoudre les problèmes concrets, réduire la complexité quand c’est possible, et éviter les réécritures inutiles."
+
+    skills:
+        title: "Compétences principales"
+        backend:
+            title: "Backend"
+            text: "PHP, Symfony, Drupal, Laravel, architectures web sur mesure"
+        data:
+            title: "Données & APIs"
+            text: "REST, SOAP, MySQL, MariaDB, PostgreSQL, MongoDB"
+        quality:
+            title: "Qualité & outils"
+            text: "Git, Docker, CI/CD, PHPUnit, PHPStan, code review, debugging"
+        collaboration:
+            title: "Collaboration"
+            text: "Équipes agiles, product owners, métiers, consultants, développeurs"
+
+    coaching:
+        title: "Coaching & transmission"
+        paragraph_1: "En parallèle de mon activité de développeur, j’accompagne depuis plusieurs années des étudiants, personnes en reconversion et développeurs dans leur apprentissage de la programmation."
+        paragraph_2: "Cette activité renforce ma capacité à expliquer clairement des concepts techniques, à relire du code et à aider d’autres personnes à progresser sur des projets concrets."
+
+    links:
+        title: "Me retrouver en ligne"
+
+    contact:
+        title: "Vous cherchez un renfort backend fiable ?"
+        text: "Je suis disponible pour des missions freelance à temps partiel, principalement en remote ou hybride depuis la Belgique."

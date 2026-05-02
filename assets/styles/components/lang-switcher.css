@@ -1,0 +1,17 @@
+.lang-switcher {
+    position: fixed;
+    top: 16px;
+    right: 120px; /* à côté du theme switcher */
+    display: flex;
+    gap: 8px;
+}
+
+.lang-switcher a {
+    text-decoration: none;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.lang-switcher a.active {
+    color: var(--accent-hover);
+}

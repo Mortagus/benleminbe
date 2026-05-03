@@ -17,8 +17,14 @@ final class TrackingController {
             $request->headers->get('user-agent', 'unknown'),
         );
 
+        $logDir = dirname(__DIR__, 2) . '/var/log';
+
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0775, true);
+        }
+
         file_put_contents(
-            dirname(__DIR__, 2) . '/var/log/cv-downloads.log',
+            $logDir . '/cv-downloads.log',
             $logLine,
             FILE_APPEND | LOCK_EX
         );

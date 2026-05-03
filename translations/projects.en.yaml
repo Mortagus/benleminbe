@@ -2,11 +2,20 @@ index:
     meta_title: "Projects | Benjamin Lemin"
     eyebrow: "Projects"
     title: "Selected projects"
-    lead: "A selection of projects I worked on, with a focus on context, technical challenges and the solutions implemented."
+    lead: "A selection of projects I worked on, with a focus on context, technical challenges and implemented solutions."
+
     cards:
         delcampe:
             title: "Delcampe Marketplace Platform"
             description: "Maintenance and evolution of an international marketplace dedicated to collectors."
+
+        stanhome:
+            title: "Stanhome — E-commerce platform (France & Italy)"
+            description: "Modernization of a multi-country e-commerce platform integrating a direct sales model."
+
+        moveit:
+            title: "Rossel — MoveIT (SSO platform)"
+            description: "Development of a unified authentication platform based on a microservices architecture."
 
 delcampe:
     meta_title: "Delcampe Marketplace Platform | Benjamin Lemin"
@@ -74,5 +83,143 @@ delcampe:
         title: "What this mission brought me"
         p1: "This mission was a particularly formative experience in my career. It allowed me to work on a large Symfony application, within a structured team, with strong development practices: automated testing, code reviews, CI/CD, documentation, and close collaboration between product and technical teams."
         p2: "It strengthened my ability to work on existing systems, quickly understand a specific business domain, and deliver reliable evolutions in a demanding production environment."
+
+    back: "← Back to projects"
+
+stanhome:
+    meta_title: "Stanhome E-commerce Platform | Benjamin Lemin"
+    eyebrow: "Client project · E-commerce · Drupal"
+    title: "Stanhome — E-commerce platform (France & Italy)"
+    lead: "Contribution to the modernization of a multi-country e-commerce platform combining online sales and a direct sales network."
+
+    meta:
+        period_label: "Period:"
+        period_value: "2021 – 2022"
+        role_label: "Role:"
+        role_value: "Backend Developer"
+        mission_label: "Mission:"
+        mission_value: "carried out via Contraste Digital"
+        stack_label: "Main stack:"
+        stack_value: "PHP, Drupal 7, Drupal Commerce, ElasticSearch, Google Maps API, Salesforce"
+
+    context:
+        title: "Project context"
+        p1: "Stanhome is a European direct-selling company specializing in home care and beauty products. The project aimed to modernize the company's e-commerce platform, starting with the French market and later extending to Italy."
+        p2: "The distribution model relies partly on a network of independent sellers organizing product presentation events. The platform therefore needed to support both traditional e-commerce and features aligned with this hybrid model."
+
+    role:
+        title: "My role"
+        p1: "As a backend developer within the Contraste Digital team, I contributed to the evolution of the Drupal Commerce platform, focusing on performance, e-commerce features, and integration with external systems."
+        li1: "Optimizing product catalog performance using ElasticSearch."
+        li2: "Improving the checkout funnel and user experience."
+        li3: "Developing features aligned with the direct-sales model."
+        li4: "Implementing marketing automation mechanisms."
+        li5: "Integrating with external systems (Salesforce CRM)."
+
+    tech:
+        title: "Technical environment"
+        backend:
+            title: "Backend"
+            oop: "PHP development on Drupal 7"
+            solid: "Drupal Commerce architecture"
+        api:
+            title: "APIs"
+            integration: "Integration with Google Maps API and Salesforce"
+        quality:
+            title: "Testing & quality"
+            reviews: "Structured environment with good practices"
+        tools:
+            title: "Tools"
+
+    process:
+        title: "Development organization and practices"
+        p1: "The project was carried out within the Contraste Digital team, in collaboration with the client’s product and technical stakeholders."
+        p2: "Work took place within an existing platform requiring incremental evolution, with strong attention to performance, stability, and scalability."
+        p3: "A significant part of the work involved balancing e-commerce constraints, marketing needs, and integration with external systems."
+
+    challenges:
+        title: "Technical challenges"
+        li1_label: "Product catalog:"
+        li1: "handling large catalogs efficiently and improving browsing performance."
+        li2_label: "Search & filtering:"
+        li2: "implementing fast faceted navigation using ElasticSearch."
+        li3_label: "Hybrid model:"
+        li3: "supporting a combination of e-commerce and direct sales network."
+        li4_label: "Multi-country:"
+        li4: "adapting a shared architecture to multiple markets."
+
+    learning:
+        title: "What this mission brought me"
+        p1: "This mission allowed me to work on a complex e-commerce platform with strong performance, marketing, and integration challenges."
+        p2: "It strengthened my ability to work on existing Drupal architectures, optimize user journeys, and integrate third-party services into a structured application ecosystem."
+
+    back: "← Back to projects"
+
+moveit:
+    meta_title: "Rossel — MoveIT (SSO Platform) | Benjamin Lemin"
+    eyebrow: "Client project · SSO · Microservices"
+    title: "Rossel — MoveIT (SSO platform)"
+    lead: "Contribution to the design and development of a unified authentication platform (SSO) for the Rossel media ecosystem."
+
+    meta:
+        period_label: "Period:"
+        period_value: "11/2023 – 05/2024"
+        role_label: "Role:"
+        role_value: "Backend Developer"
+        mission_label: "Mission:"
+        mission_value: "carried out via Contraste Digital"
+        stack_label: "Main stack:"
+        stack_value: "Go, Gin, Kafka, Docker, Azure, Azure DevOps, ELK Stack"
+
+    context:
+        title: "Project context"
+        p1: "Rossel is one of the largest media groups in Belgium, operating multiple newspapers and digital platforms, including Le Soir. The MoveIT project aimed at redesigning the user management and authentication system across the Rossel ecosystem."
+        p2: "The objective was to build a new scalable Single Sign-On (SSO) platform capable of supporting all Rossel media brands. The system was designed to progressively replace existing authentication mechanisms, starting with Le Soir and later expanding to other publications."
+
+    role:
+        title: "My role"
+        p1: "As a backend developer, I contributed to the development of services within a microservices architecture, helping build the new authentication system and user-related workflows."
+        li1: "Developing backend microservices in Go using the Gin framework."
+        li2: "Implementing two microservices dedicated to user-related functionalities."
+        li3: "Participating in the design of Kafka communication structures."
+        li4: "Contributing to the user registration system."
+        li5: "Working on observability and log analysis mechanisms."
+
+    tech:
+        title: "Technical environment"
+        backend:
+            title: "Backend"
+            oop: "Go development using the Gin framework"
+            solid: "Use of DTO patterns for structured data exchange"
+        api:
+            title: "APIs"
+            integration: "Combination of REST APIs and Kafka-based asynchronous communication"
+        quality:
+            title: "Testing & quality"
+            reviews: "Work within a distributed architecture with high reliability requirements"
+        tools:
+            title: "Tools"
+
+    process:
+        title: "Development organization and practices"
+        p1: "The project involved a multi-team organization including backend, frontend, and DevOps teams working on different functional domains."
+        p2: "I worked within two Scrum teams: one focused on user registration and another dedicated to backend microservices."
+        p3: "The work took place within a distributed architecture requiring strong coordination between teams to ensure overall system consistency."
+
+    challenges:
+        title: "Technical challenges"
+        li1_label: "Distributed architecture:"
+        li1: "ensuring reliable communication between microservices."
+        li2_label: "Kafka:"
+        li2: "defining robust message schemas for asynchronous communication."
+        li3_label: "Scalability:"
+        li3: "designing a system capable of supporting the entire Rossel ecosystem."
+        li4_label: "Observability:"
+        li4: "implementing effective monitoring through centralized logging (ELK)."
+
+    learning:
+        title: "What this mission brought me"
+        p1: "This mission allowed me to work on a large-scale microservices architecture, with strong challenges related to scalability, inter-service communication, and user management."
+        p2: "It strengthened my understanding of distributed systems, event-driven architectures, and the challenges of operating high-volume production services."
 
     back: "← Back to projects"

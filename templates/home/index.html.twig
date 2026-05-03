@@ -100,8 +100,7 @@
             <h2>{{ 'home.projects.title'|trans }}</h2>
 
             <div class="project-list">
-                <a href="{{ path('app_projects_delcampe', { _locale: app.request.locale }) }}"
-                    class="project-card-link">
+                <a href="{{ path('app_projects_delcampe', { _locale: app.request.locale }) }}" class="project-card-link">
                     <article class="project-card">
                         <p class="project-tag">{{ 'home.projects.delcampe.tag'|trans }}</p>
                         <h3>{{ 'home.projects.delcampe.title'|trans }}</h3>
@@ -109,17 +108,21 @@
                     </article>
                 </a>
 
-                <article class="project-card">
-                    <p class="project-tag">{{ 'home.projects.stanhome.tag'|trans }}</p>
-                    <h3>{{ 'home.projects.stanhome.title'|trans }}</h3>
-                    <p>{{ 'home.projects.stanhome.text'|trans }}</p>
-                </article>
+                <a href="{{ path('app_projects_stanhome', { _locale: app.request.locale }) }}" class="project-card-link">
+                    <article class="project-card">
+                        <p class="project-tag">{{ 'home.projects.stanhome.tag'|trans }}</p>
+                        <h3>{{ 'home.projects.stanhome.title'|trans }}</h3>
+                        <p>{{ 'home.projects.stanhome.text'|trans }}</p>
+                    </article>
+                </a>
 
-                <article class="project-card">
-                    <p class="project-tag">{{ 'home.projects.moveit.tag'|trans }}</p>
-                    <h3>{{ 'home.projects.moveit.title'|trans }}</h3>
-                    <p>{{ 'home.projects.moveit.text'|trans }}</p>
-                </article>
+                <a href="{{ path('app_projects_moveit', { _locale: app.request.locale }) }}" class="project-card-link">
+                    <article class="project-card">
+                        <p class="project-tag">{{ 'home.projects.moveit.tag'|trans }}</p>
+                        <h3>{{ 'home.projects.moveit.title'|trans }}</h3>
+                        <p>{{ 'home.projects.moveit.text'|trans }}</p>
+                    </article>
+                </a>
             </div>
 
             {# À activer quand la page /projets existera #}

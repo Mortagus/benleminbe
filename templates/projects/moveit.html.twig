@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'moveit.meta_title'|trans({}, 'projects') }}{% endblock %}
+
+{% block body %}
+    <main class="project-detail-page">
+        <section class="page-hero">
+            <p class="eyebrow">{{ 'moveit.eyebrow'|trans({}, 'projects') }}</p>
+
+            <h1>{{ 'moveit.title'|trans({}, 'projects') }}</h1>
+
+            <p class="lead">
+                {{ 'moveit.lead'|trans({}, 'projects') }}
+            </p>
+
+            <ul class="meta-list">
+                <li><strong>{{ 'moveit.meta.period_label'|trans({}, 'projects') }}</strong> {{ 'moveit.meta.period_value'|trans({}, 'projects') }}</li>
+                <li><strong>{{ 'moveit.meta.role_label'|trans({}, 'projects') }}</strong> {{ 'moveit.meta.role_value'|trans({}, 'projects') }}</li>
+                <li><strong>{{ 'moveit.meta.mission_label'|trans({}, 'projects') }}</strong> {{ 'moveit.meta.mission_value'|trans({}, 'projects') }}</li>
+                <li><strong>{{ 'moveit.meta.stack_label'|trans({}, 'projects') }}</strong> {{ 'moveit.meta.stack_value'|trans({}, 'projects') }}</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>{{ 'moveit.context.title'|trans({}, 'projects') }}</h2>
+
+            <p>{{ 'moveit.context.p1'|trans({}, 'projects') }}</p>
+            <p>{{ 'moveit.context.p2'|trans({}, 'projects') }}</p>
+        </section>
+
+        <section class="content-section">
+            <h2>{{ 'moveit.role.title'|trans({}, 'projects') }}</h2>
+
+            <p>{{ 'moveit.role.p1'|trans({}, 'projects') }}</p>
+
+            <ul>
+                <li>{{ 'moveit.role.li1'|trans({}, 'projects') }}</li>
+                <li>{{ 'moveit.role.li2'|trans({}, 'projects') }}</li>
+                <li>{{ 'moveit.role.li3'|trans({}, 'projects') }}</li>
+                <li>{{ 'moveit.role.li4'|trans({}, 'projects') }}</li>
+                <li>{{ 'moveit.role.li5'|trans({}, 'projects') }}</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>{{ 'moveit.tech.title'|trans({}, 'projects') }}</h2>
+
+            <div class="tech-grid">
+                <div>
+                    <h3>{{ 'moveit.tech.backend.title'|trans({}, 'projects') }}</h3>
+                    <ul>
+                        <li>PHP 7</li>
+                        <li>Symfony 3.1</li>
+                        <li>MariaDB</li>
+                        <li>{{ 'moveit.tech.backend.oop'|trans({}, 'projects') }}</li>
+                        <li>{{ 'moveit.tech.backend.solid'|trans({}, 'projects') }}</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>{{ 'moveit.tech.api.title'|trans({}, 'projects') }}</h3>
+                    <ul>
+                        <li>REST APIs</li>
+                        <li>Services SOAP</li>
+                        <li>{{ 'moveit.tech.api.integration'|trans({}, 'projects') }}</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>{{ 'moveit.tech.quality.title'|trans({}, 'projects') }}</h3>
+                    <ul>
+                        <li>PHPUnit</li>
+                        <li>Jasmine</li>
+                        <li>CasperJS</li>
+                        <li>{{ 'moveit.tech.quality.reviews'|trans({}, 'projects') }}</li>
+                        <li>GitLab CI/CD</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>{{ 'moveit.tech.tools.title'|trans({}, 'projects') }}</h3>
+                    <ul>
+                        <li>GitLab</li>
+                        <li>Docker</li>
+                        <li>Jira</li>
+                        <li>Confluence</li>
+                        <li>Sentry</li>
+                        <li>NPM, Gulp, Bower</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>{{ 'moveit.process.title'|trans({}, 'projects') }}</h2>
+
+            <p>{{ 'moveit.process.p1'|trans({}, 'projects') }}</p>
+            <p>{{ 'moveit.process.p2'|trans({}, 'projects') }}</p>
+            <p>{{ 'moveit.process.p3'|trans({}, 'projects') }}</p>
+        </section>
+
+        <section class="content-section">
+            <h2>{{ 'moveit.challenges.title'|trans({}, 'projects') }}</h2>
+
+            <ul>
+                <li>{{ 'moveit.challenges.li1_label'|trans({}, 'projects') }} {{ 'moveit.challenges.li1'|trans({}, 'projects') }}</li>
+                <li>{{ 'moveit.challenges.li2_label'|trans({}, 'projects') }} {{ 'moveit.challenges.li2'|trans({}, 'projects') }}</li>
+                <li>{{ 'moveit.challenges.li3_label'|trans({}, 'projects') }} {{ 'moveit.challenges.li3'|trans({}, 'projects') }}</li>
+                <li>{{ 'moveit.challenges.li4_label'|trans({}, 'projects') }} {{ 'moveit.challenges.li4'|trans({}, 'projects') }}</li>
+            </ul>
+        </section>
+
+        <section class="content-section highlight-section">
+            <h2>{{ 'moveit.learning.title'|trans({}, 'projects') }}</h2>
+
+            <p>{{ 'moveit.learning.p1'|trans({}, 'projects') }}</p>
+            <p>{{ 'moveit.learning.p2'|trans({}, 'projects') }}</p>
+        </section>
+
+        <nav class="page-navigation" aria-label="Navigation entre les projets">
+            <a href="{{ path('app_projects_index', { _locale: app.request.locale }) }}" class="back-link">
+                {{ 'moveit.back'|trans({}, 'projects') }}
+            </a>
+        </nav>
+    </main>
+{% endblock %}

@@ -20,7 +20,19 @@
                 </article>
             </a>
 
-            {# Stanhome / MoveIT seront ajoutés ici plus tard #}
+            <a href="{{ path('app_projects_stanhome', { _locale: app.request.locale }) }}" class="project-card-link">
+                <article class="project-card">
+                    <h2>{{ 'index.cards.stanhome.title'|trans({}, 'projects') }}</h2>
+                    <p>{{ 'index.cards.stanhome.description'|trans({}, 'projects') }}</p>
+                </article>
+            </a>
+
+            <a href="{{ path('app_projects_moveit', { _locale: app.request.locale }) }}" class="project-card-link">
+                <article class="project-card">
+                    <h2>{{ 'index.cards.moveit.title'|trans({}, 'projects') }}</h2>
+                    <p>{{ 'index.cards.moveit.description'|trans({}, 'projects') }}</p>
+                </article>
+            </a>
 
         </section>
 

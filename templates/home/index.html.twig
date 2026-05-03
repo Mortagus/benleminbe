@@ -100,11 +100,14 @@
             <h2>{{ 'home.projects.title'|trans }}</h2>
 
             <div class="project-list">
-                <article class="project-card">
-                    <p class="project-tag">{{ 'home.projects.delcampe.tag'|trans }}</p>
-                    <h3>{{ 'home.projects.delcampe.title'|trans }}</h3>
-                    <p>{{ 'home.projects.delcampe.text'|trans }}</p>
-                </article>
+                <a href="{{ path('app_projects_delcampe', { _locale: app.request.locale }) }}"
+                    class="project-card-link">
+                    <article class="project-card">
+                        <p class="project-tag">{{ 'home.projects.delcampe.tag'|trans }}</p>
+                        <h3>{{ 'home.projects.delcampe.title'|trans }}</h3>
+                        <p>{{ 'home.projects.delcampe.text'|trans }}</p>
+                    </article>
+                </a>
 
                 <article class="project-card">
                     <p class="project-tag">{{ 'home.projects.stanhome.tag'|trans }}</p>

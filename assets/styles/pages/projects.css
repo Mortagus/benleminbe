@@ -1,4 +1,39 @@
 /* =========================
+   PROJECTS PAGE
+========================= */
+
+.projects-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.projects-list {
+    margin-top: 3rem;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.project-card {
+    background: var(--link-card-bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.project-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.project-card-link:hover .project-card {
+    transform: translateY(-2px);
+    box-shadow: var(--link-card-shadow);
+}
+
+/* =========================
    PROJECT DETAIL PAGE
 ========================= */
 

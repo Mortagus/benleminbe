@@ -119,3 +119,19 @@
         width: 100%;
     }
 }
+
+.project-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.project-card {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.project-card-link:hover .project-card {
+    transform: translateY(-2px);
+    box-shadow: var(--link-card-shadow);
+}

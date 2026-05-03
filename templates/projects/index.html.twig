@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'index.meta_title'|trans({}, 'projects') }}{% endblock %}
+
+{% block body %}
+    <main class="projects-page">
+
+        <section class="page-hero">
+            <p class="eyebrow">{{ 'index.eyebrow'|trans({}, 'projects') }}</p>
+            <h1>{{ 'index.title'|trans({}, 'projects') }}</h1>
+            <p class="lead">{{ 'index.lead'|trans({}, 'projects') }}</p>
+        </section>
+
+        <section class="projects-list">
+
+            <a href="{{ path('app_projects_delcampe', { _locale: app.request.locale }) }}" class="project-card-link">
+                <article class="project-card">
+                    <h2>{{ 'index.cards.delcampe.title'|trans({}, 'projects') }}</h2>
+                    <p>{{ 'index.cards.delcampe.description'|trans({}, 'projects') }}</p>
+                </article>
+            </a>
+
+            {# Stanhome / MoveIT seront ajoutés ici plus tard #}
+
+        </section>
+
+    </main>
+{% endblock %}

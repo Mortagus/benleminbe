@@ -1,0 +1,78 @@
+index:
+    meta_title: "Projects | Benjamin Lemin"
+    eyebrow: "Projects"
+    title: "Selected projects"
+    lead: "A selection of projects I worked on, with a focus on context, technical challenges and the solutions implemented."
+    cards:
+        delcampe:
+            title: "Delcampe Marketplace Platform"
+            description: "Maintenance and evolution of an international marketplace dedicated to collectors."
+
+delcampe:
+    meta_title: "Delcampe Marketplace Platform | Benjamin Lemin"
+    eyebrow: "Client project · Marketplace · Symfony"
+    title: "Delcampe Marketplace Platform"
+    lead: "Contribution to the maintenance, evolution, and technical quality of an international marketplace platform dedicated to collectors."
+
+    meta:
+        period_label: "Period:"
+        period_value: "April 2018 – March 2019"
+        role_label: "Role:"
+        role_value: "Backend PHP Developer / Consultant"
+        mission_label: "Mission:"
+        mission_value: "carried out via Blubird"
+        stack_label: "Main stack:"
+        stack_value: "PHP 7, Symfony 3.1, MariaDB, REST, SOAP"
+
+    context:
+        title: "Project context"
+        p1: "Delcampe is a marketplace specialized in collectibles: stamps, postcards, coins, and other items for collectors. The platform connects sellers and buyers worldwide, with features related to listings, transactions, messaging, and user interactions."
+        p2: "In addition to the web platform, Delcampe also provided a desktop application used by professional sellers. This application communicated with the platform through a set of REST and SOAP APIs."
+
+    role:
+        title: "My role"
+        p1: "I joined the main development team as a backend PHP consultant, integrated into the client team. My work mainly focused on maintenance, bug fixing, improving existing features, and developing new evolutions for the marketplace platform."
+        li1: "Fixing bugs on an existing Symfony production application."
+        li2: "Improving existing pages and components."
+        li3: "Developing new backend features."
+        li4: "Collaborating with frontend developers when full-stack coordination was required."
+        li5: "Participating in code reviews and technical discussions."
+
+    tech:
+        title: "Technical environment"
+        backend:
+            title: "Backend"
+            oop: "Object-oriented programming"
+            solid: "SOLID principles"
+        api:
+            title: "APIs"
+            integration: "Integration with a professional desktop application"
+        quality:
+            title: "Testing & quality"
+            reviews: "Systematic code reviews"
+        tools:
+            title: "Tools"
+
+    process:
+        title: "Development organization and practices"
+        p1: "The team worked with an Agile process inspired by Scrum: sprint cycles, daily meetings, task estimation, retrospectives, and technical discussions for more complex topics."
+        p2: "The development workflow relied on dedicated branches per fix or feature, mandatory code reviews, and controlled release branches for production deployments."
+        p3: "This environment allowed me to work in a structured setting, with strong attention to maintainability, code quality, and the stability of a production application."
+
+    challenges:
+        title: "Technical challenges"
+        li1_label: "Mature application:"
+        li1: "working within a large existing Symfony codebase used in production."
+        li2_label: "International marketplace:"
+        li2: "handling a multilingual platform with diverse business use cases."
+        li3_label: "Expected quality:"
+        li3: "meeting high standards in code structure, testing, reviews, and delivery processes."
+        li4_label: "Connected ecosystem:"
+        li4: "working on a web platform connected to APIs and a desktop application used by professional sellers."
+
+    learning:
+        title: "What this mission brought me"
+        p1: "This mission was a particularly formative experience in my career. It allowed me to work on a large Symfony application, within a structured team, with strong development practices: automated testing, code reviews, CI/CD, documentation, and close collaboration between product and technical teams."
+        p2: "It strengthened my ability to work on existing systems, quickly understand a specific business domain, and deliver reliable evolutions in a demanding production environment."
+
+    back: "← Back to projects"

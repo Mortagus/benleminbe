@@ -1,0 +1,78 @@
+index:
+    meta_title: "Projets | Benjamin Lemin"
+    eyebrow: "Projets"
+    title: "Projets sélectionnés"
+    lead: "Quelques projets sur lesquels j’ai travaillé, avec un focus sur le contexte, les défis techniques et les solutions mises en place."
+    cards:
+        delcampe:
+            title: "Delcampe Marketplace Platform"
+            description: "Maintenance et évolution d’une marketplace internationale dédiée aux collectionneurs."
+
+delcampe:
+    meta_title: "Delcampe Marketplace Platform | Benjamin Lemin"
+    eyebrow: "Projet client · Marketplace · Symfony"
+    title: "Delcampe Marketplace Platform"
+    lead: "Contribution à la maintenance, à l’évolution et à la qualité technique d’une plateforme marketplace internationale dédiée aux collectionneurs."
+
+    meta:
+        period_label: "Période :"
+        period_value: "avril 2018 – mars 2019"
+        role_label: "Rôle :"
+        role_value: "Backend PHP Developer / Consultant"
+        mission_label: "Mission :"
+        mission_value: "réalisée via Blubird"
+        stack_label: "Stack principale :"
+        stack_value: "PHP 7, Symfony 3.1, MariaDB, REST, SOAP"
+
+    context:
+        title: "Contexte du projet"
+        p1: "Delcampe est une marketplace spécialisée dans les objets de collection : timbres, cartes postales, monnaies et autres objets destinés aux collectionneurs. La plateforme met en relation des vendeurs et des acheteurs à l’échelle internationale, avec des fonctionnalités liées aux annonces, aux transactions, à la messagerie et aux interactions entre utilisateurs."
+        p2: "En complément de la plateforme web, Delcampe proposait également une application desktop utilisée par des vendeurs professionnels. Cette application communiquait avec la plateforme via un ensemble d’API REST et SOAP."
+
+    role:
+        title: "Mon rôle"
+        p1: "J’ai rejoint l’équipe de développement principale comme consultant backend PHP, intégré à l’équipe client. Mon travail portait principalement sur la maintenance, la correction de bugs, l’amélioration de fonctionnalités existantes et le développement de nouvelles évolutions sur la plateforme marketplace."
+        li1: "Correction de bugs sur une application Symfony existante en production."
+        li2: "Évolution de pages et composants existants."
+        li3: "Développement de nouvelles fonctionnalités backend."
+        li4: "Collaboration avec les développeurs frontend lorsque les sujets nécessitaient une coordination full-stack."
+        li5: "Participation aux code reviews et aux discussions techniques."
+
+    tech:
+        title: "Environnement technique"
+        backend:
+            title: "Backend"
+            oop: "Programmation orientée objet"
+            solid: "Principes SOLID"
+        api:
+            title: "APIs"
+            integration: "Intégration avec une application desktop professionnelle"
+        quality:
+            title: "Tests & qualité"
+            reviews: "Code reviews systématiques"
+        tools:
+            title: "Outils"
+
+    process:
+        title: "Organisation et pratiques de développement"
+        p1: "L’équipe travaillait avec un processus Agile inspiré de Scrum : cycles de sprint, daily meetings, estimation des tâches, rétrospectives et discussions techniques pour les sujets plus complexes."
+        p2: "Le workflow de développement reposait sur des branches dédiées par correction ou fonctionnalité, des revues de code obligatoires et des branches de release contrôlées pour les mises en production."
+        p3: "Cet environnement m’a permis de travailler dans un cadre structuré, avec une forte attention portée à la maintenabilité, à la qualité du code et à la stabilité d’une application utilisée en production."
+
+    challenges:
+        title: "Défis techniques"
+        li1_label: "Application mature :"
+        li1: "intervenir dans une base de code Symfony importante, existante et utilisée en production."
+        li2_label: "Marketplace internationale :"
+        li2: "prendre en compte une plateforme multilingue avec de nombreux usages métier."
+        li3_label: "Qualité attendue :"
+        li3: "respecter des standards élevés en matière de structure de code, tests, revues et processus de livraison."
+        li4_label: "Écosystème connecté :"
+        li4: "travailler sur une plateforme web reliée à des APIs et à une application desktop utilisée par des vendeurs professionnels."
+
+    learning:
+        title: "Ce que cette mission m’a apporté"
+        p1: "Cette mission a été une expérience particulièrement formatrice dans mon parcours. Elle m’a permis de travailler sur une application Symfony de grande taille, dans une équipe structurée, avec des pratiques de développement solides : tests automatisés, code reviews, CI/CD, documentation et collaboration étroite entre produit et technique."
+        p2: "Elle a renforcé ma capacité à intervenir sur des systèmes existants, à comprendre rapidement un domaine métier spécifique et à livrer des évolutions fiables dans un environnement de production exigeant."
+
+    back: "← Retour aux projets"

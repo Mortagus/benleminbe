@@ -18,7 +18,9 @@ index:
             description: "Développement d’une plateforme d’authentification unifiée basée sur une architecture microservices."
 
 project:
-    navigation_label: 'Navigation entre les projets'
+  navigation_label: 'Navigation entre les projets'
+  previous: 'Projet précédent'
+  next: 'Projet suivant'
 
 delcampe:
     meta_title: "Delcampe Marketplace Platform | Benjamin Lemin"

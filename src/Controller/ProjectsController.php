@@ -54,8 +54,31 @@ final class ProjectsController extends AbstractController
 
     private function renderProject(string $project): Response
     {
+        $projectIndex = $this->findProjectIndex($project);
+
         return $this->render(self::TEMPLATE_DIR . 'detailed_project.html.twig', [
             'project' => $project,
+            'previousProject' => $this->getAdjacentProject($projectIndex, -1),
+            'nextProject' => $this->getAdjacentProject($projectIndex, 1),
         ]);
+    }
+
+    private function findProjectIndex(string $project): int
+    {
+        foreach (self::PROJECTS as $index => $projectConfig) {
+            if ($projectConfig['key'] === $project) {
+                return $index;
+            }
+        }
+
+        throw $this->createNotFoundException(sprintf('Project "%s" not found.', $project));
+    }
+
+    /**
+     * @return array{key: string, route: string}|null
+     */
+    private function getAdjacentProject(int $projectIndex, int $offset): ?array
+    {
+        return self::PROJECTS[$projectIndex + $offset] ?? null;
     }
 }

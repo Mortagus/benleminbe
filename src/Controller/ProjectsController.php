@@ -14,15 +14,12 @@ final class ProjectsController extends AbstractController
     private const array PROJECTS = [
         [
             'key' => 'delcampe',
-            'route' => 'app_projects_delcampe',
         ],
         [
             'key' => 'stanhome',
-            'route' => 'app_projects_stanhome',
         ],
         [
             'key' => 'moveit',
-            'route' => 'app_projects_moveit',
         ],
     ];
 
@@ -34,25 +31,8 @@ final class ProjectsController extends AbstractController
         ]);
     }
 
-    #[Route('/delcampe', name: 'delcampe')]
-    public function delcampe(): Response
-    {
-        return $this->renderProject('delcampe');
-    }
-
-    #[Route('/stanhome', name: 'stanhome')]
-    public function stanhome(): Response
-    {
-        return $this->renderProject('stanhome');
-    }
-
-    #[Route('/moveit', name: 'moveit')]
-    public function moveit(): Response
-    {
-        return $this->renderProject('moveit');
-    }
-
-    private function renderProject(string $project): Response
+    #[Route('/{project}', name: 'show')]
+    public function show(string $project): Response
     {
         $projectIndex = $this->findProjectIndex($project);
 
@@ -75,7 +55,7 @@ final class ProjectsController extends AbstractController
     }
 
     /**
-     * @return array{key: string, route: string}|null
+     * @return array{key: string}|null
      */
     private function getAdjacentProject(int $projectIndex, int $offset): ?array
     {

@@ -123,13 +123,13 @@
             </a>
 
             {% if previousProject is not null %}
-                <a href="{{ path(previousProject.route, { _locale: app.request.locale }) }}" class="previous-link">
+                <a href="{{ path('app_projects_show', { _locale: app.request.locale, project: previousProject.key }) }}" class="previous-link">
                     {{ 'project.previous'|trans({}, 'projects') }}
                 </a>
             {% endif %}
 
             {% if nextProject is not null %}
-                <a href="{{ path(nextProject.route, { _locale: app.request.locale }) }}" class="next-link">
+                <a href="{{ path('app_projects_show', { _locale: app.request.locale, project: nextProject.key }) }}" class="next-link">
                     {{ 'project.next'|trans({}, 'projects') }}
                 </a>
             {% endif %}

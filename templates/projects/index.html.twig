@@ -14,7 +14,7 @@
         <section class="projects-list">
 
             {% for project in projects %}
-                <a href="{{ path(project.route, { _locale: app.request.locale }) }}" class="project-card-link">
+                <a href="{{ path('app_projects_show', { _locale: app.request.locale, project: project.key }) }}" class="project-card-link">
                     <article class="project-card">
                         <h2>{{ ('index.cards.' ~ project.key ~ '.title')|trans({}, 'projects') }}</h2>
                         <p>{{ ('index.cards.' ~ project.key ~ '.description')|trans({}, 'projects') }}</p>

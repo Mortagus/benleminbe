@@ -4,6 +4,8 @@
         FR
     </a>
 
+    <span aria-hidden="true">/</span>
+
     <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': 'en'})) }}"
        class="{{ app.request.locale == 'en' ? 'active' : '' }}">
         EN

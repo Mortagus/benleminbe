@@ -1,0 +1,24 @@
+<header class="site-header">
+    <div class="site-header__inner">
+        <a href="{{ path('app_home', { _locale: app.request.locale }) }}" class="site-header__brand">
+            Benjamin Lemin
+        </a>
+
+        <nav class="site-header__nav" aria-label="Navigation principale">
+            <a href="{{ path('app_home', { _locale: app.request.locale }) }}"
+                class="site-header__link {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}">
+                Accueil
+            </a>
+
+            <a href="{{ path('app_projects_index', { _locale: app.request.locale }) }}"
+                class="site-header__link {{ app.request.attributes.get('_route') starts with 'app_projects' ? 'active' : '' }}">
+                Projets
+            </a>
+        </nav>
+
+        <div class="site-header__actions">
+            {% include 'components/_lang_switcher.html.twig' %}
+            {% include 'components/_theme_switcher.html.twig' %}
+        </div>
+    </div>
+</header>

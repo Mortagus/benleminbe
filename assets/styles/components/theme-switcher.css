@@ -1,8 +1,5 @@
 .theme-switcher {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 10;
+    position: relative;
 }
 
 .theme-switcher__toggle {
@@ -41,11 +38,6 @@
 }
 
 @media (width <= 700px) {
-    .theme-switcher {
-        top: 12px;
-        right: 12px;
-    }
-
     .theme-switcher__toggle {
         display: inline-flex;
         width: 40px;
@@ -57,13 +49,13 @@
         background: var(--card);
         color: var(--accent-hover);
         box-shadow: 0 8px 24px var(--shadow);
-        font-size: 1.1rem;
+        font-size: 1.3rem;
         cursor: pointer;
     }
 
     .theme-switcher__options {
         position: absolute;
-        top: 48px;
+        top: calc(100% + 8px);
         right: 0;
         display: none;
     }
@@ -78,30 +70,17 @@
 
     .theme-switcher__icon {
         display: inline;
-    }
-
-    .theme-switcher__options button {
-        width: 36px;
-        height: 36px;
-        padding: 0;
-        font-size: 1rem;
+        font-size: 1.3rem;
+        line-height: 1;
     }
 
     .theme-switcher__options button {
         width: 40px;
         height: 40px;
-        padding: 0;
         display: flex;
         justify-content: center;
         align-items: center;
-    }
-
-    .theme-switcher__icon {
-        font-size: 1.3rem; /* ← augmente ici */
-        line-height: 1;
-    }
-
-    .theme-switcher__toggle {
-        font-size: 1.3rem; /* même taille que les options */
+        padding: 0;
+        font-size: 1rem;
     }
 }

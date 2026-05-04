@@ -1,3 +1,8 @@
+project:
+    navigation_label: 'Navigation entre les projets'
+    previous: 'Projet précédent'
+    next: 'Projet suivant'
+
 index:
     meta_title: "Projets | Benjamin Lemin"
     eyebrow: "Projets"
@@ -5,22 +10,557 @@ index:
     lead: "Quelques projets sur lesquels j’ai travaillé, avec un focus sur le contexte, les défis techniques et les solutions mises en place."
 
     cards:
+        raidgbs:
+            title: "RAIDGBS Research Project"
+            description: "Conception et implémentation d’un système de traitement de données destiné à collecter et structurer des séquences biologiques dans le cadre d’un projet de recherche."
+
+        sogesa:
+            title: "Sogesa ERP System"
+            description: "Développement d’un ERP web interne destiné à soutenir les activités quotidiennes des agronomes et la gestion opérationnelle de l’entreprise."
+
+        publifund:
+            title: "Publifund Platform"
+            description: "Maintenance et évolution d’une plateforme d’agrégation de données financières, de génération de documents réglementaires KIID et de distribution d’informations vers des médias financiers."
+
+        easy4pro:
+            title: "Easy4Pro"
+            description: "Contribution au développement d’un prototype web destiné à orchestrer des opérations logistiques urgentes à partir d’une application existante."
+
+        logic_immo:
+            title: "Logic-Immo Image Delivery Platform"
+            description: "Conception et développement d’un service dédié au stockage et à la diffusion d’images immobilières afin d’améliorer les performances de chargement."
+
+        isobar:
+            title: "Projects at Isobar"
+            description: "Contribution à plusieurs projets clients courts en agence digitale, incluant des sites de marques, plateformes événementielles, campagnes marketing et outils promotionnels."
+
         delcampe:
             title: "Delcampe Marketplace Platform"
             description: "Maintenance et évolution d’une marketplace internationale dédiée aux collectionneurs."
+
+        keytrade:
+            title: "Keytrade Bank — Web Platforms Maintenance"
+            description: "Maintenance de plusieurs plateformes web bancaires : site public, extranet client et intranet administratif."
+
+        famille_chretienne:
+            title: "Famille Chrétienne — Plateforme éditoriale DPI"
+            description: "Adaptation et déploiement d’une plateforme éditoriale Drupal 7 issue de DPI pour le site Famille Chrétienne."
 
         stanhome:
             title: "Stanhome — Plateforme e-commerce (France & Italie)"
             description: "Modernisation d’une plateforme e-commerce multi-pays intégrant un modèle de vente directe."
 
+        his:
+            title: "Hôpitaux Iris Sud — Site institutionnel & intranet"
+            description: "Mise en place d’un site institutionnel Drupal 9 unifié avec intranet, recherche de praticiens, prise de rendez-vous et authentification ADFS."
+
         moveit:
             title: "Rossel — MoveIT (plateforme SSO)"
             description: "Développement d’une plateforme d’authentification unifiée basée sur une architecture microservices."
 
-project:
-  navigation_label: 'Navigation entre les projets'
-  previous: 'Projet précédent'
-  next: 'Projet suivant'
+        marge_delhaize:
+            title: "Marge Delhaize — Plateforme d’intégration de données et d’analyse de marge"
+            description: "Développement d’une plateforme ETL et analytique permettant de consolider des données opérationnelles pour analyser les marges réelles des produits."
+
+        coaching:
+            title: "Programming Coaching & Technical Mentoring"
+            description: "Accompagnement individuel d’étudiants, professionnels et développeurs sur des sujets de programmation, architecture, debugging et bonnes pratiques."
+
+raidgbs:
+    meta_title: "RAIDGBS Research Project | Benjamin Lemin"
+    eyebrow: "Projet de recherche · Bioinformatique · Data ingestion"
+    title: "RAIDGBS Research Project"
+    lead: "Conception et implémentation d’un système capable de récupérer des données de séquences ADN depuis des bases de données biologiques publiques et de les stocker dans une base de données locale structurée."
+
+    meta:
+        -   label: "Période :"
+            value: "février 2010 – juin 2010"
+        -   label: "Rôle :"
+            value: "Développeur principal dans le cadre d’un stage de fin d’études"
+        -   label: "Organisation :"
+            value: "CBMN — Centre de Biophysique Moléculaire Numérique, Gembloux"
+        -   label: "Stack principale :"
+            value: "Perl, SQL, Bash, MySQL, Linux"
+
+    sections:
+        -   title: "Contexte"
+            paragraphs:
+                - "Ce projet a été réalisé dans le cadre de mon travail de fin d’études pendant mon bachelier en informatique."
+                - "Le travail s’est déroulé au CBMN, le Centre de Biophysique Moléculaire Numérique à Gembloux, et faisait partie du programme de recherche RAIDGBS."
+                - "RAIDGBS portait sur l’analyse de séquences génétiques de streptocoques du groupe B, une bactérie pouvant provoquer de graves infections chez les nouveau-nés lorsqu’elle est transmise par la mère pendant la grossesse ou l’accouchement."
+                - "L’objectif plus large du programme de recherche était de mieux comprendre la variabilité génétique de ces bactéries afin de contribuer au développement de tests diagnostiques plus rapides et plus abordables."
+                - "Mon travail portait sur la construction du système de traitement de données utilisé pour collecter et structurer les données de séquences biologiques utilisées dans cette recherche."
+
+        -   title: "Objectif"
+            paragraphs:
+                - "Concevoir et implémenter un système capable de récupérer des données de séquences ADN depuis des bases de données biologiques publiques et de les stocker dans une base de données locale structurée."
+                - "Le système devait automatiser la récupération et le traitement de ces jeux de données afin que les chercheurs puissent facilement accéder aux informations collectées et travailler avec celles-ci."
+
+        -   title: "Mon rôle"
+            paragraphs:
+                - "J’étais le développeur principal responsable de l’implémentation du système pendant mon stage de fin d’études."
+                - "Le projet a été réalisé sous la supervision du chercheur Sven Steinhauer, qui avait préalablement défini les objectifs de recherche, les sources de données et l’approche technologique."
+                - "Mon travail s’est concentré sur l’implémentation technique du système, incluant la conception de la base de données, les scripts de traitement des données et l’automatisation du workflow d’ingestion."
+
+        -   title: "Responsabilités"
+            list:
+                - "Implémentation du système d’ingestion de données"
+                - "Conception du schéma de base de données"
+                - "Développement de scripts Perl pour récupérer et traiter les jeux de données biologiques"
+                - "Génération de fichiers SQL utilisés pour alimenter la base de données"
+                - "Implémentation du script Bash orchestrant le workflow d’ingestion"
+                - "Test et validation du processus d’ingestion de données"
+                - "Documentation du système dans le cadre du mémoire académique"
+
+        -   title: "Défis techniques"
+            list:
+                - "Apprendre Perl au début du projet afin de développer les scripts de traitement de données"
+                - "Récupérer et traiter des jeux de données biologiques issus de bases de données publiques"
+                - "Concevoir un schéma de base de données adapté au stockage d’informations de séquences ADN"
+                - "Automatiser le pipeline d’ingestion à l’aide de scripts Perl et Bash"
+                - "Gérer les problèmes de performance lors du traitement de jeux de données volumineux"
+                - "Optimiser les requêtes SQL afin de réduire significativement le temps d’exécution global du processus d’ingestion"
+
+        -   title: "Technologies utilisées"
+            groups:
+                -   title: "Langages"
+                    items:
+                        - "Perl"
+                        - "SQL"
+                        - "Bash"
+                -   title: "Base de données"
+                    items:
+                        - "MySQL"
+                -   title: "Sources de données"
+                    items:
+                        - "Bases de données biologiques publiques"
+                -   title: "Environnement"
+                    items:
+                        - "Linux"
+                -   title: "Outils"
+                    items:
+                        - "NetBeans"
+                        - "PhpMyAdmin"
+
+        -   title: "Implémentation technique"
+            paragraphs:
+                - "Le système implémentait un pipeline d’ingestion de données récupérant des jeux de données biologiques depuis des bases de données publiques."
+                - "Les scripts Perl étaient responsables de la récupération des jeux de données, de la transformation des données et de la génération de fichiers SQL contenant les requêtes d’insertion."
+                - "Un script Bash orchestrant l’ensemble du workflow prenait en charge la création du schéma de base de données, la création des tables, l’exécution des scripts SQL d’insertion et l’application des contraintes d’intégrité une fois les données insérées."
+                - "Cela permettait de recréer la base de données depuis zéro et garantissait que l’ensemble du processus d’ingestion pouvait être exécuté automatiquement."
+
+        -   title: "Optimisation des performances"
+            paragraphs:
+                - "Lors du traitement de jeux de données plus volumineux, le temps d’exécution est devenu un problème pendant le processus d’ingestion."
+                - "Plusieurs améliorations ont été implémentées : réduction des requêtes SQL générées inutilement, utilisation de stratégies d’insertion par lots au lieu d’exécuter de nombreuses requêtes d’insertion individuelles, et report de la création des contraintes de clés étrangères après l’insertion massive des données."
+                - "Ces optimisations ont réduit significativement le temps d’exécution du pipeline d’ingestion, le faisant passer de plusieurs heures à seulement quelques minutes."
+                - "Ce fut l’une de mes premières expériences pratiques liées à la performance des bases de données et à l’optimisation de l’ingestion de données."
+
+        -   title: "Résultats / impact"
+            paragraphs:
+                - "Le projet a abouti à un prototype fonctionnel capable d’importer des jeux de données expérimentaux dans une base de données structurée."
+                - "Le système a automatisé une grande partie du processus d’ingestion de données et a fourni une base pour de futures analyses de données de recherche."
+
+        -   title: "Apprentissages clés"
+            highlight: true
+            list:
+                - "Première expérience de conception d’un schéma de base de données depuis zéro"
+                - "Implémentation de scripts automatisés de traitement de données"
+                - "Collaboration avec des chercheurs dans un environnement scientifique"
+                - "Exposition à des concepts de data engineering avant d’entrer dans l’industrie du développement web"
+
+    back: "← Retour aux projets"
+
+sogesa:
+    meta_title: "Sogesa ERP System | Benjamin Lemin"
+    eyebrow: "Projet interne · ERP · Agriculture"
+    title: "Sogesa ERP System"
+    lead: "Conception et développement d’un ERP web interne destiné à soutenir les activités quotidiennes des agronomes et la gestion opérationnelle de l’entreprise."
+
+    meta:
+        -   label: "Période :"
+            value: "novembre 2011 – décembre 2014"
+        -   label: "Rôle :"
+            value: "Développeur principal"
+        -   label: "Organisation :"
+            value: "Sogesa"
+        -   label: "Stack principale :"
+            value: "PHP 5.3, SQL, JavaScript, HTML, CSS, Symfony 2, jQuery, Bootstrap, MySQL"
+
+    sections:
+        -   title: "Contexte"
+            paragraphs:
+                - "Sogesa est une société de conseil spécialisée dans la gestion et l’exploitation de terres agricoles pour le compte de propriétaires terriens."
+                - "De nombreux propriétaires ne disposent pas de l’expertise ou des ressources nécessaires pour gérer eux-mêmes des terres agricoles."
+                - "Sogesa agit comme intermédiaire entre les propriétaires et les différents acteurs impliqués dans la production agricole."
+                - "Les agronomes employés par Sogesa sont responsables de l’analyse des sols, du choix des cultures à planter, de la coordination de la préparation des champs, du choix des traitements phytosanitaires, de l’organisation des récoltes et de la gestion de la vente des produits agricoles."
+                - "Au moment où j’ai rejoint l’entreprise, très peu d’outils numériques existaient pour soutenir ces activités."
+                - "L’objectif du projet était de construire progressivement un système logiciel interne permettant aux agronomes de gérer leur travail, puis d’étendre la plateforme pour soutenir la gestion opérationnelle de l’entreprise."
+
+        -   title: "Utilisateurs"
+            paragraphs:
+                - "Le système était utilisé en interne par les membres de l’entreprise."
+                - "Au total, la plateforme soutenait environ sept utilisateurs internes impliqués dans les opérations agricoles et l’administration de l’entreprise."
+            list:
+                - "4 agronomes"
+                - "1 secrétaire"
+                - "Le directeur de l’entreprise"
+                - "L’assistante du directeur"
+
+        -   title: "Objectif"
+            paragraphs:
+                - "Concevoir et développer un ERP web interne soutenant les activités quotidiennes des agronomes et la gestion opérationnelle de l’entreprise."
+                - "Le système s’est d’abord concentré sur la numérisation du workflow utilisé par les agronomes sur le terrain, notamment la gestion des parcelles, des opérations agricoles et de la coordination avec les acteurs externes."
+                - "Avec le temps, la plateforme s’est étendue pour inclure d’autres fonctions métier telles que la facturation, les commandes de produits et la gestion des stocks."
+
+        -   title: "Concepts métier clés"
+            paragraphs:
+                - "Plusieurs concepts importants du domaine devaient être modélisés dans le système."
+                - "Le système supportait la gestion de plusieurs années culturales simultanément et permettait aux agronomes d’adapter les structures de parcelles d’une saison à l’autre."
+            list:
+                - "Les parcelles agricoles, qui pouvaient évoluer au fil du temps"
+                - "Les années culturales, qui suivent des cycles agricoles saisonniers plutôt que des années calendaires"
+                - "Les opérations agricoles réalisées sur des parcelles spécifiques"
+                - "Les ordres de travaux envoyés aux entrepreneurs agricoles"
+
+        -   title: "Mon rôle"
+            paragraphs:
+                - "J’étais le développeur principal responsable de la construction de la première version du système."
+                - "Pendant la première année du projet, j’étais le seul développeur travaillant sur l’application."
+                - "Par la suite, un second développeur junior a rejoint le projet et nous avons continué à développer le système ensemble pendant plusieurs années."
+                - "Mon travail impliquait de comprendre les workflows des agronomes, de concevoir la structure de la base de données et d’implémenter progressivement les fonctionnalités nécessaires pour soutenir leurs activités quotidiennes."
+                - "Un audit technique externe du code a été réalisé pendant le projet afin d’évaluer la qualité de l’implémentation et de fournir des recommandations concernant l’architecture et les pratiques de développement."
+
+        -   title: "Responsabilités"
+            list:
+                - "Compréhension et documentation des workflows des agronomes"
+                - "Traduction des processus métier en fonctionnalités logicielles"
+                - "Conception du schéma de base de données"
+                - "Développement de l’application web depuis zéro"
+                - "Implémentation de modules de gestion des parcelles agricoles, des opérations et des entités liées"
+                - "Implémentation de fonctionnalités de gestion d’entreprise telles que la facturation et la gestion des stocks"
+                - "Déploiement et maintenance de l’infrastructure applicative avec un hébergeur externe"
+                - "Collaboration avec les agronomes et les autres parties prenantes pour affiner le système"
+
+        -   title: "Fonctionnalités clés"
+            list:
+                - "Gestion des parcelles agricoles"
+                - "Support de plusieurs années culturales"
+                - "Création d’ordres de travaux agricoles"
+                - "Export des ordres de travaux vers Excel pour une utilisation sur le terrain"
+                - "Gestion de la facturation"
+                - "Commandes de produits et gestion des stocks"
+                - "Accès basé sur les rôles pour les agronomes et le personnel administratif"
+
+        -   title: "Défis techniques"
+            list:
+                - "Apprendre PHP et l’architecture d’applications web tout en construisant le système"
+                - "Concevoir et implémenter une application web complète depuis zéro"
+                - "Comprendre un domaine métier complexe lié à la gestion de terres agricoles"
+                - "Traduire des processus réels en modèles logiciels"
+                - "Gérer l’infrastructure technique et le déploiement de l’application"
+                - "Participer à de longues réunions avec des experts métier pour comprendre pleinement leurs workflows"
+                - "Apprendre à estimer des tâches de développement et à planifier le travail d’implémentation"
+                - "Adopter des pratiques plus modernes après les retours d’un audit externe du code"
+
+        -   title: "Technologies utilisées"
+            groups:
+                -   title: "Langages"
+                    items:
+                        - "PHP 5.3"
+                        - "SQL"
+                        - "JavaScript"
+                        - "HTML"
+                        - "CSS"
+                -   title: "Frameworks / librairies"
+                    items:
+                        - "Symfony 2, introduit plus tard pour la partie administrative de l’application"
+                        - "jQuery"
+                        - "Bootstrap"
+                -   title: "Base de données"
+                    items:
+                        - "MySQL"
+                -   title: "Outils"
+                    items:
+                        - "Doctrine ORM"
+                        - "Bundle d’administration Symfony pour l’interface de gestion"
+                        - "SVN puis Git"
+                        - "XAMPP"
+                        - "NetBeans IDE"
+                -   title: "Infrastructure"
+                    items:
+                        - "Hébergeur externe"
+
+        -   title: "Déploiement"
+            paragraphs:
+                - "Le processus de déploiement a évolué au cours du projet."
+            list:
+                - "Au départ, les déploiements étaient réalisés manuellement via FTP"
+                - "Le versioning a ensuite été introduit avec SVN"
+                - "Le projet a finalement migré vers Git"
+                - "Les déploiements ont ensuite été effectués manuellement via un accès SSH au serveur d’hébergement"
+
+        -   title: "Résultats / impact"
+            paragraphs:
+                - "Le projet a abouti à un ERP sur mesure utilisé en interne par Sogesa pour soutenir à la fois les opérations de terrain des agronomes et la gestion administrative de l’entreprise."
+                - "La plateforme a progressivement remplacé des processus manuels et amélioré la coordination entre les agronomes et les autres acteurs impliqués dans la production agricole."
+                - "Le système a continué à être utilisé et développé après mon départ."
+                - "Bien qu’il ait été initialement développé par des développeurs juniors sans encadrement technique senior, le système s’est révélé suffisamment robuste pour rester en production active de nombreuses années après son développement initial."
+
+        -   title: "Apprentissages clés"
+            highlight: true
+            list:
+                - "Première expérience professionnelle de construction d’une application web complète"
+                - "Apprentissage de PHP et du développement backend web dans un environnement de production"
+                - "Compréhension de la manière de traduire des processus métier réels en systèmes logiciels"
+                - "Expérience de collaboration directe avec des experts métier"
+                - "Première exposition aux considérations d’architecture logicielle et de qualité du code"
+
+    back: "← Retour aux projets"
+
+publifund:
+    meta_title: "Publifund Platform | Benjamin Lemin"
+    eyebrow: "Projet client · Finance · Génération documentaire"
+    title: "Publifund Platform"
+    lead: "Maintenance et évolution d’une plateforme interne d’agrégation de données financières, de génération de documents réglementaires KIID et de distribution d’informations vers des médias financiers."
+
+    meta:
+        -   label: "Période :"
+            value: "janvier 2015 – septembre 2015"
+        -   label: "Rôle :"
+            value: "Backend Developer"
+        -   label: "Organisation :"
+            value: "Financial Communication Consult"
+        -   label: "Stack principale :"
+            value: "PHP, SQL, MySQL, MongoDB, PDFLib, HTML, CSS, JavaScript, Linux"
+
+    sections:
+        -   title: "Contexte du projet"
+            paragraphs:
+                - "Publifund était une plateforme interne développée par Financial Communication Consult, une entreprise spécialisée dans la distribution d’informations financières pour des fonds d’investissement."
+                - "La plateforme agrégeait des données liées aux fonds d’investissement depuis plusieurs sources externes et générait des documents réglementaires standardisés appelés KIID, pour Key Investor Information Documents."
+                - "Ces documents sont requis par la réglementation financière européenne et doivent suivre des règles strictes de format et de contenu."
+                - "Les informations et documents générés étaient distribués à des fournisseurs d’informations financières et à des plateformes médias telles que Bloomberg et d’autres distributeurs de données financières."
+                - "Le système servait donc de plateforme d’agrégation de données, de génération documentaire et de distribution pour l’industrie des fonds d’investissement."
+
+        -   title: "Objectifs du projet"
+            list:
+                - "Collecter des données liées aux fonds d’investissement depuis des sources externes"
+                - "Traiter et normaliser les données collectées"
+                - "Générer des documents réglementaires KIID au format PDF"
+                - "Archiver les documents générés"
+                - "Fournir des données structurées et des documents à des médias financiers externes"
+                - "Offrir des outils internes de recherche et de gestion des données de fonds d’investissement"
+
+        -   title: "Vue d’ensemble du système"
+            paragraphs:
+                - "La plateforme fonctionnait globalement comme un pipeline de traitement de données."
+            flow:
+                - "Sources de données externes"
+                - "Collecte de données par scraping ou APIs"
+                - "Parsing et normalisation"
+                - "Stockage en base de données relationnelle"
+                - "Génération des documents KIID"
+                - "Archivage en base documentaire"
+                - "Distribution vers des médias financiers externes"
+
+        -   title: "Mon rôle"
+            paragraphs:
+                - "J’intervenais comme développeur backend au sein d’une petite équipe de développement."
+            list:
+                - "Développement et maintenance de générateurs de documents KIID"
+                - "Implémentation et mise à jour de la logique de génération PDF"
+                - "Maintenance de pages de listing complexes affichant des données financières"
+                - "Participation à la logique de parsing pour les données collectées par des bots automatisés"
+                - "Maintenance et évolution d’outils internes, incluant un système de ticketing personnalisé"
+                - "Travail au sein d’une base de code PHP monolithique existante"
+
+        -   title: "Structure d’équipe"
+            paragraphs:
+                - "L’équipe technique interne était composée d’environ sept personnes."
+                - "J’ai rejoint l’équipe comme l’un des développeurs juniors."
+                - "Les priorités de développement et la planification étaient principalement coordonnées par le lead developer avec la direction de l’entreprise."
+            list:
+                - "Lead developer"
+                - "Senior developer"
+                - "Backend developer"
+                - "Full-stack developer"
+                - "Deux développeurs frontend"
+                - "Administrateur système"
+
+        -   title: "Technologies utilisées"
+            groups:
+                -   title: "Langages principaux"
+                    items:
+                        - "PHP"
+                        - "SQL"
+                -   title: "Stockage de données"
+                    items:
+                        - "MySQL pour le stockage des données financières"
+                        - "MongoDB pour l’archivage des documents générés"
+                -   title: "Génération documentaire"
+                    items:
+                        - "PDFLib pour la génération des documents KIID au format PDF"
+                -   title: "Frontend"
+                    items:
+                        - "HTML"
+                        - "CSS"
+                        - "JavaScript"
+                -   title: "Infrastructure"
+                    items:
+                        - "Serveurs Linux"
+                        - "Cron jobs pour les processus automatisés"
+
+        -   title: "Traitement des données"
+            paragraphs:
+                - "Le système reposait sur des bots automatisés responsables de collecter des informations sur les fonds d’investissement depuis des sources externes."
+                - "Ces bots exécutaient périodiquement des tâches correspondant à un workflow de collecte, parsing, normalisation et stockage en MySQL."
+                - "Les documents KIID générés étaient ensuite créés à partir de ces données structurées."
+
+        -   title: "Système de génération documentaire"
+            paragraphs:
+                - "Les documents KIID suivaient des structures réglementaires strictes définies par les autorités financières."
+                - "Le système implémentait une approche de génération flexible, avec un générateur KIID par défaut pour la plupart des fonds et des générateurs personnalisés pour certains fonds spécifiques."
+                - "La logique de génération était implémentée en PHP avec PDFLib."
+                - "Une fois générés, les documents étaient archivés dans MongoDB afin de conserver les versions historiques, permettre une récupération rapide et servir les documents aux clients externes et aux utilisateurs internes."
+
+        -   title: "Volume de données"
+            paragraphs:
+                - "L’archive documentaire stockée dans MongoDB atteignait plusieurs centaines de gigaoctets de données, reflétant le grand nombre de documents générés et de versions historiques maintenues par le système."
+
+        -   title: "Défis techniques"
+            subsections:
+                -   title: "Travailler avec une large base de code existante"
+                    paragraphs:
+                        - "La plateforme avait été développée en interne pendant plusieurs années sans s’appuyer sur des frameworks mainstream."
+                        - "Comprendre et naviguer dans cette architecture monolithique demandait un temps et un effort importants."
+                -   title: "Contraintes de performance"
+                    paragraphs:
+                        - "Générer efficacement des documents réglementaires était un enjeu important en raison du nombre potentiellement élevé de documents demandés par les clients externes et les plateformes médias."
+                        - "Certains choix d’implémentation privilégiaient la performance brute dans la génération documentaire."
+                -   title: "Complexité du domaine financier"
+                    paragraphs:
+                        - "Le projet nécessitait de comprendre la structure des informations liées aux fonds d’investissement et la manière dont les documents réglementaires KIID devaient être générés."
+                        - "Cela impliquait de travailler avec des données financières structurées, des formats documentaires stricts et des contraintes réglementaires sur le contenu."
+                -   title: "Intégration avec des sources de données externes"
+                    paragraphs:
+                        - "Le système dépendait de sources externes pour les données financières, nécessitant un parsing et une normalisation fiables des informations entrantes."
+
+        -   title: "Résultats / impact"
+            paragraphs:
+                - "La plateforme Publifund servait de système central pour agréger des données de fonds d’investissement, générer des documents réglementaires KIID et distribuer des informations financières structurées à des plateformes médias externes."
+                - "Le système gérait de grands volumes de documents générés et maintenait une archive documentaire significative."
+
+        -   title: "Apprentissages personnels"
+            highlight: true
+            list:
+                - "Développement au sein d’un système de production établi"
+                - "Maintenance d’une large base de code monolithique"
+                - "Considérations de performance dans la génération documentaire"
+                - "Pipelines de traitement de données financières"
+                - "Collaboration au sein d’une équipe de développement structurée"
+                - "Première expérience sur une plateforme responsable de produire des documents financiers réglementaires à grande échelle"
+
+    back: "← Retour aux projets"
+
+easy4pro:
+    meta_title: "Easy4Pro | Benjamin Lemin"
+    eyebrow: "Mission de consultance · Logistique · Prototype"
+    title: "Easy4Pro"
+    lead: "Contribution au développement d’un prototype web destiné à orchestrer des opérations logistiques urgentes en connectant plusieurs prestataires de transport."
+
+    meta:
+        -   label: "Période :"
+            value: "juillet 2016 – septembre 2016"
+        -   label: "Rôle :"
+            value: "Consultant backend developer"
+        -   label: "Organisation :"
+            value: "Flash Global, mission via Adneom"
+        -   label: "Stack principale :"
+            value: "PHP, JavaScript, SQL, Zend Framework, HTML, CSS, MySQL, Git"
+
+    sections:
+        -   title: "Contexte du projet"
+            paragraphs:
+                - "Easy4Pro était un prototype de plateforme web développé chez Flash Global, une entreprise logistique spécialisée dans la gestion de pièces détachées critiques et les services de supply chain internationale."
+                - "Le projet visait à explorer un système capable d’orchestrer des opérations de transport urgentes en connectant plusieurs prestataires logistiques à travers différentes régions."
+                - "La plateforme était basée sur une application logistique interne existante et l’étendait avec de nouvelles capacités destinées à automatiser une partie du processus de coordination du transport."
+                - "J’ai rejoint le projet comme développeur consultant via Adneom et travaillé directement au sein de l’équipe de développement de Flash Global."
+
+        -   title: "Objectifs du projet"
+            list:
+                - "Développer un prototype de plateforme pour l’orchestration logistique urgente"
+                - "Étendre un système logistique existant avec de nouvelles capacités"
+                - "Implémenter des fonctionnalités spécifiques au concept Easy4Pro"
+                - "Intégrer le nouveau prototype dans une large base de code existante"
+
+        -   title: "Vue d’ensemble du système"
+            paragraphs:
+                - "La plateforme permettait aux utilisateurs de définir deux lieux n’importe où dans le monde et tentait de coordonner le transport de marchandises entre ces points en identifiant automatiquement les acteurs logistiques disponibles le long de l’itinéraire."
+                - "Le système visait à soutenir des livraisons soumises à des contraintes de temps en orchestrant plusieurs prestataires de transport impliqués dans différentes étapes de la chaîne de livraison."
+
+        -   title: "Mon rôle"
+            paragraphs:
+                - "J’intervenais comme consultant backend developer intégré à l’équipe de développement interne de Flash Global."
+            list:
+                - "Contribution au développement du prototype Easy4Pro"
+                - "Implémentation et adaptation de fonctionnalités au-dessus d’une base de code existante"
+                - "Travail sur la logique backend et certains composants frontend"
+                - "Compréhension et navigation dans une large architecture applicative existante"
+
+        -   title: "Structure d’équipe"
+            paragraphs:
+                - "Le développement était réalisé par une équipe mixte composée de développeurs internes Flash Global, de consultants Adneom et d’une société de développement externe située en France."
+                - "La taille de l’équipe était globalement inférieure à dix développeurs."
+
+        -   title: "Technologies utilisées"
+            groups:
+                -   title: "Langages principaux"
+                    items:
+                        - "PHP"
+                        - "JavaScript"
+                        - "SQL"
+                -   title: "Framework"
+                    items:
+                        - "Zend Framework"
+                -   title: "Frontend"
+                    items:
+                        - "HTML"
+                        - "CSS"
+                        - "JavaScript"
+                        - "Possiblement Backbone.js, avec une incertitude de mémoire"
+                -   title: "Base de données"
+                    items:
+                        - "MySQL"
+                -   title: "Version control"
+                    items:
+                        - "Git avec workflow GitFlow"
+
+        -   title: "Défis techniques"
+            subsections:
+                -   title: "Comprendre un large système existant"
+                    paragraphs:
+                        - "Le projet était basé sur une application existante conséquente, nécessitant un effort important pour comprendre l’architecture et intégrer de nouvelles fonctionnalités."
+                -   title: "Travailler sur un prototype construit depuis une base legacy"
+                    paragraphs:
+                        - "Easy4Pro était développé comme une preuve de concept dérivée d’une plateforme logistique existante, combinant refactoring, extension et expérimentation."
+                -   title: "Logique métier complexe"
+                    paragraphs:
+                        - "L’application tentait de modéliser et coordonner plusieurs acteurs impliqués dans des opérations logistiques internationales, ce qui introduisait une complexité métier significative."
+
+        -   title: "Résultats / impact"
+            paragraphs:
+                - "Easy4Pro a servi de prototype explorant de nouvelles manières d’orchestrer des opérations logistiques urgentes à partir d’une plateforme logicielle existante."
+                - "Le projet a permis à Flash Global d’expérimenter l’extension de ses systèmes logistiques vers une coordination de transport plus automatisée."
+
+        -   title: "Apprentissages personnels"
+            highlight: true
+            paragraphs:
+                - "Ce projet était ma première mission de consultance après avoir rejoint Adneom."
+                - "Il m’a introduit au travail comme consultant intégré chez un client, à la collaboration avec des équipes mixtes composées de développeurs internes et de partenaires externes, à la navigation dans une large base de code d’entreprise existante et à l’utilisation de Git avec le workflow GitFlow."
+                - "C’était également ma première expérience professionnelle à travailler à l’étranger pendant la semaine, au Luxembourg, tout en rentrant chez moi le week-end."
+
+    back: "← Retour aux projets"
 
 delcampe:
     meta_title: "Delcampe Marketplace Platform | Benjamin Lemin"
@@ -29,67 +569,154 @@ delcampe:
     lead: "Contribution à la maintenance, à l’évolution et à la qualité technique d’une plateforme marketplace internationale dédiée aux collectionneurs."
 
     meta:
-        period_label: "Période :"
-        period_value: "avril 2018 – mars 2019"
-        role_label: "Rôle :"
-        role_value: "Backend PHP Developer / Consultant"
-        mission_label: "Mission :"
-        mission_value: "réalisée via Blubird"
-        stack_label: "Stack principale :"
-        stack_value: "PHP 7, Symfony 3.1, MariaDB, REST, SOAP"
+        meta:
+            -   label: "Période :"
+                value: "avril 2018 – mars 2019"
+            -   label: "Rôle :"
+                value: "Backend Developer intégré à l’équipe principale de développement"
+            -   label: "Organisation :"
+                value: "Delcampe, mission via Blubird"
+            -   label: "Stack principale :"
+                value: "PHP 7, Symfony 3.1, MariaDB, REST APIs, SOAP, JavaScript, GitLab CI/CD, Docker"
 
-    context:
-        title: "Contexte du projet"
-        p1: "Delcampe est une marketplace spécialisée dans les objets de collection : timbres, cartes postales, monnaies et autres objets destinés aux collectionneurs. La plateforme met en relation des vendeurs et des acheteurs à l’échelle internationale, avec des fonctionnalités liées aux annonces, aux transactions, à la messagerie et aux interactions entre utilisateurs."
-        p2: "En complément de la plateforme web, Delcampe proposait également une application desktop utilisée par des vendeurs professionnels. Cette application communiquait avec la plateforme via un ensemble d’API REST et SOAP."
+        sections:
+            -   title: "Contexte du projet"
+                paragraphs:
+                    - "Delcampe est une marketplace en ligne dédiée aux objets de collection tels que les timbres, les cartes postales, les monnaies et d’autres objets destinés aux collectionneurs."
+                    - "La plateforme met en relation des vendeurs et des acheteurs à l’échelle mondiale et gère les annonces, les transactions, la messagerie et les interactions entre utilisateurs."
+                    - "En complément de la marketplace web, Delcampe fournit également une application desktop utilisée par des vendeurs professionnels."
+                    - "Cette application se connecte à la plateforme via un mélange d’APIs REST et SOAP afin de synchroniser les données de la marketplace."
+                    - "J’ai rejoint l’équipe de développement comme consultant via Blubird et contribué à la maintenance et à l’évolution de la plateforme marketplace principale."
 
-    role:
-        title: "Mon rôle"
-        p1: "J’ai rejoint l’équipe de développement principale comme consultant backend PHP, intégré à l’équipe client. Mon travail portait principalement sur la maintenance, la correction de bugs, l’amélioration de fonctionnalités existantes et le développement de nouvelles évolutions sur la plateforme marketplace."
-        li1: "Correction de bugs sur une application Symfony existante en production."
-        li2: "Évolution de pages et composants existants."
-        li3: "Développement de nouvelles fonctionnalités backend."
-        li4: "Collaboration avec les développeurs frontend lorsque les sujets nécessitaient une coordination full-stack."
-        li5: "Participation aux code reviews et aux discussions techniques."
+            -   title: "Objectifs du projet"
+                list:
+                    - "Maintenir et améliorer la plateforme marketplace principale"
+                    - "Corriger les bugs et assurer la stabilité du système"
+                    - "Améliorer des fonctionnalités et pages existantes"
+                    - "Contribuer au développement de nouvelles fonctionnalités"
+                    - "Maintenir un haut niveau de qualité de code dans une large base de code utilisée en production"
 
-    tech:
-        title: "Environnement technique"
-        backend:
-            title: "Backend"
-            oop: "Programmation orientée objet"
-            solid: "Principes SOLID"
-        api:
-            title: "APIs"
-            integration: "Intégration avec une application desktop professionnelle"
-        quality:
-            title: "Tests & qualité"
-            reviews: "Code reviews systématiques"
-        tools:
-            title: "Outils"
+            -   title: "Architecture du système"
+                paragraphs:
+                    - "La plateforme était construite comme une application monolithique modulaire basée sur le framework Symfony."
+                    - "Le système incluait plusieurs composants interconnectés : la plateforme web marketplace, les APIs utilisées par des services internes et par le client desktop, une interface utilisateur internationalisée et des services internes soutenant les opérations de la marketplace."
 
-    process:
-        title: "Organisation et pratiques de développement"
-        p1: "L’équipe travaillait avec un processus Agile inspiré de Scrum : cycles de sprint, daily meetings, estimation des tâches, rétrospectives et discussions techniques pour les sujets plus complexes."
-        p2: "Le workflow de développement reposait sur des branches dédiées par correction ou fonctionnalité, des revues de code obligatoires et des branches de release contrôlées pour les mises en production."
-        p3: "Cet environnement m’a permis de travailler dans un cadre structuré, avec une forte attention portée à la maintenabilité, à la qualité du code et à la stabilité d’une application utilisée en production."
+            -   title: "Mon rôle"
+                paragraphs:
+                    - "J’étais développeur backend intégré à l’équipe principale de développement."
+                    - "Au cours de la mission, j’ai travaillé sur différentes parties du système en fonction des priorités."
+                list:
+                    - "Correction de bugs affectant la plateforme marketplace"
+                    - "Implémentation d’améliorations sur des pages et composants existants"
+                    - "Participation au développement de nouvelles fonctionnalités"
+                    - "Collaboration avec les développeurs frontend lorsque les fonctionnalités nécessitaient un travail backend et frontend"
+                    - "Contribution aux code reviews et aux discussions techniques"
 
-    challenges:
-        title: "Défis techniques"
-        li1_label: "Application mature :"
-        li1: "intervenir dans une base de code Symfony importante, existante et utilisée en production."
-        li2_label: "Marketplace internationale :"
-        li2: "prendre en compte une plateforme multilingue avec de nombreux usages métier."
-        li3_label: "Qualité attendue :"
-        li3: "respecter des standards élevés en matière de structure de code, tests, revues et processus de livraison."
-        li4_label: "Écosystème connecté :"
-        li4: "travailler sur une plateforme web reliée à des APIs et à une application desktop utilisée par des vendeurs professionnels."
+            -   title: "Structure d’équipe"
+                paragraphs:
+                    - "Le département logiciel était organisé en deux équipes collaborant étroitement."
+                    - "Cette structure aidait à maintenir un alignement fort entre les décisions produit et l’implémentation technique."
+                groups:
+                    -   title: "Équipe produit"
+                        items:
+                            - "Product lead"
+                            - "Senior product expert"
+                            - "Rôle innovation / stratégie produit"
+                            - "Deux développeurs frontend"
+                    -   title: "Équipe de développement"
+                        items:
+                            - "Lead developer"
+                            - "Technical lead"
+                            - "Deux développeurs internes"
+                            - "Trois consultants Blubird, dont moi-même"
+                            - "Trois développeurs freelance"
 
-    learning:
-        title: "Ce que cette mission m’a apporté"
-        p1: "Cette mission a été une expérience particulièrement formatrice dans mon parcours. Elle m’a permis de travailler sur une application Symfony de grande taille, dans une équipe structurée, avec des pratiques de développement solides : tests automatisés, code reviews, CI/CD, documentation et collaboration étroite entre produit et technique."
-        p2: "Elle a renforcé ma capacité à intervenir sur des systèmes existants, à comprendre rapidement un domaine métier spécifique et à livrer des évolutions fiables dans un environnement de production exigeant."
+            -   title: "Pratiques de développement"
+                paragraphs:
+                    - "L’équipe suivait un workflow Agile inspiré des pratiques Scrum."
+                    - "Le processus de développement incluait également des branches dédiées pour chaque correction de bug ou fonctionnalité, des code reviews systématiques avant merge et des branches de release contrôlées pour les déploiements en production."
+                    - "Ce workflow contribuait à assurer la stabilité et la maintenabilité de la plateforme de production."
+                list:
+                    - "Cycles de sprint planning de deux à trois semaines"
+                    - "Daily stand-up meetings"
+                    - "Poker planning pour l’estimation des tâches"
+                    - "Rétrospectives de sprint"
+                    - "Discussions de conception technique pour les fonctionnalités complexes"
+                    - "Feature branches pour chaque bug fix ou fonctionnalité"
+                    - "Code reviews systématiques avant merge"
+                    - "Branches de release contrôlées pour les déploiements en production"
 
-    back: "← Retour aux projets"
+            -   title: "Technologies utilisées"
+                groups:
+                    -   title: "Backend"
+                        items:
+                            - "PHP 7 avec programmation orientée objet et principes SOLID"
+                            - "Symfony 3.1"
+                            - "MariaDB"
+                    -   title: "APIs"
+                        items:
+                            - "REST APIs"
+                            - "Services SOAP utilisés par l’application desktop"
+                    -   title: "Frontend tooling"
+                        items:
+                            - "JavaScript"
+                            - "Gulp"
+                            - "NPM"
+                            - "Bower"
+                    -   title: "Tests"
+                        items:
+                            - "PHPUnit pour les tests unitaires backend"
+                            - "Jasmine pour les tests JavaScript"
+                            - "CasperJS pour les tests automatisés orientés navigateur"
+                    -   title: "Monitoring"
+                        items:
+                            - "Sentry pour le monitoring des erreurs applicatives"
+                    -   title: "Version control & CI/CD"
+                        items:
+                            - "Git hébergé sur GitLab interne"
+                            - "Branches dédiées par bug ou fonctionnalité"
+                            - "Code reviews obligatoires"
+                            - "Pipelines GitLab CI/CD"
+                            - "Exécution des tests automatisés avant les releases"
+                    -   title: "Containerisation"
+                        items:
+                            - "Docker utilisé dans l’environnement CI/CD"
+                    -   title: "Gestion de projet & documentation"
+                        items:
+                            - "Jira pour la gestion des tickets"
+                            - "Confluence pour la documentation et le partage de connaissances"
+                    -   title: "Infrastructure"
+                        items:
+                            - "Hébergement et gestion d’infrastructure assurés en interne par l’entreprise"
+
+            -   title: "Défis techniques"
+                subsections:
+                    -   title: "Travailler sur une marketplace mature"
+                        paragraphs:
+                            - "Le projet impliquait de contribuer à un système de production large et existant depuis longtemps, utilisé par une communauté internationale d’utilisateurs."
+                            - "Comprendre l’architecture et naviguer dans la base de code existante nécessitait une collaboration avec des membres expérimentés de l’équipe."
+                    -   title: "Standards élevés de qualité de code"
+                        paragraphs:
+                            - "L’équipe de développement maintenait de fortes attentes concernant la structure du code, les tests, les workflows de développement et les processus de review."
+                    -   title: "Plateforme multilingue"
+                        paragraphs:
+                            - "La marketplace supportait plusieurs langues et des utilisateurs internationaux, ce qui augmentait la complexité applicative."
+                    -   title: "Écosystème connecté"
+                        paragraphs:
+                            - "La plateforme web était reliée à des APIs et à une application desktop utilisée par des vendeurs professionnels, ce qui demandait une attention particulière à la compatibilité et à la stabilité des échanges."
+
+            -   title: "Résultats / impact"
+                paragraphs:
+                    - "Mon travail a contribué à maintenir et améliorer la stabilité et la qualité de la plateforme marketplace Delcampe."
+                    - "À travers la correction de bugs, les améliorations incrémentales et le développement de fonctionnalités, l’équipe a continué à faire évoluer la plateforme tout en maintenant sa fiabilité pour une large base d’utilisateurs."
+
+            -   title: "Apprentissages personnels"
+                highlight: true
+                paragraphs:
+                    - "Cette mission a été l’une des expériences les plus formatrices du début de ma carrière."
+                    - "Elle m’a permis de découvrir un environnement de développement bien structuré, de voir l’impact concret de workflows Agile et inspirés de Scrum, de travailler dans une large application Symfony en production, de comprendre l’importance des tests automatisés dans les projets long terme et d’expérimenter l’effet positif d’une équipe de développement saine et collaborative."
+
+        back: "← Retour aux projets"
 
 stanhome:
     meta_title: "Stanhome E-commerce Platform | Benjamin Lemin"
@@ -98,65 +725,111 @@ stanhome:
     lead: "Contribution à la modernisation d’une plateforme e-commerce multi-pays, combinant vente en ligne et réseau de distribution directe."
 
     meta:
-        period_label: "Période :"
-        period_value: "2021 – 2022"
-        role_label: "Rôle :"
-        role_value: "Backend Developer"
-        mission_label: "Mission :"
-        mission_value: "réalisée via Contraste Digital"
-        stack_label: "Stack principale :"
-        stack_value: "PHP, Drupal 7, Drupal Commerce, ElasticSearch, Google Maps API, Salesforce"
+        -   label: "Période :"
+            value: "2021 – 2022"
+        -   label: "Rôle :"
+            value: "Backend Developer"
+        -   label: "Organisation :"
+            value: "Contraste Digital"
+        -   label: "Client :"
+            value: "Stanhome"
+        -   label: "Stack principale :"
+            value: "PHP, Drupal 7, Drupal Commerce, ElasticSearch, Google Maps API, Salesforce"
 
-    context:
-        title: "Contexte du projet"
-        p1: "Stanhome est une entreprise européenne de vente directe spécialisée dans les produits d’entretien et de beauté. Le projet visait à moderniser la plateforme e-commerce de l’entreprise, en commençant par le marché français puis en l’étendant au marché italien."
-        p2: "Le modèle de distribution repose en partie sur un réseau de vendeurs indépendants organisant des événements de présentation produits. La plateforme devait donc supporter à la fois un e-commerce classique et des fonctionnalités adaptées à ce modèle hybride."
+    sections:
+        -   title: "Contexte"
+            paragraphs:
+                - "Stanhome est une entreprise européenne de vente directe spécialisée dans les produits d’entretien et de beauté."
+                - "Le projet consistait à moderniser la plateforme e-commerce de l’entreprise, en commençant par le marché français puis en l’étendant au marché italien."
+                - "Stanhome fonctionne en partie avec un modèle de réseau de vente directe, dans lequel des vendeurs indépendants organisent des événements de présentation de produits et vendent directement aux clients, dans un modèle similaire à des réunions à domicile de type Tupperware."
+                - "La plateforme devait donc supporter à la fois des capacités e-commerce classiques et des fonctionnalités alignées avec ce modèle de distribution."
 
-    role:
-        title: "Mon rôle"
-        p1: "En tant que développeur backend au sein de l’équipe Contraste Digital, j’ai contribué à l’évolution technique de la plateforme Drupal Commerce, en intervenant sur les performances, les fonctionnalités e-commerce et les intégrations avec les systèmes externes."
-        li1: "Optimisation des performances du catalogue produit via ElasticSearch."
-        li2: "Amélioration du tunnel d’achat et de l’expérience utilisateur."
-        li3: "Développement de fonctionnalités spécifiques au modèle de vente directe."
-        li4: "Mise en place de mécanismes d’automatisation marketing."
-        li5: "Intégration avec des systèmes externes (CRM Salesforce)."
+        -   title: "Objectifs du projet"
+            paragraphs:
+                - "Les objectifs principaux couvraient à la fois la modernisation visuelle, la performance, l’optimisation du parcours d’achat, le support du réseau de distributeurs et l’intégration avec les outils internes de l’entreprise."
+                - "Après la livraison de la plateforme française, l’architecture a été réutilisée et adaptée pour le marché italien."
+            list:
+                - "Redesign du thème visuel de la plateforme e-commerce"
+                - "Amélioration des performances lors de la navigation dans de larges catalogues de produits"
+                - "Optimisation du tunnel d’achat afin d’améliorer la conversion"
+                - "Implémentation d’outils permettant aux utilisateurs de localiser des distributeurs proches"
+                - "Accélération des opérations marketing telles que les promotions de produits"
+                - "Intégration des données de vente avec le système CRM de l’entreprise"
 
-    tech:
-        title: "Environnement technique"
-        backend:
-            title: "Backend"
-            oop: "Développement PHP sur Drupal 7"
-            solid: "Architecture Drupal Commerce"
-        api:
-            title: "APIs"
-            integration: "Intégrations avec Google Maps API et Salesforce"
-        quality:
-            title: "Tests & qualité"
-            reviews: "Travail en environnement structuré avec bonnes pratiques"
-        tools:
-            title: "Outils"
+        -   title: "Mes contributions"
+            subsections:
+                -   title: "Optimisation du catalogue produit"
+                    paragraphs:
+                        - "J’ai amélioré les performances de navigation dans le catalogue en intégrant ElasticSearch."
+                        - "ElasticSearch était utilisé pour la recherche produit, la navigation à facettes et le filtrage des produits dans le catalogue."
+                        - "Cette intégration a significativement amélioré les performances et l’utilisabilité de la navigation produit."
+                -   title: "Amélioration du checkout et du tunnel de vente"
+                    paragraphs:
+                        - "J’ai contribué à l’amélioration du tunnel d’achat, en aidant à fluidifier le processus de commande et à améliorer l’expérience utilisateur."
+                -   title: "Dealer locator"
+                    paragraphs:
+                        - "J’ai implémenté une fonctionnalité de dealer locator avec Google Maps API, permettant aux utilisateurs de trouver des distributeurs proches sur base de leur localisation géographique."
+                        - "Cette fonctionnalité soutenait directement le modèle de distribution en vente directe de Stanhome."
+                -   title: "Automatisation marketing"
+                    paragraphs:
+                        - "J’ai participé à l’implémentation de mécanismes permettant des mises à jour semi-automatisées du catalogue produit, afin de permettre aux équipes marketing d’activer des promotions plus rapidement."
+                        - "Cela incluait de la logique backend et des tâches de synchronisation basées sur des cron jobs au sein de la plateforme Drupal."
+                -   title: "Intégration CRM"
+                    paragraphs:
+                        - "J’ai travaillé sur l’intégration entre la plateforme e-commerce et le CRM Salesforce de l’entreprise."
+                        - "Les données liées aux ventes étaient transmises depuis Drupal Commerce vers Salesforce, permettant aux équipes internes de suivre l’activité commerciale et les interactions clients dans l’écosystème CRM."
+                -   title: "Déploiement multi-pays"
+                    paragraphs:
+                        - "Après l’implémentation française, j’ai participé à l’adaptation de la plateforme pour le marché italien."
+                        - "L’approche consistait à réutiliser l’architecture développée pour la France tout en adaptant certaines fonctionnalités aux besoins locaux."
 
-    process:
-        title: "Organisation et pratiques de développement"
-        p1: "Le projet a été réalisé au sein de l’équipe Contraste Digital, en collaboration avec les équipes produit et techniques du client."
-        p2: "Le travail s’inscrivait dans un contexte de plateforme existante nécessitant des évolutions progressives, avec une attention particulière portée à la performance, à la stabilité et à la capacité d’évolution."
-        p3: "Une partie importante du travail consistait à concilier contraintes e-commerce, besoins marketing et intégrations avec les systèmes externes."
+        -   title: "Équipe"
+            paragraphs:
+                - "J’ai travaillé au sein d’une équipe de développement chez Contraste Digital, en collaboration avec les parties prenantes produit et techniques du client."
 
-    challenges:
-        title: "Défis techniques"
-        li1_label: "Catalogue produit :"
-        li1: "gérer efficacement des catalogues volumineux et améliorer les performances de navigation."
-        li2_label: "Recherche et filtrage :"
-        li2: "implémenter une navigation à facettes performante avec ElasticSearch."
-        li3_label: "Modèle hybride :"
-        li3: "supporter un modèle combinant e-commerce et réseau de vente directe."
-        li4_label: "Multi-pays :"
-        li4: "adapter une même architecture pour plusieurs marchés tout en conservant une base technique commune."
+        -   title: "Technologies utilisées"
+            groups:
+                -   title: "Backend"
+                    items:
+                        - "PHP"
+                        - "Drupal 7"
+                        - "Drupal Commerce"
+                -   title: "Recherche & performance"
+                    items:
+                        - "ElasticSearch"
+                        - "Recherche produit"
+                        - "Navigation à facettes"
+                        - "Filtrage catalogue"
+                -   title: "Intégrations"
+                    items:
+                        - "Google Maps API pour la localisation de distributeurs"
+                        - "Salesforce CRM"
+                        - "Synchronisations via cron jobs"
+                -   title: "Modèle métier"
+                    items:
+                        - "E-commerce classique"
+                        - "Réseau de vente directe"
+                        - "Déploiement multi-pays France et Italie"
 
-    learning:
-        title: "Ce que cette mission m’a apporté"
-        p1: "Cette mission m’a permis de travailler sur une plateforme e-commerce complexe, avec des enjeux forts de performance, de marketing et d’intégration avec des systèmes externes."
-        p2: "Elle a renforcé ma capacité à intervenir sur des architectures Drupal existantes, à optimiser des parcours utilisateurs et à intégrer des services tiers dans un écosystème applicatif structuré."
+        -   title: "Défis techniques"
+            paragraphs:
+                - "Le projet nécessitait de trouver un équilibre entre performance e-commerce, flexibilité marketing et déploiement international."
+            list:
+                - "Gérer efficacement de larges catalogues de produits"
+                - "Implémenter un filtrage produit rapide via ElasticSearch"
+                - "Supporter le modèle hybride de Stanhome combinant e-commerce et réseau de vente directe"
+                - "Adapter l’architecture à plusieurs marchés tout en conservant une base technique commune"
+
+        -   title: "Résultats / impact"
+            paragraphs:
+                - "Le projet a contribué à moderniser la plateforme e-commerce de Stanhome pour le marché français, puis à réutiliser cette base pour le marché italien."
+                - "Les améliorations apportées au catalogue, au tunnel d’achat, aux outils de localisation et aux intégrations CRM ont renforcé la capacité de la plateforme à soutenir à la fois les ventes en ligne et le modèle de distribution directe."
+
+        -   title: "Ce que cette mission m’a apporté"
+            highlight: true
+            paragraphs:
+                - "Cette mission m’a permis de travailler sur une plateforme e-commerce complexe, avec des enjeux forts de performance, de marketing, d’intégration avec des systèmes externes et de déploiement multi-pays."
+                - "Elle a renforcé ma capacité à intervenir sur des architectures Drupal existantes, à optimiser des parcours utilisateurs et à intégrer des services tiers dans un écosystème applicatif structuré."
 
     back: "← Retour aux projets"
 
@@ -164,67 +837,109 @@ moveit:
     meta_title: "Rossel — MoveIT (SSO Platform) | Benjamin Lemin"
     eyebrow: "Projet client · SSO · Microservices"
     title: "Rossel — MoveIT (plateforme SSO)"
-    lead: "Contribution à la conception et au développement d’une plateforme d’authentification unifiée (SSO) pour l’écosystème média du groupe Rossel."
+    lead: "Contribution à la conception et au développement d’une plateforme d’authentification unifiée scalable pour l’écosystème média du groupe Rossel."
 
     meta:
-        period_label: "Période :"
-        period_value: "11/2023 – 05/2024"
-        role_label: "Rôle :"
-        role_value: "Backend Developer"
-        mission_label: "Mission :"
-        mission_value: "réalisée via Contraste Digital"
-        stack_label: "Stack principale :"
-        stack_value: "Go, Gin, Kafka, Docker, Azure, Azure DevOps, ELK Stack"
+        -   label: "Période :"
+            value: "11/2023 – 05/2024"
+        -   label: "Rôle :"
+            value: "Backend Developer"
+        -   label: "Organisation :"
+            value: "Contraste Digital"
+        -   label: "Client :"
+            value: "Rossel Group"
+        -   label: "Stack principale :"
+            value: "Go, Gin, Kafka, Docker, Azure, Azure DevOps, ELK Stack"
 
-    context:
-        title: "Contexte du projet"
-        p1: "Rossel est l’un des plus grands groupes médias en Belgique, opérant plusieurs journaux et plateformes numériques, dont Le Soir. Le projet MoveIT visait à refondre le système de gestion des utilisateurs et d’authentification à l’échelle de l’écosystème Rossel."
-        p2: "L’objectif était de construire une nouvelle plateforme Single Sign-On (SSO) scalable, capable de supporter l’ensemble des marques médias du groupe. Le système devait progressivement remplacer les mécanismes d’authentification existants, en commençant par Le Soir, puis en s’étendant aux autres publications."
+    sections:
+        -   title: "Contexte"
+            paragraphs:
+                - "Rossel est l’un des plus grands groupes médias en Belgique, opérant plusieurs journaux et plateformes médias numériques, dont Le Soir."
+                - "Le projet MoveIT visait à refondre le système de gestion des utilisateurs et d’authentification à l’échelle de l’écosystème Rossel."
+                - "L’objectif était de construire une nouvelle plateforme Single Sign-On scalable, capable de supporter l’ensemble des marques médias du groupe Rossel."
+                - "Le nouveau système était conçu pour remplacer progressivement les mécanismes d’authentification existants, en commençant par Le Soir puis en s’étendant ensuite aux autres journaux du groupe."
 
-    role:
-        title: "Mon rôle"
-        p1: "En tant que développeur backend, j’ai participé au développement de services au sein d’une architecture microservices, en contribuant à la mise en place du nouveau système d’authentification et à l’évolution des flux liés aux utilisateurs."
-        li1: "Développement de microservices backend en Go avec le framework Gin."
-        li2: "Implémentation de deux microservices dédiés à la gestion des utilisateurs."
-        li3: "Participation à la définition des structures de communication via Kafka."
-        li4: "Contribution au développement du système d’inscription utilisateur."
-        li5: "Mise en place de mécanismes d’observabilité et d’analyse des logs."
+        -   title: "Objectifs du projet"
+            paragraphs:
+                - "Le projet adoptait une architecture microservices afin d’assurer la scalabilité et la modularité à long terme."
+            list:
+                - "Construire un système SSO scalable pour l’écosystème média Rossel"
+                - "Supporter l’authentification des utilisateurs à travers plusieurs publications"
+                - "Améliorer la performance et la scalabilité pour des millions d’utilisateurs"
+                - "Permettre l’extension future vers d’autres marques médias"
 
-    tech:
-        title: "Environnement technique"
-        backend:
-            title: "Backend"
-            oop: "Développement en Go avec le framework Gin"
-            solid: "Utilisation de patterns DTO pour structurer les échanges"
-        api:
-            title: "APIs"
-            integration: "Combinaison d’APIs REST et de communication asynchrone via Kafka"
-        quality:
-            title: "Tests & qualité"
-            reviews: "Travail dans une architecture distribuée avec forte exigence de fiabilité"
-        tools:
-            title: "Outils"
+        -   title: "Mes contributions"
+            subsections:
+                -   title: "Développement de microservices"
+                    paragraphs:
+                        - "J’ai participé au développement de services backend en Go avec le framework Gin."
+                        - "J’ai implémenté deux microservices responsables de fonctionnalités liées aux utilisateurs dans le nouveau système d’authentification."
+                        - "J’ai adopté une gestion structurée des requêtes avec des patterns DTO, Data Transfer Object, afin d’assurer une séparation claire entre les contrats API et la logique métier interne."
+                -   title: "Communication orientée événements"
+                    paragraphs:
+                        - "J’ai contribué à la conception et à l’implémentation des structures de messages Kafka utilisées pour la communication entre services."
+                        - "L’architecture combinait des APIs REST pour les interactions synchrones et des files d’événements Kafka pour la communication asynchrone."
+                -   title: "Système d’inscription utilisateur"
+                    paragraphs:
+                        - "J’ai contribué au développement de services soutenant le nouveau workflow d’inscription utilisateur utilisé par les sites Rossel."
+                        - "Ces services étaient consommés par les applications frontend implémentant le nouveau tunnel d’onboarding utilisateur."
+                -   title: "Observabilité et logging"
+                    paragraphs:
+                        - "J’ai travaillé avec la stack ELK, Elasticsearch, Logstash et Kibana, afin de monitorer et analyser les logs générés par l’architecture microservices."
+                        - "Cette configuration permettait une collecte centralisée des logs et améliorait le debugging à travers le système distribué."
 
-    process:
-        title: "Organisation et pratiques de développement"
-        p1: "Le projet s’inscrivait dans une organisation multi-équipes, incluant des équipes backend, frontend et DevOps, travaillant sur différents domaines fonctionnels de la plateforme."
-        p2: "J’ai travaillé au sein de deux équipes Scrum : une équipe dédiée à l’inscription utilisateur et une équipe backend orientée microservices."
-        p3: "Le travail s’effectuait dans un contexte d’architecture distribuée, avec une forte coordination entre les équipes pour assurer la cohérence globale du système."
+        -   title: "Architecture"
+            paragraphs:
+                - "Le système reposait sur une architecture microservices containerisée."
+                - "Les services étaient déployés sur une infrastructure Azure avec des pipelines CI/CD Azure DevOps."
+            groups:
+                -   title: "Backend"
+                    items:
+                        - "Services backend développés en Go"
+                        - "Framework Gin"
+                        - "Patterns DTO pour structurer les échanges"
+                -   title: "Communication"
+                    items:
+                        - "REST APIs pour les interactions synchrones"
+                        - "Kafka pour la communication orientée événements"
+                        - "Files d’événements pour les échanges asynchrones"
+                -   title: "Infrastructure"
+                    items:
+                        - "Docker containers"
+                        - "Azure"
+                        - "Azure DevOps CI/CD pipelines"
+                -   title: "Observabilité"
+                    items:
+                        - "ELK Stack"
+                        - "Elasticsearch"
+                        - "Logstash"
+                        - "Kibana"
+                        - "Agrégation centralisée des logs"
 
-    challenges:
-        title: "Défis techniques"
-        li1_label: "Architecture distribuée :"
-        li1: "mettre en place une communication fiable entre microservices."
-        li2_label: "Kafka :"
-        li2: "définir des schémas de messages robustes pour les échanges asynchrones."
-        li3_label: "Scalabilité :"
-        li3: "concevoir un système capable de supporter l’ensemble de l’écosystème Rossel."
-        li4_label: "Observabilité :"
-        li4: "mettre en place un monitoring efficace via une centralisation des logs (ELK)."
+        -   title: "Équipe"
+            paragraphs:
+                - "Le projet s’inscrivait dans une large organisation multi-équipes incluant une équipe infrastructure / DevOps, plusieurs équipes backend responsables de différents domaines de services et une équipe frontend responsable de l’expérience d’inscription utilisateur."
+                - "J’ai travaillé au sein de deux équipes Scrum : l’équipe dédiée à l’inscription utilisateur, composée d’environ six à sept membres, et l’équipe backend microservices, composée d’environ cinq à six développeurs."
 
-    learning:
-        title: "Ce que cette mission m’a apporté"
-        p1: "Cette mission m’a permis de travailler sur une architecture microservices à grande échelle, avec des enjeux forts de scalabilité, de communication inter-services et de gestion des utilisateurs."
-        p2: "Elle a renforcé ma compréhension des systèmes distribués, des architectures orientées événements et des problématiques liées à la mise en production de services à forte volumétrie."
+        -   title: "Défis techniques"
+            paragraphs:
+                - "Le projet nécessitait de concevoir et implémenter un système d’authentification hautement scalable capable de supporter plusieurs marques médias."
+            list:
+                - "Implémenter une communication fiable entre services"
+                - "Définir des schémas de messages Kafka robustes"
+                - "Assurer la scalabilité et la performance pour le futur écosystème Rossel"
+                - "Monitorer des services distribués via une centralisation des logs"
+
+        -   title: "Résultats / impact"
+            paragraphs:
+                - "Le projet a contribué à la mise en place d’une nouvelle plateforme d’authentification unifiée destinée à remplacer progressivement les systèmes existants dans l’écosystème Rossel."
+                - "Les microservices développés et les mécanismes de communication mis en place participaient à la construction d’une base technique scalable pour la gestion des utilisateurs à travers plusieurs marques médias."
+
+        -   title: "Ce que cette mission m’a apporté"
+            highlight: true
+            paragraphs:
+                - "Cette mission m’a permis de travailler sur une architecture microservices à grande échelle, avec des enjeux forts de scalabilité, de communication inter-services et de gestion des utilisateurs."
+                - "Elle a renforcé ma compréhension des systèmes distribués, des architectures orientées événements et des problématiques liées à la mise en production de services à forte volumétrie."
 
     back: "← Retour aux projets"
+

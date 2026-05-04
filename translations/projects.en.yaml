@@ -5,22 +5,66 @@ index:
     lead: "A selection of projects I worked on, with a focus on context, technical challenges and implemented solutions."
 
     cards:
+        raidgbs:
+            title: "RAIDGBS Research Project"
+            description: "Design and implementation of a data processing system used to collect and structure biological sequence data as part of a research project."
+
+        sogesa:
+            title: "Sogesa ERP System"
+            description: "Development of an internal web-based ERP system supporting agronomists’ daily activities and the operational management of the company."
+
+        publifund:
+            title: "Publifund Platform"
+            description: "Maintenance and evolution of a financial data aggregation, regulatory KIID document generation and information distribution platform."
+
+        easy4pro:
+            title: "Easy4Pro"
+            description: "Contribution to the development of a web prototype designed to orchestrate urgent logistics operations from an existing application."
+
+        logic_immo:
+            title: "Logic-Immo Image Delivery Platform"
+            description: "Design and development of a dedicated service for storing and delivering real estate listing images in order to improve loading performance."
+
+        isobar:
+            title: "Projects at Isobar"
+            description: "Contribution to several short-term digital agency client projects, including brand websites, event platforms, marketing campaigns and promotional tools."
+
         delcampe:
             title: "Delcampe Marketplace Platform"
             description: "Maintenance and evolution of an international marketplace dedicated to collectors."
 
+        keytrade:
+            title: "Keytrade Bank — Web Platforms Maintenance"
+            description: "Maintenance of several banking web platforms: public website, customer extranet and administrative intranet."
+
+        famille_chretienne:
+            title: "Famille Chrétienne — Editorial Platform DPI"
+            description: "Adaptation and deployment of a Drupal 7 editorial platform based on DPI for the Famille Chrétienne website."
+
         stanhome:
-            title: "Stanhome — E-commerce platform (France & Italy)"
+            title: "Stanhome — E-commerce Platform (France & Italy)"
             description: "Modernization of a multi-country e-commerce platform integrating a direct sales model."
+
+        his:
+            title: "Hôpitaux Iris Sud — Institutional Website & Intranet"
+            description: "Setup of a unified Drupal 9 institutional website with intranet, practitioner search, appointment booking and ADFS authentication."
 
         moveit:
             title: "Rossel — MoveIT (SSO platform)"
             description: "Development of a unified authentication platform based on a microservices architecture."
 
+        marge_delhaize:
+            title: "Marge Delhaize — Data Integration & Margin Analysis Platform"
+            description: "Development of an ETL and analytics platform consolidating operational data to analyze real product margins."
+
+        coaching:
+            title: "Programming Coaching & Technical Mentoring"
+            description: "Individual mentoring for students, professionals and developers on programming, architecture, debugging and development best practices."
+
 project:
-  navigation_label: 'Project navigation'
-  previous: 'Previous project'
-  next: 'Next project'
+    navigation_label: 'Project navigation'
+    previous: 'Previous project'
+    next: 'Next project'
 
 delcampe:
     meta_title: "Delcampe Marketplace Platform | Benjamin Lemin"

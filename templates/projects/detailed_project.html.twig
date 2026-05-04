@@ -1,125 +1,118 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ (project ~ '.meta_title')|trans({}, 'projects') }}{% endblock %}
+{% block title %}{{ projectData.meta_title }}{% endblock %}
 
 {% block body %}
     <main class="project-detail-page">
         <section class="page-hero">
-            <p class="eyebrow">{{ (project ~ '.eyebrow')|trans({}, 'projects') }}</p>
+            <p class="eyebrow">{{ projectData.eyebrow }}</p>
 
-            <h1>{{ (project ~ '.title')|trans({}, 'projects') }}</h1>
+            <h1>{{ projectData.title }}</h1>
 
             <p class="lead">
-                {{ (project ~ '.lead')|trans({}, 'projects') }}
+                {{ projectData.lead }}
             </p>
 
-            <ul class="meta-list">
-                <li><strong>{{ (project ~ '.meta.period_label')|trans({}, 'projects') }}</strong> {{ (project ~ '.meta.period_value')|trans({}, 'projects') }}</li>
-                <li><strong>{{ (project ~ '.meta.role_label')|trans({}, 'projects') }}</strong> {{ (project ~ '.meta.role_value')|trans({}, 'projects') }}</li>
-                <li><strong>{{ (project ~ '.meta.mission_label')|trans({}, 'projects') }}</strong> {{ (project ~ '.meta.mission_value')|trans({}, 'projects') }}</li>
-                <li><strong>{{ (project ~ '.meta.stack_label')|trans({}, 'projects') }}</strong> {{ (project ~ '.meta.stack_value')|trans({}, 'projects') }}</li>
-            </ul>
+            {% if projectData.meta is defined and projectData.meta is not empty %}
+                <ul class="meta-list">
+                    {% for item in projectData.meta %}
+                        <li>
+                            <strong>{{ item.label }}</strong> {{ item.value }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </section>
 
-        <section class="content-section">
-            <h2>{{ (project ~ '.context.title')|trans({}, 'projects') }}</h2>
+        {% if projectData.sections is defined %}
+            {% for section in projectData.sections %}
+                <section class="content-section{% if section.highlight is defined and section.highlight %} highlight-section{% endif %}">
+                    <h2>{{ section.title }}</h2>
 
-            <p>{{ (project ~ '.context.p1')|trans({}, 'projects') }}</p>
-            <p>{{ (project ~ '.context.p2')|trans({}, 'projects') }}</p>
-        </section>
+                    {% if section.paragraphs is defined %}
+                        {% for paragraph in section.paragraphs %}
+                            <p>{{ paragraph }}</p>
+                        {% endfor %}
+                    {% endif %}
 
-        <section class="content-section">
-            <h2>{{ (project ~ '.role.title')|trans({}, 'projects') }}</h2>
+                    {% if section.flow is defined %}
+                        <div class="project-flow">
+                            {% for step in section.flow %}
+                                <div class="project-flow-step">{{ step }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
 
-            <p>{{ (project ~ '.role.p1')|trans({}, 'projects') }}</p>
+                    {% if section.list is defined %}
+                        <ul>
+                            {% for item in section.list %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
 
-            <ul>
-                <li>{{ (project ~ '.role.li1')|trans({}, 'projects') }}</li>
-                <li>{{ (project ~ '.role.li2')|trans({}, 'projects') }}</li>
-                <li>{{ (project ~ '.role.li3')|trans({}, 'projects') }}</li>
-                <li>{{ (project ~ '.role.li4')|trans({}, 'projects') }}</li>
-                <li>{{ (project ~ '.role.li5')|trans({}, 'projects') }}</li>
-            </ul>
-        </section>
+                    {% if section.labeled_list is defined %}
+                        <ul>
+                            {% for item in section.labeled_list %}
+                                <li>
+                                    <strong>{{ item.label }}</strong> {{ item.text }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
 
-        <section class="content-section">
-            <h2>{{ (project ~ '.tech.title')|trans({}, 'projects') }}</h2>
+                    {% if section.groups is defined %}
+                        <div class="tech-grid">
+                            {% for group in section.groups %}
+                                <div>
+                                    <h3>{{ group.title }}</h3>
 
-            <div class="tech-grid">
-                <div>
-                    <h3>{{ (project ~ '.tech.backend.title')|trans({}, 'projects') }}</h3>
-                    <ul>
-                        <li>PHP 7</li>
-                        <li>Symfony 3.1</li>
-                        <li>MariaDB</li>
-                        <li>{{ (project ~ '.tech.backend.oop')|trans({}, 'projects') }}</li>
-                        <li>{{ (project ~ '.tech.backend.solid')|trans({}, 'projects') }}</li>
-                    </ul>
-                </div>
+                                    {% if group.paragraphs is defined %}
+                                        {% for paragraph in group.paragraphs %}
+                                            <p>{{ paragraph }}</p>
+                                        {% endfor %}
+                                    {% endif %}
 
-                <div>
-                    <h3>{{ (project ~ '.tech.api.title')|trans({}, 'projects') }}</h3>
-                    <ul>
-                        <li>REST APIs</li>
-                        <li>Services SOAP</li>
-                        <li>{{ (project ~ '.tech.api.integration')|trans({}, 'projects') }}</li>
-                    </ul>
-                </div>
+                                    {% if group.items is defined %}
+                                        <ul>
+                                            {% for item in group.items %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
 
-                <div>
-                    <h3>{{ (project ~ '.tech.quality.title')|trans({}, 'projects') }}</h3>
-                    <ul>
-                        <li>PHPUnit</li>
-                        <li>Jasmine</li>
-                        <li>CasperJS</li>
-                        <li>{{ (project ~ '.tech.quality.reviews')|trans({}, 'projects') }}</li>
-                        <li>GitLab CI/CD</li>
-                    </ul>
-                </div>
+                    {% if section.subsections is defined %}
+                        {% for subsection in section.subsections %}
+                            <div class="project-subsection">
+                                <h3>{{ subsection.title }}</h3>
 
-                <div>
-                    <h3>{{ (project ~ '.tech.tools.title')|trans({}, 'projects') }}</h3>
-                    <ul>
-                        <li>GitLab</li>
-                        <li>Docker</li>
-                        <li>Jira</li>
-                        <li>Confluence</li>
-                        <li>Sentry</li>
-                        <li>NPM, Gulp, Bower</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+                                {% if subsection.paragraphs is defined %}
+                                    {% for paragraph in subsection.paragraphs %}
+                                        <p>{{ paragraph }}</p>
+                                    {% endfor %}
+                                {% endif %}
 
-        <section class="content-section">
-            <h2>{{ (project ~ '.process.title')|trans({}, 'projects') }}</h2>
-
-            <p>{{ (project ~ '.process.p1')|trans({}, 'projects') }}</p>
-            <p>{{ (project ~ '.process.p2')|trans({}, 'projects') }}</p>
-            <p>{{ (project ~ '.process.p3')|trans({}, 'projects') }}</p>
-        </section>
-
-        <section class="content-section">
-            <h2>{{ (project ~ '.challenges.title')|trans({}, 'projects') }}</h2>
-
-            <ul>
-                <li>{{ (project ~ '.challenges.li1_label')|trans({}, 'projects') }} {{ (project ~ '.challenges.li1')|trans({}, 'projects') }}</li>
-                <li>{{ (project ~ '.challenges.li2_label')|trans({}, 'projects') }} {{ (project ~ '.challenges.li2')|trans({}, 'projects') }}</li>
-                <li>{{ (project ~ '.challenges.li3_label')|trans({}, 'projects') }} {{ (project ~ '.challenges.li3')|trans({}, 'projects') }}</li>
-                <li>{{ (project ~ '.challenges.li4_label')|trans({}, 'projects') }} {{ (project ~ '.challenges.li4')|trans({}, 'projects') }}</li>
-            </ul>
-        </section>
-
-        <section class="content-section highlight-section">
-            <h2>{{ (project ~ '.learning.title')|trans({}, 'projects') }}</h2>
-
-            <p>{{ (project ~ '.learning.p1')|trans({}, 'projects') }}</p>
-            <p>{{ (project ~ '.learning.p2')|trans({}, 'projects') }}</p>
-        </section>
+                                {% if subsection.list is defined %}
+                                    <ul>
+                                        {% for item in subsection.list %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </section>
+            {% endfor %}
+        {% endif %}
 
         <nav class="page-navigation" aria-label="{{ 'project.navigation_label'|trans({}, 'projects') }}">
             <a href="{{ path('app_projects_index', { _locale: app.request.locale }) }}" class="back-link">
-                {{ (project ~ '.back')|trans({}, 'projects') }}
+                {{ projectData.back }}
             </a>
 
             {% if previousProject is not null %}

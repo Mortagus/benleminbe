@@ -1,3 +1,8 @@
+project:
+    navigation_label: 'Project navigation'
+    previous: 'Previous project'
+    next: 'Next project'
+
 index:
     meta_title: "Projects | Benjamin Lemin"
     eyebrow: "Projects"
@@ -61,214 +66,1642 @@ index:
             title: "Programming Coaching & Technical Mentoring"
             description: "Individual mentoring for students, professionals and developers on programming, architecture, debugging and development best practices."
 
-project:
-    navigation_label: 'Project navigation'
-    previous: 'Previous project'
-    next: 'Next project'
+raidgbs:
+    meta_title: "RAIDGBS Research Project | Benjamin Lemin"
+    eyebrow: "Research project · Bioinformatics · Data ingestion"
+    title: "RAIDGBS Research Project"
+    lead: "Design and implementation of a system capable of retrieving DNA sequence data from public biological databases and storing it in a structured local database."
+
+    meta:
+        -   label: "Period:"
+            value: "February 2010 – June 2010"
+        -   label: "Role:"
+            value: "Main developer during my final year internship"
+        -   label: "Organization:"
+            value: "CBMN — Centre de Biophysique Moléculaire Numérique, Gembloux"
+        -   label: "Main stack:"
+            value: "Perl, SQL, Bash, MySQL, Linux"
+
+    sections:
+        -   title: "Context"
+            paragraphs:
+                - "This project was carried out as part of my final year thesis during my Bachelor’s degree in Computer Science."
+                - "The work took place at the CBMN, the Centre de Biophysique Moléculaire Numérique in Gembloux, and was part of the RAIDGBS research program."
+                - "RAIDGBS focused on the analysis of genetic sequences of Group B Streptococcus, a bacterium that can cause serious infections in newborns when transmitted from the mother during pregnancy or childbirth."
+                - "The broader objective of the research program was to better understand the genetic variability of these bacteria in order to contribute to the development of faster and more affordable diagnostic tests."
+                - "My work focused on building the data processing system used to collect and structure biological sequence data used in this research."
+
+        -   title: "Objective"
+            paragraphs:
+                - "Design and implement a system capable of retrieving DNA sequence data from public biological databases and storing them in a structured local database."
+                - "The system needed to automate the retrieval and processing of these datasets so that researchers could easily access and work with the collected information."
+
+        -   title: "My role"
+            paragraphs:
+                - "I was the main developer responsible for implementing the system during my final year internship."
+                - "The project was carried out under the supervision of researcher Sven Steinhauer, who had previously defined the research objectives, the data sources and the technological approach."
+                - "My work focused on the technical implementation of the system, including database design, data processing scripts and the automation of the data ingestion workflow."
+
+        -   title: "Responsibilities"
+            list:
+                - "Implementation of the data ingestion system"
+                - "Database schema design"
+                - "Development of Perl scripts to retrieve and process biological datasets"
+                - "Generation of SQL files used to populate the database"
+                - "Implementation of the Bash script orchestrating the ingestion workflow"
+                - "Testing and validation of the data ingestion process"
+                - "Documentation of the system as part of the academic thesis"
+
+        -   title: "Technical challenges"
+            list:
+                - "Learning Perl at the beginning of the project in order to develop the data processing scripts"
+                - "Retrieving and processing biological datasets from public databases"
+                - "Designing a database schema adapted to store DNA sequence information"
+                - "Automating the ingestion pipeline using Perl and Bash scripts"
+                - "Handling performance issues when processing large datasets"
+                - "Optimizing SQL queries to significantly reduce the overall execution time of the ingestion process"
+
+        -   title: "Technologies used"
+            groups:
+                -   title: "Languages"
+                    items:
+                        - "Perl"
+                        - "SQL"
+                        - "Bash"
+                -   title: "Database"
+                    items:
+                        - "MySQL"
+                -   title: "Data sources"
+                    items:
+                        - "Public biological databases"
+                -   title: "Environment"
+                    items:
+                        - "Linux"
+                -   title: "Tools"
+                    items:
+                        - "NetBeans"
+                        - "PhpMyAdmin"
+
+        -   title: "Technical implementation"
+            paragraphs:
+                - "The system implemented a data ingestion pipeline retrieving biological datasets from public databases."
+                - "Perl scripts were responsible for retrieving the datasets, transforming the data and generating SQL files containing the insertion queries."
+                - "A Bash script orchestrated the entire workflow, including the creation of the database schema, the creation of the database tables, the execution of the SQL insertion scripts and the application of integrity constraints once the data had been inserted."
+                - "This allowed the database to be recreated from scratch and ensured the full ingestion process could be executed automatically."
+
+        -   title: "Performance optimization"
+            paragraphs:
+                - "While processing larger datasets, execution time became an issue during the ingestion process."
+                - "Several improvements were implemented: reduction of unnecessary generated SQL queries, use of batch insert strategies instead of executing many individual insert statements, and postponing the creation of foreign key constraints until after the bulk data insertion."
+                - "These optimizations significantly reduced the execution time of the ingestion pipeline, bringing it down from several hours to only a few minutes."
+                - "This was one of my first practical experiences dealing with database performance and data ingestion optimization."
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "The project resulted in a working prototype capable of importing experimental datasets into a structured database."
+                - "The system automated a large part of the data ingestion process and provided a foundation for further research data analysis."
+
+        -   title: "Key learnings"
+            highlight: true
+            list:
+                - "First experience designing a database schema from scratch"
+                - "Implementation of automated data processing scripts"
+                - "Collaboration with researchers in a scientific environment"
+                - "Exposure to data engineering concepts before entering the web development industry"
+
+    back: "← Back to projects"
+
+sogesa:
+    meta_title: "Sogesa ERP System | Benjamin Lemin"
+    eyebrow: "Internal project · ERP · Agriculture"
+    title: "Sogesa ERP System"
+    lead: "Design and development of an internal web-based ERP system supporting agronomists’ daily activities and the operational management of the company."
+
+    meta:
+        -   label: "Period:"
+            value: "November 2011 – December 2014"
+        -   label: "Role:"
+            value: "Main developer"
+        -   label: "Organization:"
+            value: "Sogesa"
+        -   label: "Main stack:"
+            value: "PHP 5.3, SQL, JavaScript, HTML, CSS, Symfony 2, jQuery, Bootstrap, MySQL"
+
+    sections:
+        -   title: "Context"
+            paragraphs:
+                - "Sogesa is a consulting company specialized in the management and operation of agricultural land on behalf of landowners."
+                - "Many landowners do not have the expertise or resources required to manage agricultural land themselves."
+                - "Sogesa acts as an intermediary between landowners and the various actors involved in agricultural production."
+                - "Agronomists employed by Sogesa are responsible for analyzing the soil, deciding which crops should be planted, coordinating field preparation, selecting phytosanitary treatments, organizing harvesting and managing the sale of agricultural products."
+                - "At the time I joined the company, very few digital tools existed to support these activities."
+                - "The goal of the project was to progressively build an internal software system allowing agronomists to manage their work and later extend the platform to support the company’s operational management."
+
+        -   title: "Users"
+            paragraphs:
+                - "The system was used internally by the members of the company."
+                - "In total, the platform supported around seven internal users involved in agricultural operations and company administration."
+            list:
+                - "4 agronomists"
+                - "1 secretary"
+                - "The company director"
+                - "The director’s assistant"
+
+        -   title: "Objective"
+            paragraphs:
+                - "Design and develop an internal web-based ERP system supporting the daily activities of agronomists and the operational management of the company."
+                - "The system initially focused on digitizing the workflow used by agronomists in the field, including the management of land plots, agricultural operations and coordination with external actors."
+                - "Over time, the platform expanded to include additional business functions such as invoicing, product ordering and stock management."
+
+        -   title: "Key business concepts"
+            paragraphs:
+                - "Several important domain concepts had to be modeled in the system."
+                - "The system supported the management of multiple crop years simultaneously and allowed agronomists to adapt parcel structures from one season to another."
+            list:
+                - "Agricultural plots and parcels, which could evolve over time"
+                - "Crop years, which follow seasonal agricultural cycles rather than calendar years"
+                - "Agricultural operations performed on specific parcels"
+                - "Work orders sent to agricultural contractors"
+
+        -   title: "My role"
+            paragraphs:
+                - "I was the main developer responsible for building the first version of the system."
+                - "During the first year of the project, I was the only developer working on the application."
+                - "Later, a second junior developer joined the project and we continued developing the system together for several years."
+                - "My work involved understanding the agronomists’ workflows, designing the database structure and progressively implementing the application features required to support their daily activities."
+                - "An external technical code audit was performed during the project in order to review the quality of the implementation and provide recommendations regarding architecture and development practices."
+
+        -   title: "Responsibilities"
+            list:
+                - "Understanding and documenting the agronomists’ workflows"
+                - "Translating business processes into software features"
+                - "Designing the database schema"
+                - "Developing the web application from scratch"
+                - "Implementing modules for managing agricultural plots, operations and related entities"
+                - "Implementing business management features such as invoicing and stock management"
+                - "Deploying and maintaining the application infrastructure with an external hosting provider"
+                - "Collaborating with agronomists and other stakeholders to refine the system"
+
+        -   title: "Key features"
+            list:
+                - "Management of agricultural plots and parcels"
+                - "Support for multiple crop years"
+                - "Creation of agricultural work orders"
+                - "Export of work orders to Excel for field use"
+                - "Invoicing management"
+                - "Product ordering and stock management"
+                - "Role-based access for agronomists and administrative staff"
+
+        -   title: "Technical challenges"
+            list:
+                - "Learning PHP and web application architecture while building the system"
+                - "Designing and implementing a full web application starting from scratch"
+                - "Understanding a complex business domain related to agricultural land management"
+                - "Translating real-world processes into software models"
+                - "Managing the technical infrastructure and application deployment"
+                - "Participating in long meetings with domain experts to fully understand their workflows"
+                - "Learning how to estimate development tasks and plan implementation work"
+                - "Adopting more modern practices after receiving feedback from an external code audit"
+
+        -   title: "Technologies used"
+            groups:
+                -   title: "Languages"
+                    items:
+                        - "PHP 5.3"
+                        - "SQL"
+                        - "JavaScript"
+                        - "HTML"
+                        - "CSS"
+                -   title: "Frameworks / libraries"
+                    items:
+                        - "Symfony 2, introduced later for the administrative part of the application"
+                        - "jQuery"
+                        - "Bootstrap"
+                -   title: "Database"
+                    items:
+                        - "MySQL"
+                -   title: "Tools"
+                    items:
+                        - "Doctrine ORM"
+                        - "Symfony admin bundle for the management interface"
+                        - "SVN, then Git"
+                        - "XAMPP"
+                        - "NetBeans IDE"
+                -   title: "Infrastructure"
+                    items:
+                        - "External hosting provider"
+
+        -   title: "Deployment"
+            paragraphs:
+                - "The deployment process evolved during the project."
+            list:
+                - "Initially, deployments were performed manually using FTP"
+                - "Version control was later introduced using SVN"
+                - "The project eventually migrated to Git"
+                - "Deployments were then performed manually through SSH access to the hosting server"
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "The project resulted in a custom ERP system used internally by Sogesa to support both agronomists’ field operations and the company’s administrative management."
+                - "The platform progressively replaced manual processes and improved coordination between agronomists and other actors involved in agricultural production."
+                - "The system continued to be used and further developed after my departure."
+                - "Despite being initially developed by junior developers without senior technical leadership, the system proved robust enough to remain in active production use many years after its initial development."
+
+        -   title: "Key learnings"
+            highlight: true
+            list:
+                - "First professional experience building a full web application"
+                - "Learning PHP and web backend development in a production environment"
+                - "Understanding how to translate real-world business processes into software systems"
+                - "Experience collaborating directly with domain experts"
+                - "First exposure to software architecture and code quality considerations"
+
+    back: "← Back to projects"
+
+publifund:
+    meta_title: "Publifund Platform | Benjamin Lemin"
+    eyebrow: "Client project · Finance · Document generation"
+    title: "Publifund Platform"
+    lead: "Maintenance and evolution of an internal platform for financial data aggregation, regulatory KIID document generation and information distribution to financial media."
+
+    meta:
+        -   label: "Period:"
+            value: "January 2015 – September 2015"
+        -   label: "Role:"
+            value: "Backend Developer"
+        -   label: "Organization:"
+            value: "Financial Communication Consult"
+        -   label: "Main stack:"
+            value: "PHP, SQL, MySQL, MongoDB, PDFLib, HTML, CSS, JavaScript, Linux"
+
+    sections:
+        -   title: "Project context"
+            paragraphs:
+                - "Publifund was an internal platform developed by Financial Communication Consult, a company specialized in financial information distribution for investment funds."
+                - "The platform aggregated data related to investment funds from multiple external sources and generated standardized regulatory documents known as KIID, for Key Investor Information Documents."
+                - "These documents are required by European financial regulations and must follow strict formatting and content rules."
+                - "The generated information and documents were distributed to financial information providers and media platforms such as Bloomberg and other financial data distributors."
+                - "The system therefore served as a data aggregation, document generation and distribution platform for the investment fund industry."
+
+        -   title: "Project objectives"
+            list:
+                - "Collect data related to investment funds from external sources"
+                - "Process and normalize the collected data"
+                - "Generate regulatory KIID documents in PDF format"
+                - "Archive generated documents"
+                - "Provide structured data and documents to financial media platforms"
+                - "Offer internal tools to search and manage investment fund data"
+
+        -   title: "System overview"
+            paragraphs:
+                - "The platform operated roughly as a data processing pipeline."
+            flow:
+                - "External data sources"
+                - "Data collection through scraping or APIs"
+                - "Parsing and normalization"
+                - "Storage in relational database"
+                - "KIID document generation"
+                - "Archival in document database"
+                - "Distribution to external financial media"
+
+        -   title: "My role"
+            paragraphs:
+                - "I worked as a backend developer within a small development team."
+            list:
+                - "Development and maintenance of KIID document generators"
+                - "Implementation and updates of PDF generation logic"
+                - "Maintenance of complex listing pages displaying financial data"
+                - "Participation in parsing logic for data collected by automated bots"
+                - "Maintenance and evolution of internal tools, including a custom ticketing system"
+                - "Working within an existing monolithic PHP codebase"
+
+        -   title: "Team structure"
+            paragraphs:
+                - "The in-house technical team was composed of approximately seven people."
+                - "I joined the team as one of the junior developers."
+                - "Development priorities and planning were mainly coordinated by the lead developer together with company management."
+            list:
+                - "Lead developer"
+                - "Senior developer"
+                - "Backend developer"
+                - "Full-stack developer"
+                - "Two frontend developers"
+                - "System administrator"
+
+        -   title: "Technologies used"
+            groups:
+                -   title: "Main languages"
+                    items:
+                        - "PHP"
+                        - "SQL"
+                -   title: "Data storage"
+                    items:
+                        - "MySQL for storing financial data"
+                        - "MongoDB for archival storage of generated documents"
+                -   title: "Document generation"
+                    items:
+                        - "PDFLib for generating KIID PDF documents"
+                -   title: "Frontend"
+                    items:
+                        - "HTML"
+                        - "CSS"
+                        - "JavaScript"
+                -   title: "Infrastructure"
+                    items:
+                        - "Linux servers"
+                        - "Cron jobs for automated processes"
+
+        -   title: "Data processing"
+            paragraphs:
+                - "The system relied on automated bots responsible for collecting information about investment funds from external sources."
+                - "These bots periodically executed tasks corresponding to a workflow of collection, parsing, normalization and storage in MySQL."
+                - "Generated KIID documents were then created from this structured data."
+
+        -   title: "Document generation system"
+            paragraphs:
+                - "KIID documents followed strict regulatory structures defined by financial authorities."
+                - "The system implemented a flexible generation approach, with a default KIID generator for most funds and custom generators for specific funds when needed."
+                - "Generation logic was implemented in PHP using PDFLib."
+                - "Once generated, documents were archived in MongoDB in order to keep historical versions, allow fast retrieval and serve documents to external clients and internal users."
+
+        -   title: "Data volume"
+            paragraphs:
+                - "The document archive stored in MongoDB reached several hundreds of gigabytes of data, reflecting the large number of generated documents and historical versions maintained by the system."
+
+        -   title: "Technical challenges"
+            subsections:
+                -   title: "Working with a large existing codebase"
+                    paragraphs:
+                        - "The platform had been developed internally over several years without relying on mainstream frameworks."
+                        - "Understanding and navigating this monolithic architecture required significant time and effort."
+                -   title: "Performance constraints"
+                    paragraphs:
+                        - "Generating regulatory documents efficiently was an important concern due to the potentially large number of documents requested by external clients and media platforms."
+                        - "Some implementation choices prioritized raw performance in document generation."
+                -   title: "Financial domain complexity"
+                    paragraphs:
+                        - "The project required understanding how investment fund information is structured and how regulatory KIID documents must be generated."
+                        - "This involved working with structured financial data, strict document formats and regulatory constraints on document content."
+                -   title: "Integration with external data sources"
+                    paragraphs:
+                        - "The system depended on external sources for financial data, requiring reliable parsing and normalization of incoming information."
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "The Publifund platform served as a central system for aggregating investment fund data, generating regulatory KIID documents and distributing structured financial information to external media platforms."
+                - "The system handled large volumes of generated documents and maintained a significant document archive."
+
+        -   title: "Personal learnings"
+            highlight: true
+            list:
+                - "Development within an established production system"
+                - "Maintenance of a large monolithic codebase"
+                - "Performance considerations in document generation"
+                - "Financial data processing pipelines"
+                - "Collaboration within a structured development team"
+                - "First experience working on a platform responsible for producing regulatory financial documents at scale"
+
+    back: "← Back to projects"
+
+easy4pro:
+    meta_title: "Easy4Pro | Benjamin Lemin"
+    eyebrow: "Consulting mission · Logistics · Prototype"
+    title: "Easy4Pro"
+    lead: "Contribution to the development of a web prototype designed to orchestrate urgent logistics operations by connecting multiple transport providers."
+
+    meta:
+        -   label: "Period:"
+            value: "July 2016 – September 2016"
+        -   label: "Role:"
+            value: "Consultant backend developer"
+        -   label: "Organization:"
+            value: "Flash Global, mission through Adneom"
+        -   label: "Main stack:"
+            value: "PHP, JavaScript, SQL, Zend Framework, HTML, CSS, MySQL, Git"
+
+    sections:
+        -   title: "Project context"
+            paragraphs:
+                - "Easy4Pro was a prototype web platform developed at Flash Global, a logistics company specialized in the management of critical spare parts and international supply chain services."
+                - "The project aimed to explore a system capable of orchestrating urgent transportation operations by connecting multiple logistics providers across different regions."
+                - "The platform was based on an existing internal logistics application and extended it with new capabilities intended to automate part of the transport coordination process."
+                - "I joined the project as a consultant developer through Adneom and worked directly within Flash Global’s development team."
+
+        -   title: "Project objectives"
+            list:
+                - "Develop a prototype platform for urgent logistics orchestration"
+                - "Extend an existing logistics system with new capabilities"
+                - "Implement features specific to the Easy4Pro concept"
+                - "Integrate the new prototype into an existing large codebase"
+
+        -   title: "System overview"
+            paragraphs:
+                - "The platform allowed users to define two locations anywhere in the world and attempted to coordinate the transport of goods between them by automatically identifying available logistics actors along the route."
+                - "The system aimed to support time-constrained deliveries by orchestrating several transport providers involved in different stages of the delivery chain."
+
+        -   title: "My role"
+            paragraphs:
+                - "I worked as a consultant backend developer integrated into Flash Global’s internal development team."
+            list:
+                - "Contribution to the development of the Easy4Pro prototype"
+                - "Implementation and adaptation of features on top of an existing codebase"
+                - "Work on backend logic and some frontend components"
+                - "Understanding and navigating a large existing application architecture"
+
+        -   title: "Team structure"
+            paragraphs:
+                - "Development was carried out by a mixed team composed of internal Flash Global developers, Adneom consultants and an external development company based in France."
+                - "The team size was roughly under ten developers."
+
+        -   title: "Technologies used"
+            groups:
+                -   title: "Main languages"
+                    items:
+                        - "PHP"
+                        - "JavaScript"
+                        - "SQL"
+                -   title: "Framework"
+                    items:
+                        - "Zend Framework"
+                -   title: "Frontend"
+                    items:
+                        - "HTML"
+                        - "CSS"
+                        - "JavaScript"
+                        - "Possibly Backbone.js, with some uncertainty from memory"
+                -   title: "Database"
+                    items:
+                        - "MySQL"
+                -   title: "Version control"
+                    items:
+                        - "Git with GitFlow workflow"
+
+        -   title: "Technical challenges"
+            subsections:
+                -   title: "Understanding a large existing system"
+                    paragraphs:
+                        - "The project was based on a substantial existing application, requiring significant effort to understand the architecture and integrate new functionality."
+                -   title: "Working on a prototype built from a legacy codebase"
+                    paragraphs:
+                        - "Easy4Pro was developed as a proof of concept derived from an existing logistics platform, combining refactoring, extension and experimentation."
+                -   title: "Complex domain logic"
+                    paragraphs:
+                        - "The application attempted to model and coordinate multiple actors involved in international logistics operations, which introduced significant domain complexity."
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "Easy4Pro served as a prototype exploring new ways to orchestrate urgent logistics operations using an existing software platform."
+                - "The project allowed Flash Global to experiment with extending their logistics systems toward more automated transport coordination."
+
+        -   title: "Personal learnings"
+            highlight: true
+            paragraphs:
+                - "This project was my first consulting mission after joining Adneom."
+                - "It introduced me to working as a consultant embedded within a client organization, collaborating with mixed teams composed of internal developers and external partners, navigating a large existing enterprise codebase and using Git with the GitFlow branching workflow."
+                - "It was also my first professional experience working abroad during the week, in Luxembourg, while returning home on weekends."
+
+    back: "← Back to projects"
+
+logic_immo:
+    meta_title: "Logic-Immo Image Delivery Platform | Benjamin Lemin"
+    eyebrow: "Consulting mission · Real estate · Media performance"
+    title: "Logic-Immo Image Delivery Platform"
+    lead: "Design and development of a dedicated service for storing and delivering real estate listing images in order to improve loading performance on the Logic-Immo platform."
+
+    meta:
+        -   label: "Period:"
+            value: "November 2016 – June 2017"
+        -   label: "Role:"
+            value: "Backend Developer"
+        -   label: "Organization:"
+            value: "Logic-Immo, mission through Adneom"
+        -   label: "Main stack:"
+            value: "PHP, Symfony, REST API, SQL, AWS, CDN, Docker, Git"
+
+    sections:
+        -   title: "Project context"
+            paragraphs:
+                - "Logic-Immo was one of the main real estate listing platforms in Belgium, competing with major players such as Immoweb."
+                - "Real estate listings contained a large number of images, which represented a significant portion of the website’s bandwidth and page loading time."
+                - "The objective of the project was to design and implement a new system for storing and delivering listing images in order to improve page loading performance on the Logic-Immo website."
+                - "The project was developed as a relatively independent service from the rest of the platform."
+
+        -   title: "Project objectives"
+            list:
+                - "Redesign the storage system for real estate listing images"
+                - "Improve the global delivery performance of images"
+                - "Create a scalable infrastructure capable of serving large volumes of media files"
+                - "Provide a REST API to manage and retrieve images"
+                - "Integrate the new system with the existing Logic-Immo platform"
+
+        -   title: "System overview"
+            paragraphs:
+                - "The project consisted of designing a dedicated service responsible for managing and distributing images associated with real estate listings."
+                - "A database was used to maintain the mapping between images stored in the legacy platform and the new storage infrastructure."
+            flow:
+                - "Existing images in the legacy system"
+                - "Migration / mapping"
+                - "Storage in AWS infrastructure"
+                - "Image delivery through CDN"
+                - "Access through REST API"
+
+        -   title: "My role"
+            paragraphs:
+                - "I worked as a backend developer alongside a freelance lead developer."
+                - "The mission was carried out on-site within the Logic-Immo development environment."
+            list:
+                - "Design and development of REST API endpoints"
+                - "Implementation of backend logic using Symfony"
+                - "Integration with the image storage infrastructure"
+                - "Implementation of the image mapping system between legacy and new storage"
+                - "Participation in the overall design of the service"
+
+        -   title: "Team structure"
+            paragraphs:
+                - "The project was carried out by a small dedicated team composed of one freelance lead developer and myself as backend developer consultant."
+                - "We interacted with the internal Logic-Immo technical leadership when necessary, but the project was developed relatively independently from the main platform."
+
+        -   title: "Technologies used"
+            groups:
+                -   title: "Main languages"
+                    items:
+                        - "PHP"
+                        - "SQL"
+                -   title: "Framework"
+                    items:
+                        - "Symfony"
+                -   title: "Backend architecture"
+                    items:
+                        - "REST API"
+                -   title: "Infrastructure"
+                    items:
+                        - "AWS for image storage"
+                        - "CDN for global image delivery"
+                        - "Docker, first exposure"
+                -   title: "Database"
+                    items:
+                        - "Relational database used for image mapping"
+                -   title: "Version control"
+                    items:
+                        - "Git"
+
+        -   title: "Technical challenges"
+            subsections:
+                -   title: "Image performance at scale"
+                    paragraphs:
+                        - "Real estate platforms rely heavily on images, which can significantly impact page loading times."
+                        - "The project aimed to redesign the image infrastructure to provide faster and more reliable image delivery."
+                -   title: "Designing a dedicated media service"
+                    paragraphs:
+                        - "The project required designing a new service responsible for image storage and delivery, separate from the existing platform."
+                -   title: "Integration with existing systems"
+                    paragraphs:
+                        - "The new infrastructure had to remain compatible with the existing Logic-Immo platform and its existing image data."
+                -   title: "Distributed media delivery"
+                    paragraphs:
+                        - "The system relied on cloud storage and CDN distribution in order to deliver images efficiently to users."
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "The project resulted in the creation of a dedicated service responsible for storing and distributing listing images more efficiently."
+                - "This new architecture aimed to reduce image loading times and improve the overall performance of the Logic-Immo platform."
+
+        -   title: "Personal learnings"
+            highlight: true
+            paragraphs:
+                - "This project marked several important milestones in my technical career."
+            list:
+                - "First experience building a project from scratch using Symfony"
+                - "First implementation of a REST API in a production system"
+                - "First exposure to cloud-based infrastructure using AWS"
+                - "First exposure to Docker in a development environment"
+                - "Experience working on performance-related challenges in a media-heavy web platform"
+
+    back: "← Back to projects"
+
+isobar:
+    meta_title: "Projects at Isobar | Benjamin Lemin"
+    eyebrow: "Digital agency · Client projects · Multi-stack"
+    title: "Projects at Isobar"
+    lead: "Contribution to several short-term digital agency client projects, including brand websites, event platforms, marketing campaigns and promotional tools."
+
+    meta:
+        -   label: "Period:"
+            value: "July 2017 – February 2018"
+        -   label: "Role:"
+            value: "Backend developer / web developer"
+        -   label: "Organization:"
+            value: "Isobar"
+        -   label: "Main stack:"
+            value: "PHP, JavaScript, SQL, Symfony, Drupal, Zend, Laravel, WordPress, HTML, CSS, jQuery, MySQL"
+
+    sections:
+        -   title: "Context"
+            paragraphs:
+                - "Isobar is a digital agency specialized in developing digital platforms, marketing websites and campaign-related web services for corporate clients."
+                - "During my time at Isobar, I worked on multiple short-term client projects involving different brands and technology stacks."
+                - "The agency context required frequent context switching and the ability to deliver quickly under tight deadlines."
+
+        -   title: "Nature of the work"
+            paragraphs:
+                - "My work involved contributing to several client projects, mainly focusing on the implementation of features, maintenance of existing web platforms and delivery of campaign-related digital assets."
+                - "Projects were often short and required adapting quickly to different codebases and client requirements."
+
+        -   title: "Client projects"
+            subsections:
+                -   title: "AB InBev brand websites"
+                    paragraphs:
+                        - "I participated in development and maintenance work on several brand websites belonging to the AB InBev group."
+                    list:
+                        - "Leffe"
+                        - "Jupiler"
+                        - "Hoegaarden"
+                        - "Updating website content"
+                        - "Implementing new features"
+                        - "Maintaining existing functionality"
+                -   title: "Event-Pulse Platform"
+                    paragraphs:
+                        - "I participated in maintenance and development work on Event-Pulse, a platform used for managing events."
+                        - "The work involved maintaining existing features and improving parts of the platform."
+                -   title: "Côte d’Or email marketing campaign"
+                    paragraphs:
+                        - "I implemented an email marketing template for a Côte d’Or campaign."
+                -   title: "Honda event website"
+                    paragraphs:
+                        - "I participated in the development of a website created for Honda during a major event campaign."
+                -   title: "Promotional code generator"
+                    paragraphs:
+                        - "I implemented a system used to generate promotional codes for a beverage brand campaign."
+
+        -   title: "Team structure"
+            paragraphs:
+                - "The development team evolved during my time at Isobar."
+                - "Initially, the team consisted of two developers, later joined by an additional developer, with a project owner responsible for coordination."
+
+        -   title: "Technologies encountered"
+            paragraphs:
+                - "During this period I worked with a variety of technologies, depending on the projects, clients and existing platforms."
+            groups:
+                -   title: "Main languages"
+                    items:
+                        - "PHP"
+                        - "JavaScript"
+                        - "SQL"
+                -   title: "Frameworks / CMS"
+                    items:
+                        - "Symfony"
+                        - "Drupal"
+                        - "Zend"
+                        - "Laravel"
+                        - "WordPress"
+                -   title: "Frontend"
+                    items:
+                        - "HTML"
+                        - "CSS"
+                        - "JavaScript"
+                        - "jQuery"
+                -   title: "Databases"
+                    items:
+                        - "MySQL"
+
+        -   title: "Development environment"
+            list:
+                - "Git"
+                - "Jira"
+                - "Confluence"
+                - "Daily team meetings"
+
+        -   title: "Characteristics of the work"
+            paragraphs:
+                - "Working in a digital agency environment involved specific constraints and dynamics."
+            list:
+                - "Frequent switching between multiple projects"
+                - "Short delivery cycles"
+                - "Adapting to different client platforms and codebases"
+                - "Collaboration with multidisciplinary teams"
+
+        -   title: "Personal learnings"
+            highlight: true
+            paragraphs:
+                - "This experience exposed me to the dynamics of agency work, where developers often need to adapt quickly to different projects and client contexts."
+                - "It also highlighted the challenges of working under tight delivery deadlines and managing multiple concurrent projects."
+
+    back: "← Back to projects"
 
 delcampe:
     meta_title: "Delcampe Marketplace Platform | Benjamin Lemin"
     eyebrow: "Client project · Marketplace · Symfony"
     title: "Delcampe Marketplace Platform"
-    lead: "Contribution to the maintenance, evolution, and technical quality of an international marketplace platform dedicated to collectors."
+    lead: "Contribution to the maintenance, evolution and technical quality of an international marketplace platform dedicated to collectors."
 
     meta:
-        period_label: "Period:"
-        period_value: "April 2018 – March 2019"
-        role_label: "Role:"
-        role_value: "Backend PHP Developer / Consultant"
-        mission_label: "Mission:"
-        mission_value: "carried out via Blubird"
-        stack_label: "Main stack:"
-        stack_value: "PHP 7, Symfony 3.1, MariaDB, REST, SOAP"
+        -   label: "Period:"
+            value: "April 2018 – March 2019"
+        -   label: "Role:"
+            value: "Backend Developer integrated into the main development team"
+        -   label: "Organization:"
+            value: "Delcampe, mission through Blubird"
+        -   label: "Main stack:"
+            value: "PHP 7, Symfony 3.1, MariaDB, REST APIs, SOAP, JavaScript, GitLab CI/CD, Docker"
 
-    context:
-        title: "Project context"
-        p1: "Delcampe is a marketplace specialized in collectibles: stamps, postcards, coins, and other items for collectors. The platform connects sellers and buyers worldwide, with features related to listings, transactions, messaging, and user interactions."
-        p2: "In addition to the web platform, Delcampe also provided a desktop application used by professional sellers. This application communicated with the platform through a set of REST and SOAP APIs."
+    sections:
+        -   title: "Project context"
+            paragraphs:
+                - "Delcampe is an online marketplace dedicated to collectibles such as stamps, postcards, coins and other collector items."
+                - "The platform connects sellers and buyers worldwide and manages listings, transactions, messaging and user interactions."
+                - "In addition to the web marketplace, Delcampe also provides a desktop application used by professional sellers."
+                - "This application connects to the platform through a mix of REST and SOAP APIs to synchronize marketplace data."
+                - "I joined the development team as a consultant through Blubird and contributed to the maintenance and evolution of the main marketplace platform."
 
-    role:
-        title: "My role"
-        p1: "I joined the main development team as a backend PHP consultant, integrated into the client team. My work mainly focused on maintenance, bug fixing, improving existing features, and developing new evolutions for the marketplace platform."
-        li1: "Fixing bugs on an existing Symfony production application."
-        li2: "Improving existing pages and components."
-        li3: "Developing new backend features."
-        li4: "Collaborating with frontend developers when full-stack coordination was required."
-        li5: "Participating in code reviews and technical discussions."
+        -   title: "Project objectives"
+            list:
+                - "Maintain and improve the core marketplace platform"
+                - "Fix bugs and ensure system stability"
+                - "Improve existing features and pages"
+                - "Contribute to new feature development"
+                - "Maintain high code quality within a large production codebase"
 
-    tech:
-        title: "Technical environment"
-        backend:
-            title: "Backend"
-            oop: "Object-oriented programming"
-            solid: "SOLID principles"
-        api:
-            title: "APIs"
-            integration: "Integration with a professional desktop application"
-        quality:
-            title: "Testing & quality"
-            reviews: "Systematic code reviews"
-        tools:
-            title: "Tools"
+        -   title: "System architecture"
+            paragraphs:
+                - "The platform was built as a modular monolithic application based on the Symfony framework."
+                - "The system included several interconnected components: the web marketplace platform, APIs used by internal services and the desktop client, an internationalized user interface and internal services supporting marketplace operations."
 
-    process:
-        title: "Development organization and practices"
-        p1: "The team worked with an Agile process inspired by Scrum: sprint cycles, daily meetings, task estimation, retrospectives, and technical discussions for more complex topics."
-        p2: "The development workflow relied on dedicated branches per fix or feature, mandatory code reviews, and controlled release branches for production deployments."
-        p3: "This environment allowed me to work in a structured setting, with strong attention to maintainability, code quality, and the stability of a production application."
+        -   title: "My role"
+            paragraphs:
+                - "I worked as a backend developer integrated into the main development team."
+                - "Over the course of the mission, I worked on different parts of the system depending on priorities."
+            list:
+                - "Fixing bugs affecting the marketplace platform"
+                - "Implementing improvements to existing pages and components"
+                - "Participating in feature development"
+                - "Collaborating with frontend developers when features required both backend and frontend work"
+                - "Contributing to code reviews and technical discussions"
 
-    challenges:
-        title: "Technical challenges"
-        li1_label: "Mature application:"
-        li1: "working within a large existing Symfony codebase used in production."
-        li2_label: "International marketplace:"
-        li2: "handling a multilingual platform with diverse business use cases."
-        li3_label: "Expected quality:"
-        li3: "meeting high standards in code structure, testing, reviews, and delivery processes."
-        li4_label: "Connected ecosystem:"
-        li4: "working on a web platform connected to APIs and a desktop application used by professional sellers."
+        -   title: "Team structure"
+            paragraphs:
+                - "The software department was organized into two closely collaborating teams."
+                - "This structure helped maintain strong alignment between product decisions and technical implementation."
+            groups:
+                -   title: "Product team"
+                    items:
+                        - "Product lead"
+                        - "Senior product expert"
+                        - "Innovation / product strategy role"
+                        - "Two frontend developers"
+                -   title: "Development team"
+                    items:
+                        - "Lead developer"
+                        - "Technical lead"
+                        - "Two internal developers"
+                        - "Three Blubird consultants, including myself"
+                        - "Three freelance developers"
 
-    learning:
-        title: "What this mission brought me"
-        p1: "This mission was a particularly formative experience in my career. It allowed me to work on a large Symfony application, within a structured team, with strong development practices: automated testing, code reviews, CI/CD, documentation, and close collaboration between product and technical teams."
-        p2: "It strengthened my ability to work on existing systems, quickly understand a specific business domain, and deliver reliable evolutions in a demanding production environment."
+        -   title: "Development practices"
+            paragraphs:
+                - "The team followed an Agile workflow inspired by Scrum practices."
+                - "The development process also included dedicated branches for each bug fix or feature, systematic code reviews before merging and controlled release branches for production deployments."
+                - "This workflow helped ensure the stability and maintainability of the production platform."
+            list:
+                - "Sprint planning cycles of two to three weeks"
+                - "Daily stand-up meetings"
+                - "Poker planning for task estimation"
+                - "Sprint retrospectives"
+                - "Technical design discussions for complex features"
+                - "Feature branches for each bug fix or feature"
+                - "Systematic code reviews before merging"
+                - "Controlled release branches for production deployments"
+
+        -   title: "Technologies used"
+            groups:
+                -   title: "Backend"
+                    items:
+                        - "PHP 7 with object-oriented programming and SOLID principles"
+                        - "Symfony 3.1"
+                        - "MariaDB"
+                -   title: "APIs"
+                    items:
+                        - "REST APIs"
+                        - "SOAP services used by the desktop application"
+                -   title: "Frontend tooling"
+                    items:
+                        - "JavaScript"
+                        - "Gulp"
+                        - "NPM"
+                        - "Bower"
+                -   title: "Testing"
+                    items:
+                        - "PHPUnit for backend unit tests"
+                        - "Jasmine for JavaScript testing"
+                        - "CasperJS for browser-based automated tests"
+                -   title: "Monitoring"
+                    items:
+                        - "Sentry for application error monitoring"
+                -   title: "Version control & CI/CD"
+                    items:
+                        - "Git hosted on internal GitLab"
+                        - "Dedicated branches per bug or feature"
+                        - "Mandatory code reviews"
+                        - "GitLab CI/CD pipelines"
+                        - "Automated tests executed before releases"
+                -   title: "Containerization"
+                    items:
+                        - "Docker used within the CI/CD environment"
+                -   title: "Project management & documentation"
+                    items:
+                        - "Jira for ticket management"
+                        - "Confluence for documentation and knowledge sharing"
+                -   title: "Infrastructure"
+                    items:
+                        - "Hosting and infrastructure management handled internally by the company"
+
+        -   title: "Technical challenges"
+            subsections:
+                -   title: "Working on a mature marketplace platform"
+                    paragraphs:
+                        - "The project involved contributing to a large and long-lived production system serving an international community of users."
+                        - "Understanding the architecture and navigating the existing codebase required collaboration with experienced team members."
+                -   title: "High code quality standards"
+                    paragraphs:
+                        - "The development team maintained strong expectations regarding code structure, testing, development workflows and review processes."
+                -   title: "Multi-language platform"
+                    paragraphs:
+                        - "The marketplace supported multiple languages and international users, increasing application complexity."
+                -   title: "Connected ecosystem"
+                    paragraphs:
+                        - "The web platform was connected to APIs and to a desktop application used by professional sellers, requiring particular attention to compatibility and stability of data exchanges."
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "My work contributed to maintaining and improving the stability and quality of the Delcampe marketplace platform."
+                - "Through bug fixing, incremental improvements and feature development, the team continued evolving the platform while maintaining reliability for its large user base."
+
+        -   title: "Personal learnings"
+            highlight: true
+            paragraphs:
+                - "This mission was one of the most formative experiences in my early career."
+                - "It allowed me to experience a well-structured development environment, discover the practical impact of Agile and Scrum-inspired workflows, work within a large Symfony production application, understand the importance of automated testing in long-term projects and experience the positive impact of a healthy and collaborative development team."
+
+    back: "← Back to projects"
+
+keytrade:
+    meta_title: "Keytrade Bank — Web Platforms Maintenance | Benjamin Lemin"
+    eyebrow: "Consulting mission · Banking · Legacy maintenance"
+    title: "Keytrade Bank — Web Platforms Maintenance"
+    lead: "Maintenance of several banking web platforms: public website, customer extranet and administrative intranet, within a legacy PHP environment subject to strict operational constraints."
+
+    meta:
+        -   label: "Period:"
+            value: "April 2019 – July 2019"
+        -   label: "Role:"
+            value: "Backend Developer"
+        -   label: "Organization:"
+            value: "Keytrade Bank, mission through Blubird"
+        -   label: "Main stack:"
+            value: "PHP 5.6, MySQL, SVN, Jenkins, Jira"
+
+    sections:
+        -   title: "Project context"
+            paragraphs:
+                - "Keytrade Bank is a Belgian online bank providing digital banking services and online trading tools."
+                - "During this mission, I joined a small PHP development team responsible for maintaining several web platforms used by the bank."
+                - "These platforms were distinct but interconnected: the public website, used as a marketing and onboarding portal for potential clients; the extranet, a private web application used by bank customers once their account was created; and the intranet, an internal administrative interface used by bank employees to manage certain customer operations."
+                - "The financial transaction systems themselves were managed by other internal systems and were not part of the applications I worked on."
+
+        -   title: "System architecture"
+            paragraphs:
+                - "The applications were built using PHP 5.6, with a customized version of PHP compiled and certified for the bank’s security requirements."
+                - "The systems relied on a legacy architecture without a modern framework and were maintained within a traditional monolithic codebase."
+                - "Core components included PHP backend applications, MySQL databases, internal deployment infrastructure and integration with other internal banking systems."
+
+        -   title: "My role"
+            paragraphs:
+                - "I worked as a backend developer integrated as support for the PHP maintenance team."
+                - "The mission primarily focused on maintenance and debugging activities."
+            list:
+                - "Fixing bugs across the public website, extranet and intranet applications"
+                - "Investigating production issues reported through the internal ticketing system"
+                - "Implementing small corrections and improvements"
+                - "Supporting the existing team in maintaining legacy PHP systems"
+
+        -   title: "Team structure"
+            paragraphs:
+                - "The PHP development team was relatively small."
+                - "Additional roles existed outside the team, including a QA team responsible for validation, without direct day-to-day collaboration, and a release manager responsible for SVN merges and release validation."
+                - "Developers were not authorized to perform production merges themselves."
+            list:
+                - "A technical lead acting as both architect and department coordinator"
+                - "One freelance consultant"
+                - "Myself as a consultant through Blubird"
+                - "A QA team responsible for validation"
+                - "A release manager responsible for SVN merges and release validation"
+
+        -   title: "Technologies used"
+            groups:
+                -   title: "Backend"
+                    items:
+                        - "PHP 5.6 with a custom security-certified build"
+                -   title: "Database"
+                    items:
+                        - "MySQL"
+                -   title: "Version control"
+                    items:
+                        - "SVN"
+                -   title: "DevOps"
+                    items:
+                        - "Jenkins, legacy version used for deployments"
+                -   title: "Project management"
+                    items:
+                        - "Jira"
+
+        -   title: "Development practices"
+            paragraphs:
+                - "The development process followed a relatively traditional workflow."
+                - "The process was not Agile in the modern sense and followed more of a continuous maintenance workflow."
+            list:
+                - "Centralized control of merges in SVN"
+                - "Code reviews performed manually by the release manager"
+                - "Jenkins-based deployment process"
+                - "Ticket-driven bug fixing and maintenance"
+
+        -   title: "Technical challenges"
+            subsections:
+                -   title: "Legacy PHP codebase"
+                    paragraphs:
+                        - "The applications were built on a large legacy codebase with limited architectural structure."
+                        - "Understanding the system and implementing fixes required careful navigation of the existing code to avoid introducing regressions."
+                -   title: "Security constraints"
+                    paragraphs:
+                        - "Due to the banking environment, the PHP runtime itself was a custom compiled and security-certified build."
+                        - "This imposed additional constraints on the development environment and deployment processes."
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "My work supported the stability of several web platforms used by Keytrade Bank by fixing bugs and maintaining existing functionality."
+                - "The mission helped reduce the workload on the small internal PHP team responsible for these systems."
+
+        -   title: "Personal learnings"
+            highlight: true
+            paragraphs:
+                - "Although the mission was short, it provided exposure to the internal workings of a banking organization."
+                - "Key takeaways included discovering the operational environment of a digital bank, understanding the constraints that regulated sectors can impose on technology evolution, and working within a legacy PHP codebase maintained under strict operational procedures."
+                - "The experience also highlighted the gap that can exist between modern development practices and legacy systems maintained in highly regulated environments."
+
+    back: "← Back to projects"
+
+famille_chretienne:
+    meta_title: "Famille Chrétienne — Editorial Platform DPI | Benjamin Lemin"
+    eyebrow: "Client project · Media · Drupal"
+    title: "Famille Chrétienne — Editorial Platform DPI"
+    lead: "Adaptation and deployment of a Drupal 7 editorial platform based on DPI in order to create a reusable white-label version for other media organizations, then adapt it to the Famille Chrétienne website."
+
+    meta:
+        -   label: "Period:"
+            value: "2020, approximately one year"
+        -   label: "Role:"
+            value: "Backend Developer"
+        -   label: "Organization:"
+            value: "Contraste Digital"
+        -   label: "Client:"
+            value: "Groupe Famille Chrétienne"
+        -   label: "Main stack:"
+            value: "PHP, Drupal 7, DPI platform, Bash"
+
+    sections:
+        -   title: "Context"
+            paragraphs:
+                - "The project involved deploying DPI, an editorial platform developed by Contraste Digital on top of Drupal 7."
+                - "DPI was originally created for the Belgian media group Rossel, publisher of Le Soir, and progressively evolved into a complex platform supporting multiple digital news websites."
+                - "The platform provides several core capabilities required for online media operations: article publication and editorial workflows, homepage and section page composition, advertisement integration, external content feeds, subscription management and user account management."
+                - "In the Rossel ecosystem, journalists write articles using a dedicated editorial system. Articles are stored in a separate system and then synchronized with Drupal/DPI, which renders them on the website according to their editorial context, such as sections or homepage placement."
+                - "Famille Chrétienne, a growing media organization, needed a more scalable and maintainable platform to support the development of its digital presence."
+
+        -   title: "Project objective"
+            paragraphs:
+                - "The objective of the project was to transform the Rossel-specific implementation of DPI into a white-label platform that could be reused by other media organizations."
+                - "Once this generic version was created, the platform was customized and deployed for the Famille Chrétienne website."
+
+        -   title: "My contributions"
+            subsections:
+                -   title: "Platform decoupling"
+                    paragraphs:
+                        - "I worked on extracting Rossel-specific dependencies from the existing DPI codebase in order to create a version of the platform independent from a specific media organization."
+                        - "The goal was to create a reusable base installation of DPI that could be adapted for other publishers."
+                    list:
+                        - "Removing hardcoded configuration values"
+                        - "Making certain features configurable"
+                        - "Adapting page structures originally designed for Rossel media websites"
+                -   title: "Deployment automation"
+                    paragraphs:
+                        - "I designed and implemented a Bash installation script capable of bootstrapping a new DPI instance from an empty directory."
+                        - "The script automated several steps of the platform setup process and simplified the deployment of new media websites based on the DPI platform."
+                -   title: "Custom development for Famille Chrétienne"
+                    paragraphs:
+                        - "I contributed to adapting the platform to the specific needs of the Famille Chrétienne editorial website."
+                        - "Tasks included backend development on Drupal/DPI modules, configuration and customization of the platform, as well as implementation of custom features."
+                        - "One example feature consisted of implementing a scheduled task retrieving a daily biblical quote and publishing it automatically on a dedicated page."
+
+        -   title: "Team"
+            paragraphs:
+                - "The project was carried out by two backend developers, with the collaboration of a developer experienced with the DPI platform."
+
+        -   title: "Technologies used"
+            groups:
+                -   title: "Backend"
+                    items:
+                        - "PHP"
+                        - "Drupal 7"
+                        - "Drupal/DPI modules"
+                -   title: "Editorial platform"
+                    items:
+                        - "DPI"
+                        - "Article publication"
+                        - "Editorial workflows"
+                        - "Homepage and section page composition"
+                        - "Subscription management"
+                        - "User account management"
+                -   title: "Automation"
+                    items:
+                        - "Bash"
+                        - "Installation script"
+                        - "Bootstrapping a new instance from an empty directory"
+                -   title: "Integrations and content"
+                    items:
+                        - "External content feeds"
+                        - "Article synchronization from a dedicated editorial system"
+                        - "Scheduled task for automatic publication of a daily biblical quote"
+
+        -   title: "Technical challenges"
+            paragraphs:
+                - "The main challenge was working with a large legacy platform originally designed for a specific media group."
+                - "Rather than performing a full architectural refactor, the work focused on progressively decoupling Rossel-specific logic and making key components configurable."
+                - "This approach allowed the team to deliver a working white-label version of DPI within the constraints of the project timeline."
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "The project made it possible to transform an editorial platform initially strongly tied to Rossel into a more generic and reusable base for other media organizations."
+                - "This white-label base was then customized and deployed for Famille Chrétienne, supporting the development of its digital presence with a more scalable and maintainable platform."
+
+        -   title: "Personal learnings"
+            highlight: true
+            paragraphs:
+                - "This mission allowed me to work on a large existing Drupal 7 platform, with challenges related to reuse, configuration and progressive decoupling."
+                - "It strengthened my experience in maintaining and adapting complex legacy platforms, as well as automating deployments through Bash scripts."
 
     back: "← Back to projects"
 
 stanhome:
     meta_title: "Stanhome E-commerce Platform | Benjamin Lemin"
     eyebrow: "Client project · E-commerce · Drupal"
-    title: "Stanhome — E-commerce platform (France & Italy)"
+    title: "Stanhome — E-commerce Platform (France & Italy)"
     lead: "Contribution to the modernization of a multi-country e-commerce platform combining online sales and a direct sales network."
 
     meta:
-        period_label: "Period:"
-        period_value: "2021 – 2022"
-        role_label: "Role:"
-        role_value: "Backend Developer"
-        mission_label: "Mission:"
-        mission_value: "carried out via Contraste Digital"
-        stack_label: "Main stack:"
-        stack_value: "PHP, Drupal 7, Drupal Commerce, ElasticSearch, Google Maps API, Salesforce"
+        -   label: "Period:"
+            value: "2021 – 2022"
+        -   label: "Role:"
+            value: "Backend Developer"
+        -   label: "Organization:"
+            value: "Contraste Digital"
+        -   label: "Client:"
+            value: "Stanhome"
+        -   label: "Main stack:"
+            value: "PHP, Drupal 7, Drupal Commerce, ElasticSearch, Google Maps API, Salesforce"
 
-    context:
-        title: "Project context"
-        p1: "Stanhome is a European direct-selling company specializing in home care and beauty products. The project aimed to modernize the company's e-commerce platform, starting with the French market and later extending to Italy."
-        p2: "The distribution model relies partly on a network of independent sellers organizing product presentation events. The platform therefore needed to support both traditional e-commerce and features aligned with this hybrid model."
+    sections:
+        -   title: "Context"
+            paragraphs:
+                - "Stanhome is a European direct-selling company specializing in home care and beauty products."
+                - "The project involved modernizing the company’s e-commerce platform, starting with the French market and later extending to Italy."
+                - "Stanhome operates partly through a direct-sales network model, where independent sellers organize product presentation events and sell products directly to customers, in a model similar to Tupperware-style home meetings."
+                - "The platform therefore needed to support both traditional e-commerce capabilities and features aligned with this distribution model."
 
-    role:
-        title: "My role"
-        p1: "As a backend developer within the Contraste Digital team, I contributed to the evolution of the Drupal Commerce platform, focusing on performance, e-commerce features, and integration with external systems."
-        li1: "Optimizing product catalog performance using ElasticSearch."
-        li2: "Improving the checkout funnel and user experience."
-        li3: "Developing features aligned with the direct-sales model."
-        li4: "Implementing marketing automation mechanisms."
-        li5: "Integrating with external systems (Salesforce CRM)."
+        -   title: "Project objectives"
+            paragraphs:
+                - "The main objectives covered visual modernization, performance, purchase funnel optimization, support for the distributor network and integration with the company’s internal tools."
+                - "After the French platform was delivered, the architecture was reused and adapted for the Italian market."
+            list:
+                - "Redesigning the visual theme of the e-commerce platform"
+                - "Improving performance when browsing large product catalogs"
+                - "Optimizing the purchase funnel to improve conversion"
+                - "Implementing tools allowing users to locate nearby distributors"
+                - "Enabling faster marketing operations such as product promotions"
+                - "Integrating sales data with the company CRM system"
 
-    tech:
-        title: "Technical environment"
-        backend:
-            title: "Backend"
-            oop: "PHP development on Drupal 7"
-            solid: "Drupal Commerce architecture"
-        api:
-            title: "APIs"
-            integration: "Integration with Google Maps API and Salesforce"
-        quality:
-            title: "Testing & quality"
-            reviews: "Structured environment with good practices"
-        tools:
-            title: "Tools"
+        -   title: "My contributions"
+            subsections:
+                -   title: "Product catalog optimization"
+                    paragraphs:
+                        - "I improved catalog browsing performance by integrating ElasticSearch."
+                        - "ElasticSearch was used for product search, faceted navigation and product filtering within the catalog."
+                        - "This integration significantly improved the performance and usability of product browsing."
+                -   title: "Checkout and sales funnel improvements"
+                    paragraphs:
+                        - "I contributed to improvements in the purchase funnel, helping streamline the checkout process and improve the user experience."
+                -   title: "Dealer locator"
+                    paragraphs:
+                        - "I implemented a dealer locator feature using Google Maps API, allowing users to find nearby distributors based on their geographic location."
+                        - "This feature directly supported Stanhome’s direct-sales distribution model."
+                -   title: "Marketing automation"
+                    paragraphs:
+                        - "I participated in the implementation of mechanisms enabling semi-automated updates of the product catalog, allowing marketing teams to activate promotions more quickly."
+                        - "This included backend logic and cron-based synchronization tasks within the Drupal platform."
+                -   title: "CRM integration"
+                    paragraphs:
+                        - "I worked on the integration between the e-commerce platform and the company’s Salesforce CRM."
+                        - "Sales-related data was transmitted from Drupal Commerce to Salesforce, enabling internal teams to track sales activity and customer interactions within the CRM ecosystem."
+                -   title: "Multi-country deployment"
+                    paragraphs:
+                        - "After the French implementation, I participated in adapting the platform for the Italian market."
+                        - "The approach consisted of reusing the architecture developed for France while adapting certain features to local requirements."
 
-    process:
-        title: "Development organization and practices"
-        p1: "The project was carried out within the Contraste Digital team, in collaboration with the client’s product and technical stakeholders."
-        p2: "Work took place within an existing platform requiring incremental evolution, with strong attention to performance, stability, and scalability."
-        p3: "A significant part of the work involved balancing e-commerce constraints, marketing needs, and integration with external systems."
+        -   title: "Team"
+            paragraphs:
+                - "I worked as part of a development team within Contraste Digital, collaborating with the client’s product and technical stakeholders."
 
-    challenges:
-        title: "Technical challenges"
-        li1_label: "Product catalog:"
-        li1: "handling large catalogs efficiently and improving browsing performance."
-        li2_label: "Search & filtering:"
-        li2: "implementing fast faceted navigation using ElasticSearch."
-        li3_label: "Hybrid model:"
-        li3: "supporting a combination of e-commerce and direct sales network."
-        li4_label: "Multi-country:"
-        li4: "adapting a shared architecture to multiple markets."
+        -   title: "Technologies used"
+            groups:
+                -   title: "Backend"
+                    items:
+                        - "PHP"
+                        - "Drupal 7"
+                        - "Drupal Commerce"
+                -   title: "Search & performance"
+                    items:
+                        - "ElasticSearch"
+                        - "Product search"
+                        - "Faceted navigation"
+                        - "Catalog filtering"
+                -   title: "Integrations"
+                    items:
+                        - "Google Maps API for distributor location"
+                        - "Salesforce CRM"
+                        - "Cron-based synchronizations"
+                -   title: "Business model"
+                    items:
+                        - "Traditional e-commerce"
+                        - "Direct sales network"
+                        - "Multi-country deployment for France and Italy"
 
-    learning:
-        title: "What this mission brought me"
-        p1: "This mission allowed me to work on a complex e-commerce platform with strong performance, marketing, and integration challenges."
-        p2: "It strengthened my ability to work on existing Drupal architectures, optimize user journeys, and integrate third-party services into a structured application ecosystem."
+        -   title: "Technical challenges"
+            paragraphs:
+                - "The project required balancing e-commerce performance, marketing flexibility and international deployment."
+            list:
+                - "Handling large product catalogs efficiently"
+                - "Implementing fast product filtering through ElasticSearch"
+                - "Supporting Stanhome’s hybrid model combining e-commerce and direct sales network"
+                - "Adapting the architecture for multiple markets while maintaining a shared technical base"
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "The project contributed to modernizing Stanhome’s e-commerce platform for the French market, then reusing this base for the Italian market."
+                - "The improvements made to the catalog, checkout funnel, locator tools and CRM integrations strengthened the platform’s ability to support both online sales and the direct sales distribution model."
+
+        -   title: "What this mission brought me"
+            highlight: true
+            paragraphs:
+                - "This mission allowed me to work on a complex e-commerce platform, with strong challenges related to performance, marketing, integration with external systems and multi-country deployment."
+                - "It strengthened my ability to work on existing Drupal architectures, optimize user journeys and integrate third-party services into a structured application ecosystem."
+
+    back: "← Back to projects"
+
+his:
+    meta_title: "Hôpitaux Iris Sud — Institutional Website & Intranet | Benjamin Lemin"
+    eyebrow: "Client project · Healthcare · Drupal"
+    title: "Hôpitaux Iris Sud — Institutional Website & Intranet"
+    lead: "Setup of a unified Drupal 9 institutional website for four Brussels hospitals, with intranet, practitioner search, appointment assistance and ADFS authentication."
+
+    meta:
+        -   label: "Period:"
+            value: "03/2022 – 07/2022"
+        -   label: "Role:"
+            value: "Backend Developer"
+        -   label: "Organization:"
+            value: "Contraste Digital"
+        -   label: "Client:"
+            value: "Hôpitaux Iris Sud"
+        -   label: "Main stack:"
+            value: "PHP, Drupal 9, OAuth2, ADFS, Progenda"
+
+    sections:
+        -   title: "Context"
+            paragraphs:
+                - "Hôpitaux Iris Sud is a network of four hospitals located in the Brussels region."
+                - "The project consisted in building a new unified website representing the four hospitals of the group."
+                - "The objective was to centralize communication towards the public and standardize how the different hospital sites were presented online."
+                - "The platform included a public institutional website providing information about services and practitioners, as well as an intranet section allowing hospital staff to manage internal communications."
+
+        -   title: "Project objectives"
+            list:
+                - "Providing a unified digital presence for the four hospitals"
+                - "Simplifying the search for practitioners across all hospital locations"
+                - "Facilitating the appointment booking process"
+                - "Enabling internal communication management for hospital staff"
+
+        -   title: "My contributions"
+            subsections:
+                -   title: "Drupal platform setup"
+                    paragraphs:
+                        - "I participated in setting up the Drupal 9 CMS used for both the public website and the intranet."
+                    list:
+                        - "Drupal installation and configuration"
+                        - "Multilingual setup"
+                        - "Backend development of custom features"
+                -   title: "Practitioner search and appointment assistance tool"
+                    paragraphs:
+                        - "I implemented a search interface helping users find the appropriate practitioner."
+                        - "The tool allowed users to filter results through three criteria: medical service, specialist and hospital location."
+                        - "Once a practitioner was selected, users could proceed with the appointment booking process via Progenda integration."
+                -   title: "SSO integration with ADFS"
+                    paragraphs:
+                        - "I developed a custom Drupal module implementing authentication through ADFS, Active Directory Federation Services, using OAuth2."
+                        - "This integration allowed hospital staff to access the intranet using their existing organizational credentials."
+                        - "Additional access restrictions were implemented through IP-based access control."
+                -   title: "Access management"
+                    paragraphs:
+                        - "I implemented authentication and access control mechanisms allowing hospital staff to manage internal communication content."
+
+        -   title: "Team"
+            paragraphs:
+                - "The project was carried out by a small multidisciplinary team."
+                - "Additional support was provided by my IT director, Didier Lahousse, for the ADFS integration."
+            list:
+                - "1 UI/UX designer"
+                - "1 front-end integrator"
+                - "The HIS IT manager"
+                - "Myself as the main backend developer"
+                - "Support from Didier Lahousse for the ADFS integration"
+
+        -   title: "Technologies used"
+            groups:
+                -   title: "Backend"
+                    items:
+                        - "PHP"
+                        - "Drupal 9"
+                        - "Custom Drupal module development"
+                -   title: "Authentication"
+                    items:
+                        - "OAuth2"
+                        - "ADFS, Active Directory Federation Services"
+                        - "SSO for intranet access"
+                        - "IP-based access control"
+                -   title: "Business features"
+                    items:
+                        - "Practitioner search"
+                        - "Filtering by medical service"
+                        - "Filtering by specialist"
+                        - "Filtering by hospital location"
+                        - "Progenda integration for appointment booking"
+                -   title: "Platform"
+                    items:
+                        - "Public institutional website"
+                        - "Intranet section"
+                        - "Multilingual configuration"
+                        - "Internal communication content management"
+
+        -   title: "Technical challenges"
+            paragraphs:
+                - "The main technical challenges encountered during the project concerned the design and implementation of the practitioner search and appointment assistance tool, as well as the integration of ADFS authentication through a custom Drupal module."
+                - "The authentication integration required adapting Drupal’s authentication system to work with the hospital’s identity infrastructure."
+            list:
+                - "Designing and implementing the practitioner search tool"
+                - "Enabling a search combining medical service, specialist and hospital location"
+                - "Connecting the search journey with appointment booking through Progenda"
+                - "Implementing ADFS authentication in Drupal using OAuth2"
+                - "Adapting intranet access to the client’s identity and security constraints"
+                - "Adding IP-based access restrictions"
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "The project made it possible to set up a unified institutional website for the four hospitals of the Hôpitaux Iris Sud network."
+                - "The platform facilitated access to public information, practitioner search and the appointment booking process."
+                - "The intranet section allowed hospital staff to manage internal communications with authentication integrated into the organization’s existing infrastructure."
+
+        -   title: "Personal learnings"
+            highlight: true
+            paragraphs:
+                - "This mission allowed me to work on a Drupal 9 project in the healthcare sector, with institutional, functional and access security challenges."
+                - "It strengthened my experience in custom Drupal module development, OAuth2/ADFS integration and implementation of business search features connected to a concrete user journey."
 
     back: "← Back to projects"
 
 moveit:
     meta_title: "Rossel — MoveIT (SSO Platform) | Benjamin Lemin"
     eyebrow: "Client project · SSO · Microservices"
-    title: "Rossel — MoveIT (SSO platform)"
-    lead: "Contribution to the design and development of a unified authentication platform (SSO) for the Rossel media ecosystem."
+    title: "Rossel — MoveIT (SSO Platform)"
+    lead: "Contribution to the design and development of a scalable unified authentication platform for the Rossel media ecosystem."
 
     meta:
-        period_label: "Period:"
-        period_value: "11/2023 – 05/2024"
-        role_label: "Role:"
-        role_value: "Backend Developer"
-        mission_label: "Mission:"
-        mission_value: "carried out via Contraste Digital"
-        stack_label: "Main stack:"
-        stack_value: "Go, Gin, Kafka, Docker, Azure, Azure DevOps, ELK Stack"
+        -   label: "Period:"
+            value: "11/2023 – 05/2024"
+        -   label: "Role:"
+            value: "Backend Developer"
+        -   label: "Organization:"
+            value: "Contraste Digital"
+        -   label: "Client:"
+            value: "Rossel Group"
+        -   label: "Main stack:"
+            value: "Go, Gin, Kafka, Docker, Azure, Azure DevOps, ELK Stack"
 
-    context:
-        title: "Project context"
-        p1: "Rossel is one of the largest media groups in Belgium, operating multiple newspapers and digital platforms, including Le Soir. The MoveIT project aimed at redesigning the user management and authentication system across the Rossel ecosystem."
-        p2: "The objective was to build a new scalable Single Sign-On (SSO) platform capable of supporting all Rossel media brands. The system was designed to progressively replace existing authentication mechanisms, starting with Le Soir and later expanding to other publications."
+    sections:
+        -   title: "Context"
+            paragraphs:
+                - "Rossel is one of the largest media groups in Belgium, operating multiple newspapers and digital media platforms, including Le Soir."
+                - "The MoveIT project aimed at redesigning the user management and authentication system across the Rossel ecosystem."
+                - "The objective was to build a new scalable Single Sign-On platform capable of supporting all Rossel media brands."
+                - "The new system was designed to progressively replace existing authentication mechanisms, starting with Le Soir and later expanding to other newspapers of the group."
 
-    role:
-        title: "My role"
-        p1: "As a backend developer, I contributed to the development of services within a microservices architecture, helping build the new authentication system and user-related workflows."
-        li1: "Developing backend microservices in Go using the Gin framework."
-        li2: "Implementing two microservices dedicated to user-related functionalities."
-        li3: "Participating in the design of Kafka communication structures."
-        li4: "Contributing to the user registration system."
-        li5: "Working on observability and log analysis mechanisms."
+        -   title: "Project objectives"
+            paragraphs:
+                - "The project adopted a microservices architecture to ensure long-term scalability and modularity."
+            list:
+                - "Building a scalable SSO system for the Rossel media ecosystem"
+                - "Supporting user authentication across multiple publications"
+                - "Improving performance and scalability for millions of users"
+                - "Enabling future expansion to additional media brands"
 
-    tech:
-        title: "Technical environment"
-        backend:
-            title: "Backend"
-            oop: "Go development using the Gin framework"
-            solid: "Use of DTO patterns for structured data exchange"
-        api:
-            title: "APIs"
-            integration: "Combination of REST APIs and Kafka-based asynchronous communication"
-        quality:
-            title: "Testing & quality"
-            reviews: "Work within a distributed architecture with high reliability requirements"
-        tools:
-            title: "Tools"
+        -   title: "My contributions"
+            subsections:
+                -   title: "Microservices development"
+                    paragraphs:
+                        - "I participated in the development of backend services using Go and the Gin framework."
+                        - "I implemented two microservices responsible for user-related functionalities within the new authentication system."
+                        - "I adopted structured request handling using DTO, Data Transfer Object, patterns to ensure clear separation between API contracts and internal business logic."
+                -   title: "Event-driven communication"
+                    paragraphs:
+                        - "I contributed to the design and implementation of Kafka message structures used for communication between services."
+                        - "The architecture combined REST APIs for synchronous interactions and Kafka event queues for asynchronous communication."
+                -   title: "User registration system"
+                    paragraphs:
+                        - "I contributed to the development of services supporting the new user registration workflow used by Rossel websites."
+                        - "These services were consumed by the front-end applications implementing the new user onboarding funnel."
+                -   title: "Observability and logging"
+                    paragraphs:
+                        - "I worked with the ELK stack, Elasticsearch, Logstash and Kibana, to monitor and analyze logs generated by the microservices architecture."
+                        - "This setup allowed centralized log collection and improved debugging across the distributed system."
 
-    process:
-        title: "Development organization and practices"
-        p1: "The project involved a multi-team organization including backend, frontend, and DevOps teams working on different functional domains."
-        p2: "I worked within two Scrum teams: one focused on user registration and another dedicated to backend microservices."
-        p3: "The work took place within a distributed architecture requiring strong coordination between teams to ensure overall system consistency."
+        -   title: "Architecture"
+            paragraphs:
+                - "The system relied on a containerized microservices architecture."
+                - "Services were deployed on Azure infrastructure using Azure DevOps CI/CD pipelines."
+            groups:
+                -   title: "Backend"
+                    items:
+                        - "Backend services developed in Go"
+                        - "Gin framework"
+                        - "DTO patterns for structured data exchange"
+                -   title: "Communication"
+                    items:
+                        - "REST APIs for synchronous interactions"
+                        - "Kafka for event-driven communication"
+                        - "Event queues for asynchronous exchanges"
+                -   title: "Infrastructure"
+                    items:
+                        - "Docker containers"
+                        - "Azure"
+                        - "Azure DevOps CI/CD pipelines"
+                -   title: "Observability"
+                    items:
+                        - "ELK Stack"
+                        - "Elasticsearch"
+                        - "Logstash"
+                        - "Kibana"
+                        - "Centralized log aggregation"
 
-    challenges:
-        title: "Technical challenges"
-        li1_label: "Distributed architecture:"
-        li1: "ensuring reliable communication between microservices."
-        li2_label: "Kafka:"
-        li2: "defining robust message schemas for asynchronous communication."
-        li3_label: "Scalability:"
-        li3: "designing a system capable of supporting the entire Rossel ecosystem."
-        li4_label: "Observability:"
-        li4: "implementing effective monitoring through centralized logging (ELK)."
+        -   title: "Team"
+            paragraphs:
+                - "The project involved a large multi-team organization including an infrastructure / DevOps team, several backend teams responsible for different service domains and a frontend team responsible for the user registration experience."
+                - "I worked within two Scrum teams: the user registration team, composed of around six to seven members, and the microservices backend team, composed of around five to six developers."
 
-    learning:
-        title: "What this mission brought me"
-        p1: "This mission allowed me to work on a large-scale microservices architecture, with strong challenges related to scalability, inter-service communication, and user management."
-        p2: "It strengthened my understanding of distributed systems, event-driven architectures, and the challenges of operating high-volume production services."
+        -   title: "Technical challenges"
+            paragraphs:
+                - "The project required designing and implementing a highly scalable authentication system capable of supporting multiple media brands."
+            list:
+                - "Implementing reliable communication between services"
+                - "Defining robust Kafka message schemas"
+                - "Ensuring scalability and performance for the future Rossel ecosystem"
+                - "Monitoring distributed services through centralized logging"
+
+        -   title: "Outcomes / impact"
+            paragraphs:
+                - "The project contributed to the implementation of a new unified authentication platform designed to progressively replace existing systems in the Rossel ecosystem."
+                - "The developed microservices and communication mechanisms contributed to building a scalable technical foundation for user management across multiple media brands."
+
+        -   title: "What this mission brought me"
+            highlight: true
+            paragraphs:
+                - "This mission allowed me to work on a large-scale microservices architecture, with strong challenges related to scalability, inter-service communication and user management."
+                - "It strengthened my understanding of distributed systems, event-driven architectures and the challenges of operating high-volume production services."
+
+    back: "← Back to projects"
+
+marge_delhaize:
+    meta_title: "Marge Delhaize — Data Integration & Margin Analysis Platform | Benjamin Lemin"
+    eyebrow: "Product project · Data integration · Margin analysis"
+    title: "Marge Delhaize — Data Integration & Margin Analysis Platform"
+    lead: "Development of an ETL and analytics platform designed to consolidate operational data from multiple systems in order to analyze real product margins over time."
+
+    meta:
+        -   label: "Period:"
+            value: "09/2025 – Present"
+        -   label: "Role:"
+            value: "Lead Developer"
+        -   label: "Client:"
+            value: "Independent Delhaize store owners"
+        -   label: "Main stack:"
+            value: "Symfony 7, React, PostgreSQL, Docker, REST API, PHPUnit, PHPStan, Vitest"
+
+    sections:
+        -   title: "Context"
+            paragraphs:
+                - "Independent Delhaize store owners rely on several internal systems to manage their operations."
+                - "However, these systems do not communicate directly with each other and provide only partial visibility into real product profitability."
+                - "The project aims to build a platform capable of collecting data from multiple operational systems, consolidating this information into a unified data model and providing a clear view of real product margins over time."
+                - "This allows store owners to better understand the gap between estimated margins communicated by Delhaize and actual margins observed in their operations."
+                - "The platform is designed to support decision-making at the level of individual stores or groups of stores."
+
+        -   title: "Data sources"
+            paragraphs:
+                - "The system integrates data from three operational systems used by Delhaize stores."
+            subsections:
+                -   title: "Store Office"
+                    paragraphs:
+                        - "Database containing product reference information used across the Delhaize ecosystem."
+                        - "Access to the data is limited and does not currently provide a straightforward export mechanism."
+                -   title: "BabbleWay"
+                    paragraphs:
+                        - "System containing purchase information from product suppliers."
+                        - "Data exports are available in structured formats such as CSV or Excel."
+                -   title: "StoreLine"
+                    paragraphs:
+                        - "Point-of-sale system containing sales transactions recorded at store checkouts."
+                        - "Exports are also available in CSV or Excel format."
+
+        -   title: "Project objective"
+            paragraphs:
+                - "The platform acts as an ETL pipeline and analytical interface."
+                - "The long-term goal is to enable near real-time margin monitoring, cross-store margin comparison and improved purchasing negotiations for groups of store owners."
+            list:
+                - "Extract data from multiple external systems"
+                - "Normalize and structure the data in a central database"
+                - "Compute product-level margins"
+                - "Provide visualization tools for store managers"
+
+        -   title: "Architecture"
+            paragraphs:
+                - "The system follows a modular web architecture."
+            groups:
+                -   title: "Backend"
+                    items:
+                        - "Symfony 7 application"
+                        - "REST API exposing data services"
+                        - "PostgreSQL for centralized data storage"
+                -   title: "Frontend"
+                    items:
+                        - "React application"
+                        - "Communication with backend via REST API"
+                -   title: "Infrastructure"
+                    items:
+                        - "Docker containers for each component"
+                        - "Automated test suites for both frontend and backend"
+
+        -   title: "Testing"
+            paragraphs:
+                - "Several automated testing tools are used to maintain code quality and ensure reliability during development."
+            groups:
+                -   title: "Backend"
+                    items:
+                        - "PHPUnit"
+                        - "PHPStan"
+                -   title: "Frontend"
+                    items:
+                        - "Vitest"
+
+        -   title: "Use of AI-assisted development"
+            paragraphs:
+                - "Development of the project involves the use of AI-assisted programming tools, notably Claude Code."
+                - "The project workflow includes several specialized AI agents responsible for tasks such as task planning and backlog management, backend code implementation, code review, automated test generation, and frontend component development and review."
+                - "These agents assist the development workflow, but the overall architecture and implementation decisions remain under human supervision."
+
+        -   title: "My contributions"
+            paragraphs:
+                - "The project is developed in collaboration with my brother, who focuses primarily on data acquisition and system architecture."
+            list:
+                - "Lead development of the backend platform using Symfony 7"
+                - "Design and implementation of the REST API"
+                - "Implementation of the data storage model using PostgreSQL"
+                - "Development of the React frontend interface"
+                - "Implementation of automated tests"
+                - "Integration of AI-assisted development workflows"
+
+        -   title: "Project status"
+            paragraphs:
+                - "The project started in September 2025."
+                - "Development of the application progressed significantly until December 2025, after which progress slowed due to difficulties accessing data from external systems."
+                - "Following recent discussions with the client, access to the required data sources may now be possible, allowing work on the extraction pipeline to resume."
+
+        -   title: "Technical challenges"
+            list:
+                - "Collecting data from multiple operational systems that do not communicate directly with each other"
+                - "Consolidating heterogeneous data formats into a centralized model"
+                - "Computing real product margins from purchase data, product reference data and sales data"
+                - "Handling data access constraints in external systems"
+                - "Designing a modular architecture capable of evolving toward near real-time monitoring"
+                - "Maintaining code quality with automated tests and static analysis tools"
+
+        -   title: "Expected outcomes / impact"
+            paragraphs:
+                - "The platform aims to give independent store owners more precise visibility into the margins actually observed in their operations."
+                - "It should make it possible to better understand gaps between estimated and real margins, identify problematic products or periods and support more informed decisions at store or store group level."
+                - "In the longer term, the system could also support comparisons between stores and improve purchasing negotiations for groups of owners."
+
+        -   title: "Personal learnings"
+            highlight: true
+            paragraphs:
+                - "This project allows me to work on a strongly data-oriented problem, at the intersection of system integration, business modeling, analytical computation and visualization."
+                - "It strengthens my experience with Symfony, React, PostgreSQL, REST architectures, data pipelines and the integration of AI-assisted development tools into a supervised production workflow."
+
+    back: "← Back to projects"
+
+coaching:
+    meta_title: "Programming Coaching & Technical Mentoring | Benjamin Lemin"
+    eyebrow: "Coaching · Technical mentoring · Knowledge sharing"
+    title: "Programming Coaching & Technical Mentoring"
+    lead: "Individual support for students, professionals and developers in their technical progression, through coaching sessions focused on programming, architecture, debugging and best practices."
+
+    meta:
+        -   label: "Period:"
+            value: "10/2021 – Present"
+        -   label: "Role:"
+            value: "Programming Coach / Technical Mentor"
+        -   label: "Platforms:"
+            value: "Superprof.be, Apprentus, Malt"
+        -   label: "Activity volume:"
+            value: "Approximately 698 hours of coaching delivered between 2022 and 2025, with around 10 students"
+
+    sections:
+        -   title: "Context"
+            paragraphs:
+                - "Since October 2021, I have been providing private programming coaching sessions for students and professionals seeking to improve their technical skills."
+                - "The coaching activity started as a complementary professional activity and progressively evolved into a regular mentoring practice."
+                - "Sessions are organized mainly through the Superprof platform, with additional presence on Apprentus and Malt."
+
+        -   title: "Audience"
+            paragraphs:
+                - "Participants come from diverse backgrounds."
+                - "The mentoring approach adapts to the learner’s context and technical background."
+            list:
+                - "Computer science students preparing for exams"
+                - "Professionals needing additional technical support in their job"
+                - "Individuals transitioning into software development"
+                - "Developers working on personal or professional projects requiring guidance"
+
+        -   title: "Topics covered"
+            paragraphs:
+                - "Coaching sessions cover a broad range of software development topics."
+            list:
+                - "Web development fundamentals"
+                - "PHP and backend development"
+                - "HTML, JavaScript and front-end basics"
+                - "SQL and database design"
+                - "HTTP protocols and API interactions"
+                - "AJAX and asynchronous programming"
+                - "Git and version control"
+                - "Software architecture concepts"
+                - "Development best practices"
+                - "Project structuring and debugging strategies"
+
+        -   title: "Session format"
+            paragraphs:
+                - "Sessions typically last two hours, which allows meaningful technical progress while maintaining focus."
+                - "Different formats are used depending on the learner’s needs."
+                - "Sessions often involve live coding, code review, debugging assistance, explanation of technical concepts and guidance on project architecture."
+            list:
+                - "Remote sessions via video conferencing, for example Zoom or similar tools"
+                - "In-person coaching at the learner’s location"
+                - "In-person coaching at my workspace"
+                - "Live coding"
+                - "Code review"
+                - "Debugging assistance"
+                - "Explanation of technical concepts"
+                - "Guidance on project architecture"
+
+        -   title: "Activity volume"
+            list:
+                - "First coaching session: October 11, 2021"
+                - "Approximately 698 hours of coaching delivered between 2022 and 2025"
+                - "Around 10 students mentored across different contexts"
+                - "The activity continues today with an average of around two sessions per week"
+
+        -   title: "Key contributions"
+            list:
+                - "Helping learners overcome technical blockers"
+                - "Structuring explanations of complex programming concepts"
+                - "Guiding learners through real development projects"
+                - "Supporting professional development and technical autonomy"
+
+        -   title: "Personal motivation"
+            highlight: true
+            paragraphs:
+                - "This activity combines several aspects that I value in my professional practice: sharing knowledge and experience, meeting new people from diverse backgrounds, strengthening my own technical mastery through teaching, and helping others progress and gain confidence in programming."
 
     back: "← Back to projects"

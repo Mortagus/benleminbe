@@ -17,6 +17,9 @@ index:
             title: "Rossel — MoveIT (SSO platform)"
             description: "Development of a unified authentication platform based on a microservices architecture."
 
+project:
+    navigation_label: 'Project navigation'
+
 delcampe:
     meta_title: "Delcampe Marketplace Platform | Benjamin Lemin"
     eyebrow: "Client project · Marketplace · Symfony"

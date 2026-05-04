@@ -11,27 +11,51 @@ final class ProjectsController extends AbstractController
 {
     private const string TEMPLATE_DIR = 'projects/';
 
+    private const array PROJECTS = [
+        [
+            'key' => 'delcampe',
+            'route' => 'app_projects_delcampe',
+        ],
+        [
+            'key' => 'stanhome',
+            'route' => 'app_projects_stanhome',
+        ],
+        [
+            'key' => 'moveit',
+            'route' => 'app_projects_moveit',
+        ],
+    ];
+
     #[Route('', name: 'index')]
     public function index(): Response
     {
-        return $this->render(self::TEMPLATE_DIR . 'index.html.twig');
+        return $this->render(self::TEMPLATE_DIR . 'index.html.twig', [
+            'projects' => self::PROJECTS,
+        ]);
     }
 
     #[Route('/delcampe', name: 'delcampe')]
     public function delcampe(): Response
     {
-        return $this->render(self::TEMPLATE_DIR . 'delcampe.html.twig');
+        return $this->renderProject('delcampe');
     }
 
     #[Route('/stanhome', name: 'stanhome')]
     public function stanhome(): Response
     {
-        return $this->render(self::TEMPLATE_DIR . 'stanhome.html.twig');
+        return $this->renderProject('stanhome');
     }
 
     #[Route('/moveit', name: 'moveit')]
     public function moveit(): Response
     {
-        return $this->render(self::TEMPLATE_DIR . 'moveit.html.twig');
+        return $this->renderProject('moveit');
+    }
+
+    private function renderProject(string $project): Response
+    {
+        return $this->render(self::TEMPLATE_DIR . 'detailed_project.html.twig', [
+            'project' => $project,
+        ]);
     }
 }

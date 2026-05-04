@@ -13,26 +13,14 @@
 
         <section class="projects-list">
 
-            <a href="{{ path('app_projects_delcampe', { _locale: app.request.locale }) }}" class="project-card-link">
-                <article class="project-card">
-                    <h2>{{ 'index.cards.delcampe.title'|trans({}, 'projects') }}</h2>
-                    <p>{{ 'index.cards.delcampe.description'|trans({}, 'projects') }}</p>
-                </article>
-            </a>
-
-            <a href="{{ path('app_projects_stanhome', { _locale: app.request.locale }) }}" class="project-card-link">
-                <article class="project-card">
-                    <h2>{{ 'index.cards.stanhome.title'|trans({}, 'projects') }}</h2>
-                    <p>{{ 'index.cards.stanhome.description'|trans({}, 'projects') }}</p>
-                </article>
-            </a>
-
-            <a href="{{ path('app_projects_moveit', { _locale: app.request.locale }) }}" class="project-card-link">
-                <article class="project-card">
-                    <h2>{{ 'index.cards.moveit.title'|trans({}, 'projects') }}</h2>
-                    <p>{{ 'index.cards.moveit.description'|trans({}, 'projects') }}</p>
-                </article>
-            </a>
+            {% for project in projects %}
+                <a href="{{ path(project.route, { _locale: app.request.locale }) }}" class="project-card-link">
+                    <article class="project-card">
+                        <h2>{{ ('index.cards.' ~ project.key ~ '.title')|trans({}, 'projects') }}</h2>
+                        <p>{{ ('index.cards.' ~ project.key ~ '.description')|trans({}, 'projects') }}</p>
+                    </article>
+                </a>
+            {% endfor %}
 
         </section>
 

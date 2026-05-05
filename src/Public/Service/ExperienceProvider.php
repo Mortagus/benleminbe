@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Public\Service;
 
-use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ExperienceProvider
@@ -152,6 +151,36 @@ final class ExperienceProvider
         ];
     }
 
+    /**
+     * @return array{
+     *     slug: string,
+     *     period: string,
+     *     company: string,
+     *     role: string
+     * }
+     */
+    public function getExperienceSummary(string $experience, string $locale): array
+    {
+        if (!isset(self::EXPERIENCES[$experience])) {
+            throw new \InvalidArgumentException(sprintf('Experience "%s" was not found.', $experience));
+        }
+
+        $experienceConfig = self::EXPERIENCES[$experience];
+        $translationPrefix = sprintf('experiences.items.%s', $experienceConfig['translation_key']);
+
+        return [
+            'slug' => $experienceConfig['slug'],
+            'period' => $experienceConfig['period'],
+            'company' => $this->trans($translationPrefix . '.company', $locale),
+            'role' => $this->trans($translationPrefix . '.role', $locale),
+        ];
+    }
+
+    private function trans(string $id, string $locale): string
+    {
+        return $this->translator->trans($id, domain: 'experiences', locale: $locale);
+    }
+
     public function getPreviousExperience(string $experience): ?string
     {
         $currentIndex = array_search($experience, self::EXPERIENCE_ORDER, true);
@@ -172,11 +201,6 @@ final class ExperienceProvider
         }
 
         return self::EXPERIENCE_ORDER[$currentIndex + 1];
-    }
-
-    private function trans(string $id, string $locale): string
-    {
-        return $this->translator->trans($id, domain: 'experiences', locale: $locale);
     }
 
     /**

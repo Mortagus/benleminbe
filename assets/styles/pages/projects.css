@@ -228,3 +228,52 @@
 footer {
     margin-top: 4rem;
 }
+
+.project-associated-experience {
+    margin-top: -1.5rem;
+    margin-bottom: 3.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    background: var(--link-card-bg);
+    box-shadow: var(--link-card-shadow);
+}
+
+.project-associated-experience__eyebrow {
+    margin-block: 0 0.5rem;
+    color: var(--accent-hover);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.project-associated-experience h2 {
+    margin-block: 0 0.5rem;
+    color: var(--text);
+}
+
+.project-associated-experience p {
+    margin-block: 0 1rem;
+    color: var(--muted);
+}
+
+.project-associated-experience a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--accent-hover);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.project-associated-experience a::after {
+    content: "→";
+    transition: transform 160ms ease;
+}
+
+.project-associated-experience a:hover::after,
+.project-associated-experience a:focus-visible::after {
+    transform: translateX(0.25rem);
+}

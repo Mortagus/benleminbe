@@ -2,6 +2,7 @@
 
 namespace App\Public\Controller;
 
+use App\Public\Service\ExperienceProvider;
 use App\Public\Service\ProjectProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +18,7 @@ final class ProjectsController extends AbstractController {
 
     public function __construct(
         private readonly ProjectProvider $projectProvider,
+        private readonly ExperienceProvider $experienceProvider,
     ) {}
 
     #[Route(
@@ -50,9 +52,14 @@ final class ProjectsController extends AbstractController {
         methods: ['GET'])
     ]
     public function show(string $project, string $_locale): Response {
+        $associatedExperienceKey = $this->projectProvider->getExperienceForProject($project);
+
         return $this->render(self::TEMPLATE_DIR . 'detailed_project.html.twig', [
             'project' => $project,
             'projectData' => $this->projectProvider->getProjectData($project, $_locale),
+            'associatedExperience' => $associatedExperienceKey !== null
+                ? $this->experienceProvider->getExperienceSummary($associatedExperienceKey, $_locale)
+                : null,
             'previousProject' => $this->projectProvider->getPreviousProject($project),
             'nextProject' => $this->projectProvider->getNextProject($project),
         ]);

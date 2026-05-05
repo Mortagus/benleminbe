@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Public\Controller;
 
 use App\Public\Service\ExperienceProvider;
+use App\Public\Service\ProjectProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,6 +21,7 @@ final class ExperiencesController extends AbstractController
 
     public function __construct(
         private readonly ExperienceProvider $experienceProvider,
+        private readonly ProjectProvider $projectProvider,
     ) {
     }
 
@@ -59,6 +61,7 @@ final class ExperiencesController extends AbstractController
         return $this->render(self::TEMPLATE_DIR . 'detailed_experience.html.twig', [
             'experience' => $experience,
             'experienceData' => $this->experienceProvider->getExperienceData($experience, $_locale),
+            'associatedProjects' => $this->projectProvider->getProjectsByExperience($experience, $_locale),
             'previousExperience' => $this->experienceProvider->getPreviousExperience($experience),
             'nextExperience' => $this->experienceProvider->getNextExperience($experience),
         ]);

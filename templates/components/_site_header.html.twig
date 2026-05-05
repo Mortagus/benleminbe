@@ -16,7 +16,7 @@
             </a>
 
             <a href="{{ path('app_experiences_index', { _locale: app.request.locale }) }}"
-                class="site-header__link {{ app.request.attributes.get('_route') starts with 'public_experiences' ? 'active' : '' }}">
+                class="site-header__link {{ app.request.attributes.get('_route') starts with 'app_experiences' ? 'active' : '' }}">
                 {{ 'layout.header.navigation.experiences'|trans }}
             </a>
         </nav>

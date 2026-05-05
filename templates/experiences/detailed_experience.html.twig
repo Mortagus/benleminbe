@@ -78,6 +78,25 @@
             </section>
         {% endif %}
 
+        {% if associatedProjects is defined and associatedProjects is not empty %}
+            <section class="experience-detail-section">
+                <h2>{{ 'experiences.detail.associated_projects_title'|trans }}</h2>
+                <p>{{ 'experiences.detail.associated_projects_description'|trans }}</p>
+
+                <div class="experience-associated-projects">
+                    {% for project in associatedProjects %}
+                        <a class="experience-associated-project-card" href="{{ path('app_projects_show', {
+                            _locale: app.request.locale,
+                            project: project.key
+                        }) }}">
+                            <strong>{{ project.title }}</strong>
+                            <span>{{ project.description }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
         {% if experienceData.takeaways is not empty %}
             <section class="experience-detail-highlight">
                 <h2>{{ 'experiences.detail.takeaways_title'|trans }}</h2>

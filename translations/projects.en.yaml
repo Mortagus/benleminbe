@@ -2,6 +2,9 @@ project:
     navigation_label: 'Project navigation'
     previous: 'Previous project'
     next: 'Next project'
+    associated_experience:
+        eyebrow: "Associated experience"
+        link: "View related experience"
 
 index:
     meta_title: "Projects | Benjamin Lemin"

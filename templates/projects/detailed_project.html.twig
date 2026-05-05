@@ -24,6 +24,27 @@
             {% endif %}
         </section>
 
+        {% if associatedExperience is not null %}
+            <section class="project-associated-experience">
+                <p class="project-associated-experience__eyebrow">
+                    {{ 'project.associated_experience.eyebrow'|trans({}, 'projects') }}
+                </p>
+
+                <h2>{{ associatedExperience.company }}</h2>
+
+                <p>
+                    {{ associatedExperience.role }} · {{ associatedExperience.period }}
+                </p>
+
+                <a href="{{ path('app_experiences_show', {
+                    _locale: app.request.locale,
+                    experience: associatedExperience.slug
+                }) }}">
+                    {{ 'project.associated_experience.link'|trans({}, 'projects') }}
+                </a>
+            </section>
+        {% endif %}
+
         {% if projectData.sections is defined %}
             {% for section in projectData.sections %}
                 <section class="content-section{% if section.highlight is defined and section.highlight %} highlight-section{% endif %}">

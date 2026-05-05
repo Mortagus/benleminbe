@@ -19,7 +19,8 @@
         "symfony/console": "^8.0",
         "symfony/asset-mapper": "^8.0",
         "symfony/translation": "^8.0",
-        "symfony/apache-pack": "*"
+        "symfony/apache-pack": "*",
+        "ext-dom": "*"
     },
     "license": "MIT",
     "autoload": {
@@ -47,5 +48,8 @@
         },
         "css:format": "npm run format:css",
         "css:lint": "npm run lint:css"
+    },
+    "require-dev": {
+        "symfony/maker-bundle": "^1.67"
     }
 }

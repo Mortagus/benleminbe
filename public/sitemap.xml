@@ -1,16 +1,225 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 ">
-
-    <url>
-        <loc>https://benlemin.be/</loc>
-    </url>
-
-    <url>
-        <loc>https://benlemin.be/fr</loc>
-    </url>
-
-    <url>
-        <loc>https://benlemin.be/en</loc>
-    </url>
-
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr</loc>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en</loc>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/raidgbs</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/raidgbs"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/raidgbs"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/raidgbs"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/raidgbs</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/raidgbs"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/raidgbs"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/raidgbs"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/sogesa</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/sogesa"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/sogesa"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/sogesa"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/sogesa</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/sogesa"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/sogesa"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/sogesa"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/publifund</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/publifund"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/publifund"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/publifund"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/publifund</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/publifund"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/publifund"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/publifund"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/easy4pro</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/easy4pro"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/easy4pro"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/easy4pro"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/easy4pro</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/easy4pro"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/easy4pro"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/easy4pro"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/logic_immo</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/logic_immo"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/logic_immo"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/logic_immo"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/logic_immo</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/logic_immo"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/logic_immo"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/logic_immo"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/isobar</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/isobar"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/isobar"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/isobar"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/isobar</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/isobar"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/isobar"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/isobar"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/delcampe</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/delcampe"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/delcampe"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/delcampe"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/delcampe</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/delcampe"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/delcampe"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/delcampe"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/keytrade</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/keytrade"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/keytrade"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/keytrade"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/keytrade</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/keytrade"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/keytrade"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/keytrade"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/famille_chretienne</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/famille_chretienne"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/famille_chretienne"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/famille_chretienne"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/famille_chretienne</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/famille_chretienne"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/famille_chretienne"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/famille_chretienne"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/stanhome</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/stanhome"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/stanhome"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/stanhome"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/stanhome</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/stanhome"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/stanhome"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/stanhome"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/his</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/his"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/his"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/his"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/his</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/his"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/his"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/his"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/moveit</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/moveit"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/moveit"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/moveit"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/moveit</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/moveit"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/moveit"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/moveit"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/marge_delhaize</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/marge_delhaize"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/marge_delhaize"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/marge_delhaize"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/marge_delhaize</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/marge_delhaize"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/marge_delhaize"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/marge_delhaize"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/fr/projects/coaching</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/coaching"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/coaching"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/coaching"/>
+  </url>
+  <url xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <loc>http://localhost/en/projects/coaching</loc>
+    <lastmod>2026-05-04</lastmod>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr" href="http://localhost/fr/projects/coaching"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en" href="http://localhost/en/projects/coaching"/>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="x-default" href="http://localhost/fr/projects/coaching"/>
+  </url>
 </urlset>

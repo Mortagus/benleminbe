@@ -6,12 +6,47 @@ experiences:
         description: "An overview of the roles, missions and technical environments I have worked in."
         list_title: "List of professional experiences"
         technologies_label: "Technologies used"
+        read_more: "View details"
+        read_more_about: "View details about the experience at %company%"
+
+    detail:
+        eyebrow: "Professional experience"
+        breadcrumb_label: "Experience navigation"
+        back_to_list: "Back to experience"
+        summary_title: "Overview"
+        period_label: "Period"
+        role_label: "Role"
+        main_technologies_label: "Main technologies"
+        context_title: "Context"
+        responsibilities_title: "Responsibilities"
+        technologies_title: "Technologies used"
+        takeaways_title: "Key takeaways"
+        pagination_label: "Navigation between experiences"
+        previous: "Previous experience"
+        next: "Next experience"
 
     items:
         contraste_digital:
             company: "Contraste Digital"
             role: "Backend PHP Developer / Consultant"
+            meta_title: "Experience at Contraste Digital"
             summary: "Contributed to the development, maintenance and evolution of web platforms and business applications for several clients, with strong exposure to Drupal, PHP and microservice-oriented architectures."
+            context:
+                1: "I worked as part of internal development teams responsible for delivering web platforms and digital applications for external clients."
+                2: "Most projects were developed from the company’s offices, in collaboration with developers, project managers, product owners and other technical profiles."
+                3: "The work mainly involved understanding existing platforms, maintaining them, evolving them and integrating new features into environments that were already running in production."
+            responsibilities:
+                1: "Backend development on PHP and Drupal applications."
+                2: "Implementation of new features on existing platforms."
+                3: "Maintenance, debugging and issue fixing on production systems."
+                4: "Integration of external services and APIs."
+                5: "Participation in code reviews, technical discussions and implementation decisions."
+                6: "Collaboration with developers, product owners and project managers to deliver stable and maintainable evolutions."
+            takeaways:
+                1: "Long-term experience on existing web platforms and complex systems."
+                2: "Strong reinforcement of my experience with PHP and Drupal ecosystems."
+                3: "Improved ability to quickly understand an existing codebase and contribute to its evolution."
+                4: "Concrete experience in application maintenance, API integration and teamwork on client projects."
 
         blubird:
             company: "Blubird"

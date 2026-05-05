@@ -22,29 +22,44 @@
             {% for experience in experiences %}
                 {% set translationPrefix = 'experiences.items.' ~ experience.translation_key %}
 
-                <article class="experience-card">
-                    <header class="experience-card__header">
-                        <div>
-                            <p class="experience-card__period">{{ experience.period }}</p>
-                            <h3 class="experience-card__title">
-                                {{ (translationPrefix ~ '.company')|trans }}
-                            </h3>
-                            <p class="experience-card__role">
-                                {{ (translationPrefix ~ '.role')|trans }}
-                            </p>
-                        </div>
-                    </header>
+                <a class="experience-card-link"
+                   href="{{ path('app_experiences_show', {
+                       _locale: app.request.locale,
+                       experience: experience.slug
+                   }) }}"
+                   aria-label="{{ 'experiences.index.read_more_about'|trans({
+                       '%company%': (translationPrefix ~ '.company')|trans
+                   }) }}">
+                    <article class="experience-card">
+                        <header class="experience-card__header">
+                            <div>
+                                <p class="experience-card__period">{{ experience.period }}</p>
+                                <h3 class="experience-card__title">
+                                    {{ (translationPrefix ~ '.company')|trans }}
+                                </h3>
+                                <p class="experience-card__role">
+                                    {{ (translationPrefix ~ '.role')|trans }}
+                                </p>
+                            </div>
+                        </header>
 
-                    <p class="experience-card__summary">
-                        {{ (translationPrefix ~ '.summary')|trans }}
-                    </p>
+                        <p class="experience-card__summary">
+                            {{ (translationPrefix ~ '.summary')|trans }}
+                        </p>
 
-                    <ul class="experience-card__technologies" aria-label="{{ 'experiences.index.technologies_label'|trans }}">
-                        {% for technology in experience.technologies %}
-                            <li>{{ technology }}</li>
-                        {% endfor %}
-                    </ul>
-                </article>
+                        <ul class="experience-card__technologies" aria-label="{{ 'experiences.index.technologies_label'|trans }}">
+                            {% for technology in experience.technologies %}
+                                <li>{{ technology }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <p class="experience-card__actions">
+                            <span class="experience-card__link">
+                                {{ 'experiences.index.read_more'|trans }}
+                            </span>
+                        </p>
+                    </article>
+                </a>
             {% endfor %}
         </section>
     </main>

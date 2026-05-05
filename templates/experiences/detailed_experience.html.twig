@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'experiences' %}
+
+{% block title %}{{ experienceData.metaTitle }}{% endblock %}
+
+{% block body %}
+    <main class="experience-detail-page">
+        <nav class="experience-detail-navigation experience-detail-navigation--top" aria-label="{{ 'experiences.detail.breadcrumb_label'|trans }}">
+            <a class="experience-detail-navigation__link experience-detail-navigation__link--back" href="{{ path('app_experiences_index', { _locale: app.request.locale }) }}">
+                {{ 'experiences.detail.back_to_list'|trans }}
+            </a>
+        </nav>
+
+        <header class="experience-detail-hero">
+            <p class="experience-detail-hero__eyebrow">
+                {{ 'experiences.detail.eyebrow'|trans }}
+            </p>
+
+            <h1>{{ experienceData.company }}</h1>
+
+            <p class="experience-detail-hero__lead">
+                {{ experienceData.role }}
+            </p>
+
+            <ul class="experience-detail-meta">
+                <li>
+                    <strong>{{ 'experiences.detail.period_label'|trans }}</strong>
+                    <span>{{ experienceData.period }}</span>
+                </li>
+                <li>
+                    <strong>{{ 'experiences.detail.role_label'|trans }}</strong>
+                    <span>{{ experienceData.role }}</span>
+                </li>
+                <li>
+                    <strong>{{ 'experiences.detail.main_technologies_label'|trans }}</strong>
+                    <span>{{ experienceData.technologies|join(', ') }}</span>
+                </li>
+            </ul>
+        </header>
+
+        <section class="experience-detail-highlight">
+            <h2>{{ 'experiences.detail.summary_title'|trans }}</h2>
+            <p>{{ experienceData.summary }}</p>
+        </section>
+
+        {% if experienceData.context is not empty %}
+            <section class="experience-detail-section">
+                <h2>{{ 'experiences.detail.context_title'|trans }}</h2>
+
+                {% for paragraph in experienceData.context %}
+                    <p>{{ paragraph }}</p>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        {% if experienceData.responsibilities is not empty %}
+            <section class="experience-detail-section">
+                <h2>{{ 'experiences.detail.responsibilities_title'|trans }}</h2>
+
+                <ul>
+                    {% for responsibility in experienceData.responsibilities %}
+                        <li>{{ responsibility }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
+        {% if experienceData.technologies is not empty %}
+            <section class="experience-detail-section">
+                <h2>{{ 'experiences.detail.technologies_title'|trans }}</h2>
+
+                <ul class="experience-detail-technologies">
+                    {% for technology in experienceData.technologies %}
+                        <li>{{ technology }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
+        {% if experienceData.takeaways is not empty %}
+            <section class="experience-detail-highlight">
+                <h2>{{ 'experiences.detail.takeaways_title'|trans }}</h2>
+
+                <ul>
+                    {% for takeaway in experienceData.takeaways %}
+                        <li>{{ takeaway }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
+        <nav class="experience-detail-navigation" aria-label="{{ 'experiences.detail.pagination_label'|trans }}">
+            <a class="experience-detail-navigation__link experience-detail-navigation__link--back" href="{{ path('app_experiences_index', { _locale: app.request.locale }) }}">
+                {{ 'experiences.detail.back_to_list'|trans }}
+            </a>
+
+            {% if previousExperience %}
+                <a class="experience-detail-navigation__link experience-detail-navigation__link--previous" href="{{ path('app_experiences_show', {
+                    _locale: app.request.locale,
+                    experience: previousExperience
+                }) }}">
+                    {{ 'experiences.detail.previous'|trans }}
+                </a>
+            {% endif %}
+
+            {% if nextExperience %}
+                <a class="experience-detail-navigation__link experience-detail-navigation__link--next" href="{{ path('app_experiences_show', {
+                    _locale: app.request.locale,
+                    experience: nextExperience
+                }) }}">
+                    {{ 'experiences.detail.next'|trans }}
+                </a>
+            {% endif %}
+        </nav>
+    </main>
+{% endblock %}

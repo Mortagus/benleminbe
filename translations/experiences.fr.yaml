@@ -6,12 +6,47 @@ experiences:
         description: "Une vue d’ensemble des postes, missions et environnements techniques dans lesquels j’ai travaillé."
         list_title: "Liste des expériences professionnelles"
         technologies_label: "Technologies utilisées"
+        read_more: "Voir le détail"
+        read_more_about: "Voir le détail de l’expérience chez %company%"
+
+    detail:
+        eyebrow: "Expérience professionnelle"
+        breadcrumb_label: "Navigation de l’expérience"
+        back_to_list: "Retour aux expériences"
+        summary_title: "Vue d’ensemble"
+        period_label: "Période"
+        role_label: "Rôle"
+        main_technologies_label: "Technologies principales"
+        context_title: "Contexte"
+        responsibilities_title: "Responsabilités"
+        technologies_title: "Technologies utilisées"
+        takeaways_title: "Ce que j’en retiens"
+        pagination_label: "Navigation entre les expériences"
+        previous: "Expérience précédente"
+        next: "Expérience suivante"
 
     items:
         contraste_digital:
             company: "Contraste Digital"
             role: "Développeur PHP backend / consultant"
+            meta_title: "Expérience chez Contraste Digital"
             summary: "Participation au développement, à la maintenance et à l’évolution de plateformes web et d’applications métier pour différents clients, avec une forte exposition aux écosystèmes Drupal, PHP et aux architectures orientées microservices."
+            context:
+                1: "J’ai travaillé au sein d’équipes internes chargées de livrer des plateformes web et applications digitales pour des clients externes."
+                2: "La majorité des projets étaient développés depuis les bureaux de l’entreprise, en collaboration avec des développeurs, chefs de projet, product owners et autres profils techniques."
+                3: "Le travail consistait principalement à comprendre des plateformes existantes, à les maintenir, à les faire évoluer et à intégrer de nouvelles fonctionnalités dans des environnements déjà en production."
+            responsibilities:
+                1: "Développement backend sur des applications PHP et Drupal."
+                2: "Implémentation de nouvelles fonctionnalités sur des plateformes existantes."
+                3: "Maintenance, debugging et correction d’anomalies sur des systèmes en production."
+                4: "Intégration de services externes et d’API."
+                5: "Participation aux revues de code, aux discussions techniques et aux choix d’implémentation."
+                6: "Collaboration avec les développeurs, product owners et chefs de projet pour livrer des évolutions stables et maintenables."
+            takeaways:
+                1: "Expérience longue sur des plateformes web existantes et des systèmes complexes."
+                2: "Renforcement important de mon expérience avec les écosystèmes PHP et Drupal."
+                3: "Meilleure capacité à comprendre rapidement une base de code existante et à contribuer à son évolution."
+                4: "Expérience concrète de la maintenance applicative, de l’intégration d’API et du travail en équipe sur des projets client."
 
         blubird:
             company: "Blubird"

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Public\Controller;
 
-use App\Service\ProjectProvider;
+use App\Public\Service\ProjectProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

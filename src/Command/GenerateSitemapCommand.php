@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Service\ProjectProvider;
+use App\Public\Service\ProjectProvider;
 use DOMDocument;
 use DOMElement;
 use DOMException;

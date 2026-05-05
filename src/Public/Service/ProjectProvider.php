@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Public\Service;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelInterface;

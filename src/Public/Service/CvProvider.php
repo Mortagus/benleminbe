@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Public\Service;
 
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 

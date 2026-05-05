@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Public\Controller;
 
-use App\Service\CvProvider;
+use App\Public\Service\CvProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

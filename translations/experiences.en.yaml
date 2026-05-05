@@ -22,6 +22,7 @@ experiences:
         technologies_title: "Technologies used"
         associated_projects_title: "Associated projects"
         associated_projects_description: "Some projects carried out during or related to this professional experience."
+        associated_project_link: "View project"
         takeaways_title: "Key takeaways"
         pagination_label: "Navigation between experiences"
         previous: "Previous experience"

@@ -371,6 +371,69 @@
     margin-left: 0.4rem;
 }
 
+/* ... existing code ... */
+
+.experience-associated-project-card {
+    display: grid;
+    gap: 0.4rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    background: var(--link-card-bg);
+    color: inherit;
+    text-decoration: none;
+    transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        background-color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.experience-associated-project-card:hover,
+.experience-associated-project-card:focus-visible {
+    border-color: var(--link-card-hover-border);
+    background: var(--link-card-hover-bg);
+    box-shadow: var(--link-card-shadow);
+    color: inherit;
+    transform: translateY(-2px);
+}
+
+.experience-associated-project-card:focus-visible {
+    outline: 3px solid rgb(90 180 190 / 35%);
+    outline-offset: 3px;
+}
+
+.experience-associated-project-card strong {
+    color: var(--text);
+    font-size: 1.05rem;
+}
+
+.experience-associated-project-card span {
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.experience-associated-project-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: fit-content;
+    margin-top: 0.35rem;
+    color: var(--accent-hover);
+    font-weight: 700;
+}
+
+.experience-associated-project-card__link::after {
+    content: "→";
+    transition: transform 160ms ease;
+}
+
+.experience-associated-project-card:hover .experience-associated-project-card__link::after,
+.experience-associated-project-card:focus-visible .experience-associated-project-card__link::after {
+    transform: translateX(0.25rem);
+}
+
 @media (width < 48rem) {
     .experience-detail-page {
         padding-inline: 1rem;

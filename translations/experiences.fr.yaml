@@ -1,0 +1,44 @@
+experiences:
+    index:
+        meta_title: "Expériences professionnelles"
+        eyebrow: "Parcours"
+        title: "Expériences professionnelles"
+        description: "Une vue d’ensemble des postes, missions et environnements techniques dans lesquels j’ai travaillé."
+        list_title: "Liste des expériences professionnelles"
+        technologies_label: "Technologies utilisées"
+
+    items:
+        contraste_digital:
+            company: "Contraste Digital"
+            role: "Développeur PHP backend / consultant"
+            summary: "Participation au développement, à la maintenance et à l’évolution de plateformes web et d’applications métier pour différents clients, avec une forte exposition aux écosystèmes Drupal, PHP et aux architectures orientées microservices."
+
+        blubird:
+            company: "Blubird"
+            role: "Développeur PHP backend / consultant"
+            summary: "Missions de consultance intégrées à des équipes clientes, principalement sur des applications PHP existantes, avec maintenance, développement de fonctionnalités et amélioration de systèmes en production."
+
+        isobar:
+            company: "Isobar"
+            role: "Développeur web"
+            summary: "Travail en agence digitale sur des plateformes marketing, des CMS et des applications web, dans un environnement rythmé par des délais courts et une collaboration étroite avec les équipes projet."
+
+        adneom:
+            company: "Adneom"
+            role: "Développeur PHP backend / consultant"
+            summary: "Première expérience significative en consultance, avec des missions au sein d’équipes clientes sur des plateformes PHP/Symfony existantes, incluant maintenance, évolution et développement backend."
+
+        f2c:
+            company: "Financial Communication Consult"
+            role: "Développeur PHP backend"
+            summary: "Développement et maintenance d’outils internes liés à la génération et à la distribution de documents financiers, avec automatisation de traitements et manipulation de données financières."
+
+        sogesa:
+            company: "Sogesa"
+            role: "Développeur web"
+            summary: "Première expérience professionnelle longue, centrée sur le développement progressif d’une application métier interne dédiée à la gestion de données agricoles et administratives."
+
+        cbmn:
+            company: "CBMN"
+            role: "Analyste-développeur Perl"
+            summary: "Projet de fin d’études réalisé dans un laboratoire de recherche, avec conception d’une base de données et développement de scripts Perl pour traiter et importer automatiquement des données biologiques."

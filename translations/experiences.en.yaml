@@ -1,0 +1,44 @@
+experiences:
+    index:
+        meta_title: "Professional experience"
+        eyebrow: "Career path"
+        title: "Professional experience"
+        description: "An overview of the roles, missions and technical environments I have worked in."
+        list_title: "List of professional experiences"
+        technologies_label: "Technologies used"
+
+    items:
+        contraste_digital:
+            company: "Contraste Digital"
+            role: "Backend PHP Developer / Consultant"
+            summary: "Contributed to the development, maintenance and evolution of web platforms and business applications for several clients, with strong exposure to Drupal, PHP and microservice-oriented architectures."
+
+        blubird:
+            company: "Blubird"
+            role: "Backend PHP Developer / Consultant"
+            summary: "Consulting missions integrated into client teams, mainly on existing PHP applications, including maintenance, feature development and improvements on production systems."
+
+        isobar:
+            company: "Isobar"
+            role: "Web Developer"
+            summary: "Worked in a digital agency environment on marketing platforms, CMS-based websites and web applications, with short deadlines and close collaboration with project teams."
+
+        adneom:
+            company: "Adneom"
+            role: "Backend PHP Developer / Consultant"
+            summary: "First significant consulting experience, working within client teams on existing PHP/Symfony platforms, including maintenance, evolution and backend development."
+
+        f2c:
+            company: "Financial Communication Consult"
+            role: "Backend PHP Developer"
+            summary: "Development and maintenance of internal tools related to the generation and distribution of financial documents, including process automation and financial data handling."
+
+        sogesa:
+            company: "Sogesa"
+            role: "Web Developer"
+            summary: "First long-term professional experience, focused on the progressive development of an internal business application for managing agricultural and administrative data."
+
+        cbmn:
+            company: "CBMN"
+            role: "Perl Analyst Developer"
+            summary: "Final academic project carried out in a research laboratory, involving database design and Perl script development to process and automatically import biological data."

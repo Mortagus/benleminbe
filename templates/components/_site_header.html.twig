@@ -4,15 +4,20 @@
             Benjamin Lemin
         </a>
 
-        <nav class="site-header__nav" aria-label="Navigation principale">
+        <nav class="site-header__nav" aria-label="{{ 'header.navigation.label'|trans }}">
             <a href="{{ path('app_home', { _locale: app.request.locale }) }}"
                 class="site-header__link {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}">
-                Accueil
+                {{ 'layout.header.navigation.home'|trans }}
             </a>
 
             <a href="{{ path('app_projects_index', { _locale: app.request.locale }) }}"
                 class="site-header__link {{ app.request.attributes.get('_route') starts with 'app_projects' ? 'active' : '' }}">
-                Projets
+                {{ 'layout.header.navigation.projects'|trans }}
+            </a>
+
+            <a href="{{ path('app_experiences_index', { _locale: app.request.locale }) }}"
+                class="site-header__link {{ app.request.attributes.get('_route') starts with 'public_experiences' ? 'active' : '' }}">
+                {{ 'layout.header.navigation.experiences'|trans }}
             </a>
         </nav>
 

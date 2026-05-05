@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'experiences' %}
+
+{% block title %}{{ 'experiences.index.meta_title'|trans }}{% endblock %}
+
+{% block body %}
+    <main class="page page--experiences">
+        <section class="page-header">
+            <p class="page-header__eyebrow">{{ 'experiences.index.eyebrow'|trans }}</p>
+            <h1>{{ 'experiences.index.title'|trans }}</h1>
+            <p class="page-header__description">
+                {{ 'experiences.index.description'|trans }}
+            </p>
+        </section>
+
+        <section class="experience-list" aria-labelledby="experience-list-title">
+            <h2 id="experience-list-title" class="visually-hidden">
+                {{ 'experiences.index.list_title'|trans }}
+            </h2>
+
+            {% for experience in experiences %}
+                {% set translationPrefix = 'experiences.items.' ~ experience.translation_key %}
+
+                <article class="experience-card">
+                    <header class="experience-card__header">
+                        <div>
+                            <p class="experience-card__period">{{ experience.period }}</p>
+                            <h3 class="experience-card__title">
+                                {{ (translationPrefix ~ '.company')|trans }}
+                            </h3>
+                            <p class="experience-card__role">
+                                {{ (translationPrefix ~ '.role')|trans }}
+                            </p>
+                        </div>
+                    </header>
+
+                    <p class="experience-card__summary">
+                        {{ (translationPrefix ~ '.summary')|trans }}
+                    </p>
+
+                    <ul class="experience-card__technologies" aria-label="{{ 'experiences.index.technologies_label'|trans }}">
+                        {% for technology in experience.technologies %}
+                            <li>{{ technology }}</li>
+                        {% endfor %}
+                    </ul>
+                </article>
+            {% endfor %}
+        </section>
+    </main>
+{% endblock %}

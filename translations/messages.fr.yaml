@@ -111,6 +111,12 @@ home:
         text: "Je peux rejoindre votre équipe en freelance, à temps partiel, côté backend, pour contribuer progressivement sans perturber ce qui fonctionne déjà."
 
 layout:
+    header:
+        navigation:
+            label: "Navigation principale"
+            home: "Accueil"
+            projects: "Projets"
+            experiences: "Expériences"
     footer:
         handmade: "site conçu et développé par mes soins"
         signature: "Développeur backend spécialisé dans l’évolution d’applications web existantes"

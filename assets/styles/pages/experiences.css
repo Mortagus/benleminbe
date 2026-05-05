@@ -1,0 +1,109 @@
+.page--experiences {
+    width: min(100% - 2rem, 72rem);
+    margin-inline: auto;
+    padding-block: 4rem;
+}
+
+.page--experiences .page-header {
+    max-width: 48rem;
+    margin-block-end: 3rem;
+}
+
+.page--experiences .page-header__eyebrow {
+    margin-block: 0 0.75rem;
+    color: var(--accent);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.page--experiences .page-header h1 {
+    margin-block: 0 1rem;
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    line-height: 1;
+}
+
+.page--experiences .page-header__description {
+    margin-block: 0;
+    color: var(--muted);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 1.7;
+}
+
+.experience-list {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.experience-card {
+    display: grid;
+    gap: 1.25rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    background: var(--card);
+    box-shadow: 0 1rem 2.5rem var(--shadow);
+}
+
+.experience-card__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.experience-card__period {
+    margin-block: 0 0.5rem;
+    color: var(--accent);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.experience-card__title {
+    margin-block: 0 0.35rem;
+    color: var(--text);
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    line-height: 1.2;
+}
+
+.experience-card__role {
+    margin-block: 0;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.experience-card__summary {
+    max-width: 56rem;
+    margin-block: 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.experience-card__technologies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block: 0;
+    padding-inline-start: 0;
+    list-style: none;
+}
+
+.experience-card__technologies li {
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 999rem;
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+@media (width >= 48rem) {
+    .experience-list {
+        gap: 1.5rem;
+    }
+
+    .experience-card {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

@@ -111,6 +111,12 @@ home:
         text: "I can join your team as part-time freelance backend reinforcement, contributing progressively without disrupting what already works."
 
 layout:
+    header:
+        navigation:
+            label: "Main navigation"
+            home: "Home"
+            projects: "Projects"
+            experiences: "Experience"
     footer:
         handmade: "site designed and developed by myself"
         signature: "Backend developer specialized in evolving existing web applications"

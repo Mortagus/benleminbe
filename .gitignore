@@ -68,8 +68,8 @@ Thumbs.db
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
+/public/sitemap.xml
 /var/
-/vendor/
 ###< symfony/framework-bundle ###
 /node_modules/
 

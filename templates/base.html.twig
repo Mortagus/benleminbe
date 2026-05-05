@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+<!--suppress HtmlUnknownTarget -->
 <html lang="{{ app.request.locale|default('fr') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/jpg" href="{{ asset('favicon.jpg') }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
 
     <title>{% block title %}{{ 'home.meta.title'|trans }}{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}{{ 'home.meta.description'|trans }}{% endblock %}">

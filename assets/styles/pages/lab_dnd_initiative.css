@@ -1,0 +1,74 @@
+.dnd-initiative-page .monster-list {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0;
+    margin: 1.5rem 0 0;
+    list-style: none;
+}
+
+.dnd-initiative-page .monster-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding: 0.85rem 1rem;
+
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+
+    box-shadow: 0 2px 6px var(--shadow);
+}
+
+.dnd-initiative-page .monster-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.dnd-initiative-page .monster-name {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.dnd-initiative-page .monster-type {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.dnd-initiative-page .monster-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.dnd-initiative-page .monster-stat,
+.dnd-initiative-page .monster-hp {
+    padding: 0.25rem 0.6rem;
+
+    background: var(--bg-soft);
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    color: var(--text);
+    font-size: 0.9rem;
+
+    white-space: nowrap;
+}
+
+.dnd-initiative-page .monster-hp input {
+    width: 4rem;
+
+    margin-inline: 0.25rem;
+    padding: 0.15rem 0.35rem;
+
+    background: var(--card);
+
+    border: 1px solid var(--border);
+    border-radius: 0.35rem;
+
+    color: var(--text);
+}

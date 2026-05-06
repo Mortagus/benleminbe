@@ -78,6 +78,7 @@
 .contact-section h3 {
     margin-bottom: 10px;
     font-size: 1.15rem;
+    transition: color 0.18s ease;
 }
 
 .cards-grid,
@@ -120,18 +121,157 @@
     }
 }
 
+/* ==========================================================================
+   Projects cards
+   ========================================================================== */
+
 .project-card-link {
     display: block;
-    text-decoration: none;
+    height: 100%;
     color: inherit;
+    text-decoration: none;
 }
 
 .project-card {
+    position: relative;
+    height: 100%;
+    padding-right: 56px;
+    overflow: hidden;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    background: var(--link-card-bg);
+    border-color: var(--link-card-border);
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease;
 }
 
-.project-card-link:hover .project-card {
-    transform: translateY(-2px);
+.project-card::after {
+    content: "→";
+
+    position: absolute;
+    top: 22px;
+    right: 22px;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-left: 1px;
+
+    color: var(--accent-hover);
+
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+
+    background: var(--bg-soft);
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    transition:
+        transform 0.18s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease;
+}
+
+.project-card-link:hover .project-card,
+.project-card-link:focus-visible .project-card {
+    transform: translateY(-4px);
+    background: var(--link-card-hover-bg);
+    border-color: var(--link-card-hover-border);
     box-shadow: var(--link-card-shadow);
+}
+
+.project-card-link:hover .project-card::after,
+.project-card-link:focus-visible .project-card::after {
+    transform: translateX(3px);
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--card);
+}
+
+.project-card-link:hover h3,
+.project-card-link:focus-visible h3 {
+    color: var(--accent-hover);
+}
+
+.project-card-link:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: 12px;
+}
+
+.featured-card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.featured-card {
+    position: relative;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.featured-card-link:hover .featured-card,
+.featured-card-link:focus-visible .featured-card {
+    transform: translateY(-4px);
+    background: var(--link-card-hover-bg);
+    border-color: var(--link-card-hover-border);
+    box-shadow: var(--link-card-shadow);
+}
+
+.featured-card-link:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: 16px;
+}
+
+.featured-card__content {
+    max-width: 720px;
+}
+
+.featured-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    color: var(--accent-hover);
+    font-weight: 700;
+}
+
+.featured-card__cta-icon {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-hover);
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    transition:
+        transform 0.18s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease;
+}
+
+.featured-card-link:hover .featured-card__cta-icon,
+.featured-card-link:focus-visible .featured-card__cta-icon {
+    transform: translateX(3px);
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--card);
 }

@@ -26,7 +26,9 @@
 }
 
 .external-link-card {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 16px;
     min-width: 220px;
     padding: 1rem 1.25rem;
     border: 1px solid var(--link-card-border);
@@ -69,4 +71,47 @@
 
 .external-links--secondary a:hover {
     text-decoration: underline;
+}
+
+.external-link-card__icon {
+    width: 28px;
+    height: 28px;
+    display: inline-block;
+    flex-shrink: 0;
+
+    background-color: var(--accent-hover);
+    opacity: 0.85;
+
+    mask-position: center;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+}
+
+.external-link-card__icon--linkedin {
+    mask-image: url("../../images/logos/linkedin.svg");
+    -webkit-mask-image: url("../../images/logos/linkedin.svg");
+}
+
+.external-link-card__icon--malt {
+    mask-image: url("../../images/logos/malt.png");
+    -webkit-mask-image: url("../../images/logos/malt.png");
+}
+
+.external-link-card__icon--github {
+    mask-image: url("../../images/logos/github.svg");
+    -webkit-mask-image: url("../../images/logos/github.svg");
+}
+
+.external-link-card__icon--superprof {
+    mask-image: url("../../images/logos/superprof.png");
+    -webkit-mask-image: url("../../images/logos/superprof.png");
+}
+
+.external-link-card__icon--apprentus {
+    mask-image: url("../../images/logos/apprentus.png");
+    -webkit-mask-image: url("../../images/logos/apprentus.png");
 }

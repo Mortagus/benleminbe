@@ -125,8 +125,6 @@
                 </a>
             </div>
 
-            {# À activer quand la page /projets existera #}
-            {# <a href="{{ path('app_projects') }}" class="text-link">Voir plus de projets</a> #}
         </section>
 
         <section class="content-section content-section-highlight">
@@ -172,16 +170,23 @@
         </section>
 
         <section class="content-section">
-            <div class="card">
-                <h2>{{ 'home.coaching.title'|trans }}</h2>
+            <a href="{{ path('app_projects_show', { _locale: app.request.locale, project: 'coaching' }) }}"
+                class="featured-card-link">
+                <article class="card featured-card">
+                    <div class="featured-card__content">
+                        <h2>{{ 'home.coaching.title'|trans }}</h2>
 
-                <p>{{ 'home.coaching.paragraph_1'|trans }}</p>
+                        <p>{{ 'home.coaching.paragraph_1'|trans }}</p>
 
-                <p>{{ 'home.coaching.paragraph_2'|trans }}</p>
+                        <p>{{ 'home.coaching.paragraph_2'|trans }}</p>
 
-                {# À activer quand la page /coaching existera #}
-                {# <a href="{{ path('app_coaching') }}" class="text-link">En savoir plus sur le coaching</a> #}
-            </div>
+                        <span class="featured-card__cta">
+                    Voir le détail
+                    <span class="featured-card__cta-icon" aria-hidden="true">→</span>
+                </span>
+                    </div>
+                </article>
+            </a>
         </section>
 
         <section class="content-section links-section">
@@ -189,28 +194,37 @@
 
             <div class="external-links external-links--featured">
                 <a href="https://www.linkedin.com/in/benlem/" target="_blank" rel="noopener noreferrer" class="external-link-card">
-                    <span class="external-link-card__label">LinkedIn</span>
-                    <span class="external-link-card__description">{{ 'home.links.linkedin'|trans }}</span>
+                    <span class="external-link-card__icon external-link-card__icon--linkedin" aria-hidden="true"></span>
+                    <span class="external-link-card__content">
+                        <span class="external-link-card__label">LinkedIn</span>
+                        <span class="external-link-card__description">{{ 'home.links.linkedin'|trans }}</span>
+                    </span>
                 </a>
 
                 <a href="https://fr.malt.be/profile/benjaminlemin" target="_blank" rel="noopener noreferrer" class="external-link-card">
-                    <span class="external-link-card__label">Malt</span>
-                    <span class="external-link-card__description">{{ 'home.links.malt'|trans }}</span>
+                    <span class="external-link-card__icon external-link-card__icon--malt" aria-hidden="true"></span>
+                    <span class="external-link-card__content">
+                        <span class="external-link-card__label">Malt</span>
+                        <span class="external-link-card__description">{{ 'home.links.malt'|trans }}</span>
+                    </span>
                 </a>
             </div>
 
             <div class="external-links external-links--secondary">
-
-                <a href="https://github.com/Mortagus" target="_blank" rel="noopener noreferrer">
-                    GitHub
+                <a href="https://github.com/Mortagus" target="_blank" rel="noopener noreferrer" class="external-link-card external-link-card--compact">
+                    <span class="external-link-card__icon external-link-card__icon--github" aria-hidden="true"></span>
+                    <span class="external-link-card__label">GitHub</span>
                 </a>
 
-                <a href="https://www.superprof.be/coach-programmation-senior-php-dev-envie-accompagner-apprentissage-projets.html" target="_blank" rel="noopener noreferrer">
-                    Superprof
+                <a href="https://www.superprof.be/coach-programmation-senior-php-dev-envie-accompagner-apprentissage-projets.html" target="_blank" rel="noopener noreferrer"
+                   class="external-link-card external-link-card--compact">
+                    <span class="external-link-card__icon external-link-card__icon--superprof" aria-hidden="true"></span>
+                    <span class="external-link-card__label">Superprof</span>
                 </a>
 
-                <a href="https://www.apprentus.com/en-be/in/benjamin.lem" target="_blank" rel="noopener noreferrer">
-                    Apprentus
+                <a href="https://www.apprentus.com/en-be/in/benjamin.lem" target="_blank" rel="noopener noreferrer" class="external-link-card external-link-card--compact">
+                    <span class="external-link-card__icon external-link-card__icon--apprentus" aria-hidden="true"></span>
+                    <span class="external-link-card__label">Apprentus</span>
                 </a>
             </div>
         </section>

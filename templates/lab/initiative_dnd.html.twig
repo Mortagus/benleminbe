@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Initiative D&D{% endblock %}
+
+{% block body %}
+    <main class="lab-page dnd-initiative-page">
+        <section class="content-section">
+            <div class="card">
+                <h1>Initiative D&D</h1>
+
+                <div class="form-row">
+                    <label for="monsterCount">
+                        Nombre de monstres
+                    </label>
+
+                    <input id="monsterCount" type="number" min="1" value="5">
+                </div>
+
+                <div class="actions">
+                    <button id="createMonsters" type="button">
+                        Créer la liste
+                    </button>
+
+                    <button id="rollInitiative" type="button" disabled>
+                        Lancer l’initiative
+                    </button>
+                </div>
+
+                <ul id="monsterList" class="monster-list"></ul>
+            </div>
+        </section>
+    </main>
+{% endblock %}

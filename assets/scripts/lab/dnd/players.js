@@ -1,40 +1,16 @@
 export function createPlayerItem() {
-    const li = document.createElement('li');
-    li.classList.add('player-item');
+    const template = document.getElementById('playerItemTemplate');
 
-    li.innerHTML = `
-        <div class="player-field player-field--name">
-            <label>Nom</label>
-            <input type="text" placeholder="Nom du joueur">
-        </div>
+    if (!template) {
+        throw new Error('Template #playerItemTemplate introuvable.');
+    }
 
-        <div class="player-field">
-            <label>CA</label>
-            <input type="number" min="0" placeholder="10">
-        </div>
+    const fragment = template.content.cloneNode(true);
+    const playerItem = fragment.querySelector('.player-item');
 
-        <div class="player-field player-field--hp">
-            <label>PV</label>
-            <div class="player-hp-inputs">
-                <input type="number" min="0" placeholder="Actuels">
-                <span>/</span>
-                <input type="number" min="0" placeholder="Max">
-            </div>
-        </div>
+    bindPlayerItemEvents(playerItem);
 
-        <div class="player-field">
-            <label>Init.</label>
-            <input type="number" placeholder="0">
-        </div>
-
-        <button type="button" class="player-remove-button" aria-label="Supprimer ce joueur">
-            Supprimer
-        </button>
-    `;
-
-    bindPlayerItemEvents(li);
-
-    return li;
+    return playerItem;
 }
 
 export function bindExistingPlayerRemoveButtons(playerList) {

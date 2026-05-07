@@ -1,0 +1,13 @@
+header:
+    navigation:
+        label: "Main navigation"
+        home: "Home"
+        projects: "Projects"
+        experiences: "Experiences"
+        about: "About"
+        contact: "Contact"
+
+footer:
+    handmade: "website designed and developed by myself"
+    signature: "Backend developer specialized in evolving existing web applications"
+    disclaimer_tracking: "This website uses a privacy-friendly audience analytics tool."

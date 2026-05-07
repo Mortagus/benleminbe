@@ -1,0 +1,13 @@
+header:
+    navigation:
+        label: "Navigation principale"
+        home: "Accueil"
+        projects: "Projets"
+        experiences: "Expériences"
+        about: "À propos"
+        contact: "Contact"
+
+footer:
+    handmade: "site conçu et développé par mes soins"
+    signature: "Développeur backend spécialisé dans l’évolution d’applications web existantes"
+    disclaimer_tracking: "Ce site utilise un outil de mesure d’audience respectueux de la vie privée."

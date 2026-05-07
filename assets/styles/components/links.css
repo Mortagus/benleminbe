@@ -97,8 +97,8 @@
 }
 
 .external-link-card__icon--malt {
-    mask-image: url("../../images/logos/malt.png");
-    -webkit-mask-image: url("../../images/logos/malt.png");
+    mask-image: url("../../images/logos/malt_simplified.svg");
+    -webkit-mask-image: url("../../images/logos/malt_simplified.svg");
 }
 
 .external-link-card__icon--github {

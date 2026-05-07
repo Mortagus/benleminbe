@@ -1,3 +1,7 @@
+{# Components - _site_header.html.twig #}
+
+{% trans_default_domain 'layout' %}
+
 <header class="site-header">
     <div class="site-header__inner">
         <a href="{{ path('app_home', { _locale: app.request.locale }) }}" class="site-header__brand">
@@ -6,18 +10,28 @@
 
         <nav class="site-header__nav" aria-label="{{ 'header.navigation.label'|trans }}">
             <a href="{{ path('app_home', { _locale: app.request.locale }) }}"
-                class="site-header__link {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}">
-                {{ 'layout.header.navigation.home'|trans }}
+               class="site-header__link {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}">
+                {{ 'header.navigation.home'|trans }}
             </a>
 
             <a href="{{ path('app_projects_index', { _locale: app.request.locale }) }}"
-                class="site-header__link {{ app.request.attributes.get('_route') starts with 'app_projects' ? 'active' : '' }}">
-                {{ 'layout.header.navigation.projects'|trans }}
+               class="site-header__link {{ app.request.attributes.get('_route') starts with 'app_projects' ? 'active' : '' }}">
+                {{ 'header.navigation.projects'|trans }}
             </a>
 
             <a href="{{ path('app_experiences_index', { _locale: app.request.locale }) }}"
-                class="site-header__link {{ app.request.attributes.get('_route') starts with 'app_experiences' ? 'active' : '' }}">
-                {{ 'layout.header.navigation.experiences'|trans }}
+               class="site-header__link {{ app.request.attributes.get('_route') starts with 'app_experiences' ? 'active' : '' }}">
+                {{ 'header.navigation.experiences'|trans }}
+            </a>
+
+            <a href="{{ path('app_about', { _locale: app.request.locale }) }}"
+               class="site-header__link {{ app.request.attributes.get('_route') == 'app_about' ? 'active' : '' }}">
+                {{ 'header.navigation.about'|trans }}
+            </a>
+
+            <a href="{{ path('app_contact', { _locale: app.request.locale }) }}"
+               class="site-header__link {{ app.request.attributes.get('_route') == 'app_contact' ? 'active' : '' }}">
+                {{ 'header.navigation.contact'|trans }}
             </a>
         </nav>
 

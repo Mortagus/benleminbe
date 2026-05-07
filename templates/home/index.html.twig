@@ -1,25 +1,29 @@
+{# Home - index.html.twig #}
+
+{% trans_default_domain 'home' %}
+
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'home.meta.title'|trans }}{% endblock %}
+{% block title %}{{ 'meta.title'|trans }}{% endblock %}
 
 {% block body %}
     <main class="landing-page">
 
         <section class="hero-section">
-            <p class="eyebrow">{{ 'home.hero.eyebrow'|trans }}</p>
+            <p class="eyebrow">{{ 'hero.eyebrow'|trans }}</p>
 
-            <h1>{{ 'home.hero.name'|trans }}</h1>
+            <h1>{{ 'hero.name'|trans }}</h1>
 
-            <h2>{{ 'home.hero.subtitle'|trans }}</h2>
+            <h2>{{ 'hero.subtitle'|trans }}</h2>
 
-            <p class="hero-intro">{{ 'home.hero.intro'|trans }}</p>
+            <p class="hero-intro">{{ 'hero.intro'|trans }}</p>
 
-            <p class="hero-details">{{ 'home.hero.details_p1'|trans }}</p>
-            <p class="hero-details">{{ 'home.hero.details_p2'|trans }}</p>
+            <p class="hero-details">{{ 'hero.details_p1'|trans }}</p>
+            <p class="hero-details">{{ 'hero.details_p2'|trans }}</p>
 
             <div class="buttons">
                 <a href="mailto:benjamin@lemin.be" class="button">
-                    {{ 'home.actions.contact'|trans }}
+                    {{ 'actions.contact'|trans }}
                 </a>
 
                 <a href="{{ asset('cv/benjamin_lemin_backend_developer_' ~ app.request.locale ~ '.pdf') }}?v={{ cvVersion }}"
@@ -27,100 +31,100 @@
                    target="_blank"
                    rel="noopener noreferrer"
                    data-track="cv">
-                    {{ 'home.actions.download_cv'|trans }}
+                    {{ 'actions.download_cv'|trans }}
                 </a>
             </div>
         </section>
 
         <section class="content-section">
-            <h2>{{ 'home.help.title'|trans }}</h2>
+            <h2>{{ 'help.title'|trans }}</h2>
 
             <div class="cards-grid">
                 <article class="card">
-                    <h3>{{ 'home.help.card_1.title'|trans }}</h3>
-                    <p>{{ 'home.help.card_1.text'|trans }}</p>
+                    <h3>{{ 'help.card_1.title'|trans }}</h3>
+                    <p>{{ 'help.card_1.text'|trans }}</p>
                 </article>
 
                 <article class="card">
-                    <h3>{{ 'home.help.card_2.title'|trans }}</h3>
-                    <p>{{ 'home.help.card_2.text'|trans }}</p>
+                    <h3>{{ 'help.card_2.title'|trans }}</h3>
+                    <p>{{ 'help.card_2.text'|trans }}</p>
                 </article>
 
                 <article class="card">
-                    <h3>{{ 'home.help.card_3.title'|trans }}</h3>
-                    <p>{{ 'home.help.card_3.text'|trans }}</p>
+                    <h3>{{ 'help.card_3.title'|trans }}</h3>
+                    <p>{{ 'help.card_3.text'|trans }}</p>
                 </article>
 
                 <article class="card">
-                    <h3>{{ 'home.help.card_4.title'|trans }}</h3>
-                    <p>{{ 'home.help.card_4.text'|trans }}</p>
+                    <h3>{{ 'help.card_4.title'|trans }}</h3>
+                    <p>{{ 'help.card_4.text'|trans }}</p>
                 </article>
             </div>
         </section>
 
         <section class="content-section content-section-highlight">
-            <h2>{{ 'home.concrete.title'|trans }}</h2>
+            <h2>{{ 'concrete.title'|trans }}</h2>
 
             <ul class="feature-list">
-                <li>{{ 'home.concrete.item_1'|trans }}</li>
-                <li>{{ 'home.concrete.item_2'|trans }}</li>
-                <li>{{ 'home.concrete.item_3'|trans }}</li>
-                <li>{{ 'home.concrete.item_4'|trans }}</li>
-                <li>{{ 'home.concrete.item_5'|trans }}</li>
+                <li>{{ 'concrete.item_1'|trans }}</li>
+                <li>{{ 'concrete.item_2'|trans }}</li>
+                <li>{{ 'concrete.item_3'|trans }}</li>
+                <li>{{ 'concrete.item_4'|trans }}</li>
+                <li>{{ 'concrete.item_5'|trans }}</li>
             </ul>
         </section>
 
         <section class="content-section">
-            <h2>{{ 'home.stats.title'|trans }}</h2>
+            <h2>{{ 'stats.title'|trans }}</h2>
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <strong>{{ 'home.stats.experience.value'|trans }}</strong>
-                    <span>{{ 'home.stats.experience.label'|trans }}</span>
+                    <strong>{{ 'stats.experience.value'|trans }}</strong>
+                    <span>{{ 'stats.experience.label'|trans }}</span>
                 </div>
 
                 <div class="stat-card">
-                    <strong>{{ 'home.stats.stack.value'|trans }}</strong>
-                    <span>{{ 'home.stats.stack.label'|trans }}</span>
+                    <strong>{{ 'stats.stack.value'|trans }}</strong>
+                    <span>{{ 'stats.stack.label'|trans }}</span>
                 </div>
 
                 <div class="stat-card">
-                    <strong>{{ 'home.stats.production.value'|trans }}</strong>
-                    <span>{{ 'home.stats.production.label'|trans }}</span>
+                    <strong>{{ 'stats.production.value'|trans }}</strong>
+                    <span>{{ 'stats.production.label'|trans }}</span>
                 </div>
 
                 <div class="stat-card">
-                    <strong>{{ 'home.stats.teams.value'|trans }}</strong>
-                    <span>{{ 'home.stats.teams.label'|trans }}</span>
+                    <strong>{{ 'stats.teams.value'|trans }}</strong>
+                    <span>{{ 'stats.teams.label'|trans }}</span>
                 </div>
             </div>
         </section>
 
         <section class="content-section">
-            <h2>{{ 'home.projects.title'|trans }}</h2>
+            <h2>{{ 'projects.title'|trans }}</h2>
 
             <div class="project-list">
                 <a href="{{ path('app_projects_show', { _locale: app.request.locale, project: 'delcampe' }) }}" class="project-card-link">
                     <article class="project-card">
-                        <p class="project-tag">{{ 'home.projects.delcampe.tag'|trans }}</p>
-                        <h3>{{ 'home.projects.delcampe.title'|trans }}</h3>
-                        <p>{{ 'home.projects.delcampe.text'|trans }}</p>
+                        <p class="project-tag">{{ 'projects.delcampe.tag'|trans }}</p>
+                        <h3>{{ 'projects.delcampe.title'|trans }}</h3>
+                        <p>{{ 'projects.delcampe.text'|trans }}</p>
                     </article>
                 </a>
 
                 <a href="{{ path('app_projects_show', { _locale: app.request.locale, project: 'stanhome' }) }}" class="project-card-link">
                     <article class="project-card">
-                        <p class="project-tag">{{ 'home.projects.stanhome.tag'|trans }}</p>
-                        <h3>{{ 'home.projects.stanhome.title'|trans }}</h3>
-                        <p>{{ 'home.projects.stanhome.text'|trans }}</p>
+                        <p class="project-tag">{{ 'projects.stanhome.tag'|trans }}</p>
+                        <h3>{{ 'projects.stanhome.title'|trans }}</h3>
+                        <p>{{ 'projects.stanhome.text'|trans }}</p>
                     </article>
                 </a>
 
                 <a href="{{ path('app_projects_show', { _locale: app.request.locale, project: 'moveit' }) }}" class="project-card-link">
                     <article class="project-card">
-                        <p class="project-tag">{{ 'home.projects.moveit.tag'|trans }}</p>
-                        <h3>{{ 'home.projects.moveit.title'|trans }}</h3>
-                        <p>{{ 'home.projects.moveit.text'|trans }}</p>
+                        <p class="project-tag">{{ 'projects.moveit.tag'|trans }}</p>
+                        <h3>{{ 'projects.moveit.title'|trans }}</h3>
+                        <p>{{ 'projects.moveit.text'|trans }}</p>
                     </article>
                 </a>
             </div>
@@ -128,43 +132,43 @@
         </section>
 
         <section class="content-section content-section-highlight">
-            <h2>{{ 'home.work_style.title'|trans }}</h2>
+            <h2>{{ 'work_style.title'|trans }}</h2>
 
             <div class="split-content">
                 <div>
-                    <h3>{{ 'home.work_style.understand.title'|trans }}</h3>
-                    <p>{{ 'home.work_style.understand.text'|trans }}</p>
+                    <h3>{{ 'work_style.understand.title'|trans }}</h3>
+                    <p>{{ 'work_style.understand.text'|trans }}</p>
                 </div>
 
                 <div>
-                    <h3>{{ 'home.work_style.progressive.title'|trans }}</h3>
-                    <p>{{ 'home.work_style.progressive.text'|trans }}</p>
+                    <h3>{{ 'work_style.progressive.title'|trans }}</h3>
+                    <p>{{ 'work_style.progressive.text'|trans }}</p>
                 </div>
             </div>
         </section>
 
         <section class="content-section">
-            <h2>{{ 'home.skills.title'|trans }}</h2>
+            <h2>{{ 'skills.title'|trans }}</h2>
 
             <div class="skills-groups">
                 <div class="skills-group">
-                    <h3>{{ 'home.skills.backend.title'|trans }}</h3>
-                    <p>{{ 'home.skills.backend.text'|trans }}</p>
+                    <h3>{{ 'skills.backend.title'|trans }}</h3>
+                    <p>{{ 'skills.backend.text'|trans }}</p>
                 </div>
 
                 <div class="skills-group">
-                    <h3>{{ 'home.skills.data.title'|trans }}</h3>
-                    <p>{{ 'home.skills.data.text'|trans }}</p>
+                    <h3>{{ 'skills.data.title'|trans }}</h3>
+                    <p>{{ 'skills.data.text'|trans }}</p>
                 </div>
 
                 <div class="skills-group">
-                    <h3>{{ 'home.skills.quality.title'|trans }}</h3>
-                    <p>{{ 'home.skills.quality.text'|trans }}</p>
+                    <h3>{{ 'skills.quality.title'|trans }}</h3>
+                    <p>{{ 'skills.quality.text'|trans }}</p>
                 </div>
 
                 <div class="skills-group">
-                    <h3>{{ 'home.skills.collaboration.title'|trans }}</h3>
-                    <p>{{ 'home.skills.collaboration.text'|trans }}</p>
+                    <h3>{{ 'skills.collaboration.title'|trans }}</h3>
+                    <p>{{ 'skills.collaboration.text'|trans }}</p>
                 </div>
             </div>
         </section>
@@ -174,11 +178,11 @@
                 class="featured-card-link">
                 <article class="card featured-card">
                     <div class="featured-card__content">
-                        <h2>{{ 'home.coaching.title'|trans }}</h2>
+                        <h2>{{ 'coaching.title'|trans }}</h2>
 
-                        <p>{{ 'home.coaching.paragraph_1'|trans }}</p>
+                        <p>{{ 'coaching.paragraph_1'|trans }}</p>
 
-                        <p>{{ 'home.coaching.paragraph_2'|trans }}</p>
+                        <p>{{ 'coaching.paragraph_2'|trans }}</p>
 
                         <span class="featured-card__cta">
                     Voir le détail
@@ -190,14 +194,14 @@
         </section>
 
         <section class="content-section links-section">
-            <h2>{{ 'home.links.title'|trans }}</h2>
+            <h2>{{ 'links.title'|trans }}</h2>
 
             <div class="external-links external-links--featured">
                 <a href="https://www.linkedin.com/in/benlem/" target="_blank" rel="noopener noreferrer" class="external-link-card">
                     <span class="external-link-card__icon external-link-card__icon--linkedin" aria-hidden="true"></span>
                     <span class="external-link-card__content">
                         <span class="external-link-card__label">LinkedIn</span>
-                        <span class="external-link-card__description">{{ 'home.links.linkedin'|trans }}</span>
+                        <span class="external-link-card__description">{{ 'links.linkedin'|trans }}</span>
                     </span>
                 </a>
 
@@ -205,7 +209,7 @@
                     <span class="external-link-card__icon external-link-card__icon--malt" aria-hidden="true"></span>
                     <span class="external-link-card__content">
                         <span class="external-link-card__label">Malt</span>
-                        <span class="external-link-card__description">{{ 'home.links.malt'|trans }}</span>
+                        <span class="external-link-card__description">{{ 'links.malt'|trans }}</span>
                     </span>
                 </a>
             </div>
@@ -230,13 +234,13 @@
         </section>
 
         <section class="contact-section">
-            <h2>{{ 'home.contact.title'|trans }}</h2>
+            <h2>{{ 'contact.title'|trans }}</h2>
 
-            <p>{{ 'home.contact.text'|trans }}</p>
+            <p>{{ 'contact.text'|trans }}</p>
 
             <div class="buttons">
                 <a href="mailto:benjamin@lemin.be" class="button">
-                    {{ 'home.actions.contact'|trans }}
+                    {{ 'actions.contact'|trans }}
                 </a>
 
                 <a href="{{ asset('cv/benjamin_lemin_backend_developer_' ~ app.request.locale ~ '.pdf') }}?v={{ cvVersion }}"
@@ -244,7 +248,7 @@
                    target="_blank"
                    rel="noopener noreferrer"
                    data-track="cv">
-                    {{ 'home.actions.download_cv'|trans }}
+                    {{ 'actions.download_cv'|trans }}
                 </a>
             </div>
         </section>

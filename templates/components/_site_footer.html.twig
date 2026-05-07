@@ -1,14 +1,18 @@
+{# Components - _site_footer.html.twig #}
+
+{% trans_default_domain 'layout' %}
+
 <footer class="site-footer">
     <div class="site-footer__content">
         <p>
             © {{ "now"|date("Y") }} Benjamin Lemin —
-            {{ 'layout.footer.handmade'|trans }}
+            {{ 'footer.handmade'|trans }}
         </p>
 
         <p class="site-footer__signature">
-            {{ 'layout.footer.signature'|trans }}
+            {{ 'footer.signature'|trans }}
         </p>
 
-        <p>{{ 'layout.footer.disclaimer_tracking'|trans }}</p>
+        <p>{{ 'footer.disclaimer_tracking'|trans }}</p>
     </div>
 </footer>

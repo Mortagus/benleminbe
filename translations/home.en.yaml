@@ -1,0 +1,110 @@
+meta:
+    title: "Benjamin Lemin - Senior backend developer for existing PHP applications"
+    description: "I help teams maintain, evolve and stabilize existing PHP, Symfony and Drupal web applications with a progressive and reliable approach."
+
+hero:
+    eyebrow: "Available for freelance missions (20 to 25h/week) — quick integration into existing teams"
+    name: "Benjamin Lemin"
+    subtitle: "Senior backend developer — PHP, Symfony, Drupal"
+    intro: "I help teams maintain and evolve existing web applications while respecting the work already in place."
+    details_p1: "Senior backend developer with more than 15 years of experience, working on PHP, Symfony and Drupal platforms in production environments."
+    details_p2: "I add features, clarify codebases and progressively improve maintainability."
+
+actions:
+    contact: "Contact me"
+    contact_email: "Contact me by email"
+    download_cv: "Download my resume"
+
+help:
+    title: "I can help if…"
+    card_1:
+        title: "Every new change becomes difficult"
+        text: "Your application is still useful, but every new feature requires understanding a large amount of context before making changes."
+    card_2:
+        title: "The codebase is difficult to approach with confidence"
+        text: "The system works, but it becomes difficult to know where to intervene, what to test and which side effects to avoid."
+    card_3:
+        title: "You need to deliver without destabilizing production"
+        text: "You need to add, fix or integrate features while limiting regressions and service interruptions."
+    card_4:
+        title: "Your team needs an autonomous reinforcement"
+        text: "I can join an existing team, progressively understand the context and contribute without forcing unnecessary rewrites."
+
+concrete:
+    title: "What I concretely do"
+    item_1: "Evolve existing PHP applications without disrupting their current behavior"
+    item_2: "Maintain and improve Symfony and Drupal platforms already running in production"
+    item_3: "Solve complex production issues in a reliable and pragmatic way"
+    item_4: "Integrate APIs and external services into existing systems"
+    item_5: "Progressively improve code readability, quality and maintainability"
+
+stats:
+    title: "Field experience"
+    experience:
+        value: "15+"
+        label: "years working on production web applications"
+    stack:
+        value: "Projects"
+        label: "contributions on existing platforms, often evolving continuously"
+    production:
+        value: "Production"
+        label: "systems used daily, with real-world stability constraints"
+    teams:
+        value: "Teams"
+        label: "integration into product and technical teams, with direct collaboration"
+
+projects:
+    title: "Representative projects"
+    delcampe:
+        tag: "Marketplace / Symfony"
+        title: "Delcampe"
+        text: "Worked on a large international marketplace dedicated to collectors. Maintenance, feature evolution and contribution to the quality of a large Symfony application through code reviews and automated testing."
+    stanhome:
+        tag: "E-commerce / Drupal"
+        title: "Stanhome"
+        text: "Contributed to the evolution of a Drupal Commerce e-commerce platform. Worked on catalog management and integrations (ElasticSearch, Salesforce, Google Maps API) within an existing business environment."
+    moveit:
+        tag: "SSO / Microservices"
+        title: "Rossel — MoveIT"
+        text: "Participated in the development of Go microservices for an SSO authentication platform used by several media brands within the Rossel group."
+
+work_style:
+    title: "How I work"
+    understand:
+        title: "Understand before modifying"
+        text: "Before making changes, I take the time to understand the existing system: code structure, data flows, business constraints and technical history, in order to reduce risks and avoid side effects, while relying on automated tests to secure evolutions."
+    progressive:
+        title: "Move forward progressively"
+        text: "I improve systems step by step: solving concrete problems, reducing complexity whenever possible and evolving existing systems without forcing unnecessary rewrites."
+
+skills:
+    title: "Areas of expertise"
+    backend:
+        title: "PHP Backend"
+        text: "Development and evolution of Symfony, Drupal and custom web applications"
+    data:
+        title: "Data & APIs"
+        text: "Design and integration of APIs (REST, SOAP) and management of relational and document-oriented databases"
+    quality:
+        title: "Quality & reliability"
+        text: "Implementation of best practices: automated testing, code review, CI/CD and continuous code improvement"
+    collaboration:
+        title: "Team collaboration"
+        text: "Collaboration with product, business and technical teams, integration into existing environments"
+
+coaching:
+    title: "Coaching & knowledge sharing"
+    paragraph_1: "For several years, I have been helping students, career changers and developers improve their programming skills and progress on their projects."
+    paragraph_2: "This activity strengthens my ability to explain concepts clearly, review code, identify blockers and support other developers with pedagogy — qualities that are also valuable within project teams. I genuinely enjoy making complex concepts more accessible and helping others progress efficiently."
+
+links:
+    title: "Find me online"
+    linkedin: "Professional profile, background and recommendations"
+    malt: "Freelance profile and availability"
+    github: "Personal projects and technical experiments"
+    superprof: "Programming coaching"
+    apprentus: "Private tutoring and mentoring"
+
+contact:
+    title: "Need help evolving an existing application?"
+    text: "I can join your team as a freelance backend developer, part-time, and progressively contribute without disrupting what is already working."

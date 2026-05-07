@@ -5,29 +5,79 @@
 {% block body %}
     <main class="lab-page dnd-initiative-page">
         <section class="content-section">
-            <div class="card">
+            <header class="dnd-page-header">
                 <h1>Initiative D&D</h1>
 
-                <div class="form-row">
-                    <label for="monsterCount">
-                        Nombre de monstres
-                    </label>
+                <p>
+                    Préparer les monstres, ajouter les joueurs et suivre l’ordre d’initiative du combat.
+                </p>
+            </header>
 
-                    <input id="monsterCount" type="number" min="1" value="5">
-                </div>
+            <div class="dnd-layout">
+                <section class="card dnd-panel dnd-panel--monsters">
+                    <header class="dnd-panel__header">
+                        <div>
+                            <h2>Gestion des monstres</h2>
+                            <p>Choisis les monstres présents dans la rencontre.</p>
+                        </div>
+                    </header>
 
-                <div class="actions">
-                    <button id="createMonsters" type="button">
-                        Créer la liste
-                    </button>
+                    <div class="dnd-toolbar">
+                        <div class="dnd-toolbar__field">
+                            <label for="monsterCount">
+                                Nombre de monstres
+                            </label>
 
-                    <button id="rollInitiative" type="button" disabled>
-                        Lancer l’initiative
-                    </button>
-                </div>
+                            <input id="monsterCount" type="number" min="1" value="5">
+                        </div>
 
-                <ul id="monsterList" class="monster-list"></ul>
+                        <div class="dnd-toolbar__actions">
+                            <button id="createMonsters" type="button">
+                                Créer la liste
+                            </button>
+
+                            <button id="rollInitiative" type="button" disabled>
+                                Lancer l’initiative
+                            </button>
+                        </div>
+                    </div>
+
+                    <ul id="monsterList" class="monster-list"></ul>
+                </section>
+
+                <section class="card dnd-panel dnd-panel--players">
+                    <header class="dnd-panel__header">
+                        <div>
+                            <h2>Gestion des joueurs</h2>
+                            <p>Les personnages joueurs seront ajoutés ici.</p>
+                        </div>
+                    </header>
+
+                    <div class="dnd-placeholder">
+                        <p>Zone prévue pour la liste des joueurs.</p>
+                    </div>
+                </section>
+
+                <section class="card dnd-panel dnd-panel--turn-order">
+                    <header class="dnd-panel__header">
+                        <div>
+                            <h2>Ordre du tour</h2>
+                            <p>La liste d’initiative complète apparaîtra ici.</p>
+                        </div>
+                    </header>
+
+                    <div class="dnd-placeholder">
+                        <p>Aucun tour de combat généré pour le moment.</p>
+                    </div>
+                </section>
             </div>
         </section>
     </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="module" src="{{ asset('scripts/lab/dnd/monster_classes.js') }}"></script>
+    <script type="module" src="{{ asset('scripts/lab/dnd/dnd_initiative.js') }}"></script>
 {% endblock %}

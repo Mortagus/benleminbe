@@ -1,7 +1,7 @@
 // Generated from monsters.html
 // Do not edit manually.
 
-export const monsterClasses = [
+const monsterClasses = [
     {
         "id": 1,
         "slug": "aarakocra",

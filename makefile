@@ -11,3 +11,6 @@ deploy:
 
 track_logs:
 	tail -f --retry var/log/cv-downloads.log
+
+cc:
+	php bin/console cache:clear

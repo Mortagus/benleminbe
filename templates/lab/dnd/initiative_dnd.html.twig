@@ -24,4 +24,8 @@
     </main>
 {% endblock %}
 
-{% block importmap %}{{ importmap('dnd_initiative') }}{% endblock %}
+{% block importmap %}
+    {{ parent() }}
+
+    {{ importmap('dnd_initiative') }}
+{% endblock %}

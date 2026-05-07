@@ -5,8 +5,17 @@
             <p>Ajoute les personnages joueurs présents dans la rencontre.</p>
         </div>
 
-        <button id="addPlayer" type="button" class="dnd-secondary-button">
-            Ajouter un joueur
+        <button
+            id="addPlayer"
+            type="button"
+            class="dnd-icon-button dnd-secondary-button"
+            aria-label="Ajouter un joueur"
+            title="Ajouter un joueur"
+        >
+            <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
         </button>
     </header>
 
@@ -25,9 +34,9 @@
             <div class="player-field player-field--hp">
                 <label>PV</label>
                 <div class="player-hp-inputs">
-                    <input type="number" min="0" placeholder="PV actuels">
+                    <input type="number" min="0" placeholder="rest.">
                     <span>/</span>
-                    <input type="number" min="0" placeholder="PV max">
+                    <input type="number" min="0" placeholder="max">
                 </div>
             </div>
 
@@ -36,8 +45,16 @@
                 <input type="number" placeholder="0">
             </div>
 
-            <button type="button" class="player-remove-button" aria-label="Supprimer ce joueur">
-                Supprimer
+            <button
+                type="button"
+                class="player-remove-button dnd-icon-button"
+                aria-label="Supprimer ce joueur"
+                title="Supprimer ce joueur"
+            >
+                <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                </svg>
             </button>
         </li>
     </ul>
@@ -57,9 +74,9 @@
             <div class="player-field player-field--hp">
                 <label>PV</label>
                 <div class="player-hp-inputs">
-                    <input type="number" min="0" placeholder="PV actuels">
+                    <input type="number" min="0" placeholder="rest.">
                     <span>/</span>
-                    <input type="number" min="0" placeholder="PV max">
+                    <input type="number" min="0" placeholder="max">
                 </div>
             </div>
 
@@ -68,8 +85,16 @@
                 <input type="number" placeholder="0">
             </div>
 
-            <button type="button" class="player-remove-button" aria-label="Supprimer ce joueur">
-                Supprimer
+            <button
+                type="button"
+                class="player-remove-button dnd-icon-button"
+                aria-label="Supprimer ce joueur"
+                title="Supprimer ce joueur"
+            >
+                <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                </svg>
             </button>
         </li>
     </template>

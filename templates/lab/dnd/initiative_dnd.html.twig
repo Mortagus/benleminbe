@@ -24,9 +24,4 @@
     </main>
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-
-    <script type="module" src="{{ asset('scripts/lab/dnd/monster_classes.js') }}"></script>
-    <script type="module" src="{{ asset('scripts/lab/dnd/dnd_initiative.js') }}"></script>
-{% endblock %}
+{% block importmap %}{{ importmap('dnd_initiative') }}{% endblock %}

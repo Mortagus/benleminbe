@@ -16,4 +16,8 @@ return [
         'path' => './assets/app.js',
         'entrypoint' => true,
     ],
+    'dnd_initiative' => [
+        'path' => './assets/scripts/lab/dnd/dnd_initiative.js',
+        'entrypoint' => true,
+    ],
 ];

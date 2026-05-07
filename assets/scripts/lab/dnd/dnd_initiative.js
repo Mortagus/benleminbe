@@ -1,16 +1,21 @@
 let monsters = [];
+let roundOrder = [];
 
 const monsterCountInput = document.getElementById('monsterCount');
 const createMonstersButton = document.getElementById('createMonsters');
 const rollInitiativeButton = document.getElementById('rollInitiative');
 const monsterList = document.getElementById('monsterList');
+
 const addPlayerButton = document.getElementById('addPlayer');
 const playerList = document.getElementById('playerList');
+
 const generateTurnOrderButton = document.getElementById('generateTurnOrder');
 const turnOrderPlaceholder = document.getElementById('turnOrderPlaceholder');
 const turnOrderList = document.getElementById('turnOrderList');
 
-let roundOrder = [];
+/* ==========================================================================
+   Monsters
+   ========================================================================== */
 
 function createEmptyMonster(index) {
     return {
@@ -34,7 +39,6 @@ function createMonsterFromClass(monsterClass, index, previousMonster = null) {
         slug: monsterClass.slug,
         name: `${monsterClass.name} ${index + 1}`,
         className: monsterClass.name,
-
         challengeRating: monsterClass.challenge_rating,
         type: monsterClass.type,
         size: monsterClass.size,
@@ -43,11 +47,14 @@ function createMonsterFromClass(monsterClass, index, previousMonster = null) {
         currentHitPoints: monsterClass.hit_points,
         alignment: monsterClass.alignment,
         isLegendary: monsterClass.is_legendary,
-
         roll: previousMonster?.roll ?? null,
         initiative: previousMonster?.initiative ?? null,
         originalData: monsterClass,
     };
+}
+
+function rollD20() {
+    return Math.floor(Math.random() * 20) + 1;
 }
 
 function renderMonsterOptions(selectedSlug) {
@@ -122,75 +129,45 @@ function renderMonsters() {
                     / ${monster.baseHitPoints}
                 </label>
 
-                <span class="monster-stat monster-initiative ${getInitiativeClass(monster)}">Init. ${formatInitiative(monster)}</span>
+                <span class="monster-stat monster-initiative ${getInitiativeClass(monster)}">
+                    Init. ${formatInitiative(monster)}
+                </span>
             </div>
         `;
 
-        const monsterSelect = li.querySelector('.monster-select');
-
-        monsterSelect.addEventListener('change', (event) => {
-            const selectedSlug = event.target.value;
-            const selectedMonsterClass = monsterClasses.find(monsterClass => monsterClass.slug === selectedSlug);
-
-            monsters[index] = selectedMonsterClass
-                ? createMonsterFromClass(selectedMonsterClass, index, monsters[index])
-                : createEmptyMonster(index);
-
-            rollInitiativeButton.disabled = !monsters.some(monster => monster.slug !== null);
-
-            renderMonsters();
-        });
-
+        bindMonsterItemEvents(li, index);
         monsterList.appendChild(li);
     });
 }
 
-function rollD20() {
-    return Math.floor(Math.random() * 20) + 1;
+function bindMonsterItemEvents(monsterItem, index) {
+    const monsterSelect = monsterItem.querySelector('.monster-select');
+    const hitPointsInput = monsterItem.querySelector('.monster-hp input');
+
+    monsterSelect.addEventListener('change', event => {
+        const selectedSlug = event.target.value;
+        const selectedMonsterClass = monsterClasses.find(monsterClass => monsterClass.slug === selectedSlug);
+
+        monsters[index] = selectedMonsterClass
+            ? createMonsterFromClass(selectedMonsterClass, index, monsters[index])
+            : createEmptyMonster(index);
+
+        updateRollInitiativeButtonState();
+        renderMonsters();
+    });
+
+    hitPointsInput?.addEventListener('change', event => {
+        monsters[index].currentHitPoints = Number(event.target.value);
+    });
 }
 
-createMonstersButton.addEventListener('click', () => {
-    const count = Number(monsterCountInput.value);
+function updateRollInitiativeButtonState() {
+    rollInitiativeButton.disabled = !monsters.some(monster => monster.slug !== null);
+}
 
-    monsters = [];
-
-    for (let i = 0; i < count; i++) {
-        monsters.push(createEmptyMonster(i));
-    }
-
-    rollInitiativeButton.disabled = true;
-    renderMonsters();
-});
-
-rollInitiativeButton.addEventListener('click', () => {
-    monsters = monsters.map(monster => {
-        if (monster.slug === null) {
-            return monster;
-        }
-
-        const roll = rollD20();
-
-        return {
-            ...monster,
-            roll,
-            initiative: roll,
-        };
-    });
-
-    monsters.sort((a, b) => {
-        if (a.initiative === null) {
-            return 1;
-        }
-
-        if (b.initiative === null) {
-            return -1;
-        }
-
-        return b.initiative - a.initiative;
-    });
-
-    renderMonsters();
-});
+/* ==========================================================================
+   Players
+   ========================================================================== */
 
 function createPlayerItem() {
     const li = document.createElement('li');
@@ -226,30 +203,24 @@ function createPlayerItem() {
         </button>
     `;
 
-    const removeButton = li.querySelector('.player-remove-button');
-
-    removeButton.addEventListener('click', () => {
-        li.remove();
-    });
+    bindPlayerItemEvents(li);
 
     return li;
 }
 
-function bindExistingPlayerRemoveButtons() {
-    const removeButtons = playerList.querySelectorAll('.player-remove-button');
+function bindPlayerItemEvents(playerItem) {
+    const removeButton = playerItem.querySelector('.player-remove-button');
 
-    removeButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-            button.closest('.player-item')?.remove();
-        });
+    removeButton.addEventListener('click', () => {
+        playerItem.remove();
     });
 }
 
-addPlayerButton.addEventListener('click', () => {
-    playerList.appendChild(createPlayerItem());
-});
+function bindExistingPlayerRemoveButtons() {
+    const playerItems = playerList.querySelectorAll('.player-item');
 
-bindExistingPlayerRemoveButtons();
+    playerItems.forEach(bindPlayerItemEvents);
+}
 
 function getPlayerActors() {
     const playerItems = playerList.querySelectorAll('.player-item');
@@ -276,6 +247,10 @@ function getPlayerActors() {
         })
         .filter(actor => actor.name.trim() !== '');
 }
+
+/* ==========================================================================
+   Round order
+   ========================================================================== */
 
 function getMonsterActors() {
     return monsters
@@ -334,7 +309,6 @@ function renderRoundOrder() {
 
     roundOrder.forEach((actor, index) => {
         const li = document.createElement('li');
-
         li.classList.add('turn-order-item');
 
         if (index === firstActiveIndex) {
@@ -372,10 +346,67 @@ function renderRoundOrder() {
     });
 }
 
+/* ==========================================================================
+   Events
+   ========================================================================== */
+
+createMonstersButton.addEventListener('click', () => {
+    const count = Number(monsterCountInput.value);
+
+    monsters = [];
+
+    for (let i = 0; i < count; i++) {
+        monsters.push(createEmptyMonster(i));
+    }
+
+    rollInitiativeButton.disabled = true;
+    renderMonsters();
+});
+
+rollInitiativeButton.addEventListener('click', () => {
+    monsters = monsters.map(monster => {
+        if (monster.slug === null) {
+            return monster;
+        }
+
+        const roll = rollD20();
+
+        return {
+            ...monster,
+            roll,
+            initiative: roll,
+        };
+    });
+
+    monsters.sort((a, b) => {
+        if (a.initiative === null) {
+            return 1;
+        }
+
+        if (b.initiative === null) {
+            return -1;
+        }
+
+        return b.initiative - a.initiative;
+    });
+
+    renderMonsters();
+});
+
+addPlayerButton.addEventListener('click', () => {
+    playerList.appendChild(createPlayerItem());
+});
+
 generateTurnOrderButton.addEventListener('click', () => {
     roundOrder = buildRoundOrder();
     renderRoundOrder();
 });
+
+/* ==========================================================================
+   Init
+   ========================================================================== */
+
+bindExistingPlayerRemoveButtons();
 
 // Generated from monsters.html
 // Do not edit manually.

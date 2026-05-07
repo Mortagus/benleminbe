@@ -1,0 +1,23 @@
+
+<section class="card dnd-panel dnd-panel--monsters">
+    <header class="dnd-panel__header">
+        <div>
+            <h2>Gestion des monstres</h2>
+            <p>Choisis les monstres présents dans la rencontre.</p>
+        </div>
+    </header>
+
+    <div class="dnd-toolbar">
+        <div class="dnd-toolbar__field">
+            <label for="monsterCount">Nombre de monstres</label>
+            <input id="monsterCount" type="number" min="1" value="5">
+        </div>
+
+        <div class="dnd-toolbar__actions">
+            <button id="createMonsters" type="button">Créer la liste</button>
+            <button id="rollInitiative" type="button" disabled>Lancer l’initiative</button>
+        </div>
+    </div>
+
+    <ul id="monsterList" class="monster-list"></ul>
+</section>

@@ -4,6 +4,13 @@ const monsterCountInput = document.getElementById('monsterCount');
 const createMonstersButton = document.getElementById('createMonsters');
 const rollInitiativeButton = document.getElementById('rollInitiative');
 const monsterList = document.getElementById('monsterList');
+const addPlayerButton = document.getElementById('addPlayer');
+const playerList = document.getElementById('playerList');
+const generateTurnOrderButton = document.getElementById('generateTurnOrder');
+const turnOrderPlaceholder = document.getElementById('turnOrderPlaceholder');
+const turnOrderList = document.getElementById('turnOrderList');
+
+let roundOrder = [];
 
 function createEmptyMonster(index) {
     return {
@@ -183,6 +190,191 @@ rollInitiativeButton.addEventListener('click', () => {
     });
 
     renderMonsters();
+});
+
+function createPlayerItem() {
+    const li = document.createElement('li');
+    li.classList.add('player-item');
+
+    li.innerHTML = `
+        <div class="player-field player-field--name">
+            <label>Nom</label>
+            <input type="text" placeholder="Nom du joueur">
+        </div>
+
+        <div class="player-field">
+            <label>CA</label>
+            <input type="number" min="0" placeholder="10">
+        </div>
+
+        <div class="player-field player-field--hp">
+            <label>PV</label>
+            <div class="player-hp-inputs">
+                <input type="number" min="0" placeholder="Actuels">
+                <span>/</span>
+                <input type="number" min="0" placeholder="Max">
+            </div>
+        </div>
+
+        <div class="player-field">
+            <label>Init.</label>
+            <input type="number" placeholder="0">
+        </div>
+
+        <button type="button" class="player-remove-button" aria-label="Supprimer ce joueur">
+            Supprimer
+        </button>
+    `;
+
+    const removeButton = li.querySelector('.player-remove-button');
+
+    removeButton.addEventListener('click', () => {
+        li.remove();
+    });
+
+    return li;
+}
+
+function bindExistingPlayerRemoveButtons() {
+    const removeButtons = playerList.querySelectorAll('.player-remove-button');
+
+    removeButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            button.closest('.player-item')?.remove();
+        });
+    });
+}
+
+addPlayerButton.addEventListener('click', () => {
+    playerList.appendChild(createPlayerItem());
+});
+
+bindExistingPlayerRemoveButtons();
+
+function getPlayerActors() {
+    const playerItems = playerList.querySelectorAll('.player-item');
+
+    return Array.from(playerItems)
+        .map((item, index) => {
+            const nameInput = item.querySelector('.player-field--name input');
+            const fields = item.querySelectorAll('.player-field');
+
+            const armorClassInput = fields[1]?.querySelector('input');
+            const hitPointInputs = item.querySelectorAll('.player-field--hp input');
+            const initiativeInput = fields[3]?.querySelector('input');
+
+            return {
+                id: `player-${index + 1}`,
+                type: 'player',
+                name: nameInput?.value || `Joueur ${index + 1}`,
+                armorClass: Number(armorClassInput?.value || 0),
+                currentHitPoints: Number(hitPointInputs[0]?.value || 0),
+                baseHitPoints: Number(hitPointInputs[1]?.value || 0),
+                initiative: Number(initiativeInput?.value || 0),
+                done: false,
+            };
+        })
+        .filter(actor => actor.name.trim() !== '');
+}
+
+function getMonsterActors() {
+    return monsters
+        .filter(monster => monster.slug !== null && monster.initiative !== null)
+        .map(monster => ({
+            id: monster.id,
+            type: 'monster',
+            name: monster.name,
+            armorClass: monster.armorClass,
+            currentHitPoints: monster.currentHitPoints,
+            baseHitPoints: monster.baseHitPoints,
+            initiative: monster.initiative,
+            done: false,
+        }));
+}
+
+function buildRoundOrder() {
+    const actors = [
+        ...getMonsterActors(),
+        ...getPlayerActors(),
+    ];
+
+    return actors
+        .filter(actor => actor.initiative !== 1)
+        .flatMap(actor => {
+            if (actor.initiative === 20) {
+                return [
+                    { ...actor, id: `${actor.id}-critical-1` },
+                    { ...actor, id: `${actor.id}-critical-2` },
+                ];
+            }
+
+            return [actor];
+        })
+        .sort((a, b) => b.initiative - a.initiative);
+}
+
+function getActorInitial(actor) {
+    return actor.name.trim().charAt(0).toUpperCase() || '?';
+}
+
+function renderRoundOrder() {
+    turnOrderList.innerHTML = '';
+
+    if (roundOrder.length === 0) {
+        turnOrderPlaceholder.hidden = false;
+        turnOrderList.hidden = true;
+
+        return;
+    }
+
+    turnOrderPlaceholder.hidden = true;
+    turnOrderList.hidden = false;
+
+    const firstActiveIndex = roundOrder.findIndex(actor => actor.done === false);
+
+    roundOrder.forEach((actor, index) => {
+        const li = document.createElement('li');
+
+        li.classList.add('turn-order-item');
+
+        if (index === firstActiveIndex) {
+            li.classList.add('turn-order-item--active');
+        }
+
+        if (actor.done) {
+            li.classList.add('turn-order-item--done');
+        }
+
+        li.innerHTML = `
+            <div class="turn-order-item__image-placeholder">
+                ${getActorInitial(actor)}
+            </div>
+
+            <div class="turn-order-item__name">
+                ${actor.name}
+            </div>
+
+            <div class="turn-order-item__stats">
+                <span>Init. ${actor.initiative}</span>
+                <span>CA ${actor.armorClass}</span>
+                <span>PV ${actor.currentHitPoints} / ${actor.baseHitPoints}</span>
+            </div>
+
+            ${index === firstActiveIndex ? '<div class="turn-order-item__badge">À jouer</div>' : ''}
+        `;
+
+        li.addEventListener('click', () => {
+            roundOrder[index].done = true;
+            renderRoundOrder();
+        });
+
+        turnOrderList.appendChild(li);
+    });
+}
+
+generateTurnOrderButton.addEventListener('click', () => {
+    roundOrder = buildRoundOrder();
+    renderRoundOrder();
 });
 
 // Generated from monsters.html

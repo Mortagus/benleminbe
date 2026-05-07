@@ -1,0 +1,44 @@
+<section class="card dnd-panel dnd-panel--players">
+    <header class="dnd-panel__header dnd-panel__header--with-action">
+        <div>
+            <h2>Gestion des joueurs</h2>
+            <p>Ajoute les personnages joueurs présents dans la rencontre.</p>
+        </div>
+
+        <button id="addPlayer" type="button" class="dnd-secondary-button">
+            Ajouter un joueur
+        </button>
+    </header>
+
+    <ul id="playerList" class="player-list">
+        <li class="player-item">
+            <div class="player-field player-field--name">
+                <label>Nom</label>
+                <input type="text" placeholder="Nom du joueur">
+            </div>
+
+            <div class="player-field">
+                <label>CA</label>
+                <input type="number" min="0" placeholder="10">
+            </div>
+
+            <div class="player-field player-field--hp">
+                <label>PV</label>
+                <div class="player-hp-inputs">
+                    <input type="number" min="0" placeholder="PV actuels">
+                    <span>/</span>
+                    <input type="number" min="0" placeholder="PV max">
+                </div>
+            </div>
+
+            <div class="player-field">
+                <label>Init.</label>
+                <input type="number" placeholder="0">
+            </div>
+
+            <button type="button" class="player-remove-button" aria-label="Supprimer ce joueur">
+                Supprimer
+            </button>
+        </li>
+    </ul>
+</section>

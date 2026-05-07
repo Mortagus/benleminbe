@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Initiative D&D{% endblock %}
+
+{% block body %}
+    <main class="lab-page dnd-initiative-page">
+        <section class="content-section">
+            <header class="dnd-page-header">
+                <h1>Initiative D&D</h1>
+
+                <p>
+                    Préparer les monstres, ajouter les joueurs et suivre l’ordre d’initiative du combat.
+                </p>
+            </header>
+
+            <div class="dnd-layout">
+
+                {% include 'lab/dnd/_monsters_panel.html.twig' %}
+                {% include 'lab/dnd/_players_panel.html.twig' %}
+                {% include 'lab/dnd/_turn_order_panel.html.twig' %}
+
+            </div>
+        </section>
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="module" src="{{ asset('scripts/lab/dnd/monster_classes.js') }}"></script>
+    <script type="module" src="{{ asset('scripts/lab/dnd/dnd_initiative.js') }}"></script>
+{% endblock %}

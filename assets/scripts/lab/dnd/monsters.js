@@ -2,6 +2,8 @@ import { monsterClasses } from './monster_classes.js';
 import { formatInitiative, getInitiativeClass, rollD20 } from './initiative.js';
 
 let monsters = [];
+const monsterItemTemplate = document.getElementById('monsterItemTemplate');
+const monsterOptionTemplate = document.getElementById('monsterOptionTemplate');
 
 export function createEmptyMonster(index) {
     return {
@@ -112,55 +114,62 @@ export function renderMonsters(monsterList, onMonsterSelectionChange) {
     monsterList.innerHTML = '';
 
     monsters.forEach((monster, index) => {
-        const li = document.createElement('li');
-        li.classList.add('monster-item');
+        const fragment = monsterItemTemplate.content.cloneNode(true);
+        const li = fragment.querySelector('.monster-item');
 
-        li.innerHTML = `
-            <div class="monster-main">
-                <select class="monster-select" data-index="${index}">
-                    ${renderMonsterOptions(monster.slug)}
-                </select>
+        const select = li.querySelector('.monster-select');
+        const type = li.querySelector('.monster-type');
+        const armorClass = li.querySelector('.monster-armor-class');
+        const hpInput = li.querySelector('.monster-hp input');
+        const hpMax = li.querySelector('.monster-hit-points-max');
+        const initiative = li.querySelector('.monster-initiative');
 
-                <span class="monster-type">${monster.type}</span>
-            </div>
+        select.dataset.index = String(index);
+        renderMonsterOptions(select, monster.slug);
 
-            <div class="monster-stats">
-                <span class="monster-stat">CA ${monster.armorClass}</span>
+        type.textContent = monster.type;
+        armorClass.textContent = `CA ${monster.armorClass}`;
 
-                <label class="monster-hp">
-                    PV
-                    <input
-                        type="number"
-                        min="0"
-                        max="${monster.baseHitPoints}"
-                        value="${monster.currentHitPoints}"
-                        ${monster.slug === null ? 'disabled' : ''}
-                    >
-                    / ${monster.baseHitPoints}
-                </label>
+        hpInput.max = String(monster.baseHitPoints);
+        hpInput.value = String(monster.currentHitPoints);
+        hpInput.disabled = monster.slug === null;
 
-                <span class="monster-stat monster-initiative ${getInitiativeClass(monster)}">
-                    Init. ${formatInitiative(monster)}
-                </span>
-            </div>
-        `;
+        hpMax.textContent = String(monster.baseHitPoints);
+
+        initiative.textContent = `Init. ${formatInitiative(monster)}`;
+        initiative.classList.add('monster-initiative');
+
+        const initiativeClass = getInitiativeClass(monster);
+
+        if (initiativeClass !== '') {
+            initiative.classList.add(initiativeClass);
+        }
 
         bindMonsterItemEvents(li, index, onMonsterSelectionChange);
         monsterList.appendChild(li);
     });
 }
 
-function renderMonsterOptions(selectedSlug) {
-    const options = [
-        '<option value="">Choisir un monstre</option>',
-        ...monsterClasses.map(monsterClass => {
-            const selected = monsterClass.slug === selectedSlug ? 'selected' : '';
+function renderMonsterOptions(select, selectedSlug) {
+    select.innerHTML = '';
 
-            return `<option value="${monsterClass.slug}" ${selected}>${monsterClass.name}</option>`;
-        }),
-    ];
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Choisir un monstre';
 
-    return options.join('');
+    select.appendChild(placeholderOption);
+
+    monsterClasses.forEach(monsterClass => {
+        const option = monsterOptionTemplate.content
+            .cloneNode(true)
+            .querySelector('option');
+
+        option.value = monsterClass.slug;
+        option.textContent = monsterClass.name;
+        option.selected = monsterClass.slug === selectedSlug;
+
+        select.appendChild(option);
+    });
 }
 
 function bindMonsterItemEvents(monsterItem, index, onMonsterSelectionChange) {

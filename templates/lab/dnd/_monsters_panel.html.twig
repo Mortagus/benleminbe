@@ -20,4 +20,29 @@
     </div>
 
     <ul id="monsterList" class="monster-list"></ul>
+
+    <template id="monsterItemTemplate">
+        <li class="monster-item">
+            <div class="monster-main">
+                <select class="monster-select"></select>
+                <span class="monster-type"></span>
+            </div>
+
+            <div class="monster-stats">
+                <span class="monster-stat monster-armor-class"></span>
+
+                <label class="monster-hp">
+                    PV
+                    <input type="number" min="0">
+                    /
+                    <span class="monster-hit-points-max"></span>
+                </label>
+
+                <span class="monster-stat monster-initiative"></span>
+            </div>
+        </li>
+    </template>
+    <template id="monsterOptionTemplate">
+        <option></option>
+    </template>
 </section>

@@ -1,8 +1,10 @@
-<?php /** @noinspection HttpUrlsUsage */
+<?php
+/** @noinspection HttpUrlsUsage */
 
 namespace App\Command;
 
 use App\Public\Service\ProjectProvider;
+use App\Public\Service\ExperienceProvider;
 use DOMDocument;
 use DOMElement;
 use DOMException;
@@ -19,8 +21,7 @@ use Symfony\Component\Routing\RouterInterface;
     name: 'app:generate-sitemap',
     description: 'Génère le fichier public/sitemap.xml',
 )]
-class GenerateSitemapCommand extends Command
-{
+class GenerateSitemapCommand extends Command {
     private const string DEFAULT_LOCALE = 'fr';
     private const array LOCALES = ['fr', 'en'];
 
@@ -29,16 +30,16 @@ class GenerateSitemapCommand extends Command
         private readonly string $projectDir,
         private readonly RouterInterface $router,
         private readonly ProjectProvider $projectProvider,
+        private readonly ExperienceProvider $experienceProvider,
     ) {
         parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
         $io = new SymfonyStyle($input, $output);
 
         $document = new DOMDocument('1.0', 'UTF-8');
-        $document->formatOutput = true;
+        $document->formatOutput = TRUE;
 
         try {
             $urlset = $document->createElement('urlset');
@@ -53,27 +54,31 @@ class GenerateSitemapCommand extends Command
                 $urlset->appendChild($this->createUrlNode($document, $url));
             }
         } catch (DOMException $exception) {
-            $io->error(sprintf(
-                'Impossible de construire le document XML du sitemap : %s',
-                $exception->getMessage()
-            ));
+            $io->error(
+                sprintf(
+                    'Impossible de construire le document XML du sitemap : %s',
+                    $exception->getMessage()
+                )
+            );
 
             return Command::FAILURE;
         }
 
         $sitemapPath = $this->projectDir . '/public/sitemap.xml';
 
-        if ($document->save($sitemapPath) === false) {
+        if ($document->save($sitemapPath) === FALSE) {
             $io->error(sprintf('Impossible de générer le fichier sitemap : %s', $sitemapPath));
 
             return Command::FAILURE;
         }
 
-        $io->success(sprintf(
-            'Le fichier sitemap.xml a été mis à jour avec %d URL(s) : %s',
-            count($urls),
-            $sitemapPath
-        ));
+        $io->success(
+            sprintf(
+                'Le fichier sitemap.xml a été mis à jour avec %d URL(s) : %s',
+                count($urls),
+                $sitemapPath
+            )
+        );
 
         return Command::SUCCESS;
     }
@@ -85,32 +90,33 @@ class GenerateSitemapCommand extends Command
      *     lastmod?: string
      * }>
      */
-    private function buildSitemapUrls(): array
-    {
+    private function buildSitemapUrls(): array {
         $urls = [];
 
         foreach ($this->router->getRouteCollection() as $routeName => $route) {
             $sitemap = $route->getOption('sitemap');
 
-            if (!is_array($sitemap) || ($sitemap['enabled'] ?? false) !== true) {
+            if (!is_array($sitemap) || ($sitemap['enabled'] ?? FALSE) !== TRUE) {
                 continue;
             }
 
             $locales = $sitemap['locales'] ?? self::LOCALES;
-            $lastmod = $sitemap['lastmod'] ?? null;
+            $lastmod = $sitemap['lastmod'] ?? NULL;
 
             if ($routeName === 'app_projects_show') {
-                foreach ($this->projectProvider->getProjects() as $project) {
-                    $urls = [
-                        ...$urls,
-                        ...$this->buildLocalizedUrls(
-                            $routeName,
-                            $locales,
-                            ['project' => $project['key']],
-                            is_string($lastmod) ? $lastmod : null,
-                        ),
-                    ];
-                }
+                $urls = [
+                    ...$urls,
+                    ...$this->buildProjectUrls($routeName, $locales, is_string($lastmod) ? $lastmod : null),
+                ];
+
+                continue;
+            }
+
+            if ($routeName === 'app_experiences_show') {
+                $urls = [
+                    ...$urls,
+                    ...$this->buildExperienceUrls($routeName, $locales, is_string($lastmod) ? $lastmod : null),
+                ];
 
                 continue;
             }
@@ -121,7 +127,7 @@ class GenerateSitemapCommand extends Command
                     $routeName,
                     $locales,
                     [],
-                    is_string($lastmod) ? $lastmod : null,
+                    is_string($lastmod) ? $lastmod : NULL,
                 ),
             ];
         }
@@ -143,7 +149,7 @@ class GenerateSitemapCommand extends Command
         string $routeName,
         array $locales,
         array $parameters = [],
-        ?string $lastmod = null,
+        ?string $lastmod = NULL,
     ): array {
         $urls = [];
         $alternates = [];
@@ -185,6 +191,68 @@ class GenerateSitemapCommand extends Command
     }
 
     /**
+     * @param array<int, string> $locales
+     *
+     * @return array<int, array{
+     *     loc: string,
+     *     alternates: array<string, string>,
+     *     lastmod?: string
+     * }>
+     */
+    private function buildExperienceUrls(
+        string $routeName,
+        array $locales,
+        ?string $lastmod = NULL,
+    ): array {
+        $urls = [];
+
+        foreach ($this->experienceProvider->getExperiences() as $experience) {
+            $urls = [
+                ...$urls,
+                ...$this->buildLocalizedUrls(
+                    $routeName,
+                    $locales,
+                    ['experience' => $experience['slug']],
+                    $lastmod,
+                ),
+            ];
+        }
+
+        return $urls;
+    }
+
+    /**
+     * @param array<int, string> $locales
+     *
+     * @return array<int, array{
+     *     loc: string,
+     *     alternates: array<string, string>,
+     *     lastmod?: string
+     * }>
+     */
+    private function buildProjectUrls(
+        string $routeName,
+        array $locales,
+        ?string $lastmod = NULL,
+    ): array {
+        $urls = [];
+
+        foreach ($this->projectProvider->getProjects() as $project) {
+            $urls = [
+                ...$urls,
+                ...$this->buildLocalizedUrls(
+                    $routeName,
+                    $locales,
+                    ['project' => $project['key']],
+                    $lastmod,
+                ),
+            ];
+        }
+
+        return $urls;
+    }
+
+    /**
      * @param DOMDocument $document
      * @param array{
      *      loc: string,
@@ -194,8 +262,7 @@ class GenerateSitemapCommand extends Command
      * @return DOMElement
      * @throws DOMException
      */
-    private function createUrlNode(DOMDocument $document, array $url): DOMElement
-    {
+    private function createUrlNode(DOMDocument $document, array $url): DOMElement {
         $urlNode = $document->createElement('url');
 
         $urlNode->appendChild($document->createElement('loc', $url['loc']));

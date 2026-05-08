@@ -5,10 +5,10 @@ deploy:
 	touch var/log/cv-downloads.log
 	chmod 664 var/log/cv-downloads.log
 	#php bin/console doctrine:migrations:migrate --no-interaction
-	php bin/console asset-map:compile --env=prod
-	php bin/console app:generate-sitemap
 	php bin/console cache:clear --env=prod
 	php bin/console cache:warmup --env=prod
+	php bin/console asset-map:compile --env=prod
+	php bin/console app:generate-sitemap --env=prod
 
 track_logs:
 	tail -f --retry var/log/cv-downloads.log

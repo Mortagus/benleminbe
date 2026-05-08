@@ -1,0 +1,50 @@
+contact:
+    meta:
+        title: "Contact"
+
+    hero:
+        eyebrow: "Contact"
+        title: "Discutons de votre projet"
+        intro: >
+            Une question, une mission, une idée de projet ou simplement envie d’échanger ?
+            Vous pouvez me contacter directement via les plateformes ci-dessous.
+
+    methods:
+        title: "Me contacter"
+
+        linkedin:
+            name: "LinkedIn"
+            description: "Pour échanger autour d’une mission, d’un projet ou de mon parcours."
+            action: "Ouvrir →"
+
+        malt:
+            name: "Malt"
+            description: "Pour les demandes de mission freelance structurées."
+            action: "Ouvrir →"
+
+        email:
+            name: "Email"
+            description: "Pour un message direct, une question ou une première prise de contact."
+            action: "Écrire →"
+
+        whatsapp:
+            name: "WhatsApp"
+            description: "Pour un échange rapide si nous sommes déjà en contact."
+            action: "Écrire →"
+
+    details:
+        services:
+            title: "Je peux notamment aider sur"
+            item_1: "la maintenance et l’évolution d’applications PHP / Symfony ;"
+            item_2: "le debugging et la stabilisation de projets existants ;"
+            item_3: "la conception et l’architecture backend ;"
+            item_4: "l’accompagnement technique et les revues de code ;"
+            item_5: "le coaching et l’apprentissage de la programmation."
+
+        availability:
+            title: "Disponibilité"
+            paragraph_1: >
+                Je travaille actuellement sur des missions freelance à temps partiel,
+                en parallèle d’activités de coaching et de projets personnels.
+            paragraph_2: >
+                Un système de prise de rendez-vous en ligne sera probablement ajouté plus tard.

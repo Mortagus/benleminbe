@@ -22,7 +22,7 @@
             <p class="hero-details">{{ 'hero.details_p2'|trans }}</p>
 
             <div class="buttons">
-                <a href="mailto:benjamin@lemin.be" class="button">
+                <a href="{{ path('app_contact', { _locale: app.request.locale}) }}" class="button">
                     {{ 'actions.contact'|trans }}
                 </a>
 
@@ -239,7 +239,8 @@
             <p>{{ 'contact.text'|trans }}</p>
 
             <div class="buttons">
-                <a href="mailto:benjamin@lemin.be" class="button">
+
+                <a href="{{ path('app_contact', { _locale: app.request.locale}) }}" class="button">
                     {{ 'actions.contact'|trans }}
                 </a>
 

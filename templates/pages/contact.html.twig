@@ -2,20 +2,82 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Contact{% endblock %}
+{% trans_default_domain 'contact' %}
+
+{% block title %}{{ 'contact.meta.title'|trans }}{% endblock %}
 
 {% block body %}
-    <section class="content-section">
-        <div class="card">
-            <h1>Contact</h1>
+    <main class="contact-page">
+        <header class="contact-hero">
+            <p class="contact-hero__eyebrow">{{ 'contact.hero.eyebrow'|trans }}</p>
 
-            <p>
-                Feel free to contact me through the platforms listed on the homepage.
-            </p>
+            <h1>{{ 'contact.hero.title'|trans }}</h1>
 
-            <p>
-                A dedicated contact form may be added later if needed.
-            </p>
-        </div>
-    </section>
+            <p class="contact-hero__intro">{{ 'contact.hero.intro'|trans }}</p>
+        </header>
+
+        <section class="contact-methods" aria-labelledby="contact-methods-title">
+            <h2 id="contact-methods-title">{{ 'contact.methods.title'|trans }}</h2>
+
+            <div class="contact-methods__grid">
+                <a class="contact-card" href="https://www.linkedin.com/in/benlem/" target="_blank" rel="noopener noreferrer">
+                    <span class="contact-card__icon">in</span>
+                    <span class="contact-card__content">
+                        <strong>{{ 'contact.methods.linkedin.name'|trans }}</strong>
+                        <span>{{ 'contact.methods.linkedin.description'|trans }}</span>
+                    </span>
+                    <span class="contact-card__action">{{ 'contact.methods.linkedin.action'|trans }}</span>
+                </a>
+
+                <a class="contact-card" href="https://fr.malt.be/profile/benjaminlemin" target="_blank" rel="noopener noreferrer">
+                    <span class="contact-card__icon">M</span>
+                    <span class="contact-card__content">
+                        <strong>{{ 'contact.methods.malt.name'|trans }}</strong>
+                        <span>{{ 'contact.methods.malt.description'|trans }}</span>
+                    </span>
+                    <span class="contact-card__action">{{ 'contact.methods.malt.action'|trans }}</span>
+                </a>
+
+                <a class="contact-card" href="mailto:contact@example.com">
+                    <span class="contact-card__icon">@</span>
+                    <span class="contact-card__content">
+                        <strong>{{ 'contact.methods.email.name'|trans }}</strong>
+                        <span>{{ 'contact.methods.email.description'|trans }}</span>
+                    </span>
+                    <span class="contact-card__action">{{ 'contact.methods.email.action'|trans }}</span>
+                </a>
+
+                <a class="contact-card" href="https://wa.me/32495851919" target="_blank" rel="noopener noreferrer">
+                    <span class="contact-card__icon">☎</span>
+                    <span class="contact-card__content">
+                        <strong>{{ 'contact.methods.whatsapp.name'|trans }}</strong>
+                        <span>{{ 'contact.methods.whatsapp.description'|trans }}</span>
+                    </span>
+                    <span class="contact-card__action">{{ 'contact.methods.whatsapp.action'|trans }}</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="contact-details-grid">
+            <div class="card contact-detail-card">
+                <h2>{{ 'contact.details.services.title'|trans }}</h2>
+
+                <ul>
+                    <li>{{ 'contact.details.services.item_1'|trans }}</li>
+                    <li>{{ 'contact.details.services.item_2'|trans }}</li>
+                    <li>{{ 'contact.details.services.item_3'|trans }}</li>
+                    <li>{{ 'contact.details.services.item_4'|trans }}</li>
+                    <li>{{ 'contact.details.services.item_5'|trans }}</li>
+                </ul>
+            </div>
+
+            <div class="card contact-detail-card">
+                <h2>{{ 'contact.details.availability.title'|trans }}</h2>
+
+                <p>{{ 'contact.details.availability.paragraph_1'|trans }}</p>
+
+                <p>{{ 'contact.details.availability.paragraph_2'|trans }}</p>
+            </div>
+        </section>
+    </main>
 {% endblock %}

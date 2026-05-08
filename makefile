@@ -12,5 +12,11 @@ deploy:
 track_logs:
 	tail -f --retry var/log/cv-downloads.log
 
-cc:
+reload_assets:
+	php bin/console asset-map:compile
+
+cc: reload_assets
 	php bin/console cache:clear
+
+serv:
+	symfony local:server:start

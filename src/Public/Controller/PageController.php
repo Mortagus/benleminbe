@@ -8,12 +8,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route(
+    '/{_locale}',
+    name: 'app_',
+    requirements: ['_locale' => 'fr|en'],
+)]
 final class PageController extends AbstractController
 {
     #[Route(
-        path: '/{_locale}/about',
-        name: 'app_about',
-        requirements: ['_locale' => 'fr|en']
+        path: 'about',
+        name: 'about',
+        options: [
+            'sitemap' => [
+                'enabled' => true,
+                'locales' => ['fr', 'en'],
+                'lastmod' => '2026-05-08',
+            ],
+        ],
+        methods: ['GET'],
     )]
     public function about(): Response
     {
@@ -21,9 +33,16 @@ final class PageController extends AbstractController
     }
 
     #[Route(
-        path: '/{_locale}/contact',
-        name: 'app_contact',
-        requirements: ['_locale' => 'fr|en']
+        path: '/contact',
+        name: 'contact',
+        options: [
+            'sitemap' => [
+                'enabled' => true,
+                'locales' => ['fr', 'en'],
+                'lastmod' => '2026-05-08',
+            ],
+        ],
+        methods: ['GET'],
     )]
     public function contact(): Response
     {

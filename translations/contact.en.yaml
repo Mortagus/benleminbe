@@ -1,0 +1,51 @@
+contact:
+    meta:
+        title: "Contact"
+
+    hero:
+        eyebrow: "Contact"
+        title: "Let's discuss your project"
+        intro: >
+            A question, a project idea, a freelance opportunity, or simply feel like getting in touch?
+            You can contact me directly through the platforms below.
+
+    methods:
+        title: "Get in touch"
+
+        linkedin:
+            name: "LinkedIn"
+            description: "To discuss a project, a freelance opportunity, or my professional background."
+            action: "Open →"
+
+        malt:
+            name: "Malt"
+            description: "For structured freelance project requests."
+            action: "Open →"
+
+        email:
+            name: "Email"
+            description: "For direct messages, questions, or an initial conversation."
+            action: "Write →"
+
+        whatsapp:
+            name: "WhatsApp"
+            description: "For quick exchanges if we are already in contact."
+            action: "Write →"
+
+    details:
+        services:
+            title: "I can notably help with"
+            item_1: "maintenance and evolution of PHP / Symfony applications;"
+            item_2: "debugging and stabilization of existing projects;"
+            item_3: "backend architecture and technical design;"
+            item_4: "technical guidance and code reviews;"
+            item_5: "programming coaching and mentoring."
+
+        availability:
+            title: "Availability"
+            paragraph_1: >
+                I am currently working on part-time freelance missions,
+                alongside coaching activities and personal projects.
+
+            paragraph_2: >
+                An online appointment scheduling system may be added later.

@@ -16,15 +16,15 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PageController extends AbstractController
 {
     #[Route(
-        path: 'about',
+        path: '/about',
         name: 'about',
-        options: [
-            'sitemap' => [
-                'enabled' => true,
-                'locales' => ['fr', 'en'],
-                'lastmod' => '2026-05-08',
-            ],
-        ],
+//        options: [
+//            'sitemap' => [
+//                'enabled' => true,
+//                'locales' => ['fr', 'en'],
+//                'lastmod' => '2026-05-08',
+//            ],
+//        ],
         methods: ['GET'],
     )]
     public function about(): Response

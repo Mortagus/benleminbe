@@ -1,6 +1,7 @@
 import { getTurnCount, shouldSkipTurn } from './initiative.js';
 
 let roundOrder = [];
+let draggedActorId = null;
 
 export function buildRoundOrder(monsterActors, playerActors) {
     const actors = [
@@ -16,6 +17,7 @@ export function buildRoundOrder(monsterActors, playerActors) {
             return Array.from({ length: turnCount }, (_, index) => ({
                 ...actor,
                 id: turnCount > 1 ? `${actor.id}-turn-${index + 1}` : actor.id,
+                done: false,
             }));
         })
         .sort((a, b) => b.initiative - a.initiative);
@@ -36,7 +38,7 @@ export function renderRoundOrder(turnOrderList, turnOrderPlaceholder) {
     turnOrderPlaceholder.hidden = true;
     turnOrderList.hidden = false;
 
-    const firstActiveIndex = roundOrder.findIndex(actor => actor.done === false);
+    const firstActiveIndex = roundOrder.findIndex(actor => !actor.done);
 
     roundOrder.forEach((actor, index) => {
         const li = document.createElement('li');
@@ -69,7 +71,42 @@ export function renderRoundOrder(turnOrderList, turnOrderPlaceholder) {
         `;
 
         li.addEventListener('click', () => {
-            roundOrder[index].done = true;
+            roundOrder[index].done = !roundOrder[index].done;
+            renderRoundOrder(turnOrderList, turnOrderPlaceholder);
+        });
+
+        li.draggable = true;
+        li.dataset.actorId = actor.id;
+
+        li.addEventListener('dragstart', () => {
+            draggedActorId = actor.id;
+            li.classList.add('turn-order-item--dragging');
+        });
+
+        li.addEventListener('dragend', () => {
+            draggedActorId = null;
+            li.classList.remove('turn-order-item--dragging');
+        });
+
+        li.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            li.classList.add('turn-order-item--drag-over');
+        });
+
+        li.addEventListener('dragleave', () => {
+            li.classList.remove('turn-order-item--drag-over');
+        });
+
+        li.addEventListener('drop', (event) => {
+            event.preventDefault();
+
+            li.classList.remove('turn-order-item--drag-over');
+
+            if (!draggedActorId || draggedActorId === actor.id) {
+                return;
+            }
+
+            moveActorBefore(draggedActorId, actor.id);
             renderRoundOrder(turnOrderList, turnOrderPlaceholder);
         });
 
@@ -79,4 +116,22 @@ export function renderRoundOrder(turnOrderList, turnOrderPlaceholder) {
 
 function getActorInitial(actor) {
     return actor.name.trim().charAt(0).toUpperCase() || '?';
+}
+
+function moveActorBefore(draggedActorId, targetActorId) {
+    const draggedIndex = roundOrder.findIndex(actor => actor.id === draggedActorId);
+
+    if (draggedIndex === -1) {
+        return;
+    }
+
+    const [draggedActor] = roundOrder.splice(draggedIndex, 1);
+    const targetIndex = roundOrder.findIndex(actor => actor.id === targetActorId);
+
+    if (targetIndex === -1) {
+        roundOrder.push(draggedActor);
+        return;
+    }
+
+    roundOrder.splice(targetIndex, 0, draggedActor);
 }

@@ -464,6 +464,15 @@
     white-space: nowrap;
 }
 
+.turn-order-item--dragging {
+    opacity: 0.45;
+}
+
+.turn-order-item--drag-over {
+    outline: 2px dashed var(--accent);
+    outline-offset: 4px;
+}
+
 @media (width <= 960px) {
     .dnd-initiative-page .dnd-layout {
         grid-template-columns: 1fr;

@@ -10,7 +10,7 @@
     <div class="dnd-toolbar">
         <div class="dnd-toolbar__field">
             <label for="monsterCount">Nombre de monstres</label>
-            <input id="monsterCount" type="number" min="1" value="5">
+            <input id="monsterCount" type="number" min="1" value="3">
         </div>
 
         <div class="dnd-toolbar__actions">
@@ -25,10 +25,10 @@
         <li class="monster-item">
             <div class="monster-main">
                 <select class="monster-select"></select>
+                <span class="monster-type"></span>
             </div>
 
             <div class="monster-stats">
-                <span class="monster-type"></span>
                 <span class="monster-stat monster-armor-class"></span>
 
                 <label class="monster-hp">
@@ -38,6 +38,7 @@
                     <span class="monster-hit-points-max"></span>
                 </label>
 
+                <span class="monster-stat monster-initiative-modifier"></span>
                 <span class="monster-stat monster-initiative"></span>
             </div>
         </li>

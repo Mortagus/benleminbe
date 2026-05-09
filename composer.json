@@ -20,7 +20,8 @@
         "symfony/asset-mapper": "^8.0",
         "symfony/translation": "^8.0",
         "symfony/apache-pack": "*",
-        "ext-dom": "*"
+        "ext-dom": "*",
+        "ext-iconv": "*"
     },
     "license": "MIT",
     "autoload": {

@@ -2,6 +2,7 @@ import { monsterClasses } from './monster_classes.js';
 import { formatInitiative, getInitiativeClass, rollD20 } from './initiative.js';
 
 let monsters = [];
+
 const monsterItemTemplate = document.getElementById('monsterItemTemplate');
 const monsterOptionTemplate = document.getElementById('monsterOptionTemplate');
 
@@ -11,17 +12,25 @@ export function createEmptyMonster(index) {
         slug: null,
         name: `Monstre ${index + 1}`,
         className: null,
+        challengeRating: null,
         type: '-',
+        size: null,
         armorClass: '-',
         baseHitPoints: 0,
         currentHitPoints: 0,
+        alignment: null,
+        isLegendary: false,
+        abilities: {},
+        initiativeModifier: 0,
         roll: null,
         initiative: null,
         originalData: null,
     };
 }
 
-export function createMonsterFromClass(monsterClass, index, previousMonster = null) {
+export function createMonsterFromClass(monsterClass, index) {
+    const initiativeModifier = getMonsterInitiativeModifier(monsterClass);
+
     return {
         id: `${monsterClass.slug}-${index + 1}`,
         slug: monsterClass.slug,
@@ -35,8 +44,10 @@ export function createMonsterFromClass(monsterClass, index, previousMonster = nu
         currentHitPoints: monsterClass.hit_points,
         alignment: monsterClass.alignment,
         isLegendary: monsterClass.is_legendary,
-        roll: previousMonster?.roll ?? null,
-        initiative: previousMonster?.initiative ?? null,
+        abilities: monsterClass.abilities ?? {},
+        initiativeModifier: initiativeModifier,
+        roll: null,
+        initiative: null,
         originalData: monsterClass,
     };
 }
@@ -60,11 +71,12 @@ export function rollMonsterInitiatives() {
         }
 
         const roll = rollD20();
+        const initiative = roll + monster.initiativeModifier;
 
         return {
             ...monster,
             roll,
-            initiative: roll,
+            initiative,
         };
     });
 
@@ -106,6 +118,8 @@ export function getMonsterActors() {
             currentHitPoints: monster.currentHitPoints,
             baseHitPoints: monster.baseHitPoints,
             initiative: monster.initiative,
+            roll: monster.roll,
+            initiativeModifier: monster.initiativeModifier,
             done: false,
         }));
 }
@@ -123,6 +137,7 @@ export function renderMonsters(monsterList, onMonsterSelectionChange) {
         const hpInput = li.querySelector('.monster-hp input');
         const hpMax = li.querySelector('.monster-hit-points-max');
         const initiative = li.querySelector('.monster-initiative');
+        const initiativeModifier = li.querySelector('.monster-initiative-modifier');
 
         select.dataset.index = String(index);
         renderMonsterOptions(select, monster.slug);
@@ -136,8 +151,8 @@ export function renderMonsters(monsterList, onMonsterSelectionChange) {
 
         hpMax.textContent = String(monster.baseHitPoints);
 
+        initiativeModifier.textContent = `${monster.initiativeModifier}`;
         initiative.textContent = `Init. ${formatInitiative(monster)}`;
-        initiative.classList.add('monster-initiative');
 
         const initiativeClass = getInitiativeClass(monster);
 
@@ -188,6 +203,18 @@ function bindMonsterItemEvents(monsterItem, index, onMonsterSelectionChange) {
     });
 
     hitPointsInput?.addEventListener('input', event => {
-        monsters[index].currentHitPoints = Number(event.target.value);
+        monsters[index].currentHitPoints = Number(event.target.value || 0);
     });
+}
+
+function getMonsterInitiativeModifier(monsterClass) {
+    if (typeof monsterClass.initiative_modifier === 'number') {
+        return monsterClass.initiative_modifier;
+    }
+
+    if (typeof monsterClass.abilities?.dex?.modifier === 'number') {
+        return monsterClass.abilities.dex.modifier;
+    }
+
+    return 0;
 }

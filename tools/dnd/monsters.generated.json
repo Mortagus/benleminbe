@@ -1,6 +1,4 @@
-
-
-export const monsterClasses = [
+[
     {
         "id": 1,
         "slug": "aarakocra",

@@ -151,8 +151,15 @@ export function renderMonsters(monsterList, onMonsterSelectionChange) {
 
         hpMax.textContent = String(monster.baseHitPoints);
 
-        initiativeModifier.textContent = `${monster.initiativeModifier}`;
+        initiativeModifier.textContent = formatModifier(monster.initiativeModifier);
+        initiativeModifier.title = `Modificateur d’initiative : ${formatModifier(monster.initiativeModifier)}. Ajouté au résultat du d20 lors du jet d’initiative.`;
+        initiativeModifier.setAttribute(
+            'aria-label',
+            `Modificateur d’initiative : ${formatModifier(monster.initiativeModifier)}`
+        );
+
         initiative.textContent = `Init. ${formatInitiative(monster)}`;
+        initiative.title = getInitiativeTooltip(monster);
 
         const initiativeClass = getInitiativeClass(monster);
 
@@ -163,6 +170,39 @@ export function renderMonsters(monsterList, onMonsterSelectionChange) {
         bindMonsterItemEvents(li, index, onMonsterSelectionChange);
         monsterList.appendChild(li);
     });
+}
+
+function getInitiativeTooltip(monster) {
+    if (monster.roll === null) {
+        return 'Aucun jet d’initiative effectué.';
+    }
+
+    const modifier = formatModifier(monster.initiativeModifier);
+    const finalScore = formatInitiative(monster);
+
+    let tooltip = [
+        `Jet de d20 : ${monster.roll}`,
+        `Modificateur : ${modifier}`,
+        `Initiative finale : ${finalScore}`,
+    ];
+
+    if (monster.roll === 20) {
+        tooltip.push('', 'Succès critique');
+    } else if (monster.roll === 1) {
+        tooltip.push('', 'Échec critique');
+    }
+
+    return tooltip.join('\n');
+}
+
+function formatModifier(value) {
+    const modifier = Number(value);
+
+    if (Number.isNaN(modifier)) {
+        return '-';
+    }
+
+    return modifier > 0 ? `+${modifier}` : String(modifier);
 }
 
 function renderMonsterOptions(select, selectedSlug) {

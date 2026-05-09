@@ -1,0 +1,27 @@
+.dnd-initiative-page .content-section {
+    max-width: 1575px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+}
+
+.dnd-initiative-page .dnd-page-header {
+    margin-bottom: 1.5rem;
+}
+
+.dnd-initiative-page .dnd-page-header p {
+    max-width: 48rem;
+    color: var(--muted);
+}
+
+.dnd-initiative-page .dnd-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (width <= 960px) {
+    .dnd-initiative-page .dnd-layout {
+        grid-template-columns: 1fr;
+    }
+}

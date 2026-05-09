@@ -2,6 +2,7 @@ import { getTurnCount, shouldSkipTurn } from './initiative.js';
 
 let roundOrder = [];
 let draggedActorId = null;
+const turnOrderItemTemplate = document.getElementById('turnOrderItemTemplate');
 
 export function buildRoundOrder(monsterActors, playerActors) {
     const actors = [
@@ -26,7 +27,7 @@ export function buildRoundOrder(monsterActors, playerActors) {
 }
 
 export function renderRoundOrder(turnOrderList, turnOrderPlaceholder) {
-    turnOrderList.innerHTML = '';
+    turnOrderList.replaceChildren();
 
     if (roundOrder.length === 0) {
         turnOrderPlaceholder.hidden = false;
@@ -41,8 +42,9 @@ export function renderRoundOrder(turnOrderList, turnOrderPlaceholder) {
     const firstActiveIndex = roundOrder.findIndex(actor => !actor.done);
 
     roundOrder.forEach((actor, index) => {
-        const li = document.createElement('li');
-        li.classList.add('turn-order-item');
+        const li = turnOrderItemTemplate.content
+            .firstElementChild
+            .cloneNode(true);
 
         if (index === firstActiveIndex) {
             li.classList.add('turn-order-item--active');
@@ -52,23 +54,14 @@ export function renderRoundOrder(turnOrderList, turnOrderPlaceholder) {
             li.classList.add('turn-order-item--done');
         }
 
-        li.innerHTML = `
-            <div class="turn-order-item__image-placeholder">
-                ${getActorInitial(actor)}
-            </div>
+        li.querySelector('.turn-order-item__image-placeholder').textContent = getActorInitial(actor);
+        li.querySelector('.turn-order-item__name').textContent = actor.name;
+        li.querySelector('.turn-order-item__initiative').textContent = `Init. ${actor.initiative}`;
+        li.querySelector('.turn-order-item__armor-class').textContent = `CA ${actor.armorClass}`;
+        li.querySelector('.turn-order-item__hit-points').textContent = `PV ${actor.currentHitPoints} / ${actor.baseHitPoints}`;
 
-            <div class="turn-order-item__name">
-                ${actor.name}
-            </div>
-
-            <div class="turn-order-item__stats">
-                <span>Init. ${actor.initiative}</span>
-                <span>CA ${actor.armorClass}</span>
-                <span>PV ${actor.currentHitPoints} / ${actor.baseHitPoints}</span>
-            </div>
-
-            ${index === firstActiveIndex ? '<div class="turn-order-item__badge">À jouer</div>' : ''}
-        `;
+        const badge = li.querySelector('.turn-order-item__badge');
+        badge.hidden = index !== firstActiveIndex;
 
         li.addEventListener('click', () => {
             roundOrder[index].done = !roundOrder[index].done;

@@ -2,22 +2,188 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}About{% endblock %}
+{% block title %}À propos | Benjamin Lemin{% endblock %}
 
 {% block body %}
-    <section class="content-section">
-        <div class="card">
-            <h1>About</h1>
+    <main class="about-page">
+        <header class="about-hero">
+            <p class="eyebrow">À propos</p>
 
-            <p>
-                This page will progressively present my background,
-                my experience and the way I approach web development projects.
-            </p>
+            <h1>Développeur web, coach et curieux du monde qui m'entoure</h1>
 
-            <p>
-                For now, the best overview of my work can be found
-                through the projects and experiences sections of this website.
+            <p class="about-hero__intro">
+                Je développe des applications web depuis 2010, avec une attention particulière
+                pour les projets existants, les systèmes métier et le code qui doit continuer à vivre.
             </p>
-        </div>
-    </section>
+        </header>
+
+        <section class="content-section" aria-labelledby="about-why-it">
+            <div class="card">
+                <h2 id="about-why-it">Pourquoi l’informatique ?</h2>
+
+                <p>
+                    Mon intérêt pour l’informatique s’est construit en plusieurs étapes.
+                    J’ai grandi dans une maison où il y avait déjà un ordinateur dans les années 1990 :
+                    ma mère l’utilisait pour travailler, mon frère y passait beaucoup de temps,
+                    et moi, au départ, je voulais surtout savoir comment lancer mes jeux.
+                </p>
+
+                <p>
+                    Avec le temps, la curiosité a pris plus de place. Les films, les documentaires
+                    et les émissions de vulgarisation scientifique m’ont donné envie de comprendre
+                    comment les choses fonctionnent. L’informatique m’est progressivement apparue
+                    comme un domaine capable d’agir sur beaucoup de choses concrètes, parce que
+                    les machines et les logiciels sont partout.
+                </p>
+
+                <p>
+                    À la fin du secondaire, en découvrant les possibilités d’études supérieures,
+                    j’ai été attiré par la bioinformatique. C’était un croisement assez naturel
+                    entre mon intérêt pour la biologie, mon goût pour la compréhension des systèmes
+                    et cette intuition que l’informatique ouvrait énormément de portes.
+                </p>
+
+                <p>
+                    Pendant mes études en haute école, j’ai ensuite découvert le développement web.
+                    J’y ai trouvé une manière très concrète de construire des outils utiles :
+                    une interface, des données, de la logique métier, des bases de données,
+                    des algorithmes et de l’architecture logicielle. Tout ce que j’avais appris
+                    commençait à se relier dans quelque chose de tangible.
+                </p>
+
+                <p>
+                    Mon parcours vers la bioinformatique ne s’est finalement pas déroulé comme prévu,
+                    et j’ai eu besoin d’entrer dans la vie professionnelle. Le web s’est alors imposé
+                    comme un terrain à la fois concret, utile et suffisamment vaste pour continuer
+                    à apprendre. C’est comme ça que j’en ai fait mon métier.
+                </p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="about-work">
+            <div class="card">
+                <h2 id="about-work">Ma façon de travailler</h2>
+
+                <p>
+                    Avec les années, j’ai appris qu’il est rarement efficace de modifier un système
+                    sans avoir d’abord pris le temps de comprendre son contexte, ses contraintes
+                    et les besoins réels auxquels il répond.
+                </p>
+
+                <p>
+                    Ma première étape consiste donc à écouter, poser des questions et reformuler
+                    ce que j’ai compris. Cette phase permet souvent de clarifier le problème,
+                    de mettre en évidence les hypothèses implicites et d’identifier les solutions
+                    les plus adaptées.
+                </p>
+
+                <p>
+                    Lorsque le contexte est suffisamment clair, mon expérience me permet
+                    généralement de repérer rapidement les points sensibles et les pistes
+                    d’amélioration les plus pertinentes. J’accorde une attention particulière
+                    à la lisibilité du code, à sa maintenabilité et à la réduction des risques
+                    lors des mises en production.
+                </p>
+
+                <p>
+                    Ma manière de travailler continue d’évoluer. Le développement logiciel
+                    est un domaine où l’apprentissage permanent fait partie du métier,
+                    et j’essaie d’intégrer progressivement les idées, outils et pratiques
+                    qui permettent de travailler de manière plus claire et plus efficace.
+                </p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="about-coaching">
+            <div class="card">
+                <h2 id="about-coaching">Le coaching et la transmission</h2>
+
+                <p>
+                    Une section pour parler de ton activité de coaching, de ton intérêt pour la pédagogie
+                    et de ce que la transmission apporte aussi à ta pratique du développement.
+                </p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="about-interests">
+            <div class="card">
+                <h2 id="about-interests">Mes centres d’intérêt</h2>
+
+                <p>
+                    Une section plus personnelle pour parler de programmation créative, de sciences,
+                    de mathématiques, de jeux, de jeu de rôle ou d’autres sujets qui nourrissent ta curiosité.
+                </p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="about-now">
+            <div class="card">
+                <h2 id="about-now">Où j’en suis aujourd’hui</h2>
+
+                <p>
+                    Une section pour expliquer ton évolution actuelle : ton envie de travailler autrement,
+                    de construire une activité indépendante progressive et de trouver un meilleur équilibre
+                    dans ta manière de collaborer.
+                </p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="about-website">
+            <div class="card">
+                <h2 id="about-website">Pourquoi ce site existe</h2>
+
+                <p>
+                    Pendant longtemps, j’ai repoussé l’idée de créer un site web personnel.
+                    Comme beaucoup de développeurs, je passais plus facilement du temps
+                    à construire des outils pour les autres qu’à prendre le temps
+                    de présenter mon propre parcours.
+                </p>
+
+                <p>
+                    Un jour, je suis tombé sur une idée qui m’a marqué :
+                    un développeur sans site web, c’est un peu comme un charpentier
+                    sans atelier. Cette comparaison m’a convaincu qu’il était temps
+                    de construire un espace qui me ressemble.
+                </p>
+
+                <p>
+                    Ce site est d’abord un outil professionnel. Il me permet de présenter
+                    mon expérience, mes projets et ma manière de travailler dans un format
+                    beaucoup plus vivant et détaillé qu’un CV traditionnel.
+                </p>
+
+                <p>
+                    C’est aussi un terrain d’expérimentation. J’aime créer des outils utiles,
+                    tester de nouvelles idées et développer de petits projets pour moi-même
+                    ou pour mon entourage. Ce site évolue progressivement et reflète à la fois
+                    mon parcours, ma curiosité et mon goût pour la construction de solutions
+                    concrètes.
+                </p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="about-links">
+            <div class="card">
+                <h2 id="about-links">Liens utiles</h2>
+
+                <ul class="feature-list">
+                    <li>
+                        <a href="{{ path('app_projects_index', { _locale: app.request.locale }) }}">
+                            Voir mes projets
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_experiences_index', { _locale: app.request.locale }) }}">
+                            Parcourir mes expériences
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_contact', { _locale: app.request.locale }) }}">
+                            Me contacter
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
 {% endblock %}

@@ -9,8 +9,8 @@ project:
 index:
     meta_title: "Projets | Benjamin Lemin"
     eyebrow: "Projets"
-    title: "Projets sélectionnés"
-    lead: "Quelques projets sur lesquels j’ai travaillé, avec un focus sur le contexte, les défis techniques et les solutions mises en place."
+    title: "Projets marquants de mon parcours"
+    lead: "Une vue d’ensemble des principaux projets sur lesquels j’ai travaillé depuis 2010, avec leur contexte, les défis techniques rencontrés et les solutions mises en place."
 
     cards:
         raidgbs:

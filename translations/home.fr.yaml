@@ -21,7 +21,7 @@ help:
         title: "Chaque évolution devient compliquée"
         text: "Votre application rend encore service, mais chaque nouvelle fonctionnalité demande de comprendre beaucoup de contexte avant d’agir."
     card_2:
-        title: "Le code est difficile à lire avec confiance"
+        title: "Le code est difficile à comprendre"
         text: "Le système fonctionne, mais il devient compliqué de savoir où intervenir, quoi tester et quels effets de bord éviter."
     card_3:
         title: "Vous devez livrer sans fragiliser la production"

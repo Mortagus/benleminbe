@@ -1,6 +1,11 @@
+/* ===============
+   CONTACT PAGE
+================== */
+
 .contact-page {
-    width: min(100%, 1120px);
-    margin: 0 auto;
+    width: min(100% - 2rem, 72rem);
+    margin-inline: auto;
+    padding-block: 4rem;
 }
 
 .contact-hero {
@@ -9,11 +14,12 @@
 }
 
 .contact-hero__eyebrow {
-    margin: 0 0 0.5rem;
-    color: var(--muted);
+    margin-block: 0 0.75rem;
+    color: var(--accent-hover);
+    font-size: 0.875rem;
     font-weight: 700;
-    text-transform: uppercase;
     letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .contact-hero h1 {

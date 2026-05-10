@@ -194,7 +194,7 @@
     transform: translateX(3px);
     background: var(--accent);
     border-color: var(--accent);
-    color: var(--card);
+    color: #10202a;
 }
 
 .project-card-link:hover h3,

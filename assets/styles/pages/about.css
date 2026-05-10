@@ -1,0 +1,18 @@
+/* =============
+   ABOUT PAGE
+================ */
+
+.about-page {
+    width: min(100% - 2rem, 72rem);
+    margin-inline: auto;
+    padding-block: 4rem;
+}
+
+.about-hero .eyebrow {
+    margin-block: 0 0.75rem;
+    color: var(--accent-hover);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}

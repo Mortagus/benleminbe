@@ -18,13 +18,13 @@ final class PageController extends AbstractController
     #[Route(
         path: '/about',
         name: 'about',
-//        options: [
-//            'sitemap' => [
-//                'enabled' => true,
-//                'locales' => ['fr', 'en'],
-//                'lastmod' => '2026-05-08',
-//            ],
-//        ],
+        options: [
+            'sitemap' => [
+                'enabled' => true,
+                'locales' => ['fr', 'en'],
+                'lastmod' => '2026-05-11',
+            ],
+        ],
         methods: ['GET'],
     )]
     public function about(): Response

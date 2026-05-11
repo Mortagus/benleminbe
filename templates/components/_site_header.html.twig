@@ -24,10 +24,10 @@
                 {{ 'header.navigation.experiences'|trans }}
             </a>
 
-{#            <a href="{{ path('app_about', { _locale: app.request.locale }) }}"#}
-{#               class="site-header__link {{ app.request.attributes.get('_route') == 'app_about' ? 'active' : '' }}">#}
-{#                {{ 'header.navigation.about'|trans }}#}
-{#            </a>#}
+            <a href="{{ path('app_about', { _locale: app.request.locale }) }}"
+               class="site-header__link {{ app.request.attributes.get('_route') == 'app_about' ? 'active' : '' }}">
+                {{ 'header.navigation.about'|trans }}
+            </a>
 
             <a href="{{ path('app_contact', { _locale: app.request.locale }) }}"
                class="site-header__link {{ app.request.attributes.get('_route') == 'app_contact' ? 'active' : '' }}">

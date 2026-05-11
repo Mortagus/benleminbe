@@ -1,0 +1,29 @@
+about:
+    meta:
+        title: "About | Benjamin Lemin"
+
+    hero:
+        eyebrow: "About"
+        title: "Web developer, coach, and curious mind"
+        intro: "I have been building web applications since 2010, with a particular focus on existing projects, business systems, and codebases that need to keep evolving."
+
+    sections:
+        why_it:
+            title: "Why computer science?"
+        work:
+            title: "How I work"
+        coaching:
+            title: "Coaching and knowledge sharing"
+        interests:
+            title: "My interests"
+        now:
+            title: "Where I am today"
+        website:
+            title: "Why this website exists"
+        links:
+            title: "Useful links"
+
+    links:
+        projects: "See my projects"
+        experiences: "Browse my experience"
+        contact: "Contact me"

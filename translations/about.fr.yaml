@@ -1,0 +1,29 @@
+about:
+    meta:
+        title: "À propos | Benjamin Lemin"
+
+    hero:
+        eyebrow: "À propos"
+        title: "Développeur web, coach et curieux du monde qui m'entoure"
+        intro: "Je développe des applications web depuis 2010, avec une attention particulière pour les projets existants, les systèmes métier et le code qui doit continuer à vivre."
+
+    sections:
+        why_it:
+            title: "Pourquoi l’informatique ?"
+        work:
+            title: "Ma façon de travailler"
+        coaching:
+            title: "Le coaching et la transmission"
+        interests:
+            title: "Mes centres d’intérêt"
+        now:
+            title: "Où j’en suis aujourd’hui"
+        website:
+            title: "Pourquoi ce site existe"
+        links:
+            title: "Liens utiles"
+
+    links:
+        projects: "Voir mes projets"
+        experiences: "Parcourir mes expériences"
+        contact: "Me contacter"

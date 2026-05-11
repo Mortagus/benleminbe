@@ -8,6 +8,11 @@
     padding-block: 4rem;
 }
 
+.about-hero {
+    max-width: 760px;
+    margin-bottom: 3rem;
+}
+
 .about-hero .eyebrow {
     margin-block: 0 0.75rem;
     color: var(--accent-hover);
@@ -15,4 +20,97 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+}
+
+.about-hero h1 {
+    margin-block: 0 1rem;
+    color: var(--text);
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    line-height: 1;
+}
+
+.about-hero__intro {
+    max-width: 680px;
+    margin-block: 0;
+    color: var(--muted);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 1.7;
+}
+
+.about-page .content-section {
+    margin-top: 0;
+}
+
+.about-page .content-section + .content-section {
+    margin-top: 2rem;
+}
+
+.about-page .card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    background: var(--link-card-bg);
+    box-shadow: var(--link-card-shadow);
+}
+
+.about-page .card h2 {
+    max-width: 720px;
+    margin-block: 0 1.5rem;
+    color: var(--text);
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    line-height: 1.15;
+}
+
+.about-page .card p {
+    max-width: 860px;
+    margin-block: 0;
+    color: var(--text);
+    line-height: 1.8;
+    opacity: 0.9;
+}
+
+.about-page .card p + p {
+    margin-top: 1rem;
+}
+
+.about-page .feature-list {
+    max-width: 860px;
+    margin-block: 0;
+    padding-inline-start: 1.2rem;
+    line-height: 1.7;
+}
+
+.about-page .feature-list li + li {
+    margin-top: 0.75rem;
+}
+
+.about-page .feature-list a {
+    color: var(--accent-hover);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.about-page .feature-list a:hover,
+.about-page .feature-list a:focus-visible {
+    text-decoration: underline;
+}
+
+@media (width <= 700px) {
+    .about-page {
+        width: min(100% - 1rem, 72rem);
+        padding-block: 2rem;
+    }
+
+    .about-hero {
+        margin-bottom: 2rem;
+    }
+
+    .about-page .content-section + .content-section {
+        margin-top: 1rem;
+    }
+
+    .about-page .card {
+        padding: 1.25rem;
+    }
 }

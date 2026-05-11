@@ -2,24 +2,25 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}À propos | Benjamin Lemin{% endblock %}
+{% trans_default_domain 'about' %}
+
+{% block title %}{{ 'about.meta.title'|trans }}{% endblock %}
 
 {% block body %}
     <main class="about-page">
         <header class="about-hero">
-            <p class="eyebrow">À propos</p>
+            <p class="eyebrow">{{ 'about.hero.eyebrow'|trans }}</p>
 
-            <h1>Développeur web, coach et curieux du monde qui m'entoure</h1>
+            <h1>{{ 'about.hero.title'|trans }}</h1>
 
             <p class="about-hero__intro">
-                Je développe des applications web depuis 2010, avec une attention particulière
-                pour les projets existants, les systèmes métier et le code qui doit continuer à vivre.
+                {{ 'about.hero.intro'|trans }}
             </p>
         </header>
 
         <section class="content-section" aria-labelledby="about-why-it">
             <div class="card">
-                <h2 id="about-why-it">Pourquoi l’informatique ?</h2>
+                <h2 id="about-why-it">{{ 'about.sections.why_it.title'|trans }}</h2>
 
                 <p>
                     Mon intérêt pour l’informatique s’est construit en plusieurs étapes.
@@ -62,7 +63,7 @@
 
         <section class="content-section" aria-labelledby="about-work">
             <div class="card">
-                <h2 id="about-work">Ma façon de travailler</h2>
+                <h2 id="about-work">{{ 'about.sections.work.title'|trans }}</h2>
 
                 <p>
                     Avec les années, j’ai appris qu’il est rarement efficace de modifier un système
@@ -96,41 +97,77 @@
 
         <section class="content-section" aria-labelledby="about-coaching">
             <div class="card">
-                <h2 id="about-coaching">Le coaching et la transmission</h2>
+                <h2 id="about-coaching">{{ 'about.sections.coaching.title'|trans }}</h2>
 
                 <p>
-                    Une section pour parler de ton activité de coaching, de ton intérêt pour la pédagogie
-                    et de ce que la transmission apporte aussi à ta pratique du développement.
+                    En parallèle du développement web, j’accompagne aussi des personnes qui apprennent
+                    la programmation ou qui souhaitent progresser dans leur pratique.
+                </p>
+
+                <p>
+                    J’aime particulièrement aider à clarifier les notions qui semblent floues au départ :
+                    structurer un raisonnement, découper un problème, comprendre une erreur,
+                    ou simplement reprendre confiance face au code.
+                </p>
+
+                <p>
+                    Cette activité nourrit aussi ma pratique de développeur. Expliquer oblige à être clair,
+                    à questionner ses propres habitudes et à revenir régulièrement aux fondamentaux.
                 </p>
             </div>
         </section>
 
         <section class="content-section" aria-labelledby="about-interests">
             <div class="card">
-                <h2 id="about-interests">Mes centres d’intérêt</h2>
+                <h2 id="about-interests">{{ 'about.sections.interests.title'|trans }}</h2>
 
                 <p>
-                    Une section plus personnelle pour parler de programmation créative, de sciences,
-                    de mathématiques, de jeux, de jeu de rôle ou d’autres sujets qui nourrissent ta curiosité.
+                    Ma curiosité dépasse largement le cadre du développement web. Je m’intéresse aux sciences,
+                    aux mathématiques, à l’ingénierie, à l’économie, à la géopolitique et plus généralement
+                    aux systèmes complexes.
+                </p>
+
+                <p>
+                    J’aime comprendre comment les choses fonctionnent, faire des liens entre les sujets
+                    et explorer des idées par la pratique. C’est aussi ce qui m’amène à créer de petits outils,
+                    des expérimentations en JavaScript ou des projets plus ludiques.
+                </p>
+
+                <p>
+                    Les jeux, le jeu de rôle et la programmation créative font partie de ces terrains
+                    d’exploration. Ils permettent de mêler logique, imagination, règles, interfaces
+                    et expérience utilisateur dans des projets concrets.
                 </p>
             </div>
         </section>
 
         <section class="content-section" aria-labelledby="about-now">
             <div class="card">
-                <h2 id="about-now">Où j’en suis aujourd’hui</h2>
+                <h2 id="about-now">{{ 'about.sections.now.title'|trans }}</h2>
 
                 <p>
-                    Une section pour expliquer ton évolution actuelle : ton envie de travailler autrement,
-                    de construire une activité indépendante progressive et de trouver un meilleur équilibre
-                    dans ta manière de collaborer.
+                    Aujourd’hui, je construis progressivement une activité indépendante qui me permet
+                    de travailler autrement : avec plus de clarté, plus de recul et une meilleure attention
+                    portée à l’équilibre entre qualité du travail et rythme de vie.
+                </p>
+
+                <p>
+                    Je souhaite collaborer sur des projets où mon expérience peut être utile :
+                    comprendre un existant, stabiliser une application, faire évoluer un système métier,
+                    accompagner une équipe ou aider à remettre de l’ordre dans une base de code.
+                </p>
+
+                <p>
+                    Cette transition est aussi l’occasion de construire un cadre professionnel plus aligné
+                    avec ma manière de travailler : poser les bonnes questions, avancer étape par étape
+                    et privilégier les solutions durables plutôt que les réponses précipitées.
                 </p>
             </div>
         </section>
 
         <section class="content-section" aria-labelledby="about-website">
             <div class="card">
-                <h2 id="about-website">Pourquoi ce site existe</h2>
+                <h2 id="about-website">{{ 'about.sections.website.title'|trans }}</h2>
 
                 <p>
                     Pendant longtemps, j’ai repoussé l’idée de créer un site web personnel.
@@ -164,7 +201,7 @@
 
         <section class="content-section" aria-labelledby="about-links">
             <div class="card">
-                <h2 id="about-links">Liens utiles</h2>
+                <h2 id="about-links">{{ 'about.sections.links.title'|trans }}</h2>
 
                 <ul class="feature-list">
                     <li>

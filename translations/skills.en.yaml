@@ -1,0 +1,113 @@
+# translations/skills.en.yaml
+
+meta:
+    title: "Technical and Professional Skills | Benjamin Lemin"
+
+hero:
+    eyebrow: "Skills"
+    title: "Strong technical skills serving useful and sustainable systems."
+    intro: "For more than 15 years, I have been working on professional web applications: business platforms, CMSs, APIs, internal tools, existing systems and projects with complex business logic. My approach combines backend expertise, deep system understanding, pragmatism and effective collaboration."
+
+sections:
+    contribution:
+        title: "What I Bring in Practice"
+
+    technical:
+        title: "Technical Skills"
+
+    practices:
+        title: "Development Practices"
+
+    soft_skills:
+        title: "Professional and Interpersonal Skills"
+
+    domains:
+        title: "Business Domains"
+        intro: "Throughout my career, I have worked on projects across a wide range of industries, each requiring a solid understanding of business rules before delivering useful software."
+
+    summary:
+        title: "Summary"
+        paragraph_1: "I am particularly comfortable when it comes to understanding an existing application, stabilizing it, improving it incrementally and helping a team move forward while staying grounded in real-world constraints."
+        paragraph_2: "My profile is focused on backend development, application maintenance, system integration, code quality and technical mentoring."
+
+contribution:
+    backend:
+        title: "Backend Development"
+        text: "PHP, Symfony, Drupal, REST APIs, integrations, business logic, maintenance and evolution of existing applications."
+
+    complex_systems:
+        title: "Complex System Understanding"
+        text: "Analysis of existing codebases, application architecture, data flows, service dependencies and production constraints."
+
+    improvement:
+        title: "Incremental Improvement"
+        text: "Targeted refactoring, stabilization, technical debt reduction, testing, code readability and sustainable evolution."
+
+    communication:
+        title: "Communication & Support"
+        text: "Clear explanation of technical decisions, team collaboration, mentoring, coaching and knowledge sharing."
+
+technical:
+    languages: "Languages"
+    frameworks: "Frameworks & CMS"
+    frontend: "Frontend"
+    databases: "Databases"
+    apis: "APIs & Integrations"
+    third_party_systems: "Third-Party Systems"
+    devops: "DevOps & Tools"
+
+practices:
+    quality:
+        title: "Code Quality & Maintainability"
+        items:
+            oop: "Structured object-oriented programming"
+            solid: "SOLID principles"
+            refactoring: "Incremental refactoring"
+            readability: "Readable and maintainable code"
+            documentation: "Useful and contextual documentation"
+
+    reliability:
+        title: "Testing & Reliability"
+        items:
+            phpunit: "PHPUnit"
+            jasmine: "Jasmine"
+            vitest: "Vitest"
+            production_debugging: "Production debugging"
+            performance: "Performance analysis"
+
+soft_skills:
+    analysis:
+        title: "Analytical Thinking"
+        text: "Quickly understanding existing systems, identifying constraints, data flows and potential weak points."
+
+    pragmatism:
+        title: "Pragmatism"
+        text: "Designing solutions that fit real-world constraints: budget, deadlines, stability, technical debt and business priorities."
+
+    collaboration:
+        title: "Collaboration"
+        text: "Working with developers, product owners, project managers, designers, domain experts and non-technical stakeholders."
+
+    communication:
+        title: "Communication"
+        text: "Clearly explaining technical problems, trade-offs and decision-making options."
+
+    transmission:
+        title: "Knowledge Sharing"
+        text: "Supporting students, junior developers and career changers through coaching, code reviews and practical explanations."
+
+    adaptability:
+        title: "Adaptability"
+        text: "Working effectively in a wide range of environments: agencies, product teams, consulting assignments, long-term maintenance and existing applications."
+
+domains:
+    media: "Media"
+    finance: "Finance"
+    transport: "Transport"
+    retail: "Retail"
+    ecommerce: "E-commerce"
+    agriculture: "Agriculture"
+    healthcare: "Healthcare"
+    digital_marketing: "Digital Marketing"
+    internal_tools: "Internal Tools"
+    business_platforms: "Business Platforms"

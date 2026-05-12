@@ -1,0 +1,113 @@
+# translations/skills.fr.yaml
+
+meta:
+    title: "Compétences techniques et humaines | Benjamin Lemin"
+
+hero:
+    eyebrow: "Compétences"
+    title: "Des compétences techniques solides, au service de systèmes utiles et durables."
+    intro: "Depuis plus de 15 ans, je travaille sur des applications web professionnelles : plateformes métier, CMS, APIs, outils internes, systèmes existants et projets à forte logique métier. Mon approche combine expertise backend, compréhension des systèmes complexes, pragmatisme et collaboration avec les équipes."
+
+sections:
+    contribution:
+        title: "Ce que j’apporte concrètement"
+
+    technical:
+        title: "Compétences techniques"
+
+    practices:
+        title: "Pratiques de développement"
+
+    soft_skills:
+        title: "Compétences humaines et professionnelles"
+
+    domains:
+        title: "Domaines métier rencontrés"
+        intro: "Mon parcours m’a amené à travailler sur des projets dans des secteurs variés, avec à chaque fois la nécessité de comprendre les règles métier avant de produire du code utile."
+
+    summary:
+        title: "En résumé"
+        paragraph_1: "Je suis particulièrement à l’aise lorsqu’il faut comprendre une application existante, la stabiliser, l’améliorer progressivement et aider une équipe à avancer sans perdre de vue la réalité du terrain."
+        paragraph_2: "Mon profil est orienté backend, maintenance évolutive, intégration de systèmes, qualité du code et accompagnement technique."
+
+contribution:
+    backend:
+        title: "Développement backend"
+        text: "PHP, Symfony, Drupal, APIs REST, intégrations, logique métier, maintenance et évolution d’applications existantes."
+
+    complex_systems:
+        title: "Compréhension de systèmes complexes"
+        text: "Analyse de code existant, architecture applicative, flux de données, dépendances entre services et contraintes de production."
+
+    improvement:
+        title: "Amélioration progressive"
+        text: "Refactoring ciblé, stabilisation, dette technique, tests, lisibilité du code et évolutions sans réécriture inutile."
+
+    communication:
+        title: "Communication & accompagnement"
+        text: "Explication claire des choix techniques, collaboration avec les équipes, mentoring, coaching et transmission."
+
+technical:
+    languages: "Langages"
+    frameworks: "Frameworks & CMS"
+    frontend: "Frontend"
+    databases: "Bases de données"
+    apis: "APIs & intégrations"
+    third_party_systems: "Systèmes tiers"
+    devops: "DevOps & outils"
+
+practices:
+    quality:
+        title: "Qualité & maintenabilité"
+        items:
+            oop: "Programmation orientée objet structurée"
+            solid: "Principes SOLID"
+            refactoring: "Refactoring progressif"
+            readability: "Lisibilité et clarté du code"
+            documentation: "Documentation utile et contextualisée"
+
+    reliability:
+        title: "Tests & fiabilité"
+        items:
+            phpunit: "PHPUnit"
+            jasmine: "Jasmine"
+            vitest: "Vitest"
+            production_debugging: "Débogage de production"
+            performance: "Analyse de problèmes de performance"
+
+soft_skills:
+    analysis:
+        title: "Analyse"
+        text: "Comprendre rapidement un système existant, identifier ses contraintes, ses flux de données et ses points de fragilité."
+
+    pragmatism:
+        title: "Pragmatisme"
+        text: "Proposer des solutions adaptées au contexte réel : budget, délais, stabilité, dette technique et priorités métier."
+
+    collaboration:
+        title: "Collaboration"
+        text: "Travailler avec des développeurs, product owners, chefs de projet, designers, experts métier et parties prenantes non techniques."
+
+    communication:
+        title: "Communication"
+        text: "Expliquer clairement les problèmes techniques, les compromis possibles et les décisions à prendre."
+
+    transmission:
+        title: "Transmission"
+        text: "Accompagner des étudiants, développeurs juniors ou personnes en reconversion à travers du coaching, du code review et des explications concrètes."
+
+    adaptability:
+        title: "Adaptabilité"
+        text: "Intervenir dans des environnements variés : agences, équipes produit, consulting, maintenance long terme ou projets existants."
+
+domains:
+    media: "Médias"
+    finance: "Finance"
+    transport: "Transport"
+    retail: "Retail"
+    ecommerce: "E-commerce"
+    agriculture: "Agriculture"
+    healthcare: "Santé"
+    digital_marketing: "Marketing digital"
+    internal_tools: "Outils internes"
+    business_platforms: "Plateformes métier"

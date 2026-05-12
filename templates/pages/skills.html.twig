@@ -1,0 +1,222 @@
+{# templates/pages/skills.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'skills' %}
+
+{% block title %}{{ 'meta.title'|trans }}{% endblock %}
+
+{% block body %}
+    <main class="skills-page">
+        <header class="skills-hero">
+            <p class="eyebrow">{{ 'hero.eyebrow'|trans }}</p>
+
+            <h1>{{ 'hero.title'|trans }}</h1>
+
+            <p class="skills-hero__intro">
+                {{ 'hero.intro'|trans }}
+            </p>
+        </header>
+
+        <section class="content-section" aria-labelledby="skills-main-title">
+            <div class="card">
+                <h2 id="skills-main-title">{{ 'sections.contribution.title'|trans }}</h2>
+
+                <div class="skills-highlight-grid">
+                    <article>
+                        <h3>{{ 'contribution.backend.title'|trans }}</h3>
+                        <p>{{ 'contribution.backend.text'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'contribution.complex_systems.title'|trans }}</h3>
+                        <p>{{ 'contribution.complex_systems.text'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'contribution.improvement.title'|trans }}</h3>
+                        <p>{{ 'contribution.improvement.text'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'contribution.communication.title'|trans }}</h3>
+                        <p>{{ 'contribution.communication.text'|trans }}</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="technical-skills-title">
+            <div class="card">
+                <h2 id="technical-skills-title">{{ 'sections.technical.title'|trans }}</h2>
+
+                <div class="skills-category-list">
+                    <article class="skills-category">
+                        <h3>{{ 'technical.languages'|trans }}</h3>
+                        <ul class="tag-list">
+                            <li>PHP</li>
+                            <li>SQL</li>
+                            <li>JavaScript</li>
+                            <li>Go</li>
+                            <li>Bash</li>
+                            <li>Perl</li>
+                        </ul>
+                    </article>
+
+                    <article class="skills-category">
+                        <h3>{{ 'technical.frameworks'|trans }}</h3>
+                        <ul class="tag-list">
+                            <li>Symfony</li>
+                            <li>Drupal</li>
+                            <li>Laravel</li>
+                            <li>Zend Framework</li>
+                        </ul>
+                    </article>
+
+                    <article class="skills-category">
+                        <h3>{{ 'technical.frontend'|trans }}</h3>
+                        <ul class="tag-list">
+                            <li>HTML</li>
+                            <li>CSS</li>
+                            <li>SCSS</li>
+                            <li>JavaScript ES6+</li>
+                            <li>jQuery</li>
+                        </ul>
+                    </article>
+
+                    <article class="skills-category">
+                        <h3>{{ 'technical.databases'|trans }}</h3>
+                        <ul class="tag-list">
+                            <li>MySQL</li>
+                            <li>MariaDB</li>
+                            <li>PostgreSQL</li>
+                            <li>SQL Server</li>
+                            <li>MongoDB</li>
+                        </ul>
+                    </article>
+
+                    <article class="skills-category">
+                        <h3>{{ 'technical.apis'|trans }}</h3>
+                        <ul class="tag-list">
+                            <li>REST APIs</li>
+                            <li>SOAP</li>
+                            <li>Salesforce</li>
+                            <li>ADFS</li>
+                            <li>{{ 'technical.third_party_systems'|trans }}</li>
+                        </ul>
+                    </article>
+
+                    <article class="skills-category">
+                        <h3>{{ 'technical.devops'|trans }}</h3>
+                        <ul class="tag-list">
+                            <li>Docker</li>
+                            <li>Git</li>
+                            <li>GitLab CI/CD</li>
+                            <li>Azure DevOps</li>
+                            <li>Jenkins</li>
+                            <li>AWS</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="practices-title">
+            <div class="card">
+                <h2 id="practices-title">{{ 'sections.practices.title'|trans }}</h2>
+
+                <div class="skills-two-columns">
+                    <div>
+                        <h3>{{ 'practices.quality.title'|trans }}</h3>
+                        <ul>
+                            <li>{{ 'practices.quality.items.oop'|trans }}</li>
+                            <li>{{ 'practices.quality.items.solid'|trans }}</li>
+                            <li>{{ 'practices.quality.items.refactoring'|trans }}</li>
+                            <li>{{ 'practices.quality.items.readability'|trans }}</li>
+                            <li>{{ 'practices.quality.items.documentation'|trans }}</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3>{{ 'practices.reliability.title'|trans }}</h3>
+                        <ul>
+                            <li>PHPUnit</li>
+                            <li>Jasmine</li>
+                            <li>Vitest</li>
+                            <li>{{ 'practices.reliability.items.production_debugging'|trans }}</li>
+                            <li>{{ 'practices.reliability.items.performance'|trans }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="soft-skills-title">
+            <div class="card">
+                <h2 id="soft-skills-title">{{ 'sections.soft_skills.title'|trans }}</h2>
+
+                <div class="skills-highlight-grid">
+                    <article>
+                        <h3>{{ 'soft_skills.analysis.title'|trans }}</h3>
+                        <p>{{ 'soft_skills.analysis.text'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'soft_skills.pragmatism.title'|trans }}</h3>
+                        <p>{{ 'soft_skills.pragmatism.text'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'soft_skills.collaboration.title'|trans }}</h3>
+                        <p>{{ 'soft_skills.collaboration.text'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'soft_skills.communication.title'|trans }}</h3>
+                        <p>{{ 'soft_skills.communication.text'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'soft_skills.transmission.title'|trans }}</h3>
+                        <p>{{ 'soft_skills.transmission.text'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'soft_skills.adaptability.title'|trans }}</h3>
+                        <p>{{ 'soft_skills.adaptability.text'|trans }}</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="domains-title">
+            <div class="card">
+                <h2 id="domains-title">{{ 'sections.domains.title'|trans }}</h2>
+
+                <p>{{ 'sections.domains.intro'|trans }}</p>
+
+                <ul class="tag-list tag-list--large">
+                    <li>{{ 'domains.media'|trans }}</li>
+                    <li>{{ 'domains.finance'|trans }}</li>
+                    <li>{{ 'domains.transport'|trans }}</li>
+                    <li>{{ 'domains.retail'|trans }}</li>
+                    <li>{{ 'domains.ecommerce'|trans }}</li>
+                    <li>{{ 'domains.agriculture'|trans }}</li>
+                    <li>{{ 'domains.healthcare'|trans }}</li>
+                    <li>{{ 'domains.digital_marketing'|trans }}</li>
+                    <li>{{ 'domains.internal_tools'|trans }}</li>
+                    <li>{{ 'domains.business_platforms'|trans }}</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="skills-summary-title">
+            <div class="card card--accent">
+                <h2 id="skills-summary-title">{{ 'sections.summary.title'|trans }}</h2>
+
+                <p>{{ 'sections.summary.paragraph_1'|trans }}</p>
+                <p>{{ 'sections.summary.paragraph_2'|trans }}</p>
+            </div>
+        </section>
+    </main>
+{% endblock %}

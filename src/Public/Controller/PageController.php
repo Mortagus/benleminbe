@@ -48,4 +48,21 @@ final class PageController extends AbstractController
     {
         return $this->render('pages/contact.html.twig');
     }
+
+    #[Route(
+        path: '/skills',
+        name: 'skills',
+//        options: [
+//            'sitemap' => [
+//                'enabled' => true,
+//                'locales' => ['fr', 'en'],
+//                'lastmod' => '2026-05-12',
+//            ],
+//        ],
+        methods: ['GET'],
+    )]
+    public function skills(): Response
+    {
+        return $this->render('pages/skills.html.twig');
+    }
 }

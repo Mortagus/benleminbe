@@ -8,6 +8,7 @@ project:
 
 index:
     meta_title: "Projets | Benjamin Lemin"
+    meta_description: "Découvrez mes projets marquants depuis 2010, avec leur contexte, les défis techniques rencontrés et les solutions mises en place. Explorez mes réalisations dans le domaine de l’agriculture, de la recherche, et de la finance."
     eyebrow: "Projets"
     title: "Projets marquants de mon parcours"
     lead: "Une vue d’ensemble des principaux projets sur lesquels j’ai travaillé depuis 2010, avec leur contexte, les défis techniques rencontrés et les solutions mises en place."

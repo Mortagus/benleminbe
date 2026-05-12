@@ -7,7 +7,7 @@
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
 
     <title>{% block title %}{{ 'home.meta.title'|trans }}{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}{{ 'home.meta.description'|trans }}{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
 
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('styles/app.css') }}">

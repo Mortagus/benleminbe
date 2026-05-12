@@ -1,6 +1,7 @@
 experiences:
     index:
         meta_title: "Expériences professionnelles"
+        meta_description: "Explorez mon parcours professionnel, en détails, depuis 2010. Découvrez mes rôles, missions, environnements techniques, technologies utilisées, et ce que j’ai appris de chaque expérience."
         eyebrow: "Parcours"
         title: "Expériences professionnelles"
         description: "Une vue d’ensemble des postes, missions et environnements techniques dans lesquels j’ai travaillé."

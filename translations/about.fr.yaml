@@ -1,6 +1,7 @@
 about:
     meta:
         title: "À propos | Benjamin Lemin"
+        description: "Découvrez mon parcours en développement web, coaching et passion pour le monde qui m'entoure. Explorez mes motivations et mes projets."
 
     hero:
         eyebrow: "À propos"

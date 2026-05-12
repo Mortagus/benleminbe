@@ -8,6 +8,7 @@ project:
 
 index:
     meta_title: "Projects | Benjamin Lemin"
+    meta_description: "Explore a selection of my projects, focusing on context, technical challenges, and implemented solutions. Discover my work in agriculture, research, and finance."
     eyebrow: "Projects"
     title: "Selected projects"
     lead: "A selection of projects I worked on, with a focus on context, technical challenges and implemented solutions."

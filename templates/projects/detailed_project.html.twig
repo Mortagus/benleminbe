@@ -1,6 +1,9 @@
+{# Projects - detailed_project.html.twig #}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ projectData.meta_title }}{% endblock %}
+{% block meta_description %}{{ projectData.lead }}{% endblock %}
 
 {% block body %}
     <main class="project-detail-page">

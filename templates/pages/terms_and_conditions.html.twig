@@ -1,0 +1,145 @@
+{# templates/pages/terms_and_conditions.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'legal' %}
+
+{% block title %}{{ 'terms_and_conditions.meta.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'terms_and_conditions.meta.description'|trans }}{% endblock %}
+
+{% block body %}
+    <main class="legal-page">
+        <header class="legal-hero">
+            <p class="eyebrow">{{ 'terms_and_conditions.hero.eyebrow'|trans }}</p>
+
+            <h1>{{ 'terms_and_conditions.hero.title'|trans }}</h1>
+        </header>
+
+        <section class="content-section" aria-labelledby="terms-object">
+            <div class="card">
+                <h2 id="terms-object">{{ 'terms_and_conditions.sections.object.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.object.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.object.paragraphs.2'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-scope">
+            <div class="card">
+                <h2 id="terms-scope">{{ 'terms_and_conditions.sections.scope.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.scope.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.scope.paragraphs.2'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-quotes">
+            <div class="card">
+                <h2 id="terms-quotes">{{ 'terms_and_conditions.sections.quotes.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.quotes.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.quotes.paragraphs.2'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.quotes.paragraphs.3'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-performance">
+            <div class="card">
+                <h2 id="terms-performance">{{ 'terms_and_conditions.sections.performance.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.performance.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.performance.paragraphs.2'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.performance.paragraphs.3'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-client-obligations">
+            <div class="card">
+                <h2 id="terms-client-obligations">{{ 'terms_and_conditions.sections.client_obligations.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.client_obligations.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.client_obligations.paragraphs.2'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-changes">
+            <div class="card">
+                <h2 id="terms-changes">{{ 'terms_and_conditions.sections.changes.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.changes.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.changes.paragraphs.2'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-prices-payment">
+            <div class="card">
+                <h2 id="terms-prices-payment">{{ 'terms_and_conditions.sections.prices_payment.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.prices_payment.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.prices_payment.paragraphs.2'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.prices_payment.paragraphs.3'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-intellectual-property">
+            <div class="card">
+                <h2 id="terms-intellectual-property">{{ 'terms_and_conditions.sections.intellectual_property.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.intellectual_property.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.intellectual_property.paragraphs.2'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.intellectual_property.paragraphs.3'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.intellectual_property.paragraphs.4'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-confidentiality">
+            <div class="card">
+                <h2 id="terms-confidentiality">{{ 'terms_and_conditions.sections.confidentiality.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.confidentiality.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.confidentiality.paragraphs.2'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-subcontracting">
+            <div class="card">
+                <h2 id="terms-subcontracting">{{ 'terms_and_conditions.sections.subcontracting.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.subcontracting.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.subcontracting.paragraphs.2'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-liability">
+            <div class="card">
+                <h2 id="terms-liability">{{ 'terms_and_conditions.sections.liability.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.liability.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.liability.paragraphs.2'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.liability.paragraphs.3'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-force-majeure">
+            <div class="card">
+                <h2 id="terms-force-majeure">{{ 'terms_and_conditions.sections.force_majeure.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.force_majeure.paragraphs.1'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-termination">
+            <div class="card">
+                <h2 id="terms-termination">{{ 'terms_and_conditions.sections.termination.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.termination.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.termination.paragraphs.2'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.termination.paragraphs.3'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.termination.paragraphs.4'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-updates">
+            <div class="card">
+                <h2 id="terms-updates">{{ 'terms_and_conditions.sections.updates.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.updates.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.updates.paragraphs.2'|trans }}</p>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="terms-law-disputes">
+            <div class="card">
+                <h2 id="terms-law-disputes">{{ 'terms_and_conditions.sections.law_disputes.title'|trans }}</h2>
+                <p>{{ 'terms_and_conditions.sections.law_disputes.paragraphs.1'|trans }}</p>
+                <p>{{ 'terms_and_conditions.sections.law_disputes.paragraphs.2'|trans }}</p>
+            </div>
+        </section>
+    </main>
+{% endblock %}

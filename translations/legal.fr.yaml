@@ -1,0 +1,186 @@
+terms_and_conditions:
+    meta:
+        title: "Conditions générales de services | Benjamin Lemin"
+        description: "Conditions générales applicables aux prestations de développement web, de maintenance, de conseil technique, d'audit, de formation et de coaching en programmation proposées par Benjamin Lemin."
+
+    hero:
+        eyebrow: "Informations légales"
+        title: "Conditions générales de services"
+        intro: "Les présentes conditions générales de services définissent les règles applicables aux prestations proposées sur ce site."
+
+    sections:
+        object:
+            title: "Objet"
+            paragraphs:
+                1: "Les présentes conditions générales de services définissent les droits et obligations des parties dans le cadre des prestations fournies par Benjamin Lemin."
+                2: "Les informations d'identification complètes du prestataire sont disponibles sur la page Mentions légales du site."
+
+        scope:
+            title: "Champ d'application"
+            paragraphs:
+                1: "Les présentes conditions s'appliquent à toutes les prestations de développement web, de maintenance, de conseil technique, d'audit, de formation et de coaching en programmation."
+                2: "Toute dérogation aux présentes conditions doit faire l'objet d'un accord écrit entre les parties."
+
+        quotes:
+            title: "Devis et acceptation"
+            paragraphs:
+                1: "Sauf indication contraire, les devis sont valables pendant une période de trente jours calendrier à compter de leur date d'émission."
+                2: "La commande est réputée acceptée dès réception d'un accord écrit du client, de la signature du devis ou du paiement d'un éventuel acompte."
+                3: "Un acompte peut être demandé à la signature du devis. Sauf convention contraire, en cas d'annulation par le client après acceptation, cet acompte reste acquis au prestataire à titre d'indemnité forfaitaire."
+                4: "Toute demande complémentaire non prévue dans le devis initial peut faire l'objet d'une offre ou d'un devis additionnel."
+
+        performance:
+            title: "Exécution des prestations"
+            paragraphs:
+                1: "Les prestations sont exécutées avec soin et professionnalisme dans le cadre d'une obligation de moyens, sauf engagement écrit explicite de résultat."
+                2: "Les délais communiqués sont donnés à titre indicatif, sauf mention contraire expresse."
+                3: "Les retards causés par l'absence d'informations, d'accès ou de validations de la part du client peuvent entraîner un report des délais convenus."
+
+        client_obligations:
+            title: "Obligations du client"
+            paragraphs:
+                1: "Le client s'engage à fournir en temps utile toutes les informations, contenus, accès et validations nécessaires à la bonne exécution des prestations."
+                2: "Le client reste responsable de l'exactitude des informations transmises, des sauvegardes de ses données et de l'utilisation des livrables fournis."
+
+        changes:
+            title: "Modifications et hors périmètre"
+            paragraphs:
+                1: "Toute modification du périmètre initialement convenu peut entraîner une révision du planning, du budget ou des modalités d'exécution."
+                2: "Les prestations non prévues dans le devis initial feront l'objet d'une proposition complémentaire."
+
+        prices_payment:
+            title: "Prix, facturation et paiement"
+            paragraphs:
+                1: "Les prix applicables sont ceux indiqués dans le devis ou l'offre acceptée par le client."
+                2: "Sauf indication contraire, les factures sont payables dans un délai de trente jours calendrier à compter de leur date d'émission."
+                3: "En cas de retard de paiement entre entreprises, des intérêts de retard, une indemnité forfaitaire minimale de quarante euros ainsi que les frais de recouvrement raisonnables pourront être appliqués conformément à la loi belge du 2 août 2002 relative à la lutte contre le retard de paiement dans les transactions commerciales."
+
+        intellectual_property:
+            title: "Propriété intellectuelle"
+            paragraphs:
+                1: "Sauf convention contraire, les droits patrimoniaux sur les livrables spécifiques sont transférés au client après paiement intégral des sommes dues."
+                2: "Les outils, bibliothèques, méthodes, composants génériques et savoir-faire développés dans le cadre des prestations demeurent la propriété du prestataire."
+                3: "Les outils, bibliothèques tierces, méthodes et composants génériques utilisés dans le cadre des prestations restent soumis à leurs licences respectives et ne font pas l'objet d'une cession au client."
+                4: "Conformément à la législation belge, les droits moraux sur les créations demeurent attachés à la personne du prestataire."
+
+        confidentiality:
+            title: "Confidentialité"
+            paragraphs:
+                1: "Chaque partie s'engage à traiter comme confidentielles les informations non publiques obtenues dans le cadre de la collaboration."
+                2: "Cette obligation reste applicable pendant une durée de deux ans à compter de la fin de la mission."
+
+        subcontracting:
+            title: "Sous-traitance"
+            paragraphs:
+                1: "Le prestataire se réserve le droit de recourir à des sous-traitants ou collaborateurs de confiance pour l'exécution de certaines prestations."
+                2: "Le prestataire demeure responsable de la bonne exécution des prestations confiées à ses sous-traitants."
+
+        liability:
+            title: "Responsabilité"
+            paragraphs:
+                1: "La responsabilité du prestataire est limitée aux dommages directs résultant d'une faute prouvée dans l'exécution des prestations."
+                2: "Le montant total de la responsabilité du prestataire est, en toute hypothèse, limité au montant total hors taxes facturé au titre de la mission concernée."
+                3: "Le prestataire ne pourra être tenu responsable des dommages indirects, pertes d'exploitation, pertes de données ou pertes de revenus."
+                4: "Le client demeure responsable de la sécurité de ses systèmes, de ses sauvegardes et de la validation des livrables."
+
+        force_majeure:
+            title: "Force majeure"
+            paragraphs:
+                1: "Aucune partie ne pourra être tenue responsable d'un retard ou d'une inexécution résultant d'un événement imprévisible, irrésistible et indépendant de sa volonté, tel qu'une catastrophe naturelle, une panne majeure d'infrastructure, une coupure généralisée de réseau ou toute autre situation reconnue comme cas de force majeure."
+
+        termination:
+            title: "Résiliation"
+            paragraphs:
+                1: "Chaque partie peut mettre fin à la collaboration par écrit moyennant un préavis de quinze jours calendrier."
+                2: "En cas de faute grave, la partie lésée adressera une mise en demeure écrite. À défaut de remédiation dans un délai de quinze jours calendrier, la résiliation immédiate pourra être prononcée."
+                3: "Les prestations réalisées jusqu'à la date effective de résiliation restent dues et seront facturées au client."
+                4: "Les éléments produits et intégralement payés seront remis au client dans un délai maximal de trente jours calendrier."
+
+        updates:
+            title: "Modification des conditions générales"
+            paragraphs:
+                1: "Le prestataire se réserve le droit de modifier les présentes conditions générales à tout moment."
+                2: "Les conditions applicables sont celles en vigueur à la date d'acceptation du devis ou de la commande."
+
+        law_disputes:
+            title: "Droit applicable et litiges"
+            paragraphs:
+                1: "Les présentes conditions générales sont régies par le droit belge."
+                2: "En cas de litige, les parties s'engagent à rechercher une solution amiable avant toute action judiciaire. À défaut d'accord amiable, les tribunaux de l'arrondissement judiciaire à l'adresse professionnelle du prestataire seront seuls compétents."
+
+legal_notice:
+    meta:
+        title: "Mentions légales | Benjamin Lemin"
+        description: "Informations légales relatives à l'éditeur du site benlemin.be."
+
+    hero:
+        eyebrow: "Informations légales"
+        title: "Mentions légales"
+        intro: "Cette page regroupe les informations légales relatives à l'éditeur du site."
+
+    sections:
+        publisher:
+            title: "Éditeur du site"
+
+            name:
+                label: "Nom"
+                value: "Benjamin Lemin"
+
+            status:
+                label: "Statut"
+                value: "Développeur web freelance — indépendant en personne physique"
+
+            address:
+                label: "Business Address"
+                line_1: "Rue de la Closière 3-6"
+                line_2: "1357 - Opheylissem, Brabant-Wallon, Belgium"
+
+            company_number:
+                label: "Numéro d'entreprise (BCE)"
+                value: "BE 1031.435.246"
+
+            vat_number:
+                label: "Numéro de TVA"
+                value: "BE 1031.435.246"
+
+        contact:
+            title: "Coordonnées de contact"
+
+            email:
+                label: "Adresse e-mail"
+                value: "benjamin@lemin.be"
+
+            phone:
+                label: "Téléphone"
+                value: "+32 (0) 495 85 19 19"
+
+        hosting:
+            title: "Hébergement"
+
+            company:
+                label: "Hébergeur"
+                value: "Infomaniak Network SA"
+
+            address:
+                label: "Adresse"
+                line_1: "Rue Eugène-Marziano 25"
+                line_2: "1227 Les Acacias (Genève)"
+                line_3: "Suisse"
+
+            website:
+                label: "Infomaniak.com"
+                url: "https://www.infomaniak.com"
+
+privacy_policy:
+    meta:
+        title: "Politique de confidentialité | Benjamin Lemin"
+        description: "Politique de confidentialité du site de Benjamin Lemin."
+    hero:
+        eyebrow: "Données personnelles"
+        title: "Politique de confidentialité"
+        intro: "Cette page expliquera comment les données personnelles sont collectées, utilisées et protégées."
+    sections:
+        content:
+            title: "Contenu à venir"
+            paragraphs:
+                1: "La politique de confidentialité est en cours de rédaction. Cette page sera complétée avec les informations utiles concernant les données, les outils utilisés et les droits des visiteurs."

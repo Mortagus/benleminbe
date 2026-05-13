@@ -9,6 +9,22 @@ header:
         contact: "Contact"
 
 footer:
+    identity: "Informations sur l’éditeur du site"
+    legal_title: "Informations légales"
+    about: "À propos du site"
+
     handmade: "site conçu et développé par mes soins"
     signature: "Développeur backend spécialisé dans l’évolution d’applications web existantes"
+
+    address: "Opheylissem, Brabant-Wallon, Belgique"
+
+    company_number_label: "N° d’entreprise / TVA"
+    company_number: "BE 1031.435.246"
+
+    legal_navigation: "Navigation légale"
+
+    terms_and_conditions: "Conditions générales"
+    privacy_policy: "Politique de confidentialité"
+    legal_notice: "Mentions légales"
+
     disclaimer_tracking: "Ce site utilise un outil de mesure d’audience respectueux de la vie privée."

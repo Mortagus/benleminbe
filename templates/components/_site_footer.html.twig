@@ -4,15 +4,57 @@
 
 <footer class="site-footer">
     <div class="site-footer__content">
-        <p>
-            © {{ "now"|date("Y") }} Benjamin Lemin —
-            {{ 'footer.handmade'|trans }}
-        </p>
+        <section class="site-footer__block site-footer__identity" aria-label="{{ 'footer.identity'|trans }}">
+            <p class="site-footer__copyright">
+                © {{ "now"|date("Y") }} Benjamin Lemin
+            </p>
 
-        <p class="site-footer__signature">
-            {{ 'footer.signature'|trans }}
-        </p>
+            <p>
+                {{ 'footer.handmade'|trans }}
+            </p>
 
-        <p>{{ 'footer.disclaimer_tracking'|trans }}</p>
+            <address class="site-footer__address">
+                {{ 'footer.address'|trans }}<br>
+                {{ 'footer.company_number_label'|trans }}:
+                <span class="nowrap">{{ 'footer.company_number'|trans }}</span>
+            </address>
+        </section>
+
+        <nav class="site-footer__block site-footer__legal" aria-label="{{ 'footer.legal_navigation'|trans }}">
+            <p class="site-footer__title">{{ 'footer.legal_title'|trans }}</p>
+
+            <ul class="site-footer__legal-list">
+                <li>
+                    <a href="{{ path('app_contact', { _locale: app.request.locale }) }}">
+                        {{ 'header.navigation.contact'|trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_legal_notice', { _locale: app.request.locale }) }}">
+                        {{ 'footer.legal_notice'|trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_terms_and_conditions', { _locale: app.request.locale }) }}">
+                        {{ 'footer.terms_and_conditions'|trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_privacy_policy', { _locale: app.request.locale }) }}">
+                        {{ 'footer.privacy_policy'|trans }}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <section class="site-footer__block site-footer__about" aria-label="{{ 'footer.about'|trans }}">
+            <p>
+                {{ 'footer.signature'|trans }}
+            </p>
+
+            <p class="site-footer__tracking">
+                {{ 'footer.disclaimer_tracking'|trans }}
+            </p>
+        </section>
     </div>
 </footer>

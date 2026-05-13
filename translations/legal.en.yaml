@@ -1,0 +1,188 @@
+terms_and_conditions:
+    meta:
+        title: "Terms and Conditions of Service | Benjamin Lemin"
+        description: "Terms and conditions applicable to web development, maintenance, technical consulting, auditing, training and programming coaching services provided by Benjamin Lemin."
+
+    hero:
+        eyebrow: "Legal Information"
+        title: "Terms and Conditions of Service"
+        intro: "These terms and conditions define the rules applicable to the services offered on this website."
+
+    sections:
+        object:
+            title: "Purpose"
+            paragraphs:
+                1: "These terms and conditions define the rights and obligations of the parties in connection with the services provided by Benjamin Lemin."
+                2: "Full identification details of the service provider are available on the Legal Notice page of this website."
+
+        scope:
+            title: "Scope of Application"
+            paragraphs:
+                1: "These terms apply to all web development, maintenance, technical consulting, auditing, training and programming coaching services."
+                2: "Any deviation from these terms must be agreed upon in writing by both parties."
+
+        quotes:
+            title: "Quotes and Acceptance"
+            paragraphs:
+                1: "Unless otherwise stated, quotes are valid for a period of thirty calendar days from their date of issue."
+                2: "An order is deemed accepted upon receipt of the client's written approval, the signature of the quote, or the payment of any required deposit."
+                3: "A deposit may be requested upon acceptance of the quote. Unless otherwise agreed, if the client cancels after acceptance, this deposit remains payable to the service provider as a fixed compensation."
+                4: "Any additional request not included in the initial quote may be subject to a supplementary proposal or quote."
+
+        performance:
+            title: "Performance of the Services"
+            paragraphs:
+                1: "The services are performed with due care and professionalism under a best-efforts obligation, unless an explicit written commitment to achieve a specific result has been made."
+                2: "Any deadlines provided are indicative only, unless expressly stated otherwise."
+                3: "Delays caused by the absence of information, access or approvals from the client may result in an extension of the agreed schedule."
+
+        client_obligations:
+            title: "Client Obligations"
+            paragraphs:
+                1: "The client undertakes to provide in a timely manner all information, content, access credentials and approvals required for the proper performance of the services."
+                2: "The client remains responsible for the accuracy of the information provided, the backup of its data and the use of the deliverables."
+
+        changes:
+            title: "Changes and Out-of-Scope Requests"
+            paragraphs:
+                1: "Any modification to the initially agreed scope may result in an adjustment to the schedule, budget or execution terms."
+                2: "Services not included in the initial quote will be subject to a supplementary proposal."
+
+        prices_payment:
+            title: "Prices, Invoicing and Payment"
+            paragraphs:
+                1: "The applicable prices are those stated in the quote or proposal accepted by the client."
+                2: "Unless otherwise stated, invoices are payable within thirty calendar days from the invoice date."
+                3: "In the event of late payment between businesses, late payment interest, a minimum fixed compensation of forty euros and reasonable recovery costs may be charged in accordance with the Belgian Act of 2 August 2002 on combating late payment in commercial transactions."
+
+        intellectual_property:
+            title: "Intellectual Property"
+            paragraphs:
+                1: "Unless otherwise agreed, the economic rights to the specific deliverables are transferred to the client only after full payment of all amounts due."
+                2: "Tools, libraries, methods, generic components and know-how developed in connection with the services remain the property of the service provider."
+                3: "Third-party tools, libraries, methods and generic components used in connection with the services remain subject to their respective licenses and are not transferred to the client."
+                4: "In accordance with Belgian law, moral rights relating to the creations remain attached to the person of the service provider."
+
+        confidentiality:
+            title: "Confidentiality"
+            paragraphs:
+                1: "Each party undertakes to treat as confidential all non-public information obtained in connection with the collaboration."
+                2: "This obligation remains in force for a period of two years following the end of the assignment."
+
+        subcontracting:
+            title: "Subcontracting"
+            paragraphs:
+                1: "The service provider reserves the right to engage trusted subcontractors or collaborators to perform part of the services."
+                2: "The service provider remains responsible for the proper performance of any services entrusted to subcontractors."
+
+        liability:
+            title: "Liability"
+            paragraphs:
+                1: "The service provider's liability is limited to direct damages resulting from a proven fault in the performance of the services."
+                2: "In all circumstances, the total liability of the service provider shall be limited to the total amount excluding taxes invoiced for the assignment concerned."
+                3: "The service provider shall not be liable for indirect damages, loss of business, loss of data or loss of revenue."
+                4: "The client remains responsible for the security of its systems, the backup of its data and the validation of the deliverables."
+
+        force_majeure:
+            title: "Force Majeure"
+            paragraphs:
+                1: "Neither party shall be held liable for any delay or failure to perform resulting from an unforeseeable, unavoidable event beyond its reasonable control, such as a natural disaster, a major infrastructure failure, a widespread network outage or any other event recognized as force majeure."
+
+        termination:
+            title: "Termination"
+            paragraphs:
+                1: "Either party may terminate the collaboration in writing subject to a notice period of fifteen calendar days."
+                2: "In the event of a material breach, the injured party shall send a written notice of default. If the breach is not remedied within fifteen calendar days, immediate termination may be declared."
+                3: "Services performed up to the effective date of termination remain due and will be invoiced to the client."
+                4: "All deliverables that have been fully paid for will be delivered to the client within a maximum period of thirty calendar days."
+
+        updates:
+            title: "Amendments to the Terms and Conditions"
+            paragraphs:
+                1: "The service provider reserves the right to modify these terms and conditions at any time."
+                2: "The applicable terms are those in force on the date the quote or order is accepted."
+
+        law_disputes:
+            title: "Applicable Law and Disputes"
+            paragraphs:
+                1: "These terms and conditions are governed by Belgian law."
+                2: "In the event of a dispute, the parties undertake to seek an amicable resolution before initiating legal proceedings. Failing an amicable agreement, the courts of the judicial district of the service provider's business address shall have exclusive jurisdiction."
+
+legal_notice:
+    meta:
+        title: "Legal Notice | Benjamin Lemin"
+        description: "Legal information relating to the publisher of benlemin.be."
+
+    hero:
+        eyebrow: "Legal Information"
+        title: "Legal Notice"
+        intro: "This page contains the legal information relating to the publisher of this website."
+
+    sections:
+        publisher:
+            title: "Website Publisher"
+
+            name:
+                label: "Name"
+                value: "Benjamin Lemin"
+
+            status:
+                label: "Legal Status"
+                value: "Freelance Web Developer — Sole Proprietorship"
+
+            address:
+                label: "Business Address"
+                line_1: "Rue de la Closière 3-6"
+                line_2: "1357 Opheylissem, Walloon Brabant, Belgium"
+
+            company_number:
+                label: "Company Number (CBE)"
+                value: "BE 1031.435.246"
+
+            vat_number:
+                label: "VAT Number"
+                value: "BE 1031.435.246"
+
+        contact:
+            title: "Contact Information"
+
+            email:
+                label: "Email Address"
+                value: "benjamin@lemin.be"
+
+            phone:
+                label: "Phone"
+                value: "+32 (0) 495 85 19 19"
+
+        hosting:
+            title: "Hosting Provider"
+
+            company:
+                label: "Hosting Provider"
+                value: "Infomaniak Network SA"
+
+            address:
+                label: "Address"
+                line_1: "Rue Eugène-Marziano 25"
+                line_2: "1227 Les Acacias (Geneva)"
+                line_3: "Switzerland"
+
+            website:
+                label: "Infomaniak.com"
+                url: "https://www.infomaniak.com"
+
+privacy_policy:
+    meta:
+        title: "Privacy Policy | Benjamin Lemin"
+        description: "Privacy policy for Benjamin Lemin's website."
+
+    hero:
+        eyebrow: "Personal Data"
+        title: "Privacy Policy"
+        intro: "This page explains how personal data is collected, used and protected."
+
+    sections:
+        content:
+            title: "Content Coming Soon"
+            paragraphs:
+                1: "The privacy policy is currently being drafted. This page will be completed with information regarding the data collected, the tools used and the rights of visitors."

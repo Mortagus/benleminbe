@@ -1,0 +1,121 @@
+{# templates/pages/legal_notice.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'legal' %}
+
+{% block title %}{{ 'legal_notice.meta.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'legal_notice.meta.description'|trans }}{% endblock %}
+
+{% block body %}
+    <main class="legal-page">
+        <header class="legal-hero">
+            <p class="eyebrow">{{ 'legal_notice.hero.eyebrow'|trans }}</p>
+
+            <h1>{{ 'legal_notice.hero.title'|trans }}</h1>
+
+            <p class="legal-hero__intro">
+                {{ 'legal_notice.hero.intro'|trans }}
+            </p>
+        </header>
+
+        <section class="content-section" aria-labelledby="legal-notice-publisher">
+            <div class="card">
+                <h2 id="legal-notice-publisher">
+                    {{ 'legal_notice.sections.publisher.title'|trans }}
+                </h2>
+
+                <dl class="legal-definition-list">
+                    <div class="legal-definition-list__item">
+                        <dt>{{ 'legal_notice.sections.publisher.name.label'|trans }}</dt>
+                        <dd>{{ 'legal_notice.sections.publisher.name.value'|trans }}</dd>
+                    </div>
+
+                    <div class="legal-definition-list__item">
+                        <dt>{{ 'legal_notice.sections.publisher.status.label'|trans }}</dt>
+                        <dd>{{ 'legal_notice.sections.publisher.status.value'|trans }}</dd>
+                    </div>
+
+                    <div class="legal-definition-list__item">
+                        <dt>{{ 'legal_notice.sections.publisher.address.label'|trans }}</dt>
+                        <dd>
+                            {{ 'legal_notice.sections.publisher.address.line_1'|trans }}<br>
+                            {{ 'legal_notice.sections.publisher.address.line_2'|trans }}
+                        </dd>
+                    </div>
+
+                    <div class="legal-definition-list__item">
+                        <dt>{{ 'legal_notice.sections.publisher.company_number.label'|trans }}</dt>
+                        <dd>{{ 'legal_notice.sections.publisher.company_number.value'|trans }}</dd>
+                    </div>
+
+                    <div class="legal-definition-list__item">
+                        <dt>{{ 'legal_notice.sections.publisher.vat_number.label'|trans }}</dt>
+                        <dd>{{ 'legal_notice.sections.publisher.vat_number.value'|trans }}</dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="legal-notice-contact">
+            <div class="card">
+                <h2 id="legal-notice-contact">
+                    {{ 'legal_notice.sections.contact.title'|trans }}
+                </h2>
+
+                <dl class="legal-definition-list">
+                    <div class="legal-definition-list__item">
+                        <dt>{{ 'legal_notice.sections.contact.email.label'|trans }}</dt>
+                        <dd>
+                            <a href="mailto:{{ 'legal_notice.sections.contact.email.value'|trans }}">
+                                {{ 'legal_notice.sections.contact.email.value'|trans }}
+                            </a>
+                        </dd>
+                    </div>
+
+                    <div class="legal-definition-list__item">
+                        <dt>{{ 'legal_notice.sections.contact.phone.label'|trans }}</dt>
+                        <dd>{{ 'legal_notice.sections.contact.phone.value'|trans }}</dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+
+        <section class="content-section" aria-labelledby="legal-notice-hosting">
+            <div class="card">
+                <h2 id="legal-notice-hosting">
+                    {{ 'legal_notice.sections.hosting.title'|trans }}
+                </h2>
+
+                <dl class="legal-definition-list">
+                    <div class="legal-definition-list__item">
+                        <dt>{{ 'legal_notice.sections.hosting.company.label'|trans }}</dt>
+                        <dd>{{ 'legal_notice.sections.hosting.company.value'|trans }}</dd>
+                    </div>
+
+                    <div class="legal-definition-list__item">
+                        <dt>{{ 'legal_notice.sections.hosting.address.label'|trans }}</dt>
+                        <dd>
+                            {{ 'legal_notice.sections.hosting.address.line_1'|trans }}<br>
+                            {{ 'legal_notice.sections.hosting.address.line_2'|trans }}<br>
+                            {{ 'legal_notice.sections.hosting.address.line_3'|trans }}
+                        </dd>
+                    </div>
+
+                    <div class="legal-definition-list__item">
+                        <dt>{{ 'legal_notice.sections.hosting.website.label'|trans }}</dt>
+                        <dd>
+                            <a
+                                href="{{ 'legal_notice.sections.hosting.website.url'|trans }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {{ 'legal_notice.sections.hosting.website.label'|trans }}
+                            </a>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+    </main>
+{% endblock %}

@@ -1,0 +1,30 @@
+{# templates/pages/privacy_policy.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'legal' %}
+
+{% block title %}{{ 'privacy_policy.meta.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'privacy_policy.meta.description'|trans }}{% endblock %}
+
+{% block body %}
+    <main class="legal-page">
+        <header class="legal-hero">
+            <p class="eyebrow">{{ 'privacy_policy.hero.eyebrow'|trans }}</p>
+
+            <h1>{{ 'privacy_policy.hero.title'|trans }}</h1>
+
+            <p class="legal-hero__intro">
+                {{ 'privacy_policy.hero.intro'|trans }}
+            </p>
+        </header>
+
+        <section class="content-section" aria-labelledby="privacy-policy-content">
+            <div class="card">
+                <h2 id="privacy-policy-content">{{ 'privacy_policy.sections.content.title'|trans }}</h2>
+
+                <p>{{ 'privacy_policy.sections.content.paragraphs.1'|trans }}</p>
+            </div>
+        </section>
+    </main>
+{% endblock %}

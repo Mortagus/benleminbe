@@ -9,6 +9,22 @@ header:
         contact: "Contact"
 
 footer:
+    identity: "Site publisher information"
+    legal_title: "Legal information"
+    about: "About this website"
+
     handmade: "website designed and developed by myself"
     signature: "Backend developer specialized in evolving existing web applications"
-    disclaimer_tracking: "This website uses a privacy-friendly audience analytics tool."
+
+    address: "Opheylissem, Walloon Brabant, Belgium"
+
+    company_number_label: "Company number / VAT number"
+    company_number: "BE 1031.435.246"
+
+    legal_navigation: "Legal navigation"
+
+    terms_and_conditions: "Terms and Conditions"
+    privacy_policy: "Privacy Policy"
+    legal_notice: "Legal Notice"
+
+    disclaimer_tracking: "This website uses a privacy-friendly analytics tool."

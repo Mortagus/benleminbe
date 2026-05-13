@@ -50,15 +50,66 @@ final class PageController extends AbstractController
     }
 
     #[Route(
+        path: '/terms-and-conditions',
+        name: 'terms_and_conditions',
+        options: [
+            'sitemap' => [
+                'enabled' => true,
+                'locales' => ['fr', 'en'],
+                'lastmod' => '2026-05-13',
+            ],
+        ],
+        methods: ['GET'],
+    )]
+    public function termsAndConditions(): Response
+    {
+        return $this->render('pages/terms_and_conditions.html.twig');
+    }
+
+    #[Route(
+        path: '/privacy-policy',
+        name: 'privacy_policy',
+        options: [
+            'sitemap' => [
+                'enabled' => true,
+                'locales' => ['fr', 'en'],
+                'lastmod' => '2026-05-13',
+            ],
+        ],
+        methods: ['GET'],
+    )]
+    public function privacyPolicy(): Response
+    {
+        return $this->render('pages/privacy_policy.html.twig');
+    }
+
+    #[Route(
+        path: '/legal-notice',
+        name: 'legal_notice',
+        options: [
+            'sitemap' => [
+                'enabled' => true,
+                'locales' => ['fr', 'en'],
+                'lastmod' => '2026-05-13',
+            ],
+        ],
+        methods: ['GET'],
+    )]
+    public function legalNotice(): Response
+    {
+        return $this->render('pages/legal_notice.html.twig');
+    }
+
+    #[Route(
         path: '/skills',
         name: 'skills',
-//        options: [
-//            'sitemap' => [
-//                'enabled' => true,
-//                'locales' => ['fr', 'en'],
-//                'lastmod' => '2026-05-12',
-//            ],
-//        ],
+        options: [
+            'sitemap' => [
+                'enabled' => true,
+                'locales' => ['fr', 'en'],
+                'lastmod' => '2026-05-12',
+            ],
+        ],
         methods: ['GET'],
     )]
     public function skills(): Response

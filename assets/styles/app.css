@@ -7,6 +7,7 @@
 
 @import url("./components/cards.css");
 @import url("./components/buttons.css");
+@import url("./components/content.css");
 @import url("./components/lang-switcher.css");
 @import url("./components/links.css");
 @import url("./components/theme-switcher.css");
@@ -18,4 +19,7 @@
 @import url("./pages/contact.css");
 @import url("./pages/skills.css");
 @import url("./pages/experiences.css");
+@import url("./pages/experience-detail.css");
 @import url("./pages/projects.css");
+@import url("./pages/project-detail.css");
+@import url("./pages/legal.css");

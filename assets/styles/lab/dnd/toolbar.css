@@ -55,12 +55,12 @@
     border-color: var(--border);
 }
 
-.dnd-initiative-page .dnd-toolbar__actions button:hover:not(:disabled),
-.dnd-initiative-page .dnd-secondary-button:hover {
-    transform: translateY(-1px);
-}
-
 .dnd-initiative-page .dnd-toolbar__actions button:disabled {
     cursor: not-allowed;
     opacity: 0.55;
+}
+
+.dnd-initiative-page .dnd-toolbar__actions button:hover:not(:disabled),
+.dnd-initiative-page .dnd-secondary-button:hover {
+    transform: translateY(-1px);
 }

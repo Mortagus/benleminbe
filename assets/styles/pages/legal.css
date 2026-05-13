@@ -1,0 +1,111 @@
+.legal-page {
+    width: min(100% - 2rem, 72rem);
+    margin-inline: auto;
+    padding-block: 4rem;
+}
+
+.legal-hero {
+    max-width: 760px;
+    margin-bottom: 3rem;
+}
+
+.legal-hero .eyebrow {
+    margin-block: 0 0.75rem;
+    color: var(--accent-hover);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.legal-hero h1 {
+    margin-block: 0 1rem;
+    color: var(--text);
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    line-height: 1;
+}
+
+.legal-hero__intro {
+    max-width: 680px;
+    margin-block: 0;
+    color: var(--muted);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 1.7;
+}
+
+.legal-page .content-section {
+    margin-top: 0;
+}
+
+.legal-page .content-section + .content-section {
+    margin-top: 2rem;
+}
+
+.legal-page .card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    background: var(--link-card-bg);
+    box-shadow: var(--link-card-shadow);
+}
+
+.legal-page .card h2 {
+    max-width: 720px;
+    margin-block: 0 1.5rem;
+    color: var(--text);
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    line-height: 1.15;
+}
+
+.legal-page .card p {
+    max-width: 860px;
+    margin-block: 0;
+    color: var(--text);
+    line-height: 1.8;
+    opacity: 0.9;
+}
+
+.legal-page .card p + p {
+    margin-top: 1rem;
+}
+
+.legal-definition-list {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+}
+
+.legal-definition-list__item {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.legal-definition-list dt {
+    font-weight: 700;
+    color: var(--text);
+}
+
+.legal-definition-list dd {
+    margin: 0;
+    color: var(--muted);
+}
+
+@media (width <= 700px) {
+    .legal-page {
+        width: min(100% - 1rem, 72rem);
+        padding-block: 2rem;
+    }
+
+    .legal-hero {
+        margin-bottom: 2rem;
+    }
+
+    .legal-page .content-section + .content-section {
+        margin-top: 1rem;
+    }
+
+    .legal-page .card {
+        padding: 1.25rem;
+    }
+}

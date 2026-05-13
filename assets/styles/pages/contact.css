@@ -120,7 +120,7 @@
     margin-top: 0.5rem;
 }
 
-@media (max-width: 800px) {
+@media (width <= 800px) {
     .contact-page {
         width: min(100% - 1rem, 1120px);
         padding: 2rem 0;

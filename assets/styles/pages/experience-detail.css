@@ -1,0 +1,298 @@
+/* =========================
+   EXPERIENCE DETAIL PAGE
+========================= */
+
+.experience-detail-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    line-height: 1.6;
+}
+
+.experience-detail-page .experience-detail-hero {
+    margin-bottom: 3rem;
+}
+
+.experience-detail-page .experience-detail-hero__eyebrow {
+    margin-block: 0 0.5rem;
+    color: var(--accent-hover);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.experience-detail-page .experience-detail-hero h1 {
+    max-width: 700px;
+    margin-block: 0 0.75rem;
+    color: var(--text);
+    font-size: clamp(2.25rem, 7vw, 4rem);
+    line-height: 1;
+}
+
+.experience-detail-page .experience-detail-hero__lead {
+    max-width: 650px;
+    margin-block: 0;
+    color: var(--text);
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    opacity: 0.9;
+}
+
+.experience-detail-page .experience-detail-meta {
+    margin-block: 2rem 0;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    background: var(--link-card-bg);
+    box-shadow: var(--link-card-shadow);
+    list-style: none;
+}
+
+.experience-detail-page .experience-detail-meta li {
+    display: grid;
+    grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-size: 0.95rem;
+}
+
+.experience-detail-page .experience-detail-meta strong {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.experience-detail-page .experience-detail-meta span {
+    color: var(--muted);
+}
+
+.experience-detail-page .experience-detail-highlight {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    background: var(--link-card-bg);
+}
+
+.experience-detail-page .experience-detail-highlight h2,
+.experience-detail-page .experience-detail-section h2 {
+    margin-block: 0 1.2rem;
+    color: var(--text);
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    line-height: 1.2;
+}
+
+.experience-detail-page .experience-detail-highlight p,
+.experience-detail-page .experience-detail-section p {
+    max-width: 680px;
+    margin-block: 0 1rem;
+    color: var(--text);
+    opacity: 0.9;
+}
+
+.experience-detail-page .experience-detail-highlight p:last-child,
+.experience-detail-page .experience-detail-section p:last-child {
+    margin-bottom: 0;
+}
+
+.experience-detail-page .experience-detail-section {
+    margin-top: 3.5rem;
+}
+
+.experience-detail-page .experience-detail-section ul,
+.experience-detail-page .experience-detail-highlight ul {
+    max-width: 700px;
+    margin-block: 0;
+    padding-inline-start: 1.25rem;
+    color: var(--text);
+}
+
+.experience-detail-page .experience-detail-section li,
+.experience-detail-page .experience-detail-highlight li {
+    margin-bottom: 0.55rem;
+}
+
+.experience-detail-page .experience-detail-technologies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-width: 700px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.experience-detail-page .experience-detail-technologies li {
+    margin-bottom: 0;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.experience-detail-page .experience-detail-section li:last-child,
+.experience-detail-page .experience-detail-highlight li:last-child,
+.experience-detail-page .experience-detail-meta li:last-child {
+    margin-bottom: 0;
+}
+
+.experience-detail-page .experience-detail-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.experience-detail-page .experience-detail-navigation--top {
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+    padding-top: 0;
+    border-top: 0;
+}
+
+.experience-detail-page .experience-detail-navigation__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--link-card-bg);
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease,
+        transform 160ms ease;
+}
+
+.experience-detail-page .experience-detail-navigation__link:hover,
+.experience-detail-page .experience-detail-navigation__link:focus-visible {
+    border-color: var(--accent-hover);
+    background: var(--link-card-hover-bg);
+    color: var(--text);
+    transform: translateY(-1px);
+}
+
+.experience-detail-page .experience-detail-navigation__link:focus-visible {
+    outline: 3px solid rgb(90 180 190 / 35%);
+    outline-offset: 3px;
+}
+
+.experience-detail-page .experience-detail-navigation__link--back {
+    margin-right: auto;
+    color: var(--accent-hover);
+}
+
+.experience-detail-page .experience-detail-navigation__link--back::before {
+    content: "←";
+    margin-right: 0.4rem;
+}
+
+.experience-detail-page .experience-detail-navigation__link--previous::before {
+    content: "←";
+    margin-right: 0.4rem;
+}
+
+.experience-detail-page .experience-detail-navigation__link--next::after {
+    content: "→";
+    margin-left: 0.4rem;
+}
+
+.experience-detail-page .experience-associated-project-card {
+    display: grid;
+    gap: 0.4rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    background: var(--link-card-bg);
+    color: inherit;
+    text-decoration: none;
+    transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        background-color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.experience-detail-page .experience-associated-project-card:hover,
+.experience-detail-page .experience-associated-project-card:focus-visible {
+    border-color: var(--link-card-hover-border);
+    background: var(--link-card-hover-bg);
+    box-shadow: var(--link-card-shadow);
+    color: inherit;
+    transform: translateY(-2px);
+}
+
+.experience-detail-page .experience-associated-project-card:focus-visible {
+    outline: 3px solid rgb(90 180 190 / 35%);
+    outline-offset: 3px;
+}
+
+.experience-detail-page .experience-associated-project-card strong {
+    color: var(--text);
+    font-size: 1.05rem;
+}
+
+.experience-detail-page .experience-associated-project-card span {
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.experience-detail-page .experience-associated-project-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: fit-content;
+    margin-top: 0.35rem;
+    color: var(--accent-hover);
+    font-weight: 700;
+}
+
+.experience-detail-page .experience-associated-project-card__link::after {
+    content: "→";
+    transition: transform 160ms ease;
+}
+
+.experience-detail-page .experience-associated-project-card:hover .experience-associated-project-card__link::after,
+.experience-detail-page .experience-associated-project-card:focus-visible .experience-associated-project-card__link::after {
+    transform: translateX(0.25rem);
+}
+
+@media (width < 48rem) {
+    .experience-detail-page {
+        padding-inline: 1rem;
+    }
+
+    .experience-detail-page .experience-associated-projects {
+        grid-template-columns: 1fr;
+    }
+
+    .experience-detail-page .experience-detail-meta li {
+        grid-template-columns: 1fr;
+        gap: 0.15rem;
+    }
+
+    .experience-detail-page .experience-detail-navigation {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .experience-detail-page .experience-detail-navigation__link,
+    .experience-detail-page .experience-detail-navigation__link--back {
+        width: 100%;
+        margin-right: 0;
+    }
+}

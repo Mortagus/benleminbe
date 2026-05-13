@@ -1,9 +1,5 @@
 .card,
-.project-card,
-.stat-card,
-.skills-group,
-.content-section-highlight,
-.contact-section {
+.project-card {
     padding: 24px;
     border: 1px solid var(--border);
     border-radius: 18px;
@@ -11,14 +7,25 @@
     box-shadow: 0 16px 40px var(--shadow);
 }
 
-.stat-card strong {
+.landing-page .stat-card,
+.landing-page .skills-group,
+.landing-page .content-section-highlight,
+.landing-page .contact-section {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--card);
+    box-shadow: 0 16px 40px var(--shadow);
+}
+
+.landing-page .stat-card strong {
     display: block;
     margin-bottom: 8px;
     color: var(--accent-hover);
     font-size: 1.8rem;
 }
 
-.stat-card span {
+.landing-page .stat-card span {
     color: var(--muted);
     line-height: 1.5;
 }

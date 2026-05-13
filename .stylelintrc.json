@@ -1,3 +1,25 @@
 {
-    "extends": "stylelint-config-standard"
+    "extends": "stylelint-config-standard",
+    "rules": {
+        "at-rule-empty-line-before": null,
+        "custom-property-empty-line-before": null,
+        "declaration-empty-line-before": null,
+        "property-no-vendor-prefix": [
+            true,
+            {
+                "ignoreProperties": [
+                    "mask-image",
+                    "mask-position",
+                    "mask-repeat",
+                    "mask-size"
+                ]
+            }
+        ],
+        "selector-class-pattern": [
+            "^[a-z][a-z0-9-]*(?:__[a-z0-9-]+)?(?:--[a-z0-9-]+)?$",
+            {
+                "message": "Expected class selector to use kebab-case with optional BEM element/modifier syntax"
+            }
+        ]
+    }
 }

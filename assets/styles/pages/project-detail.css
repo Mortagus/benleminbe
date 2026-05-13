@@ -1,0 +1,245 @@
+/* =========================
+   PROJECT DETAIL PAGE
+========================= */
+
+.project-detail-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    line-height: 1.6;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.project-detail-page .page-hero {
+    margin-bottom: 4rem;
+}
+
+.project-detail-page .page-hero .eyebrow {
+    margin-block: 0 0.75rem;
+    color: var(--accent-hover);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.project-detail-page .page-hero h1 {
+    margin-block: 0 1rem;
+    color: var(--text);
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    line-height: 1;
+}
+
+.project-detail-page .page-hero .lead {
+    font-size: 1.2rem;
+    max-width: 600px;
+    color: var(--text);
+}
+
+/* =========================
+   META BLOCK
+========================= */
+
+.project-detail-page .meta-list {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--link-card-bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    box-shadow: var(--link-card-shadow);
+    list-style-position: inside;
+}
+
+.project-detail-page .meta-list li {
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+}
+
+.project-detail-page .meta-list li strong {
+    display: inline-block;
+    min-width: 140px;
+}
+
+.project-detail-page .page-hero .meta-list {
+    margin-top: 2rem;
+}
+
+/* =========================
+   CONTENT SECTIONS
+========================= */
+
+.project-detail-page .content-section {
+    margin-top: 3.5rem;
+}
+
+.project-detail-page .content-section h2 {
+    margin-bottom: 1.2rem;
+}
+
+.project-detail-page .content-section p {
+    max-width: 650px;
+    color: var(--text);
+    opacity: 0.9;
+}
+
+.project-detail-page .content-section ul {
+    max-width: 650px;
+}
+
+.project-detail-page .content-section li {
+    margin-bottom: 0.5rem;
+}
+
+/* =========================
+   TECH GRID
+========================= */
+
+.project-detail-page .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+}
+
+.project-detail-page .tech-grid > div {
+    padding-top: 0.75rem;
+    border-top: 2px solid var(--accent);
+}
+
+.project-detail-page .tech-grid h3 {
+    margin-bottom: 0.75rem;
+}
+
+/* =========================
+   HIGHLIGHT SECTION
+========================= */
+
+.project-detail-page .highlight-section {
+    margin-top: 4rem;
+    padding: 1.5rem;
+    background: var(--link-card-bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+}
+
+.project-detail-page .project-associated-experience {
+    margin-top: -1.5rem;
+    margin-bottom: 3.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    background: var(--link-card-bg);
+    box-shadow: var(--link-card-shadow);
+}
+
+.project-detail-page .project-associated-experience__eyebrow {
+    margin-block: 0 0.5rem;
+    color: var(--accent-hover);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.project-detail-page .project-associated-experience h2 {
+    margin-block: 0 0.5rem;
+    color: var(--text);
+}
+
+.project-detail-page .project-associated-experience p {
+    margin-block: 0 1rem;
+    color: var(--muted);
+}
+
+.project-detail-page .project-associated-experience a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--accent-hover);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.project-detail-page .project-associated-experience a::after {
+    content: "→";
+    transition: transform 160ms ease;
+}
+
+.project-detail-page .project-associated-experience a:hover::after,
+.project-detail-page .project-associated-experience a:focus-visible::after {
+    transform: translateX(0.25rem);
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.project-detail-page .page-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(0 0 0 / 10%);
+}
+
+.project-detail-page .page-navigation a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgb(0 0 0 / 12%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 55%);
+    color: inherit;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease,
+        transform 160ms ease;
+}
+
+.project-detail-page .page-navigation a:hover,
+.project-detail-page .page-navigation a:focus-visible {
+    border-color: rgb(0 0 0 / 22%);
+    background: rgb(255 255 255 / 85%);
+    color: inherit;
+    transform: translateY(-1px);
+}
+
+.project-detail-page .page-navigation a:focus-visible {
+    outline: 3px solid rgb(90 180 190 / 35%);
+    outline-offset: 3px;
+}
+
+.project-detail-page .page-navigation .back-link {
+    margin-right: auto;
+    color: #5f9ea8;
+}
+
+.project-detail-page .page-navigation .previous-link::before {
+    content: "←";
+    margin-right: 0.4rem;
+}
+
+.project-detail-page .page-navigation .next-link::after {
+    content: "→";
+    margin-left: 0.4rem;
+}
+
+/* =========================
+   FOOTER SPACING
+========================= */
+
+footer {
+    margin-top: 4rem;
+}

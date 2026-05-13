@@ -45,7 +45,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    :root:not([data-theme="light"], [data-theme="dark"]) {
         color-scheme: dark;
 
         --bg: #181613;
@@ -56,7 +56,7 @@
         --accent: #6fb7df;
         --accent-hover: #8fd0f3;
         --accent-soft: #3a2f22;
-        --border: #e6c79c;
+        --border: #6a5438;
         --shadow: rgb(0 0 0 / 32%);
         --tag-bg: #332a20;
         --tag-border: #5a4733;

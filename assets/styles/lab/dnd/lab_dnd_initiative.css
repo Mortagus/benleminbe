@@ -1,7 +1,7 @@
-@import './page.css';
-@import './panels.css';
-@import './toolbar.css';
-@import './monsters.css';
-@import './players.css';
-@import './turn-order.css';
-@import './icons.css';
+@import url("./page.css");
+@import url("./panels.css");
+@import url("./toolbar.css");
+@import url("./monsters.css");
+@import url("./players.css");
+@import url("./turn-order.css");
+@import url("./icons.css");

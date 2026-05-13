@@ -2,7 +2,6 @@
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
-    grid-template-columns: repeat(auto-fit, minmax(120px, max-content));
     align-items: center;
 }
 
@@ -10,6 +9,12 @@
 .text-link {
     color: var(--accent-hover);
     font-weight: 700;
+    text-decoration: none;
+}
+
+.external-links--secondary a {
+    color: var(--accent-hover);
+    font-size: 0.9rem;
     text-decoration: none;
 }
 
@@ -61,12 +66,6 @@
     margin-top: 0.25rem;
     color: var(--muted);
     font-size: 0.85rem;
-}
-
-.external-links--secondary a {
-    color: var(--accent-hover);
-    font-size: 0.9rem;
-    text-decoration: none;
 }
 
 .external-links--secondary a:hover {

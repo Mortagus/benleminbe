@@ -1,4 +1,3 @@
-.eyebrow,
 .project-tag {
     margin-bottom: 12px;
     color: var(--accent-hover);
@@ -6,16 +5,6 @@
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-}
-
-.feature-list {
-    padding-left: 1.2rem;
-    color: var(--muted);
-    line-height: 1.7;
-}
-
-.feature-list li + li {
-    margin-top: 12px;
 }
 
 .landing-page {
@@ -28,7 +17,6 @@
 }
 
 .hero-section,
-.content-section,
 .contact-section {
     width: 100%;
 }
@@ -58,7 +46,6 @@
 }
 
 .hero-details,
-.content-section p,
 .contact-section p {
     color: var(--muted);
     line-height: 1.7;
@@ -68,13 +55,11 @@
     max-width: 680px;
 }
 
-.content-section h2,
 .contact-section h2 {
     margin-bottom: 24px;
     font-size: clamp(1.7rem, 3vw, 2.4rem);
 }
 
-.content-section h3,
 .contact-section h3 {
     margin-bottom: 10px;
     font-size: 1.15rem;
@@ -125,14 +110,14 @@
    Projects cards
    ========================================================================== */
 
-.project-card-link {
+.landing-page .project-card-link {
     display: block;
     height: 100%;
     color: inherit;
     text-decoration: none;
 }
 
-.project-card {
+.landing-page .project-card {
     position: relative;
     height: 100%;
     padding-right: 56px;
@@ -147,7 +132,7 @@
         border-color 0.18s ease;
 }
 
-.project-card::after {
+.landing-page .project-card::after {
     content: "→";
 
     position: absolute;
@@ -181,28 +166,28 @@
         color 0.18s ease;
 }
 
-.project-card-link:hover .project-card,
-.project-card-link:focus-visible .project-card {
+.landing-page .project-card-link:hover .project-card,
+.landing-page .project-card-link:focus-visible .project-card {
     transform: translateY(-4px);
     background: var(--link-card-hover-bg);
     border-color: var(--link-card-hover-border);
     box-shadow: var(--link-card-shadow);
 }
 
-.project-card-link:hover .project-card::after,
-.project-card-link:focus-visible .project-card::after {
+.landing-page .project-card-link:hover .project-card::after,
+.landing-page .project-card-link:focus-visible .project-card::after {
     transform: translateX(3px);
     background: var(--accent);
     border-color: var(--accent);
     color: #10202a;
 }
 
-.project-card-link:hover h3,
-.project-card-link:focus-visible h3 {
+.landing-page .project-card-link:hover h3,
+.landing-page .project-card-link:focus-visible h3 {
     color: var(--accent-hover);
 }
 
-.project-card-link:focus-visible {
+.landing-page .project-card-link:focus-visible {
     outline: 3px solid var(--accent);
     outline-offset: 4px;
     border-radius: 12px;

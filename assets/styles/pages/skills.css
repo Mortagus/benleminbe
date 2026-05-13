@@ -8,46 +8,46 @@
     padding-block: 4rem;
 }
 
-.skills-hero {
+.skills-page .skills-hero {
     max-width: 56rem;
     margin-inline: auto;
     margin-bottom: 2rem;
     text-align: center;
 }
 
-.skills-hero__intro {
+.skills-page .skills-hero__intro {
     color: var(--muted);
     font-size: 1.1rem;
     line-height: 1.7;
 }
 
-.skills-highlight-grid,
-.skills-category-list {
+.skills-page .skills-highlight-grid,
+.skills-page .skills-category-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1rem;
 }
 
-.skills-highlight-grid article,
-.skills-category {
+.skills-page .skills-highlight-grid article,
+.skills-page .skills-category {
     padding: 1rem;
     border: 1px solid rgb(241 231 213 / 32%);
     border-radius: 1rem;
     background: var(--bg-soft);
 }
 
-.skills-highlight-grid h3,
-.skills-category h3 {
+.skills-page .skills-highlight-grid h3,
+.skills-page .skills-category h3 {
     margin-top: 0;
 }
 
-.skills-two-columns {
+.skills-page .skills-two-columns {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 2rem;
 }
 
-.tag-list {
+.skills-page .tag-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -56,7 +56,7 @@
     list-style: none;
 }
 
-.tag-list li {
+.skills-page .tag-list li {
     padding: 0.35rem 0.7rem;
     border: 1px solid var(--tag-border);
     border-radius: 999px;
@@ -66,10 +66,10 @@
     line-height: 1.2;
 }
 
-.tag-list--large li {
+.skills-page .tag-list--large li {
     font-size: 1rem;
 }
 
-.card--accent {
+.skills-page .card--accent {
     border-color: var(--accent);
 }

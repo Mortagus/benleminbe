@@ -58,19 +58,19 @@ Fait - validations, affichage d'erreurs et blocage des actions validés
 Sécurité
 
 ### Constat
-Le rendu actuel de l'ordre de tour utilise `textContent`, ce qui est sain pour afficher les noms saisis par l'utilisateur. En revanche, le module contient encore des usages de `innerHTML` pour vider des listes ou des options dans `monsters.js`.
+Le rendu actuel de l'ordre de tour utilise `textContent`, ce qui est sain pour afficher les noms saisis par l'utilisateur. Les derniers usages de `innerHTML` dans le module DnD ont été supprimés de `monsters.js`.
 
 ### Impact
-Le risque d'injection HTML directe semble faible dans l'état actuel, car les données utilisateur ne sont pas injectées via `innerHTML`. Le point de vigilance est surtout de conserver cette discipline lors des prochaines évolutions, notamment si des descriptions, notes ou effets de statut sont ajoutés.
+Le module évite désormais les vidages de DOM via chaînes HTML et s'appuie sur des API DOM explicites. Cela réduit le risque de réintroduire une injection HTML lors des prochaines évolutions.
 
 ### Proposition
-Formaliser une règle locale : utiliser `textContent`, `replaceChildren()` et `createElement()` pour les données dynamiques ; réserver `innerHTML` aux cas strictement contrôlés. Remplacer progressivement les vidages `innerHTML = ''` par `replaceChildren()` pour clarifier l'intention.
+Conserver cette règle locale : utiliser `textContent`, `replaceChildren()`, `createElement()` et les templates DOM pour les données dynamiques ; éviter `innerHTML` sauf cas strictement contrôlé et documenté.
 
 ### Complexité estimée
 Faible
 
 ### Statut
-À faire
+Fait
 
 ## P4 - Stabiliser l'extraction des données joueurs
 

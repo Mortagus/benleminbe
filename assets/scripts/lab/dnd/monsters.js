@@ -125,7 +125,7 @@ export function getMonsterActors() {
 }
 
 export function renderMonsters(monsterList, onMonsterSelectionChange) {
-    monsterList.innerHTML = '';
+    const monsterItems = document.createDocumentFragment();
 
     monsters.forEach((monster, index) => {
         const fragment = monsterItemTemplate.content.cloneNode(true);
@@ -168,8 +168,10 @@ export function renderMonsters(monsterList, onMonsterSelectionChange) {
         }
 
         bindMonsterItemEvents(li, index, onMonsterSelectionChange);
-        monsterList.appendChild(li);
+        monsterItems.appendChild(li);
     });
+
+    monsterList.replaceChildren(monsterItems);
 }
 
 function getInitiativeTooltip(monster) {
@@ -206,13 +208,11 @@ function formatModifier(value) {
 }
 
 function renderMonsterOptions(select, selectedSlug) {
-    select.innerHTML = '';
-
     const placeholderOption = document.createElement('option');
     placeholderOption.value = '';
     placeholderOption.textContent = 'Choisir un monstre';
 
-    select.appendChild(placeholderOption);
+    const options = [placeholderOption];
 
     monsterClasses.forEach(monsterClass => {
         const option = monsterOptionTemplate.content
@@ -223,8 +223,10 @@ function renderMonsterOptions(select, selectedSlug) {
         option.textContent = monsterClass.name;
         option.selected = monsterClass.slug === selectedSlug;
 
-        select.appendChild(option);
+        options.push(option);
     });
+
+    select.replaceChildren(...options);
 }
 
 function bindMonsterItemEvents(monsterItem, index, onMonsterSelectionChange) {

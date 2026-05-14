@@ -7,6 +7,8 @@ header:
         skills: "Skills"
         about: "About"
         contact: "Contact"
+        open_menu: "Open main menu"
+        close_menu: "Close main menu"
 
 footer:
     identity: "Site publisher information"

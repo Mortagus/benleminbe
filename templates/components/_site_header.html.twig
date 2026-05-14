@@ -2,13 +2,33 @@
 
 {% trans_default_domain 'layout' %}
 
-<header class="site-header">
+<header class="site-header" data-site-header>
     <div class="site-header__inner">
         <a href="{{ path('app_home', { _locale: app.request.locale }) }}" class="site-header__brand">
             Benjamin Lemin
         </a>
 
-        <nav class="site-header__nav" aria-label="{{ 'header.navigation.label'|trans }}">
+        <button
+            type="button"
+            class="site-header__menu-toggle"
+            data-menu-toggle
+            aria-controls="site-header-nav"
+            aria-expanded="false"
+            aria-label="{{ 'header.navigation.open_menu'|trans }}"
+            data-label-open="{{ 'header.navigation.open_menu'|trans }}"
+            data-label-close="{{ 'header.navigation.close_menu'|trans }}"
+        >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </button>
+
+        <nav
+            id="site-header-nav"
+            class="site-header__nav"
+            data-site-nav
+            aria-label="{{ 'header.navigation.label'|trans }}"
+        >
             <a href="{{ path('app_home', { _locale: app.request.locale }) }}"
                class="site-header__link {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}">
                 {{ 'header.navigation.home'|trans }}

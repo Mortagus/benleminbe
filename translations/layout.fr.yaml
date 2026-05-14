@@ -7,6 +7,8 @@ header:
         skills: "Compétences"
         about: "À propos"
         contact: "Contact"
+        open_menu: "Ouvrir le menu principal"
+        close_menu: "Fermer le menu principal"
 
 footer:
     identity: "Informations sur l’éditeur du site"

@@ -1,14 +1,14 @@
 meta:
-    title: "Benjamin Lemin - Senior backend developer for existing PHP applications"
-    description: "I help teams maintain, evolve and stabilize existing PHP, Symfony and Drupal web applications with a progressive and reliable approach."
+    title: "Benjamin Lemin - Custom web applications, existing projects and senior reinforcement"
+    description: "I help companies design, take over and evolve custom web applications when they have a specific business need or a complex technical problem."
 
 hero:
-    eyebrow: "Available for freelance missions (20 to 25h/week) — quick integration into existing teams"
+    eyebrow: "Available for freelance missions (20 to 25h/week)"
     name: "Benjamin Lemin"
-    subtitle: "Senior backend developer — PHP, Symfony, Drupal"
-    intro: "I help teams maintain and evolve existing web applications while respecting the work already in place."
-    details_p1: "Senior backend developer with more than 15 years of experience, working on PHP, Symfony and Drupal platforms in production environments."
-    details_p2: "I add features, clarify codebases and progressively improve maintainability."
+    title: "A business need? A complex project?"
+    subtitle: "Senior web developer PHP, Symfony, Drupal"
+    intro: "I help companies design, take over and evolve custom web applications."
+    details_p1: "15+ years of experience on business applications, existing project takeovers and production platforms."
 
 actions:
     contact: "Contact me"
@@ -16,45 +16,36 @@ actions:
     download_cv: "Download my resume"
 
 help:
-    title: "I can help if…"
+    title: "I can help if..."
     card_1:
-        title: "Every new change becomes difficult"
-        text: "Your application is still useful, but every new feature requires understanding a large amount of context before making changes."
+        title: "You have an internal tool idea"
+        text: "You need an <strong class=\"text-highlight\">application adapted</strong> to your real workflows."
     card_2:
-        title: "The codebase is difficult to approach with confidence"
-        text: "The system works, but it becomes difficult to know where to intervene, what to test and which side effects to avoid."
+        title: "Your application is reaching its limits"
+        text: "Adding, fixing or evolving the tool is <strong class=\"text-highlight\">becoming difficult</strong>."
     card_3:
-        title: "You need to deliver without destabilizing production"
-        text: "You need to add, fix or integrate features while limiting regressions and service interruptions."
+        title: "You need to take over an existing project"
+        text: "The previous developer is unavailable or <strong class=\"text-highlight\">knowledge has been scattered</strong>."
     card_4:
-        title: "Your team needs an autonomous reinforcement"
-        text: "I can join an existing team, progressively understand the context and contribute without forcing unnecessary rewrites."
+        title: "Your business domain is complex"
+        text: "You need someone who can quickly understand <strong class=\"text-highlight\">the rules and risks</strong>."
+    card_5:
+        title: "Your team lacks technical capacity"
+        text: "I can join an existing team as a <strong class=\"text-highlight\">part-time senior reinforcement</strong>."
+    card_6:
+        title: "A standard tool is not enough"
+        text: "You need a solution connected to <strong class=\"text-highlight\">your data and APIs</strong>."
 
 concrete:
-    title: "What I concretely do"
-    item_1: "Evolve existing PHP applications without disrupting their current behavior"
-    item_2: "Maintain and improve Symfony and Drupal platforms already running in production"
-    item_3: "Solve complex production issues in a reliable and pragmatic way"
-    item_4: "Integrate APIs and external services into existing systems"
-    item_5: "Progressively improve code readability, quality and maintainability"
-
-stats:
-    title: "Field experience"
-    experience:
-        value: "15+"
-        label: "years working on production web applications"
-    stack:
-        value: "Projects"
-        label: "contributions on existing platforms, often evolving continuously"
-    production:
-        value: "Production"
-        label: "systems used daily, with real-world stability constraints"
-    teams:
-        value: "Teams"
-        label: "integration into product and technical teams, with direct collaboration"
+    title: "What I can take care of"
+    item_1: "Design and build a custom business web application"
+    item_2: "Take over an existing PHP, Symfony or Drupal project already in production"
+    item_3: "Add features without starting from scratch"
+    item_4: "Modernize an existing system progressively"
+    item_5: "Integrate APIs, external services and databases into a business tool"
 
 projects:
-    title: "Representative projects"
+    title: "A few representative projects"
     delcampe:
         tag: "Marketplace / Symfony"
         title: "Delcampe"
@@ -65,46 +56,24 @@ projects:
         text: "Contributed to the evolution of a Drupal Commerce e-commerce platform. Worked on catalog management and integrations (ElasticSearch, Salesforce, Google Maps API) within an existing business environment."
     moveit:
         tag: "SSO / Microservices"
-        title: "Rossel — MoveIT"
+        title: "Rossel - MoveIT"
         text: "Participated in the development of Go microservices for an SSO authentication platform used by several media brands within the Rossel group."
 
-work_style:
-    title: "How I work"
-    understand:
-        title: "Understand before modifying"
-        text: "Before making changes, I take the time to understand the existing system: code structure, data flows, business constraints and technical history, in order to reduce risks and avoid side effects, while relying on automated tests to secure evolutions."
-    progressive:
-        title: "Move forward progressively"
-        text: "I improve systems step by step: solving concrete problems, reducing complexity whenever possible and evolving existing systems without forcing unnecessary rewrites."
-
-skills:
-    title: "Areas of expertise"
-    backend:
-        title: "PHP Backend"
-        text: "Development and evolution of Symfony, Drupal and custom web applications"
-    data:
-        title: "Data & APIs"
-        text: "Design and integration of APIs (REST, SOAP) and management of relational and document-oriented databases"
-    quality:
-        title: "Quality & reliability"
-        text: "Implementation of best practices: automated testing, code review, CI/CD and continuous code improvement"
-    collaboration:
-        title: "Team collaboration"
-        text: "Collaboration with product, business and technical teams, integration into existing environments"
-
-coaching:
-    title: "Coaching & knowledge sharing"
-    paragraph_1: "For several years, I have been helping students, career changers and developers improve their programming skills and progress on their projects."
-    paragraph_2: "This activity strengthens my ability to explain concepts clearly, review code, identify blockers and support other developers with pedagogy — qualities that are also valuable within project teams. I genuinely enjoy making complex concepts more accessible and helping others progress efficiently."
-
-links:
-    title: "Find me online"
-    linkedin: "Professional profile, background and recommendations"
-    malt: "Freelance profile and availability"
-    github: "Personal projects and technical experiments"
-    superprof: "Programming coaching"
-    apprentus: "Private tutoring and mentoring"
+stats:
+    title: "Experience at a glance"
+    experience:
+        value: "15+"
+        label: "years of experience on web applications and business systems"
+    stack:
+        value: "Custom"
+        label: "creation, takeover and evolution of tools adapted to real needs"
+    production:
+        value: "Production"
+        label: "work on platforms used daily, with real stability constraints"
+    teams:
+        value: "Teams"
+        label: "integration into product, business and technical teams"
 
 contact:
-    title: "Need help evolving an existing application?"
-    text: "I can join your team as a freelance backend developer, part-time, and progressively contribute without disrupting what is already working."
+    title: "Want to know whether I can be useful?"
+    text: "Tell me about your context, blocker or the tool you want to evolve. I will quickly tell you whether I can help and where to start."

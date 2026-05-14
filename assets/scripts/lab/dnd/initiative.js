@@ -29,11 +29,3 @@ export function formatInitiative(actor) {
 
     return actor.initiative;
 }
-
-export function shouldSkipTurn(actor) {
-    return actor.initiative <= 1;
-}
-
-export function getTurnCount(actor) {
-    return actor.initiative === 20 ? 2 : 1;
-}

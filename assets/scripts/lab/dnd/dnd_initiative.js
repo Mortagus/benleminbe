@@ -20,6 +20,8 @@ import {
     renderRoundOrder,
 } from './turn-order.js';
 
+import { initializeRulesPanel } from './rules.js';
+
 const monsterCountInput = document.getElementById('monsterCount');
 const createMonstersButton = document.getElementById('createMonsters');
 const rollInitiativeButton = document.getElementById('rollInitiative');
@@ -73,3 +75,4 @@ generateTurnOrderButton.addEventListener('click', () => {
 });
 
 bindExistingPlayerRemoveButtons(playerList);
+initializeRulesPanel();

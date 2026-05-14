@@ -5,9 +5,13 @@
             <p>La liste d’initiative complète apparaîtra ici.</p>
         </div>
 
-        <button id="generateTurnOrder" type="button" class="dnd-secondary-button">
-            Générer le tour de table
-        </button>
+        <div class="dnd-panel__actions">
+            <button id="generateTurnOrder" type="button" class="dnd-secondary-button">
+                Générer le tour de table
+            </button>
+
+            {% include 'lab/dnd/_rules_panels.html.twig' %}
+        </div>
     </header>
 
     <div id="turnOrderPlaceholder" class="dnd-placeholder">

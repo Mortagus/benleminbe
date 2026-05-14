@@ -1,4 +1,4 @@
-import { getTurnCount, shouldSkipTurn } from './initiative.js';
+import { getTurnCount, shouldSkipTurn } from './rules.js';
 
 let roundOrder = [];
 let draggedActorId = null;

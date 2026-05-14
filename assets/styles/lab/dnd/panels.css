@@ -24,6 +24,13 @@
     gap: 1rem;
 }
 
+.dnd-initiative-page .dnd-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.6rem;
+}
+
 .dnd-initiative-page .dnd-placeholder {
     padding: 1rem;
     background: var(--bg-soft);
@@ -45,5 +52,9 @@
 @media (width <= 768px) {
     .dnd-initiative-page .dnd-panel__header--with-action {
         flex-direction: column;
+    }
+
+    .dnd-initiative-page .dnd-panel__actions {
+        justify-content: flex-start;
     }
 }

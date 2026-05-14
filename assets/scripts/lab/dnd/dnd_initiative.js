@@ -1,3 +1,5 @@
+import '../../../styles/lab/dnd/lab_dnd_initiative.css';
+
 import {
     createMonsterSlots,
     getMonsterActors,

@@ -9,9 +9,7 @@
     <title>{% block title %}{{ 'home.meta.title'|trans }}{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}{% endblock %}">
 
-    {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
-    {% endblock %}
+    {% block importmap %}{{ importmap('app') }}{% endblock %}
 </head>
 <body>
 
@@ -21,7 +19,6 @@
 
 {% include 'components/_site_footer.html.twig' %}
 
-{% block importmap %}{{ importmap('app') }}{% endblock %}
 {% block javascripts %}{% endblock %}
 
 </body>

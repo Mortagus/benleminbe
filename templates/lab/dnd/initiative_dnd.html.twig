@@ -25,7 +25,5 @@
 {% endblock %}
 
 {% block importmap %}
-    {{ parent() }}
-
-    {{ importmap('dnd_initiative') }}
+    {{ importmap(['app', 'dnd_initiative']) }}
 {% endblock %}

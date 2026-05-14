@@ -67,7 +67,7 @@ Pour générer un fichier CSS complet à fournir comme contexte dans l'interface
 make gpt_css
 ```
 
-La commande résout les imports depuis `assets/styles/app.css` et génère le fichier temporaire `var/gpt/css-context.css`.
+La commande résout les imports depuis les entrées CSS du projet, dont le CSS global et le CSS dédié à l'outil DnD, puis génère le fichier temporaire `var/gpt/css-context.css`.
 
 ## Structure du projet
 

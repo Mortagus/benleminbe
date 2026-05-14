@@ -3,21 +3,28 @@
 declare(strict_types=1);
 
 $projectRoot = dirname(__DIR__);
-$inputPath = $argv[1] ?? 'assets/styles/app.css';
-$outputPath = $argv[2] ?? 'var/gpt/css-context.css';
+$outputPath = $argv[1] ?? 'var/gpt/css-context.css';
+$inputPaths = array_slice($argv, 2) ?: ['assets/styles/app.css'];
 
-$inputFile = resolveProjectPath($projectRoot, $inputPath);
 $outputFile = buildProjectPath($projectRoot, $outputPath);
 
-if ($inputFile === null || !is_file($inputFile)) {
-    fwrite(STDERR, "CSS entry file not found: {$inputPath}\n");
-    exit(1);
+$includedFiles = [];
+$compiledCss = '';
+
+foreach ($inputPaths as $inputPath) {
+    $inputFile = resolveProjectPath($projectRoot, $inputPath);
+
+    if ($inputFile === null || !is_file($inputFile)) {
+        fwrite(STDERR, "CSS entry file not found: {$inputPath}\n");
+        exit(1);
+    }
+
+    $compiledCss .= "/* Entry: " . relativePath($projectRoot, $inputFile) . " */\n\n";
+    $compiledCss .= compileCssFile($inputFile, $projectRoot, $includedFiles);
 }
 
-$includedFiles = [];
-$compiledCss = compileCssFile($inputFile, $projectRoot, $includedFiles);
 $compiledCss = "/* Generated CSS context for ChatGPT.\n"
-    . " * Entry: " . relativePath($projectRoot, $inputFile) . "\n"
+    . " * Entries: " . implode(', ', $inputPaths) . "\n"
     . " * Source files: " . count($includedFiles) . "\n"
     . " * Do not edit manually.\n"
     . " */\n\n"

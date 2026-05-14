@@ -45,4 +45,4 @@ install-hooks:
 	@echo "Git hooks installed from .githooks."
 
 gpt_css:
-	php tools/build_gpt_css.php assets/styles/app.css var/gpt/css-context.css
+	php tools/build_gpt_css.php var/gpt/css-context.css assets/styles/app.css assets/styles/lab/dnd/lab_dnd_initiative.css

@@ -175,12 +175,93 @@ privacy_policy:
     meta:
         title: "Politique de confidentialité | Benjamin Lemin"
         description: "Politique de confidentialité du site de Benjamin Lemin."
+
     hero:
         eyebrow: "Données personnelles"
         title: "Politique de confidentialité"
-        intro: "Cette page expliquera comment les données personnelles sont collectées, utilisées et protégées."
+
     sections:
-        content:
-            title: "Contenu à venir"
+        controller:
+            title: "Responsable du traitement"
             paragraphs:
-                1: "La politique de confidentialité est en cours de rédaction. Cette page sera complétée avec les informations utiles concernant les données, les outils utilisés et les droits des visiteurs."
+                1: "Le responsable du traitement des données personnelles collectées via ce site est Benjamin Lemin, développeur web freelance."
+                2: "Les coordonnées complètes du responsable du traitement sont disponibles sur la page Mentions légales du site."
+
+        data_collected:
+            title: "Données collectées"
+            paragraphs:
+                1: "Lorsque vous prenez contact par e-mail ou par tout autre moyen de contact proposé sur ce site, des données telles que votre nom, votre adresse e-mail et le contenu de votre message peuvent être traitées."
+                2: "Dans le cadre de la préparation de devis, de l'exécution des prestations et de la facturation, des données d'identification, de contact et de facturation peuvent être traitées."
+                3: "Lors du téléchargement du curriculum vitae, le site enregistre la date et l'heure du téléchargement, la langue utilisée, la page d'origine ainsi que certaines informations techniques transmises par votre navigateur, telles que l'adresse IP, le type de navigateur et le système d'exploitation."
+                4: "L'hébergeur du site enregistre également des données techniques relatives aux requêtes HTTP dans le cadre de ses journaux serveurs."
+
+        purposes:
+            title: "Finalités du traitement"
+            paragraphs:
+                1: "Les données personnelles sont utilisées pour répondre aux demandes de contact, préparer des devis, exécuter les prestations, assurer le suivi administratif et comptable et améliorer la compréhension de l'utilisation du site."
+                2: "Les informations relatives au téléchargement du curriculum vitae sont utilisées à des fins statistiques et pour mesurer l'intérêt porté au profil professionnel présenté sur ce site."
+
+        legal_basis:
+            title: "Base juridique"
+            paragraphs:
+                1: "Les données traitées dans le cadre d'une demande de contact ou d'une demande de devis reposent sur des mesures précontractuelles prises à votre demande."
+                2: "Les données nécessaires à l'exécution des prestations sont traitées sur la base du contrat conclu entre les parties."
+                3: "Les données de facturation et les documents comptables sont traités afin de respecter les obligations légales applicables en matière comptable, fiscale et administrative."
+                4: "Les informations relatives au téléchargement du curriculum vitae ainsi que certaines données techniques sont traitées sur la base de l'intérêt légitime du responsable du traitement, afin de mesurer l'intérêt porté au profil professionnel présenté sur ce site, d'améliorer les services proposés et de garantir la sécurité et le bon fonctionnement du site."
+
+        retention:
+            title: "Durées de conservation"
+            paragraphs:
+                1: "Les messages de contact et les échanges précontractuels sont conservés pendant une durée maximale de vingt-quatre mois à compter du dernier échange, sauf si une relation contractuelle est établie."
+                2: "Les données de facturation et les documents comptables sont conservés pendant la durée imposée par la législation belge applicable, actuellement dix ans."
+                3: "Les journaux relatifs au téléchargement du curriculum vitae sont conservés pendant une durée maximale de douze mois."
+                4: "Les journaux techniques de l'hébergeur sont conservés conformément à la politique de conservation de l'hébergeur."
+
+        recipients:
+            title: "Destinataires des données"
+            paragraphs:
+                1: "Les données personnelles sont traitées exclusivement par Benjamin Lemin et ne sont ni vendues ni communiquées à des tiers à des fins commerciales."
+                2: "L'hébergeur du site, Infomaniak Network SA, établi en Suisse, peut avoir accès à certaines données dans le cadre de l'hébergement et de la maintenance de l'infrastructure."
+                3: "La Suisse bénéficie d'une décision d'adéquation de la Commission européenne, ce qui signifie que le niveau de protection des données personnelles y est reconnu comme adéquat au regard de la réglementation européenne."
+
+        external_links:
+            title: "Liens vers des plateformes externes"
+            paragraphs:
+                1: "Le site contient des liens vers des plateformes externes telles que LinkedIn, Malt, GitHub ou Superprof."
+                2: "Lorsque vous cliquez sur ces liens, vous quittez ce site et les traitements de données relèvent alors de la politique de confidentialité propre à ces services."
+
+        cookies:
+            title: "Cookies"
+            paragraphs:
+                1: "Le site n'utilise actuellement aucun cookie à des fins publicitaires ou de mesure d'audience."
+                2: "Des mécanismes techniques strictement nécessaires au fonctionnement du site peuvent néanmoins être utilisés par le framework ou l'hébergeur."
+
+        security:
+            title: "Sécurité"
+            paragraphs:
+                1: "Des mesures techniques et organisationnelles raisonnables sont mises en œuvre afin de protéger les données personnelles contre la perte, l'accès non autorisé ou l'utilisation abusive."
+                2: "Aucune méthode de transmission ou de stockage ne pouvant garantir une sécurité absolue, une protection totale ne peut toutefois être assurée."
+
+        rights:
+            title: "Vos droits"
+            paragraphs:
+                1: "Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation et d'opposition au traitement de vos données personnelles."
+                2: "Vous disposez également, lorsque les conditions prévues par la réglementation applicable sont réunies, d'un droit à la portabilité des données que vous avez fournies et qui sont traitées de manière automatisée sur la base de votre consentement ou d'un contrat."
+                3: "Pour exercer vos droits, vous pouvez contacter Benjamin Lemin à l'adresse benjamin@lemin.be ou utiliser les coordonnées reprises dans les Mentions légales."
+
+        complaint:
+            title: "Réclamation"
+            paragraphs:
+                1: "Si vous estimez que vos données personnelles sont traitées de manière non conforme à la législation applicable, vous pouvez introduire une réclamation auprès de l'Autorité de protection des données."
+                2: "Autorité de protection des données, Rue de la Presse 35, 1000 Bruxelles, Belgique."
+
+        updates:
+            title: "Modification de la politique"
+            paragraphs:
+                1: "La présente politique de confidentialité peut être mise à jour à tout moment afin de refléter les évolutions du site, des services proposés ou des obligations légales."
+                2: "La date de dernière mise à jour indiquée sur cette page permet d'identifier la version actuellement en vigueur."
+                3: "Les modifications prennent effet dès leur publication sur cette page."
+
+            last_updated:
+                label: "Dernière mise à jour"
+                value: "15 mai 2026"

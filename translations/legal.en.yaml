@@ -179,10 +179,89 @@ privacy_policy:
     hero:
         eyebrow: "Personal Data"
         title: "Privacy Policy"
-        intro: "This page explains how personal data is collected, used and protected."
 
     sections:
-        content:
-            title: "Content Coming Soon"
+        controller:
+            title: "Data Controller"
             paragraphs:
-                1: "The privacy policy is currently being drafted. This page will be completed with information regarding the data collected, the tools used and the rights of visitors."
+                1: "The data controller responsible for processing personal data collected through this website is Benjamin Lemin, freelance web developer."
+                2: "Full contact details of the data controller are available on the Legal Notice page of this website."
+
+        data_collected:
+            title: "Data Collected"
+            paragraphs:
+                1: "When you contact me by email or through any other contact method provided on this website, data such as your name, email address and the content of your message may be processed."
+                2: "In connection with the preparation of quotes, the performance of services and invoicing, identification, contact and billing data may be processed."
+                3: "When downloading the résumé, the website records the date and time of the download, the selected language, the referring page and certain technical information transmitted by your browser, such as your IP address, browser type and operating system."
+                4: "The hosting provider also records technical data relating to HTTP requests as part of its server logs."
+
+        purposes:
+            title: "Purposes of Processing"
+            paragraphs:
+                1: "Personal data is used to respond to contact requests, prepare quotes, perform services, handle administrative and accounting follow-up and improve understanding of how the website is used."
+                2: "Information relating to résumé downloads is used for statistical purposes and to measure interest in the professional profile presented on this website."
+
+        legal_basis:
+            title: "Legal Basis"
+            paragraphs:
+                1: "Data processed in connection with contact requests or quote requests is based on pre-contractual measures taken at your request."
+                2: "Data necessary for the performance of services is processed on the basis of the contract concluded between the parties."
+                3: "Billing data and accounting documents are processed in order to comply with applicable legal obligations in accounting, tax and administrative matters."
+                4: "Information relating to résumé downloads, together with certain technical data, is processed on the basis of the data controller's legitimate interest in measuring interest in the professional profile presented on this website, improving the services offered and ensuring the security and proper functioning of the website."
+
+        retention:
+            title: "Data Retention"
+            paragraphs:
+                1: "Contact messages and pre-contractual exchanges are retained for a maximum period of twenty-four months after the last exchange, unless a contractual relationship is established."
+                2: "Billing data and accounting documents are retained for the period required by applicable Belgian law, currently ten years."
+                3: "Logs relating to résumé downloads are retained for a maximum period of twelve months."
+                4: "Technical logs maintained by the hosting provider are retained in accordance with the hosting provider's retention policy."
+
+        recipients:
+            title: "Recipients of the Data"
+            paragraphs:
+                1: "Personal data is processed exclusively by Benjamin Lemin and is neither sold nor disclosed to third parties for commercial purposes."
+                2: "The hosting provider, Infomaniak Network SA, established in Switzerland, may have access to certain data as part of the hosting and maintenance of the infrastructure."
+                3: "Switzerland benefits from an adequacy decision by the European Commission, which means that the level of protection of personal data is recognized as adequate under European data protection regulations."
+
+        external_links:
+            title: "Links to External Platforms"
+            paragraphs:
+                1: "This website contains links to external platforms such as LinkedIn, Malt, GitHub and Superprof."
+                2: "When you click these links, you leave this website and any data processing is then governed by the privacy policy of the relevant service."
+
+        cookies:
+            title: "Cookies"
+            paragraphs:
+                1: "This website currently does not use cookies for advertising or analytics purposes."
+                2: "Technical mechanisms strictly necessary for the operation of the website may nevertheless be used by the framework or the hosting provider."
+
+        security:
+            title: "Security"
+            paragraphs:
+                1: "Reasonable technical and organizational measures are implemented to protect personal data against loss, unauthorized access and misuse."
+                2: "As no transmission or storage method can guarantee absolute security, complete protection cannot be guaranteed."
+
+        rights:
+            title: "Your Rights"
+            paragraphs:
+                1: "You have the right to access, rectify, erase, restrict and object to the processing of your personal data."
+                2: "You also have, where the conditions provided for by applicable regulations are met, the right to data portability for the data you have provided and that is processed by automated means on the basis of your consent or a contract."
+                3: "To exercise your rights, you may contact Benjamin Lemin at benjamin@lemin.be or use the contact details provided in the Legal Notice."
+
+        complaint:
+            title: "Complaint"
+            paragraphs:
+                1: "If you believe that your personal data is being processed in a manner that does not comply with applicable legislation, you may lodge a complaint with the Belgian Data Protection Authority."
+                2: "Belgian Data Protection Authority, Rue de la Presse 35, 1000 Brussels, Belgium."
+
+        updates:
+            title: "Changes to This Policy"
+            paragraphs:
+                1: "This privacy policy may be updated at any time to reflect changes to the website, the services offered or applicable legal obligations."
+                2: "The last updated date indicated on this page makes it possible to identify the version currently in force."
+                3: "Any changes take effect as soon as they are published on this page."
+
+            last_updated:
+                label: "Last updated"
+                value: "May 15, 2026"

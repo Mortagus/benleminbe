@@ -79,7 +79,7 @@
 .business-card-page__contact-link:hover,
 .business-card-page__contact-link:focus-visible {
     color: var(--accent-hover);
-    text-decoration-color: currentColor;
+    text-decoration-color: currentcolor;
 }
 
 @media (width >= 640px) {

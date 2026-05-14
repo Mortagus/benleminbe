@@ -92,27 +92,7 @@ Faible
 ### Statut
 Fait
 
-## P5 - Clarifier l'état applicatif JavaScript
-
-### Catégorie
-Architecture / JavaScript
-
-### Constat
-L'état des monstres est conservé dans une variable de module `monsters`, et l'ordre de tour dans une variable de module `roundOrder`. Le DOM est parfois la source de vérité temporaire, par exemple pour synchroniser les PV des monstres avant génération.
-
-### Impact
-Cette organisation reste acceptable pour un prototype, mais elle complique les évolutions comme la sauvegarde, l'annulation, la reprise de combat, les tests unitaires et la synchronisation entre panneaux.
-
-### Proposition
-Introduire progressivement un modèle de rencontre explicite, manipulé par petites fonctions pures quand c'est possible. Ne pas refondre toute l'interface : commencer par isoler les données acteurs, les PV et l'ordre de tour.
-
-### Complexité estimée
-Moyenne
-
-### Statut
-À faire
-
-## P6 - Découper l'orchestration de `dnd_initiative.js`
+## P5 - Découper l'orchestration de `dnd_initiative.js`
 
 ### Catégorie
 Architecture / JavaScript
@@ -132,7 +112,7 @@ Moyenne
 ### Statut
 À faire
 
-## P7 - Réduire la duplication du template joueur
+## P6 - Réduire la duplication du template joueur
 
 ### Catégorie
 Twig
@@ -145,6 +125,26 @@ Chaque évolution du formulaire joueur doit être reportée à deux endroits. C'
 
 ### Proposition
 Factoriser le markup d'un joueur dans un partial Twig dédié, ou rendre la liste initiale à partir du même fragment que le template. Garder le changement local au panneau joueurs.
+
+### Complexité estimée
+Faible
+
+### Statut
+À faire
+
+## P7 - Renforcer l'accessibilité des formulaires dynamiques
+
+### Catégorie
+Accessibilité / Twig
+
+### Constat
+Les labels des champs joueurs n'ont pas de relation `for`/`id`, et les champs générés dans les templates dynamiques n'ont pas d'identifiants uniques. Le select monstre est aussi créé sans label explicite par ligne.
+
+### Impact
+Les formulaires restent visuellement compréhensibles, mais les technologies d'assistance auront moins de contexte. Cela peut aussi compliquer les tests end-to-end basés sur des noms accessibles.
+
+### Proposition
+Ajouter des noms accessibles explicites aux champs dynamiques, par exemple via `aria-label` ou des identifiants générés, sans alourdir visuellement l'interface.
 
 ### Complexité estimée
 Faible
@@ -192,7 +192,27 @@ Moyenne
 ### Statut
 À faire
 
-## P10 - Rendre le drag-and-drop accessible autrement qu'à la souris
+## P10 - Clarifier l'état applicatif JavaScript
+
+### Catégorie
+Architecture / JavaScript
+
+### Constat
+L'état des monstres est conservé dans une variable de module `monsters`, et l'ordre de tour dans une variable de module `roundOrder`. Le DOM est parfois la source de vérité temporaire, par exemple pour synchroniser les PV des monstres avant génération.
+
+### Impact
+Cette organisation reste acceptable pour un prototype, mais elle complique les évolutions comme la sauvegarde, l'annulation, la reprise de combat, les tests unitaires et la synchronisation entre panneaux.
+
+### Proposition
+Introduire progressivement un modèle de rencontre explicite, manipulé par petites fonctions pures quand c'est possible. Ne pas refondre toute l'interface : commencer par isoler les données acteurs, les PV et l'ordre de tour. Ce point est volontairement placé après le découpage de l'orchestration pour limiter le risque de refactor trop large.
+
+### Complexité estimée
+Moyenne
+
+### Statut
+À faire
+
+## P11 - Rendre le drag-and-drop accessible autrement qu'à la souris
 
 ### Catégorie
 Accessibilité / UX
@@ -208,26 +228,6 @@ Ajouter des contrôles alternatifs pour monter/descendre un acteur, rendre les c
 
 ### Complexité estimée
 Moyenne
-
-### Statut
-À faire
-
-## P11 - Renforcer l'accessibilité des formulaires dynamiques
-
-### Catégorie
-Accessibilité / Twig
-
-### Constat
-Les labels des champs joueurs n'ont pas de relation `for`/`id`, et les champs générés dans les templates dynamiques n'ont pas d'identifiants uniques. Le select monstre est aussi créé sans label explicite par ligne.
-
-### Impact
-Les formulaires restent visuellement compréhensibles, mais les technologies d'assistance auront moins de contexte. Cela peut aussi compliquer les tests end-to-end basés sur des noms accessibles.
-
-### Proposition
-Ajouter des noms accessibles explicites aux champs dynamiques, par exemple via `aria-label` ou des identifiants générés, sans alourdir visuellement l'interface.
-
-### Complexité estimée
-Faible
 
 ### Statut
 À faire

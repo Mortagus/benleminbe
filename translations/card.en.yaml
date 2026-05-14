@@ -1,0 +1,21 @@
+card:
+    meta:
+        title: "Business card | Benjamin Lemin"
+        description: "Digital business card for Benjamin Lemin: visit the website or save his contact details."
+
+    hero:
+        eyebrow: "Business card"
+        title: "Benjamin Lemin"
+        subtitle: "Freelance PHP, Symfony & Drupal web developer"
+        intro: >
+            You can visit my website to discover my background, projects and services,
+            or save my contact details directly to your contacts.
+
+    actions:
+        label: "Main actions"
+        add_contact: "Add to my contacts"
+        visit_site: "Visit my website"
+        contact: "Contact me"
+
+    language:
+        label: "Language selection"

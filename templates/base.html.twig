@@ -13,11 +13,15 @@
 </head>
 <body>
 
+{% block site_header %}
 {% include 'components/_site_header.html.twig' %}
+{% endblock %}
 
 {% block body %}{% endblock %}
 
+{% block site_footer %}
 {% include 'components/_site_footer.html.twig' %}
+{% endblock %}
 
 {% block javascripts %}{% endblock %}
 

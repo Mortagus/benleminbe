@@ -1,0 +1,42 @@
+{# templates/pages/card.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'card' %}
+
+{% block title %}{{ 'card.meta.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'card.meta.description'|trans }}{% endblock %}
+{% block site_header %}{% endblock %}
+{% block site_footer %}{% endblock %}
+
+{% block body %}
+    <main class="business-card-page">
+        <section class="business-card-page__panel card" aria-labelledby="business-card-title">
+            <div class="business-card-page__language" aria-label="{{ 'card.language.label'|trans }}">
+                {% include 'components/_lang_switcher.html.twig' %}
+            </div>
+
+            <p class="eyebrow">{{ 'card.hero.eyebrow'|trans }}</p>
+
+            <h1 id="business-card-title">{{ 'card.hero.title'|trans }}</h1>
+
+            <p class="business-card-page__subtitle">{{ 'card.hero.subtitle'|trans }}</p>
+
+            <p class="business-card-page__intro">{{ 'card.hero.intro'|trans }}</p>
+
+            <div class="business-card-page__actions" aria-label="{{ 'card.actions.label'|trans }}">
+                <a class="button business-card-page__button" href="{{ path('app_contact_vcard') }}">
+                    {{ 'card.actions.add_contact'|trans }}
+                </a>
+
+                <a class="button button-secondary business-card-page__button" href="{{ path('app_home', { _locale: app.request.locale }) }}">
+                    {{ 'card.actions.visit_site'|trans }}
+                </a>
+            </div>
+
+            <a class="business-card-page__contact-link" href="{{ path('app_contact', { _locale: app.request.locale }) }}">
+                {{ 'card.actions.contact'|trans }}
+            </a>
+        </section>
+    </main>
+{% endblock %}

@@ -1,0 +1,21 @@
+card:
+    meta:
+        title: "Carte de visite | Benjamin Lemin"
+        description: "Carte de visite numérique de Benjamin Lemin : visiter le site ou enregistrer ses coordonnées de contact."
+
+    hero:
+        eyebrow: "Carte de visite"
+        title: "Benjamin Lemin"
+        subtitle: "Développeur web freelance PHP, Symfony & Drupal"
+        intro: >
+            Vous pouvez visiter mon site pour découvrir mon parcours, mes projets et mes services,
+            ou enregistrer directement mes coordonnées dans vos contacts.
+
+    actions:
+        label: "Actions principales"
+        add_contact: "Ajouter à mes contacts"
+        visit_site: "Voir mon site"
+        contact: "Me contacter"
+
+    language:
+        label: "Choix de la langue"

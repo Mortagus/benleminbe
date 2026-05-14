@@ -92,12 +92,24 @@ class GenerateSitemapCommand extends Command {
      */
     private function buildSitemapUrls(): array {
         $urls = [];
+        $processedCanonicalRoutes = [];
 
         foreach ($this->router->getRouteCollection() as $routeName => $route) {
             $sitemap = $route->getOption('sitemap');
 
             if (!is_array($sitemap) || ($sitemap['enabled'] ?? FALSE) !== TRUE) {
                 continue;
+            }
+
+            $canonicalRoute = $route->getDefault('_canonical_route');
+
+            if (is_string($canonicalRoute)) {
+                if (isset($processedCanonicalRoutes[$canonicalRoute])) {
+                    continue;
+                }
+
+                $processedCanonicalRoutes[$canonicalRoute] = TRUE;
+                $routeName = $canonicalRoute;
             }
 
             $locales = $sitemap['locales'] ?? self::LOCALES;

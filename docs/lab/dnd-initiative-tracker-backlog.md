@@ -78,19 +78,19 @@ Fait
 JavaScript
 
 ### Constat
-`getPlayerActors()` cible certains champs par position (`fields[1]`, `fields[3]`). Cette extraction dépend fortement de l'ordre exact du template `templates/lab/dnd/_players_panel.html.twig`.
+`getPlayerActors()` et la validation des joueurs ne dépendent plus de la position des champs dans le DOM. Les inputs joueurs disposent désormais d'attributs `data-player-field` explicites.
 
 ### Impact
-Une modification visuelle innocente du formulaire joueur peut casser la lecture de la CA ou de l'initiative sans erreur visible. Cette fragilité rend les évolutions Twig plus risquées.
+Une modification visuelle du formulaire joueur est moins susceptible de casser silencieusement la lecture de la CA, des PV ou de l'initiative. Les sélecteurs utilisés par le parsing et la validation sont maintenant stables.
 
 ### Proposition
-Ajouter des classes ou attributs `data-*` explicites aux champs joueurs, puis lire ces sélecteurs stables côté JavaScript. Garder le changement limité au panneau joueurs et au parser associé.
+Conserver les attributs `data-player-field` comme contrat entre le template joueur, `players.js` et `validation.js`. Toute future évolution du formulaire devra maintenir ces identifiants ou les mettre à jour explicitement.
 
 ### Complexité estimée
 Faible
 
 ### Statut
-À faire
+Fait
 
 ## P5 - Clarifier l'état applicatif JavaScript
 

@@ -24,20 +24,19 @@ export function getPlayerActors(playerList) {
 
     return Array.from(playerItems)
         .map((item, index) => {
-            const nameInput = item.querySelector('.player-field--name input');
-            const fields = item.querySelectorAll('.player-field');
-
-            const armorClassInput = fields[1]?.querySelector('input');
-            const hitPointInputs = item.querySelectorAll('.player-field--hp input');
-            const initiativeInput = fields[3]?.querySelector('input');
+            const nameInput = getPlayerInput(item, 'name');
+            const armorClassInput = getPlayerInput(item, 'armor-class');
+            const currentHitPointsInput = getPlayerInput(item, 'current-hit-points');
+            const baseHitPointsInput = getPlayerInput(item, 'base-hit-points');
+            const initiativeInput = getPlayerInput(item, 'initiative');
 
             return {
                 id: `player-${index + 1}`,
                 type: 'player',
                 name: nameInput?.value || `Joueur ${index + 1}`,
                 armorClass: Number(armorClassInput?.value || 0),
-                currentHitPoints: Number(hitPointInputs[0]?.value || 0),
-                baseHitPoints: Number(hitPointInputs[1]?.value || 0),
+                currentHitPoints: Number(currentHitPointsInput?.value || 0),
+                baseHitPoints: Number(baseHitPointsInput?.value || 0),
                 initiative: Number(initiativeInput?.value || 0),
                 done: false,
             };
@@ -51,4 +50,8 @@ function bindPlayerItemEvents(playerItem) {
     removeButton.addEventListener('click', () => {
         playerItem.remove();
     });
+}
+
+function getPlayerInput(playerItem, fieldName) {
+    return playerItem.querySelector(`[data-player-field="${fieldName}"]`);
 }

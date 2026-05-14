@@ -31,10 +31,10 @@ export function validatePlayerItem(playerItem, index) {
         return createValidationResult();
     }
 
-    const fields = playerItem.querySelectorAll('.player-field');
-    const armorClassInput = fields[1]?.querySelector('input');
-    const hitPointInputs = playerItem.querySelectorAll('.player-field--hp input');
-    const initiativeInput = fields[3]?.querySelector('input');
+    const armorClassInput = getPlayerInput(playerItem, 'armor-class');
+    const currentHitPointsInput = getPlayerInput(playerItem, 'current-hit-points');
+    const baseHitPointsInput = getPlayerInput(playerItem, 'base-hit-points');
+    const initiativeInput = getPlayerInput(playerItem, 'initiative');
 
     const result = mergeValidationResults(
         validateIntegerInput(armorClassInput, {
@@ -42,12 +42,12 @@ export function validatePlayerItem(playerItem, index) {
             min: 0,
             required: true,
         }),
-        validateIntegerInput(hitPointInputs[0], {
+        validateIntegerInput(currentHitPointsInput, {
             fieldName: `PV restants du joueur ${index + 1}`,
             min: 0,
             required: true,
         }),
-        validateIntegerInput(hitPointInputs[1], {
+        validateIntegerInput(baseHitPointsInput, {
             fieldName: `PV max du joueur ${index + 1}`,
             min: 0,
             required: true,
@@ -58,8 +58,8 @@ export function validatePlayerItem(playerItem, index) {
         }),
     );
 
-    const currentHitPoints = parseIntegerInputValue(hitPointInputs[0]);
-    const maxHitPoints = parseIntegerInputValue(hitPointInputs[1]);
+    const currentHitPoints = parseIntegerInputValue(currentHitPointsInput);
+    const maxHitPoints = parseIntegerInputValue(baseHitPointsInput);
 
     if (
         currentHitPoints !== null
@@ -67,7 +67,7 @@ export function validatePlayerItem(playerItem, index) {
         && currentHitPoints > maxHitPoints
     ) {
         result.errors.push({
-            input: hitPointInputs[0],
+            input: currentHitPointsInput,
             message: `Les PV restants du joueur ${index + 1} ne peuvent pas dépasser ses PV max.`,
         });
     }
@@ -245,6 +245,10 @@ function parseIntegerInputValue(input) {
 function hasStartedPlayer(playerItem) {
     return Array.from(playerItem.querySelectorAll('input'))
         .some(input => input.value.trim() !== '' || input.validity?.badInput);
+}
+
+function getPlayerInput(playerItem, fieldName) {
+    return playerItem.querySelector(`[data-player-field="${fieldName}"]`);
 }
 
 function createValidationResult(errors = []) {

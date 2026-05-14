@@ -65,8 +65,8 @@ final class BusinessCardController extends AbstractController
             implode("\r\n", $fields),
             Response::HTTP_OK,
             [
-                'Content-Type' => 'text/vcard; charset=utf-8',
-                'Content-Disposition' => 'inline; filename="benjamin-lemin.vcf"',
+                'Content-Type' => 'text/x-vcard; charset=utf-8',
+                'Content-Disposition' => 'inline; filename="benjamin-lemin.vcf"; filename*=UTF-8\'\'benjamin-lemin.vcf',
             ],
         );
     }

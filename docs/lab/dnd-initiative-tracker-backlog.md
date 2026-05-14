@@ -18,19 +18,19 @@ Note importante : la règle actuelle `shouldSkipTurn()` qui exclut certains acte
 Règles
 
 ### Constat
-Les règles appliquées par l'outil sont actuellement codées directement dans `assets/scripts/lab/dnd/initiative.js`, puis consommées par `assets/scripts/lab/dnd/turn-order.js`. Certains comportements, dont `shouldSkipTurn()`, correspondent à des choix maison volontaires.
+Le sélecteur de règles a été mis en place et déployé. Les règles maison `shouldSkipTurn()` et `getTurnCount()` sont désormais pilotables via des cases à cocher dans une popup dédiée, accessible depuis le panneau "Ordre du tour".
 
 ### Impact
-Le Maître du Jeu ne peut pas choisir explicitement le cadre de règles utilisé avant de générer l'ordre de tour. Cela limite l'évolution de l'outil si plusieurs variantes doivent coexister.
+Le Maître du Jeu peut activer ou désactiver les règles maison existantes sans changer le code. Le comportement reste simple et suffisamment explicite pour être testé en conditions réelles.
 
 ### Proposition
-Ajouter cette amélioration comme premier chantier du backlog. Ne pas détailler son fonctionnement ni sa structure technique à ce stade.
+Conserver l'implémentation actuelle et la laisser en observation jusqu'aux retours des joueurs. Ajuster ensuite les libellés, descriptions ou interactions si l'usage réel montre une friction.
 
 ### Complexité estimée
 Moyenne
 
 ### Statut
-À faire
+Fait - en observation jusqu'aux retours des joueurs
 
 ## P2 - Renforcer la validation des entrées utilisateur
 
@@ -38,19 +38,19 @@ Moyenne
 Sécurité / UX
 
 ### Constat
-Les champs numériques reposent surtout sur les attributs HTML (`min`, `type="number"`). Côté JavaScript, `Number(value || 0)` transforme les valeurs vides, invalides ou inattendues en `0` dans `players.js` et `monsters.js`. Le nombre de monstres est lu puis transmis tel quel à `createMonsterSlots()`.
+Les champs numériques reposaient surtout sur les attributs HTML (`min`, `type="number"`). Une couche de validation JavaScript a été ajoutée avec des helpers dédiés, un affichage d'erreurs par panneau et un blocage des actions risquées.
 
 ### Impact
-Des valeurs incohérentes peuvent produire un ordre de tour trompeur : initiative vide traitée comme `0`, PV restants supérieurs aux PV max, CA absente, nombre de monstres excessif, ou acteur généré avec des données incomplètes. Pour un outil de MJ, ces erreurs silencieuses font perdre confiance dans le résultat.
+Les erreurs de saisie sont visibles par le MJ avant correction : nombre de monstres invalide, absence d'acteur exploitable, PV incohérents ou ligne joueur commencée mais incomplète. Les actions `Créer la liste` et `Générer le tour de table` ne continuent plus lorsque les validations associées échouent.
 
 ### Proposition
-Ajouter une validation explicite au moment de lire les champs. Signaler les champs invalides, encadrer les bornes utiles, éviter les conversions silencieuses et bloquer la génération de l'ordre de tour lorsque les données minimales ne sont pas valides.
+Conserver cette implémentation et surveiller les retours d'usage. Les prochaines améliorations pourront porter sur les libellés, les bornes métier ou la validation en temps réel si le besoin apparaît.
 
 ### Complexité estimée
 Faible
 
 ### Statut
-À faire
+Fait - validations, affichage d'erreurs et blocage des actions validés
 
 ## P3 - Garder une construction DOM sûre pour toutes les données affichées
 
@@ -371,4 +371,3 @@ Moyenne
 
 ### Statut
 À faire
-

@@ -1,0 +1,27 @@
+.dnd-initiative-page .dnd-validation-summary {
+    margin-block: 0.75rem 1rem;
+    padding: 0.85rem 1rem;
+
+    background: #fdecec;
+    border: 1px solid #e57373;
+    border-radius: 0.75rem;
+    color: #8d1818;
+    font-size: 0.95rem;
+}
+
+.dnd-initiative-page .dnd-validation-summary p {
+    margin: 0;
+    font-weight: 800;
+}
+
+.dnd-initiative-page .dnd-validation-summary ul {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0.5rem 0 0;
+    padding-left: 1.15rem;
+}
+
+.dnd-initiative-page .dnd-field--invalid {
+    border-color: #d83a3a !important;
+    box-shadow: 0 0 0 2px rgb(216 58 58 / 18%);
+}

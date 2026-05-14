@@ -12,6 +12,6 @@ class LabController extends AbstractController
     #[Route(path: '/dnd-initiative', name: 'dnd_initiative')]
     final public function initiativeDnd(): Response
     {
-        return $this->render('lab/dnd/initiative_dnd.html.twig');
+        return $this->render('lab/dnd/initiative_tracker.html.twig');
     }
 }

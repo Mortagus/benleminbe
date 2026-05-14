@@ -260,3 +260,36 @@
     border-color: var(--accent);
     color: var(--card);
 }
+
+/* ==========================================================================
+   External links layout (desktop enhancement)
+   Place this block at the end of assets/styles/components/links.css
+   --------------------------------------------------------------------------
+   On mobile: keep the current stacked layout.
+   On desktop:
+   - LinkedIn and Malt remain on the first row (2 columns)
+   - GitHub, Superprof and Apprentus share the second row (3 columns)
+   ========================================================================== */
+
+@media (width >= 768px) {
+    .landing-page .external-links--featured {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .landing-page .external-links--secondary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .landing-page .external-link-card {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .landing-page .external-link-card--compact {
+        padding: 0.85rem 1rem;
+    }
+}

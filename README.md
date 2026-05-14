@@ -41,6 +41,34 @@ Le projet est développé avec les technologies suivantes :
 - npm pour la gestion des dépendances front-end
 - Composer pour la gestion des dépendances PHP
 
+## Vérifications avant commit
+
+Le dépôt fournit un hook Git `pre-commit` versionné dans `.githooks/`.
+
+Pour l'activer après un clone du projet :
+
+```bash
+make install-hooks
+```
+
+À chaque `git commit`, Git lance ensuite automatiquement :
+
+```bash
+make check
+```
+
+Le commit est bloqué si une vérification échoue. Le hook peut toujours être contourné ponctuellement avec `git commit --no-verify`, à réserver aux cas exceptionnels.
+
+## CSS de contexte pour ChatGPT
+
+Pour générer un fichier CSS complet à fournir comme contexte dans l'interface web de ChatGPT :
+
+```bash
+make gpt_css
+```
+
+La commande résout les imports depuis `assets/styles/app.css` et génère le fichier temporaire `var/gpt/css-context.css`.
+
 ## Structure du projet
 
 Aperçu simplifié de l’organisation du projet :

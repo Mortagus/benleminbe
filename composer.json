@@ -19,7 +19,7 @@
         "symfony/console": "^8.0",
         "symfony/asset-mapper": "^8.0",
         "symfony/translation": "^8.0",
-        "symfony/apache-pack": "*",
+        "symfony/apache-pack": "^1.0",
         "ext-dom": "*",
         "ext-iconv": "*"
     },

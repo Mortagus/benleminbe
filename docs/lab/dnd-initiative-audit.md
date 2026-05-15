@@ -160,10 +160,13 @@ Le formulaire joueur reste encore un buffer DOM éditable, mais les données uti
 
 ### Règles maison configurables
 
-Deux règles sont actuellement pilotables depuis la popup "Règles" :
+Trois règles sont actuellement pilotables depuis la popup "Règles" :
 
 - ignorer les acteurs dont l'initiative finale est inférieure ou égale à `1` ;
-- accorder un tour supplémentaire à un acteur dont l'initiative finale est exactement `20`.
+- accorder un tour supplémentaire à un acteur dont l'initiative finale est exactement `20` ;
+- départager les égalités d'initiative par modificateur de DEX.
+
+La règle de départage par DEX est désactivée par défaut. Les monstres utilisent le modificateur de DEX extrait du bestiaire. Les joueurs valent `0` pour l'instant, en attendant de confirmer si leur DEX doit être saisie dans le formulaire.
 
 Ces règles sont considérées comme des règles maison volontaires. Elles ne sont pas des bugs connus, mais elles restent candidates à une clarification ou à une extension si plusieurs jeux de règles doivent être supportés.
 

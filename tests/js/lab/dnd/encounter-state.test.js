@@ -106,6 +106,69 @@ describe('encounter state', () => {
         expect(encounter.activeTurnId).toBe('player-1');
     });
 
+    test('keeps tied initiative actors in stable order by default', () => {
+        const encounter = createTestEncounter();
+        const rolls = [10, 13];
+
+        createMonsterSlots(encounter, 2);
+        selectMonster(encounter, 0, 'aarakocra');
+        selectMonster(encounter, 1, 'aboleth');
+        rollMonsterInitiatives(encounter, () => rolls.shift());
+        setPlayers(encounter, [
+            createPlayer({ id: 'player-1', name: 'Lia', initiative: 12, roll: 12 }),
+        ]);
+
+        buildRoundOrder(encounter);
+
+        expect(encounter.turnOrder.map(actor => actor.id)).toEqual([
+            'aarakocra-1',
+            'aboleth-2',
+            'player-1',
+        ]);
+    });
+
+    test('breaks tied initiatives by dexterity modifier when the rule is active', () => {
+        const encounter = createTestEncounter();
+        const rolls = [10, 13];
+
+        setRuleActive(encounter, 'break-initiative-ties-with-dexterity', true);
+        createMonsterSlots(encounter, 2);
+        selectMonster(encounter, 0, 'aarakocra');
+        selectMonster(encounter, 1, 'aboleth');
+        rollMonsterInitiatives(encounter, () => rolls.shift());
+        setPlayers(encounter, [
+            createPlayer({ id: 'player-1', name: 'Lia', initiative: 12, roll: 12 }),
+        ]);
+
+        buildRoundOrder(encounter);
+
+        expect(encounter.turnOrder.map(actor => actor.id)).toEqual([
+            'aarakocra-1',
+            'player-1',
+            'aboleth-2',
+        ]);
+    });
+
+    test('uses zero as the current player dexterity tie breaker', () => {
+        const encounter = createTestEncounter();
+        const rolls = [13];
+
+        setRuleActive(encounter, 'break-initiative-ties-with-dexterity', true);
+        createMonsterSlots(encounter, 1);
+        selectMonster(encounter, 0, 'aboleth');
+        rollMonsterInitiatives(encounter, () => rolls.shift());
+        setPlayers(encounter, [
+            createPlayer({ id: 'player-1', name: 'Lia', initiative: 12, roll: 12 }),
+        ]);
+
+        buildRoundOrder(encounter);
+
+        expect(encounter.turnOrder.map(actor => actor.id)).toEqual([
+            'player-1',
+            'aboleth-1',
+        ]);
+    });
+
     test('skips actors with initiative lower than or equal to one when the rule is active', () => {
         const encounter = createTestEncounter();
 

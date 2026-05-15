@@ -10,6 +10,10 @@ export const RULES = {
         id: 'extra-turn-on-twenty',
         defaultActive: true,
     },
+    breakInitiativeTiesWithDexterity: {
+        id: 'break-initiative-ties-with-dexterity',
+        defaultActive: false,
+    },
 };
 
 export function createEncounterState(options = {}) {
@@ -76,7 +80,7 @@ export function rollMonsterInitiatives(encounter, roll = rollD20) {
         };
     });
 
-    encounter.monsters.sort(compareByInitiative);
+    encounter.monsters.sort((a, b) => compareByInitiative(encounter, a, b));
 }
 
 export function setPlayers(encounter, players) {
@@ -101,7 +105,7 @@ export function buildRoundOrder(encounter) {
                 done: false,
             }));
         })
-        .sort((a, b) => b.initiative - a.initiative);
+        .sort((a, b) => compareByInitiative(encounter, a, b));
 
     encounter.currentRound = 1;
     refreshActiveTurn(encounter);
@@ -252,7 +256,7 @@ function getTurnCount(encounter, actor) {
     return actor.roll === 20 ? 2 : 1;
 }
 
-function compareByInitiative(a, b) {
+function compareByInitiative(encounter, a, b) {
     if (a.initiative === null) {
         return 1;
     }
@@ -261,7 +265,23 @@ function compareByInitiative(a, b) {
         return -1;
     }
 
-    return b.initiative - a.initiative;
+    const initiativeOrder = b.initiative - a.initiative;
+
+    if (initiativeOrder !== 0) {
+        return initiativeOrder;
+    }
+
+    if (!isRuleActive(encounter, RULES.breakInitiativeTiesWithDexterity.id)) {
+        return 0;
+    }
+
+    return getInitiativeTieBreaker(b) - getInitiativeTieBreaker(a);
+}
+
+function getInitiativeTieBreaker(actor) {
+    return typeof actor.initiativeModifier === 'number'
+        ? actor.initiativeModifier
+        : 0;
 }
 
 function refreshActiveTurn(encounter) {

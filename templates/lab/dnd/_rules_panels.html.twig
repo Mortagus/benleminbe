@@ -6,7 +6,7 @@
     aria-expanded="false"
     aria-controls="rulesModal"
 >
-    Règles appliquées
+    Règles
 </button>
 
 <div
@@ -22,8 +22,8 @@
     <section class="rules-modal__content" tabindex="-1">
         <header class="rules-modal__header">
             <div>
-                <h2 id="rulesModalTitle">Règles appliquées</h2>
-                <p>Active ou désactive les règles maison utilisées pour générer l'ordre du tour.</p>
+                <h2 id="rulesModalTitle">Règles</h2>
+                <p>Règles maison appliquées à l’ordre du tour.</p>
             </div>
 
             <button type="button" class="dnd-secondary-button" data-rules-close>
@@ -33,22 +33,22 @@
 
         <ul class="rules-list">
             <li class="rules-list__item">
-                <span class="rules-list__title">Ignorer les initiatives très basses</span>
+                <span class="rules-list__title">Ignorer initiative ≤ 1</span>
 
                 <div class="rules-list__actions">
                     <label class="rules-list__checkbox">
                         <input
                             type="checkbox"
                             data-rule-toggle="skip-low-initiative"
-                            aria-label="Activer la règle : Ignorer les initiatives très basses"
+                            aria-label="Activer la règle : Ignorer initiative 1 ou moins"
                             checked
                         >
                     </label>
 
                     <span
                         class="rules-list__help"
-                        title="Si cette règle est active, les acteurs avec une initiative de 1 ou moins ne sont pas ajoutés à l'ordre du tour."
-                        aria-label="Si cette règle est active, les acteurs avec une initiative de 1 ou moins ne sont pas ajoutés à l'ordre du tour."
+                        title="Les acteurs avec une initiative de 1 ou moins ne sont pas ajoutés à l’ordre du tour."
+                        aria-label="Les acteurs avec une initiative de 1 ou moins ne sont pas ajoutés à l’ordre du tour."
                         tabindex="0"
                     >
                         ?
@@ -57,22 +57,22 @@
             </li>
 
             <li class="rules-list__item">
-                <span class="rules-list__title">Accorder un tour supplémentaire sur initiative 20</span>
+                <span class="rules-list__title">Tour bonus sur initiative 20</span>
 
                 <div class="rules-list__actions">
                     <label class="rules-list__checkbox">
                         <input
                             type="checkbox"
                             data-rule-toggle="extra-turn-on-twenty"
-                            aria-label="Activer la règle : Accorder un tour supplémentaire sur initiative 20"
+                            aria-label="Activer la règle : Tour bonus sur initiative 20"
                             checked
                         >
                     </label>
 
                     <span
                         class="rules-list__help"
-                        title="Si cette règle est active, un acteur avec une initiative finale de 20 reçoit deux tours dans l'ordre du tour."
-                        aria-label="Si cette règle est active, un acteur avec une initiative finale de 20 reçoit deux tours dans l'ordre du tour."
+                        title="Un acteur avec une initiative finale de 20 reçoit deux tours."
+                        aria-label="Un acteur avec une initiative finale de 20 reçoit deux tours."
                         tabindex="0"
                     >
                         ?

@@ -97,6 +97,17 @@ Le CSS du module est importé par l'entrée JavaScript `dnd_initiative`. Les rè
 
 Le navigateur consomme aujourd'hui un bestiaire JavaScript généré et embarqué dans le bundle de la page. Cette approche reste simple pour le lab avec le catalogue actuel. Le pipeline de génération et les critères de chargement futur sont documentés dans [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1).
 
+### Nomenclature d'interface
+
+Les libellés visibles restent courts pour préserver la lisibilité de l'outil pendant une session de jeu.
+
+- `monstre` : créature choisie depuis le bestiaire ;
+- `joueur` : personnage joueur saisi manuellement ;
+- `acteur` : terme générique pour une entrée de l'ordre du tour ;
+- `ordre du tour` : liste de combat générée depuis les initiatives ;
+- `initiative`, `CA`, `PV actuels` et `PV max` : libellés de statistiques ;
+- `à jouer` et `joué` : états d'un acteur dans l'ordre du tour.
+
 ### Tests
 
 - Configuration Vitest : [vitest.config.mjs](/var/www/projects/benleminbe/vitest.config.mjs:1)
@@ -149,7 +160,7 @@ Le formulaire joueur reste encore un buffer DOM éditable, mais les données uti
 
 ### Règles maison configurables
 
-Deux règles sont actuellement pilotables depuis la popup "Règles appliquées" :
+Deux règles sont actuellement pilotables depuis la popup "Règles" :
 
 - ignorer les acteurs dont l'initiative finale est inférieure ou égale à `1` ;
 - accorder un tour supplémentaire à un acteur dont l'initiative finale est exactement `20`.

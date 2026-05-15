@@ -63,7 +63,7 @@ export function initializeTurnOrderPanel(encounter, callbacks = {}) {
         showValidationErrors(
             validationResult,
             turnOrderValidationSummary,
-            'Impossible de générer le tour de table.',
+            'Impossible de générer l’ordre du tour.',
         );
     }
 
@@ -107,7 +107,7 @@ export function renderRoundOrder(turnOrderList, turnOrderPlaceholder, roundOrder
         li.tabIndex = 0;
         li.dataset.actorId = actor.id;
         li.setAttribute('aria-label', actorDescription);
-        li.title = 'Entrée ou espace : basculer joué/non joué. Flèches gauche et droite : déplacer.';
+        li.title = 'Entrée/Espace : joué. Flèches : déplacer.';
 
         li.querySelector('.turn-order-item__image-placeholder').textContent = getActorInitial(actor);
         li.querySelector('.turn-order-item__name').textContent = actor.name;
@@ -221,11 +221,11 @@ function bindMoveButton(button, roundOrder, actor, index, direction, callbacks) 
     let label;
 
     if (!target) {
-        label = `Aucun déplacement ${isPrevious ? 'vers la gauche' : 'vers la droite'} possible pour ${actor.name}`;
+        label = `${actor.name} ne peut pas être déplacé ${isPrevious ? 'avant' : 'après'}`;
     } else {
         label = isPrevious
-            ? `Déplacer ${actor.name} vers la gauche`
-            : `Déplacer ${actor.name} vers la droite`;
+            ? `Déplacer ${actor.name} avant`
+            : `Déplacer ${actor.name} après`;
     }
 
     button.setAttribute('aria-label', label);
@@ -278,9 +278,9 @@ function moveActorWithKeyboard(roundOrder, actor, index, direction, callbacks) {
 }
 
 function getActorDescription(actor, position, total) {
-    const turnStatus = actor.done ? 'tour joué' : 'tour à jouer';
+    const turnStatus = actor.done ? 'joué' : 'à jouer';
 
-    return `${actor.name}, position ${position} sur ${total}, initiative ${actor.initiative}, CA ${actor.armorClass}, PV ${actor.currentHitPoints} sur ${actor.baseHitPoints}, ${turnStatus}. Entrée ou espace pour basculer joué ou non joué. Flèches gauche et droite pour déplacer.`;
+    return `${actor.name}, position ${position} sur ${total}, initiative ${actor.initiative}, CA ${actor.armorClass}, PV ${actor.currentHitPoints} sur ${actor.baseHitPoints}, ${turnStatus}. Entrée ou espace pour basculer joué. Flèches gauche et droite pour déplacer.`;
 }
 
 function focusTurnItem(turnOrderList, turnId) {
@@ -314,8 +314,8 @@ function bindKeyboardHelp(button, helpPanel) {
         button.setAttribute(
             'aria-label',
             shouldShowHelp
-                ? 'Masquer l’aide clavier de l’ordre du tour'
-                : 'Afficher l’aide clavier de l’ordre du tour',
+                ? 'Masquer l’aide clavier'
+                : 'Afficher l’aide clavier',
         );
     });
 }

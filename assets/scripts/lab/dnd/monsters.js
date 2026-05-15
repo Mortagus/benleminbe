@@ -88,7 +88,7 @@ export function initializeMonstersPanel(encounter, callbacks = {}) {
         showValidationErrors(
             validationResult,
             monsterValidationSummary,
-            'La liste de monstres contient une erreur.',
+            'Un monstre contient une erreur.',
         );
     }
 
@@ -121,7 +121,7 @@ export function renderMonsters(monsterList, monsters, callbacks) {
         const initiativeModifier = li.querySelector('.monster-initiative-modifier');
 
         select.dataset.index = String(index);
-        select.setAttribute('aria-label', `Choisir le type du monstre ${index + 1}`);
+        select.setAttribute('aria-label', `Choisir le monstre ${index + 1}`);
         renderMonsterOptions(select, monster.slug);
 
         type.textContent = monster.type;
@@ -135,7 +135,7 @@ export function renderMonsters(monsterList, monsters, callbacks) {
         hpMax.textContent = String(monster.baseHitPoints);
 
         initiativeModifier.textContent = formatModifier(monster.initiativeModifier);
-        initiativeModifier.title = `Modificateur d’initiative : ${formatModifier(monster.initiativeModifier)}. Ajouté au résultat du d20 lors du jet d’initiative.`;
+        initiativeModifier.title = `Mod. initiative : ${formatModifier(monster.initiativeModifier)}`;
         initiativeModifier.setAttribute(
             'aria-label',
             `Modificateur d’initiative : ${formatModifier(monster.initiativeModifier)}`
@@ -159,16 +159,16 @@ export function renderMonsters(monsterList, monsters, callbacks) {
 
 function getInitiativeTooltip(monster) {
     if (monster.roll === null) {
-        return 'Aucun jet d’initiative effectué.';
+        return 'Initiative non lancée.';
     }
 
     const modifier = formatModifier(monster.initiativeModifier);
     const finalScore = formatInitiative(monster);
 
     let tooltip = [
-        `Jet de d20 : ${monster.roll}`,
+        `D20 : ${monster.roll}`,
         `Modificateur : ${modifier}`,
-        `Initiative finale : ${finalScore}`,
+        `Initiative : ${finalScore}`,
     ];
 
     if (monster.roll === 20) {
@@ -193,7 +193,7 @@ function formatModifier(value) {
 function renderMonsterOptions(select, selectedSlug) {
     const placeholderOption = document.createElement('option');
     placeholderOption.value = '';
-    placeholderOption.textContent = 'Choisir un monstre';
+    placeholderOption.textContent = 'Choisir';
 
     const options = [placeholderOption];
 

@@ -34,7 +34,7 @@ export function initializePlayersPanel(encounter, callbacks = {}) {
         showValidationErrors(
             validationResult,
             playerValidationSummary,
-            'La liste de joueurs contient une erreur.',
+            'Un joueur contient une erreur.',
         );
 
         return validationResult;

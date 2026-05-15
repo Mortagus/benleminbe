@@ -2,21 +2,21 @@
     <header class="dnd-panel__header dnd-panel__header--with-action">
         <div>
             <h2>Ordre du tour</h2>
-            <p>La liste d’initiative complète apparaîtra ici.</p>
+            <p>Les acteurs prêts à jouer apparaîtront ici.</p>
         </div>
 
         <div class="dnd-panel__actions">
             {% include 'lab/dnd/_rules_panels.html.twig' %}
 
             <button id="generateTurnOrder" type="button" class="dnd-secondary-button">
-                Générer le tour de table
+                Générer l’ordre
             </button>
 
             <button
                 id="toggleTurnOrderKeyboardHelp"
                 type="button"
                 class="turn-order-help-button dnd-icon-button"
-                aria-label="Afficher l’aide clavier de l’ordre du tour"
+                aria-label="Afficher l’aide clavier"
                 aria-controls="turnOrderKeyboardHelp"
                 aria-expanded="false"
                 title="Aide clavier"
@@ -29,16 +29,16 @@
     <div id="turnOrderValidationSummary" class="dnd-validation-summary" role="alert" hidden></div>
 
     <div id="turnOrderKeyboardHelp" class="turn-order-keyboard-help" hidden>
-        <p>Contrôles clavier de l’ordre du tour</p>
+        <p>Contrôles clavier</p>
         <ul>
             <li><kbd>Tab</kbd> parcourt les tuiles.</li>
-            <li><kbd>Entrée</kbd> ou <kbd>Espace</kbd> bascule joué/non joué.</li>
-            <li><kbd>←</kbd> et <kbd>→</kbd> déplacent la tuile sélectionnée.</li>
+            <li><kbd>Entrée</kbd> ou <kbd>Espace</kbd> bascule joué.</li>
+            <li><kbd>←</kbd> et <kbd>→</kbd> déplacent l’acteur.</li>
         </ul>
     </div>
 
     <div id="turnOrderPlaceholder" class="dnd-placeholder">
-        <p>Aucun tour de combat généré pour le moment.</p>
+        <p>Aucun ordre généré.</p>
     </div>
 
     <ol id="turnOrderList" class="turn-order-list" hidden></ol>

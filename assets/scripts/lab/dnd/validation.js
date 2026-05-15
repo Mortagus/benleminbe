@@ -19,7 +19,7 @@ export function validateMonsterHitPointsInput(monsterItem, index) {
     const maxHitPoints = Number(hitPointsInput.max);
 
     return validateIntegerInput(hitPointsInput, {
-        fieldName: `PV du monstre ${index + 1}`,
+        fieldName: `PV actuels monstre ${index + 1}`,
         min: 0,
         max: Number.isFinite(maxHitPoints) ? maxHitPoints : null,
         required: true,
@@ -38,22 +38,22 @@ export function validatePlayerItem(playerItem, index) {
 
     const result = mergeValidationResults(
         validateIntegerInput(armorClassInput, {
-            fieldName: `CA du joueur ${index + 1}`,
+            fieldName: `CA joueur ${index + 1}`,
             min: 0,
             required: true,
         }),
         validateIntegerInput(currentHitPointsInput, {
-            fieldName: `PV restants du joueur ${index + 1}`,
+            fieldName: `PV actuels joueur ${index + 1}`,
             min: 0,
             required: true,
         }),
         validateIntegerInput(baseHitPointsInput, {
-            fieldName: `PV max du joueur ${index + 1}`,
+            fieldName: `PV max joueur ${index + 1}`,
             min: 0,
             required: true,
         }),
         validateIntegerInput(initiativeInput, {
-            fieldName: `initiative du joueur ${index + 1}`,
+            fieldName: `initiative joueur ${index + 1}`,
             required: true,
         }),
     );
@@ -68,7 +68,7 @@ export function validatePlayerItem(playerItem, index) {
     ) {
         result.errors.push({
             input: currentHitPointsInput,
-            message: `Les PV restants du joueur ${index + 1} ne peuvent pas dépasser ses PV max.`,
+            message: `Les PV actuels du joueur ${index + 1} ne peuvent pas dépasser ses PV max.`,
         });
     }
 
@@ -91,7 +91,7 @@ export function validateEncounterActors(monsterList, playerList) {
     return createValidationResult([
         {
             input: null,
-            message: 'Ajoute au moins un monstre sélectionné ou un joueur renseigné avant de générer le tour de table.',
+            message: 'Ajoute au moins un monstre ou un joueur avant de générer l’ordre du tour.',
         },
     ]);
 }

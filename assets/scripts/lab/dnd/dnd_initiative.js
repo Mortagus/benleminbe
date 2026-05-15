@@ -1,131 +1,62 @@
 import '../../../styles/lab/dnd/lab_dnd_initiative.css';
 
 import {
-    createMonsterSlots,
-    getMonsterActors,
-    hasSelectedMonsters,
-    renderMonsters,
-    rollMonsterInitiatives,
-    syncMonsterHitPointsFromDom,
-} from './monsters.js';
-
-import {
-    bindExistingPlayerRemoveButtons,
-    createPlayerItem,
-    getPlayerActors,
-} from './players.js';
-
-import {
     buildRoundOrder,
-    renderRoundOrder,
-} from './turn-order.js';
+    createEncounterState,
+    isRuleActive,
+    setRuleActive,
+} from './encounter-state.js';
+
+import { initializeMonstersPanel } from './monsters.js';
+
+import { initializePlayersPanel } from './players.js';
+
+import { initializeTurnOrderPanel } from './turn-order.js';
 
 import { initializeRulesPanel } from './rules.js';
 
 import {
-    clearValidationState,
     focusFirstInvalidField,
     hasValidationErrors,
-    mergeValidationResults,
-    showValidationErrors,
     validateEncounterActors,
-    validateMonsterCountInput,
-    validateMonsterHitPointsInput,
-    validatePlayerItem,
 } from './validation.js';
 
-const monsterCountInput = document.getElementById('monsterCount');
-const createMonstersButton = document.getElementById('createMonsters');
-const rollInitiativeButton = document.getElementById('rollInitiative');
-const monsterPanel = document.querySelector('.dnd-panel--monsters');
-const monsterList = document.getElementById('monsterList');
-const monsterValidationSummary = document.getElementById('monsterValidationSummary');
+const encounter = createEncounterState();
 
-const addPlayerButton = document.getElementById('addPlayer');
-const playerPanel = document.querySelector('.dnd-panel--players');
-const playerList = document.getElementById('playerList');
-const playerValidationSummary = document.getElementById('playerValidationSummary');
-
-const generateTurnOrderButton = document.getElementById('generateTurnOrder');
-const turnOrderPanel = document.querySelector('.dnd-panel--turn-order');
-const turnOrderValidationSummary = document.getElementById('turnOrderValidationSummary');
-const turnOrderPlaceholder = document.getElementById('turnOrderPlaceholder');
-const turnOrderList = document.getElementById('turnOrderList');
-
-function updateRollInitiativeButtonState() {
-    rollInitiativeButton.disabled = !hasSelectedMonsters();
-}
-
-function refreshMonsters() {
-    renderMonsters(monsterList, () => {
-        updateRollInitiativeButtonState();
-        refreshMonsters();
-    });
-}
-
-createMonstersButton.addEventListener('click', () => {
-    clearValidationState(monsterPanel);
-
-    const count = Number(monsterCountInput.value);
-    const validationResult = validateMonsterCountInput(monsterCountInput);
-
-    showValidationErrors(
-        validationResult,
-        monsterValidationSummary,
-        'La liste de monstres contient une erreur.',
-    );
-
-    if (hasValidationErrors(validationResult)) {
-        focusFirstInvalidField(validationResult);
-        return;
-    }
-
-    createMonsterSlots(count);
-
-    rollInitiativeButton.disabled = true;
-    refreshMonsters();
+const turnOrderPanel = initializeTurnOrderPanel(encounter, {
+    onGenerateTurnOrder: generateTurnOrder,
 });
 
-rollInitiativeButton.addEventListener('click', () => {
-    rollMonsterInitiatives();
-    refreshMonsters();
+const monstersPanel = initializeMonstersPanel(encounter, {
+    onEncounterChange: turnOrderPanel.refresh,
 });
 
-addPlayerButton.addEventListener('click', () => {
-    playerList.appendChild(createPlayerItem());
+const playersPanel = initializePlayersPanel(encounter, {
+    onPlayersChange: turnOrderPanel.refresh,
 });
 
-generateTurnOrderButton.addEventListener('click', () => {
-    clearValidationState(monsterPanel);
-    clearValidationState(playerPanel);
-    clearValidationState(turnOrderPanel);
+initializeRulesPanel({
+    isRuleActive: (ruleId) => isRuleActive(encounter, ruleId),
+    setRuleActive: (ruleId, active) => {
+        setRuleActive(encounter, ruleId, active);
+        turnOrderPanel.refresh();
+    },
+});
 
-    const encounterValidationResult = validateEncounterActors(monsterList, playerList);
+function generateTurnOrder() {
+    monstersPanel.clearValidation();
+    playersPanel.clearValidation();
+    turnOrderPanel.clearValidation();
 
-    const monsterValidationResult = mergeValidationResults(
-        validateMonsterCountInput(monsterCountInput),
-        ...getMonsterHitPointValidationResults(),
+    const encounterValidationResult = validateEncounterActors(
+        monstersPanel.getListElement(),
+        playersPanel.getListElement(),
     );
 
-    const playerValidationResult = mergeValidationResults(
-        ...getPlayerValidationResults(),
-    );
+    const monsterValidationResult = monstersPanel.validateForTurnOrder();
+    const playerValidationResult = playersPanel.validateForTurnOrder();
 
-    showValidationErrors(
-        monsterValidationResult,
-        monsterValidationSummary,
-        'La liste de monstres contient une erreur.',
-    );
-    showValidationErrors(
-        encounterValidationResult,
-        turnOrderValidationSummary,
-        'Impossible de générer le tour de table.',
-    );
-    showValidationErrors(
-        playerValidationResult,
-        playerValidationSummary,
-        'La liste de joueurs contient une erreur.',
-    );
+    turnOrderPanel.showEncounterValidationErrors(encounterValidationResult);
 
     if (
         hasValidationErrors(
@@ -141,25 +72,8 @@ generateTurnOrderButton.addEventListener('click', () => {
         return;
     }
 
-    syncMonsterHitPointsFromDom(monsterList);
+    playersPanel.sync();
+    buildRoundOrder(encounter);
 
-    buildRoundOrder(
-        getMonsterActors(),
-        getPlayerActors(playerList),
-    );
-
-    renderRoundOrder(turnOrderList, turnOrderPlaceholder);
-});
-
-bindExistingPlayerRemoveButtons(playerList);
-initializeRulesPanel();
-
-function getMonsterHitPointValidationResults() {
-    return Array.from(monsterList.querySelectorAll('.monster-item'))
-        .map((monsterItem, index) => validateMonsterHitPointsInput(monsterItem, index));
-}
-
-function getPlayerValidationResults() {
-    return Array.from(playerList.querySelectorAll('.player-item'))
-        .map((playerItem, index) => validatePlayerItem(playerItem, index));
+    turnOrderPanel.refresh();
 }

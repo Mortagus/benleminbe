@@ -1,32 +1,60 @@
-import { getTurnCount, shouldSkipTurn } from './rules.js';
+import {
+    moveTurnBefore,
+    toggleTurnDone,
+} from './encounter-state.js';
+import {
+    clearValidationState,
+    showValidationErrors,
+} from './validation.js';
 
-let roundOrder = [];
 let draggedActorId = null;
 const turnOrderItemTemplate = document.getElementById('turnOrderItemTemplate');
 
-export function buildRoundOrder(monsterActors, playerActors) {
-    const actors = [
-        ...monsterActors,
-        ...playerActors,
-    ];
+export function initializeTurnOrderPanel(encounter, callbacks = {}) {
+    const generateTurnOrderButton = document.getElementById('generateTurnOrder');
+    const turnOrderPanel = document.querySelector('.dnd-panel--turn-order');
+    const turnOrderValidationSummary = document.getElementById('turnOrderValidationSummary');
+    const turnOrderPlaceholder = document.getElementById('turnOrderPlaceholder');
+    const turnOrderList = document.getElementById('turnOrderList');
 
-    roundOrder = actors
-        .filter(actor => !shouldSkipTurn(actor))
-        .flatMap(actor => {
-            const turnCount = getTurnCount(actor);
+    generateTurnOrderButton.addEventListener('click', () => {
+        callbacks.onGenerateTurnOrder?.();
+    });
 
-            return Array.from({ length: turnCount }, (_, index) => ({
-                ...actor,
-                id: turnCount > 1 ? `${actor.id}-turn-${index + 1}` : actor.id,
-                done: false,
-            }));
-        })
-        .sort((a, b) => b.initiative - a.initiative);
+    function refresh() {
+        renderRoundOrder(
+            turnOrderList,
+            turnOrderPlaceholder,
+            encounter.turnOrder,
+            {
+                onToggleTurnDone: (turnId) => {
+                    toggleTurnDone(encounter, turnId);
+                    refresh();
+                },
+                onMoveTurnBefore: (draggedTurnId, targetTurnId) => {
+                    moveTurnBefore(encounter, draggedTurnId, targetTurnId);
+                    refresh();
+                },
+            },
+        );
+    }
 
-    return roundOrder;
+    function showEncounterValidationErrors(validationResult) {
+        showValidationErrors(
+            validationResult,
+            turnOrderValidationSummary,
+            'Impossible de générer le tour de table.',
+        );
+    }
+
+    return {
+        clearValidation: () => clearValidationState(turnOrderPanel),
+        refresh,
+        showEncounterValidationErrors,
+    };
 }
 
-export function renderRoundOrder(turnOrderList, turnOrderPlaceholder) {
+export function renderRoundOrder(turnOrderList, turnOrderPlaceholder, roundOrder, callbacks) {
     turnOrderList.replaceChildren();
 
     if (roundOrder.length === 0) {
@@ -64,8 +92,7 @@ export function renderRoundOrder(turnOrderList, turnOrderPlaceholder) {
         badge.hidden = index !== firstActiveIndex;
 
         li.addEventListener('click', () => {
-            roundOrder[index].done = !roundOrder[index].done;
-            renderRoundOrder(turnOrderList, turnOrderPlaceholder);
+            callbacks.onToggleTurnDone(actor.id);
         });
 
         li.draggable = true;
@@ -99,8 +126,7 @@ export function renderRoundOrder(turnOrderList, turnOrderPlaceholder) {
                 return;
             }
 
-            moveActorBefore(draggedActorId, actor.id);
-            renderRoundOrder(turnOrderList, turnOrderPlaceholder);
+            callbacks.onMoveTurnBefore(draggedActorId, actor.id);
         });
 
         turnOrderList.appendChild(li);
@@ -109,22 +135,4 @@ export function renderRoundOrder(turnOrderList, turnOrderPlaceholder) {
 
 function getActorInitial(actor) {
     return actor.name.trim().charAt(0).toUpperCase() || '?';
-}
-
-function moveActorBefore(draggedActorId, targetActorId) {
-    const draggedIndex = roundOrder.findIndex(actor => actor.id === draggedActorId);
-
-    if (draggedIndex === -1) {
-        return;
-    }
-
-    const [draggedActor] = roundOrder.splice(draggedIndex, 1);
-    const targetIndex = roundOrder.findIndex(actor => actor.id === targetActorId);
-
-    if (targetIndex === -1) {
-        roundOrder.push(draggedActor);
-        return;
-    }
-
-    roundOrder.splice(targetIndex, 0, draggedActor);
 }

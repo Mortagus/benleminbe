@@ -22,82 +22,10 @@
     <div id="playerValidationSummary" class="dnd-validation-summary" role="alert" hidden></div>
 
     <ul id="playerList" class="player-list">
-        <li class="player-item">
-            <div class="player-field player-field--name">
-                <label>Nom</label>
-                <input data-player-field="name" type="text" placeholder="Nom du joueur">
-            </div>
-
-            <div class="player-field">
-                <label>CA</label>
-                <input data-player-field="armor-class" type="number" min="0" placeholder="10">
-            </div>
-
-            <div class="player-field player-field--hp">
-                <label>PV</label>
-                <div class="player-hp-inputs">
-                    <input data-player-field="current-hit-points" type="number" min="0" placeholder="rest.">
-                    <span>/</span>
-                    <input data-player-field="base-hit-points" type="number" min="0" placeholder="max">
-                </div>
-            </div>
-
-            <div class="player-field">
-                <label>Init.</label>
-                <input data-player-field="initiative" type="number" placeholder="0">
-            </div>
-
-            <button
-                type="button"
-                class="player-remove-button dnd-icon-button"
-                aria-label="Supprimer ce joueur"
-                title="Supprimer ce joueur"
-            >
-                <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                </svg>
-            </button>
-        </li>
+        {% include 'lab/dnd/_player_item.html.twig' %}
     </ul>
 
     <template id="playerItemTemplate">
-        <li class="player-item">
-            <div class="player-field player-field--name">
-                <label>Nom</label>
-                <input data-player-field="name" type="text" placeholder="Nom du joueur">
-            </div>
-
-            <div class="player-field">
-                <label>CA</label>
-                <input data-player-field="armor-class" type="number" min="0" placeholder="10">
-            </div>
-
-            <div class="player-field player-field--hp">
-                <label>PV</label>
-                <div class="player-hp-inputs">
-                    <input data-player-field="current-hit-points" type="number" min="0" placeholder="rest.">
-                    <span>/</span>
-                    <input data-player-field="base-hit-points" type="number" min="0" placeholder="max">
-                </div>
-            </div>
-
-            <div class="player-field">
-                <label>Init.</label>
-                <input data-player-field="initiative" type="number" placeholder="0">
-            </div>
-
-            <button
-                type="button"
-                class="player-remove-button dnd-icon-button"
-                aria-label="Supprimer ce joueur"
-                title="Supprimer ce joueur"
-            >
-                <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                </svg>
-            </button>
-        </li>
+        {% include 'lab/dnd/_player_item.html.twig' %}
     </template>
 </section>

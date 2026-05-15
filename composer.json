@@ -21,7 +21,8 @@
         "symfony/translation": "^8.0",
         "symfony/apache-pack": "^1.0",
         "ext-dom": "*",
-        "ext-iconv": "*"
+        "ext-iconv": "*",
+        "ext-libxml": "*"
     },
     "license": "MIT",
     "autoload": {
@@ -48,7 +49,9 @@
             "importmap:install": "symfony-cmd"
         },
         "css:format": "npm run format:css",
-        "css:lint": "npm run lint:css"
+        "css:lint": "npm run lint:css",
+        "dnd:bestiary:generate": "php tools/dnd/complete_monster_extractor.php",
+        "dnd:bestiary:test": "php tools/dnd/validate_bestiary.php"
     },
     "require-dev": {
         "symfony/maker-bundle": "^1.67"

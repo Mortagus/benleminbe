@@ -1,4 +1,4 @@
-import { monsterClasses } from './monster_classes.js';
+import { bestiary } from './bestiary.js';
 import { formatInitiative, getInitiativeClass } from './initiative.js';
 import {
     createMonsterSlots,
@@ -197,14 +197,14 @@ function renderMonsterOptions(select, selectedSlug) {
 
     const options = [placeholderOption];
 
-    monsterClasses.forEach(monsterClass => {
+    bestiary.forEach(monster => {
         const option = monsterOptionTemplate.content
             .cloneNode(true)
             .querySelector('option');
 
-        option.value = monsterClass.slug;
-        option.textContent = monsterClass.name;
-        option.selected = monsterClass.slug === selectedSlug;
+        option.value = monster.slug;
+        option.textContent = monster.name;
+        option.selected = monster.slug === selectedSlug;
 
         options.push(option);
     });

@@ -58,7 +58,7 @@ La page principale assemble trois panneaux : monstres, joueurs et ordre du tour.
 - Règles maison configurables : [assets/scripts/lab/dnd/rules.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/rules.js:1)
 - Construction et rendu de l'ordre du tour : [assets/scripts/lab/dnd/turn-order.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/turn-order.js:1)
 - Validation des entrées : [assets/scripts/lab/dnd/validation.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/validation.js:1)
-- Catalogue de monstres embarqué : [assets/scripts/lab/dnd/monster_classes.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monster_classes.js:1)
+- Bestiaire de monstres embarqué : [assets/scripts/lab/dnd/bestiary.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/bestiary.js:1)
 
 Responsabilités principales :
 
@@ -88,12 +88,13 @@ Le CSS du module est importé par l'entrée JavaScript `dnd_initiative`. Les rè
 
 ### Données monstres et outillage
 
+- Documentation du pipeline : [docs/lab/dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1)
 - Générateur principal : [tools/dnd/complete_monster_extractor.php](/var/www/projects/benleminbe/tools/dnd/complete_monster_extractor.php:1)
-- Ancien extracteur : [tools/dnd/extract_monsters.php](/var/www/projects/benleminbe/tools/dnd/extract_monsters.php:1)
-- Données générées : [tools/dnd/monsters.generated.json](/var/www/projects/benleminbe/tools/dnd/monsters.generated.json:1)
-- Catalogue embarqué côté front : [assets/scripts/lab/dnd/monster_classes.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monster_classes.js:1)
+- Source HTML conservée : [tools/dnd/monsters-source.html](/var/www/projects/benleminbe/tools/dnd/monsters-source.html:1)
+- Test de contrat : [tools/dnd/validate_bestiary.php](/var/www/projects/benleminbe/tools/dnd/validate_bestiary.php:1)
+- Bestiaire embarqué côté front : [assets/scripts/lab/dnd/bestiary.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/bestiary.js:1)
 
-Le navigateur consomme aujourd'hui un catalogue JavaScript généré et embarqué dans le bundle de la page. Cette approche reste simple pour le lab, mais le flux de génération devra être documenté avant d'étendre fortement la base de monstres.
+Le navigateur consomme aujourd'hui un bestiaire JavaScript généré et embarqué dans le bundle de la page. Cette approche reste simple pour le lab avec le catalogue actuel. Le pipeline de génération et les critères de chargement futur sont documentés dans [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1).
 
 ## Architecture actuelle
 

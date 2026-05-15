@@ -1,5 +1,5 @@
 import { rollD20 } from './initiative.js';
-import { monsterClasses } from './monster_classes.js';
+import { bestiary } from './bestiary.js';
 
 export const RULES = {
     skipLowInitiative: {
@@ -35,10 +35,10 @@ export function selectMonster(encounter, index, monsterSlug) {
         return;
     }
 
-    const selectedMonsterClass = monsterClasses.find(monsterClass => monsterClass.slug === monsterSlug);
+    const selectedMonster = bestiary.find(monster => monster.slug === monsterSlug);
 
-    encounter.monsters[index] = selectedMonsterClass
-        ? createMonsterFromClass(selectedMonsterClass, index)
+    encounter.monsters[index] = selectedMonster
+        ? createMonsterFromBestiaryEntry(selectedMonster, index)
         : createEmptyMonster(index);
 }
 
@@ -167,31 +167,29 @@ function createEmptyMonster(index) {
         initiativeModifier: 0,
         roll: null,
         initiative: null,
-        originalData: null,
     };
 }
 
-function createMonsterFromClass(monsterClass, index) {
-    const initiativeModifier = getMonsterInitiativeModifier(monsterClass);
+function createMonsterFromBestiaryEntry(monster, index) {
+    const initiativeModifier = getMonsterInitiativeModifier(monster);
 
     return {
-        id: `${monsterClass.slug}-${index + 1}`,
-        slug: monsterClass.slug,
-        name: `${monsterClass.name} ${index + 1}`,
-        className: monsterClass.name,
-        challengeRating: monsterClass.challenge_rating,
-        type: monsterClass.type,
-        size: monsterClass.size,
-        armorClass: monsterClass.armor_class,
-        baseHitPoints: monsterClass.hit_points,
-        currentHitPoints: monsterClass.hit_points,
-        alignment: monsterClass.alignment,
-        isLegendary: monsterClass.is_legendary,
-        abilities: monsterClass.abilities ?? {},
+        id: `${monster.slug}-${index + 1}`,
+        slug: monster.slug,
+        name: `${monster.name} ${index + 1}`,
+        className: monster.name,
+        challengeRating: monster.challenge_rating,
+        type: monster.type,
+        size: monster.size,
+        armorClass: monster.armor_class,
+        baseHitPoints: monster.hit_points,
+        currentHitPoints: monster.hit_points,
+        alignment: monster.alignment,
+        isLegendary: monster.is_legendary,
+        abilities: monster.abilities ?? {},
         initiativeModifier,
         roll: null,
         initiative: null,
-        originalData: monsterClass,
     };
 }
 
@@ -212,13 +210,13 @@ function getMonsterActors(encounter) {
         }));
 }
 
-function getMonsterInitiativeModifier(monsterClass) {
-    if (typeof monsterClass.initiative_modifier === 'number') {
-        return monsterClass.initiative_modifier;
+function getMonsterInitiativeModifier(monster) {
+    if (typeof monster.initiative_modifier === 'number') {
+        return monster.initiative_modifier;
     }
 
-    if (typeof monsterClass.abilities?.dex?.modifier === 'number') {
-        return monsterClass.abilities.dex.modifier;
+    if (typeof monster.abilities?.dex?.modifier === 'number') {
+        return monster.abilities.dex.modifier;
     }
 
     return 0;

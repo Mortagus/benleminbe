@@ -75,5 +75,5 @@ function generateTurnOrder() {
     playersPanel.sync();
     buildRoundOrder(encounter);
 
-    turnOrderPanel.refresh();
+    turnOrderPanel.refresh({ focusFirst: true });
 }

@@ -127,8 +127,6 @@ Le tracker couvre désormais le socle fonctionnel minimal :
 
 Limite : ce socle reste en mémoire uniquement et ne couvre pas encore les commandes de round, la sauvegarde ou la modification des PV directement depuis l'ordre du tour.
 
-## Priorité haute
-
 ### P6 - Introduire un modèle de rencontre explicite et clarifier l'orchestration JavaScript
 
 Catégorie : Architecture / JavaScript
@@ -157,6 +155,8 @@ Reste à surveiller : le formulaire joueur sert encore de buffer DOM éditable, 
 Objectif : préparer proprement les commandes de round, la sauvegarde locale, la modification des PV pendant le combat, les tests unitaires et l'import/export.
 
 Complexité estimée : Moyenne à élevée
+
+## Priorité haute
 
 ### P7 - Ajouter des commandes explicites de pilotage du combat
 
@@ -231,13 +231,13 @@ Complexité estimée : Moyenne
 
 Catégorie : Twig
 
-Statut : À faire
+Statut : Fait
 
-Constat : le premier joueur rendu dans `#playerList` et le contenu du template `#playerItemTemplate` dupliquent quasiment le même HTML.
+Constat initial : le premier joueur rendu dans `#playerList` et le contenu du template `#playerItemTemplate` dupliquaient quasiment le même HTML.
 
-Impact : chaque évolution du formulaire joueur doit être reportée à deux endroits.
+Implémentation : le markup d'une ligne joueur est maintenant factorisé dans un partial Twig unique, utilisé à la fois pour la première ligne visible et pour le template de clonage dynamique.
 
-Proposition : factoriser le markup d'un joueur dans un partial Twig dédié, ou rendre la liste initiale à partir du même fragment que le template.
+Impact : une évolution du formulaire joueur ne doit plus être reportée à deux endroits.
 
 Complexité estimée : Faible
 
@@ -245,13 +245,13 @@ Complexité estimée : Faible
 
 Catégorie : Accessibilité / Twig
 
-Statut : À faire
+Statut : Fait
 
-Constat : les labels des champs joueurs n'ont pas de relation `for`/`id`, et les champs générés dans les templates dynamiques n'ont pas d'identifiants uniques. Le select monstre est aussi créé sans label explicite par ligne.
+Constat initial : les labels des champs joueurs n'avaient pas de relation `for`/`id`, et les champs générés dans les templates dynamiques n'avaient pas d'identifiants uniques. Le select monstre était aussi créé sans label explicite par ligne.
 
-Impact : les formulaires restent visuellement compréhensibles, mais les technologies d'assistance ont moins de contexte.
+Implémentation : les lignes joueurs reçoivent des identifiants recalculés côté JavaScript, les labels visibles sont reliés aux champs simples, les champs PV disposent d'un nom accessible explicite, les boutons de suppression sont contextualisés par numéro de joueur, et les selects/PV monstres dynamiques ont des `aria-label` par ligne.
 
-Proposition : ajouter des noms accessibles explicites aux champs dynamiques via `aria-label` ou des identifiants générés, sans alourdir visuellement l'interface.
+Impact : les technologies d'assistance disposent d'un contexte plus précis sans alourdir visuellement l'interface.
 
 Complexité estimée : Faible
 
@@ -259,13 +259,17 @@ Complexité estimée : Faible
 
 Catégorie : Accessibilité / UX
 
-Statut : À faire
+Statut : Fait
 
-Constat : le réordonnancement de l'ordre du tour repose sur `draggable` et des événements de souris. Les cartes sont cliquables, mais ne sont pas exposées comme boutons et ne proposent pas de réordonnancement clavier.
+Constat initial : le réordonnancement de l'ordre du tour reposait sur `draggable` et des événements de souris. Les cartes étaient cliquables, mais ne proposaient pas de réordonnancement clavier.
 
-Impact : l'usage clavier, lecteur d'écran ou tactile peut être limité. Sur mobile, le drag-and-drop HTML natif est souvent moins prévisible.
+Implémentation actuelle : le drag-and-drop souris permet désormais de déplacer une carte vers la gauche ou vers la droite. Dès qu'une carte cible affiche l'état visuel de drop, relâcher la souris déplace la carte glissée dans cette direction : après la cible pour un déplacement vers la droite, avant la cible pour un déplacement vers la gauche.
 
-Proposition : ajouter des contrôles alternatifs pour monter/descendre un acteur, rendre les cartes focusables si elles restent interactives, et annoncer clairement l'acteur actif avec des attributs ARIA adaptés.
+Le pilotage clavier est aussi disponible : après génération, la première carte reçoit le focus ; `Entrée` ou `Espace` bascule le statut joué/non joué ; `Flèche gauche` et `Flèche droite` déplacent la carte sélectionnée. Les boutons de déplacement restent disponibles comme raccourcis souris discrets, mais sont retirés de l'enchaînement `Tab` pour garder une navigation de carte en carte. Une aide clavier repliable est disponible depuis le panneau.
+
+Impact : l'ordre du tour peut maintenant être manipulé à la souris ou au clavier, avec un retour exploitable par les technologies d'assistance.
+
+Reste à surveiller : le drag-and-drop HTML natif peut rester moins prévisible sur mobile. Le pilotage clavier offre déjà une alternative fiable pour les environnements où le drag est fragile.
 
 Complexité estimée : Moyenne
 

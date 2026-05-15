@@ -121,6 +121,7 @@ export function renderMonsters(monsterList, monsters, callbacks) {
         const initiativeModifier = li.querySelector('.monster-initiative-modifier');
 
         select.dataset.index = String(index);
+        select.setAttribute('aria-label', `Choisir le type du monstre ${index + 1}`);
         renderMonsterOptions(select, monster.slug);
 
         type.textContent = monster.type;
@@ -129,6 +130,7 @@ export function renderMonsters(monsterList, monsters, callbacks) {
         hpInput.max = String(monster.baseHitPoints);
         hpInput.value = String(monster.currentHitPoints);
         hpInput.disabled = monster.slug === null;
+        hpInput.setAttribute('aria-label', `PV actuels du monstre ${index + 1}`);
 
         hpMax.textContent = String(monster.baseHitPoints);
 

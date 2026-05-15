@@ -13,6 +13,7 @@ export function initializePlayersPanel(encounter, callbacks = {}) {
     const playerValidationSummary = document.getElementById('playerValidationSummary');
 
     function sync() {
+        refreshPlayerAccessibility(playerList);
         setPlayers(encounter, getPlayerActors(playerList));
         callbacks.onPlayersChange?.();
     }
@@ -70,7 +71,10 @@ export function createPlayerItem(onPlayerListChange) {
 export function bindExistingPlayerItems(playerList, onPlayerListChange) {
     const playerItems = playerList.querySelectorAll('.player-item');
 
-    playerItems.forEach(playerItem => bindPlayerItemEvents(playerItem, onPlayerListChange));
+    playerItems.forEach(playerItem => {
+        bindPlayerItemEvents(playerItem, onPlayerListChange);
+    });
+    refreshPlayerAccessibility(playerList);
 }
 
 export function getPlayerActors(playerList) {
@@ -112,6 +116,57 @@ function bindPlayerItemEvents(playerItem, onPlayerListChange) {
             onPlayerListChange();
         });
     });
+}
+
+function refreshPlayerAccessibility(playerList) {
+    const playerItems = playerList.querySelectorAll('.player-item');
+
+    playerItems.forEach((playerItem, index) => {
+        const playerNumber = index + 1;
+
+        assignFieldLabel(playerItem, 'name', `player-${playerNumber}-name`, `Nom du joueur ${playerNumber}`);
+        assignFieldLabel(playerItem, 'armor-class', `player-${playerNumber}-armor-class`, `CA du joueur ${playerNumber}`);
+        assignFieldLabel(playerItem, 'initiative', `player-${playerNumber}-initiative`, `Initiative du joueur ${playerNumber}`);
+        assignInputAriaLabel(playerItem, 'current-hit-points', `PV actuels du joueur ${playerNumber}`);
+        assignInputAriaLabel(playerItem, 'base-hit-points', `PV max du joueur ${playerNumber}`);
+
+        const hitPointsLabel = playerItem.querySelector('[data-player-label="hit-points"]');
+
+        if (hitPointsLabel) {
+            hitPointsLabel.id = `player-${playerNumber}-hit-points-label`;
+        }
+
+        const removeButton = playerItem.querySelector('.player-remove-button');
+
+        if (removeButton) {
+            const removeLabel = `Supprimer le joueur ${playerNumber}`;
+            removeButton.setAttribute('aria-label', removeLabel);
+            removeButton.title = removeLabel;
+        }
+    });
+}
+
+function assignFieldLabel(playerItem, fieldName, id, labelText) {
+    const input = getPlayerInput(playerItem, fieldName);
+    const label = playerItem.querySelector(`[data-player-label="${fieldName}"]`);
+
+    if (!input || !label) {
+        return;
+    }
+
+    input.id = id;
+    label.setAttribute('for', id);
+    input.setAttribute('aria-label', labelText);
+}
+
+function assignInputAriaLabel(playerItem, fieldName, labelText) {
+    const input = getPlayerInput(playerItem, fieldName);
+
+    if (!input) {
+        return;
+    }
+
+    input.setAttribute('aria-label', labelText);
 }
 
 function getPlayerInput(playerItem, fieldName) {

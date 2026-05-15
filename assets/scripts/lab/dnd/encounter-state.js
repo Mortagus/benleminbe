@@ -113,7 +113,7 @@ export function toggleTurnDone(encounter, turnId) {
     refreshActiveTurn(encounter);
 }
 
-export function moveTurnBefore(encounter, draggedTurnId, targetTurnId) {
+export function moveTurn(encounter, draggedTurnId, targetTurnId, placement = 'before') {
     const draggedIndex = encounter.turnOrder.findIndex(actor => actor.id === draggedTurnId);
 
     if (draggedIndex === -1) {
@@ -129,7 +129,11 @@ export function moveTurnBefore(encounter, draggedTurnId, targetTurnId) {
         return;
     }
 
-    encounter.turnOrder.splice(targetIndex, 0, draggedTurn);
+    const insertionIndex = placement === 'after'
+        ? targetIndex + 1
+        : targetIndex;
+
+    encounter.turnOrder.splice(insertionIndex, 0, draggedTurn);
     refreshActiveTurn(encounter);
 }
 

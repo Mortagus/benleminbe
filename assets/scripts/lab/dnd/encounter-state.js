@@ -12,8 +12,8 @@ export const RULES = {
     },
 };
 
-export function createEncounterState() {
-    return {
+export function createEncounterState(options = {}) {
+    const encounter = {
         monsters: [],
         players: [],
         rules: createDefaultRulesState(),
@@ -21,6 +21,13 @@ export function createEncounterState() {
         currentRound: 1,
         activeTurnId: null,
     };
+
+    Object.defineProperty(encounter, 'bestiary', {
+        value: options.bestiary ?? bestiary,
+        enumerable: false,
+    });
+
+    return encounter;
 }
 
 export function createMonsterSlots(encounter, count) {
@@ -35,7 +42,7 @@ export function selectMonster(encounter, index, monsterSlug) {
         return;
     }
 
-    const selectedMonster = bestiary.find(monster => monster.slug === monsterSlug);
+    const selectedMonster = encounter.bestiary.find(monster => monster.slug === monsterSlug);
 
     encounter.monsters[index] = selectedMonster
         ? createMonsterFromBestiaryEntry(selectedMonster, index)

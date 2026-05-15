@@ -93,8 +93,16 @@ Le CSS du module est importé par l'entrée JavaScript `dnd_initiative`. Les rè
 - Source HTML conservée : [tools/dnd/monsters-source.html](/var/www/projects/benleminbe/tools/dnd/monsters-source.html:1)
 - Test de contrat : [tools/dnd/validate_bestiary.php](/var/www/projects/benleminbe/tools/dnd/validate_bestiary.php:1)
 - Bestiaire embarqué côté front : [assets/scripts/lab/dnd/bestiary.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/bestiary.js:1)
+- Fixture bestiaire pour les tests JS : [tests/fixtures/dnd/bestiary-sample.js](/var/www/projects/benleminbe/tests/fixtures/dnd/bestiary-sample.js:1)
 
 Le navigateur consomme aujourd'hui un bestiaire JavaScript généré et embarqué dans le bundle de la page. Cette approche reste simple pour le lab avec le catalogue actuel. Le pipeline de génération et les critères de chargement futur sont documentés dans [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1).
+
+### Tests
+
+- Configuration Vitest : [vitest.config.mjs](/var/www/projects/benleminbe/vitest.config.mjs:1)
+- Tests du modèle de rencontre : [tests/js/lab/dnd/encounter-state.test.js](/var/www/projects/benleminbe/tests/js/lab/dnd/encounter-state.test.js:1)
+
+Les tests JavaScript se lancent avec `npm run test:js` ou `composer js:test`. Ils couvrent aujourd'hui la création de slots monstres, la sélection depuis le bestiaire injecté, les jets d'initiative, le tri, les règles maison, l'état joué/non joué, l'acteur actif et le réordonnancement manuel.
 
 ## Architecture actuelle
 
@@ -105,7 +113,7 @@ Flux de données principal :
 1. Twig rend la structure initiale et les templates DOM.
 2. `dnd_initiative.js` crée un état de rencontre via `createEncounterState()` et initialise les panneaux.
 3. Les panneaux DOM possèdent leurs éléments, valident leurs entrées locales et remontent les interactions utilisateur vers le modèle.
-4. `encounter-state.js` applique les mutations métier : slots monstres, sélection, PV, règles, joueurs et ordre du tour.
+4. `encounter-state.js` applique les mutations métier : slots monstres, sélection, PV, règles, joueurs et ordre du tour. Le bestiaire peut être injecté à la création de l'état pour tester le modèle avec une fixture légère.
 5. `validation.js` vérifie les entrées avant la création de la liste et la génération de l'ordre du tour.
 6. `turn-order.js`, `monsters.js`, `players.js` et `rules.js` rendent l'état ou les contrôles, sans conserver l'état métier principal.
 

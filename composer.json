@@ -51,7 +51,8 @@
         "css:format": "npm run format:css",
         "css:lint": "npm run lint:css",
         "dnd:bestiary:generate": "php tools/dnd/complete_monster_extractor.php",
-        "dnd:bestiary:test": "php tools/dnd/validate_bestiary.php"
+        "dnd:bestiary:test": "php tools/dnd/validate_bestiary.php",
+        "js:test": "npm run test:js"
     },
     "require-dev": {
         "symfony/maker-bundle": "^1.67"

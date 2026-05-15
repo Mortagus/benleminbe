@@ -17,6 +17,7 @@ Les anciens fichiers `tools/dnd/monsters.html`, `tools/dnd/extract_monsters.php`
 - Source HTML : [tools/dnd/monsters-source.html](/var/www/projects/benleminbe/tools/dnd/monsters-source.html:1)
 - Extracteur : [tools/dnd/complete_monster_extractor.php](/var/www/projects/benleminbe/tools/dnd/complete_monster_extractor.php:1)
 - Bestiaire généré : [assets/scripts/lab/dnd/bestiary.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/bestiary.js:1)
+- Fixture de test générée : [tests/fixtures/dnd/bestiary-sample.js](/var/www/projects/benleminbe/tests/fixtures/dnd/bestiary-sample.js:1)
 - Test de contrat : [tools/dnd/validate_bestiary.php](/var/www/projects/benleminbe/tools/dnd/validate_bestiary.php:1)
 
 Flux de génération :
@@ -29,6 +30,7 @@ tools/dnd/complete_monster_extractor.php
         |
         v
 assets/scripts/lab/dnd/bestiary.js
+tests/fixtures/dnd/bestiary-sample.js
 ```
 
 ## Commandes
@@ -38,6 +40,8 @@ Générer le bestiaire :
 ```bash
 composer dnd:bestiary:generate
 ```
+
+Cette commande génère à la fois le bestiaire complet de l'application et la fixture légère utilisée par les tests JavaScript.
 
 Valider le contrat du bestiaire :
 
@@ -117,6 +121,8 @@ Le catalogue généré depuis la source actuelle contient 428 monstres.
 [assets/scripts/lab/dnd/encounter-state.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/encounter-state.js:1) utilise `bestiary` pour créer une instance de monstre dans la rencontre lorsqu'un slug est sélectionné.
 
 Les objets du bestiaire ne doivent pas devenir l'état mutable d'un combat. L'état de rencontre doit copier les informations utiles et y ajouter les données propres au combat : PV courants, jet d'initiative, initiative finale, statut joué/non joué et identifiant d'instance.
+
+Les tests JavaScript utilisent [tests/fixtures/dnd/bestiary-sample.js](/var/www/projects/benleminbe/tests/fixtures/dnd/bestiary-sample.js:1), un échantillon généré depuis la même source HTML. Cette fixture évite de charger le catalogue complet dans les tests unitaires métier tout en restant synchronisée avec le format réel du bestiaire.
 
 ## Allègement et chargement futur
 

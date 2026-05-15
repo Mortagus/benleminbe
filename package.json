@@ -2,10 +2,12 @@
     "devDependencies": {
         "prettier": "^3.8.3",
         "stylelint": "^16.26.1",
-        "stylelint-config-standard": "^39.0.1"
+        "stylelint-config-standard": "^39.0.1",
+        "vitest": "^3.2.4"
     },
     "scripts": {
         "format:css": "prettier --write \"assets/styles/**/*.css\"",
-        "lint:css": "stylelint \"assets/styles/**/*.css\" --fix"
+        "lint:css": "stylelint \"assets/styles/**/*.css\" --fix",
+        "test:js": "vitest run"
     }
 }

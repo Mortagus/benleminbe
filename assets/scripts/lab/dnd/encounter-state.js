@@ -1,5 +1,5 @@
 import { rollD20 } from './initiative.js';
-import { monsterClasses } from './monster_classes.js';
+import { bestiary } from './bestiary.js';
 
 export const RULES = {
     skipLowInitiative: {
@@ -10,10 +10,14 @@ export const RULES = {
         id: 'extra-turn-on-twenty',
         defaultActive: true,
     },
+    breakInitiativeTiesWithDexterity: {
+        id: 'break-initiative-ties-with-dexterity',
+        defaultActive: false,
+    },
 };
 
-export function createEncounterState() {
-    return {
+export function createEncounterState(options = {}) {
+    const encounter = {
         monsters: [],
         players: [],
         rules: createDefaultRulesState(),
@@ -21,6 +25,13 @@ export function createEncounterState() {
         currentRound: 1,
         activeTurnId: null,
     };
+
+    Object.defineProperty(encounter, 'bestiary', {
+        value: options.bestiary ?? bestiary,
+        enumerable: false,
+    });
+
+    return encounter;
 }
 
 export function createMonsterSlots(encounter, count) {
@@ -35,10 +46,10 @@ export function selectMonster(encounter, index, monsterSlug) {
         return;
     }
 
-    const selectedMonsterClass = monsterClasses.find(monsterClass => monsterClass.slug === monsterSlug);
+    const selectedMonster = encounter.bestiary.find(monster => monster.slug === monsterSlug);
 
-    encounter.monsters[index] = selectedMonsterClass
-        ? createMonsterFromClass(selectedMonsterClass, index)
+    encounter.monsters[index] = selectedMonster
+        ? createMonsterFromBestiaryEntry(selectedMonster, index)
         : createEmptyMonster(index);
 }
 
@@ -69,7 +80,7 @@ export function rollMonsterInitiatives(encounter, roll = rollD20) {
         };
     });
 
-    encounter.monsters.sort(compareByInitiative);
+    encounter.monsters.sort((a, b) => compareByInitiative(encounter, a, b));
 }
 
 export function setPlayers(encounter, players) {
@@ -94,7 +105,7 @@ export function buildRoundOrder(encounter) {
                 done: false,
             }));
         })
-        .sort((a, b) => b.initiative - a.initiative);
+        .sort((a, b) => compareByInitiative(encounter, a, b));
 
     encounter.currentRound = 1;
     refreshActiveTurn(encounter);
@@ -167,31 +178,29 @@ function createEmptyMonster(index) {
         initiativeModifier: 0,
         roll: null,
         initiative: null,
-        originalData: null,
     };
 }
 
-function createMonsterFromClass(monsterClass, index) {
-    const initiativeModifier = getMonsterInitiativeModifier(monsterClass);
+function createMonsterFromBestiaryEntry(monster, index) {
+    const initiativeModifier = getMonsterInitiativeModifier(monster);
 
     return {
-        id: `${monsterClass.slug}-${index + 1}`,
-        slug: monsterClass.slug,
-        name: `${monsterClass.name} ${index + 1}`,
-        className: monsterClass.name,
-        challengeRating: monsterClass.challenge_rating,
-        type: monsterClass.type,
-        size: monsterClass.size,
-        armorClass: monsterClass.armor_class,
-        baseHitPoints: monsterClass.hit_points,
-        currentHitPoints: monsterClass.hit_points,
-        alignment: monsterClass.alignment,
-        isLegendary: monsterClass.is_legendary,
-        abilities: monsterClass.abilities ?? {},
+        id: `${monster.slug}-${index + 1}`,
+        slug: monster.slug,
+        name: `${monster.name} ${index + 1}`,
+        className: monster.name,
+        challengeRating: monster.challenge_rating,
+        type: monster.type,
+        size: monster.size,
+        armorClass: monster.armor_class,
+        baseHitPoints: monster.hit_points,
+        currentHitPoints: monster.hit_points,
+        alignment: monster.alignment,
+        isLegendary: monster.is_legendary,
+        abilities: monster.abilities ?? {},
         initiativeModifier,
         roll: null,
         initiative: null,
-        originalData: monsterClass,
     };
 }
 
@@ -212,13 +221,13 @@ function getMonsterActors(encounter) {
         }));
 }
 
-function getMonsterInitiativeModifier(monsterClass) {
-    if (typeof monsterClass.initiative_modifier === 'number') {
-        return monsterClass.initiative_modifier;
+function getMonsterInitiativeModifier(monster) {
+    if (typeof monster.initiative_modifier === 'number') {
+        return monster.initiative_modifier;
     }
 
-    if (typeof monsterClass.abilities?.dex?.modifier === 'number') {
-        return monsterClass.abilities.dex.modifier;
+    if (typeof monster.abilities?.dex?.modifier === 'number') {
+        return monster.abilities.dex.modifier;
     }
 
     return 0;
@@ -247,7 +256,7 @@ function getTurnCount(encounter, actor) {
     return actor.roll === 20 ? 2 : 1;
 }
 
-function compareByInitiative(a, b) {
+function compareByInitiative(encounter, a, b) {
     if (a.initiative === null) {
         return 1;
     }
@@ -256,7 +265,23 @@ function compareByInitiative(a, b) {
         return -1;
     }
 
-    return b.initiative - a.initiative;
+    const initiativeOrder = b.initiative - a.initiative;
+
+    if (initiativeOrder !== 0) {
+        return initiativeOrder;
+    }
+
+    if (!isRuleActive(encounter, RULES.breakInitiativeTiesWithDexterity.id)) {
+        return 0;
+    }
+
+    return getInitiativeTieBreaker(b) - getInitiativeTieBreaker(a);
+}
+
+function getInitiativeTieBreaker(actor) {
+    return typeof actor.initiativeModifier === 'number'
+        ? actor.initiativeModifier
+        : 0;
 }
 
 function refreshActiveTurn(encounter) {

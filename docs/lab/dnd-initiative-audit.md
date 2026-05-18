@@ -58,7 +58,7 @@ La page principale assemble trois panneaux : monstres, joueurs et ordre du tour.
 - Règles maison configurables : [assets/scripts/lab/dnd/rules.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/rules.js:1)
 - Construction et rendu de l'ordre du tour : [assets/scripts/lab/dnd/turn-order.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/turn-order.js:1)
 - Validation des entrées : [assets/scripts/lab/dnd/validation.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/validation.js:1)
-- Catalogue de monstres embarqué : [assets/scripts/lab/dnd/monster_classes.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monster_classes.js:1)
+- Bestiaire de monstres embarqué : [assets/scripts/lab/dnd/bestiary.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/bestiary.js:1)
 
 Responsabilités principales :
 
@@ -88,12 +88,32 @@ Le CSS du module est importé par l'entrée JavaScript `dnd_initiative`. Les rè
 
 ### Données monstres et outillage
 
+- Documentation du pipeline : [docs/lab/dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1)
 - Générateur principal : [tools/dnd/complete_monster_extractor.php](/var/www/projects/benleminbe/tools/dnd/complete_monster_extractor.php:1)
-- Ancien extracteur : [tools/dnd/extract_monsters.php](/var/www/projects/benleminbe/tools/dnd/extract_monsters.php:1)
-- Données générées : [tools/dnd/monsters.generated.json](/var/www/projects/benleminbe/tools/dnd/monsters.generated.json:1)
-- Catalogue embarqué côté front : [assets/scripts/lab/dnd/monster_classes.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monster_classes.js:1)
+- Source HTML conservée : [tools/dnd/monsters-source.html](/var/www/projects/benleminbe/tools/dnd/monsters-source.html:1)
+- Test de contrat : [tools/dnd/validate_bestiary.php](/var/www/projects/benleminbe/tools/dnd/validate_bestiary.php:1)
+- Bestiaire embarqué côté front : [assets/scripts/lab/dnd/bestiary.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/bestiary.js:1)
+- Fixture bestiaire pour les tests JS : [tests/fixtures/dnd/bestiary-sample.js](/var/www/projects/benleminbe/tests/fixtures/dnd/bestiary-sample.js:1)
 
-Le navigateur consomme aujourd'hui un catalogue JavaScript généré et embarqué dans le bundle de la page. Cette approche reste simple pour le lab, mais le flux de génération devra être documenté avant d'étendre fortement la base de monstres.
+Le navigateur consomme aujourd'hui un bestiaire JavaScript généré et embarqué dans le bundle de la page. Cette approche reste simple pour le lab avec le catalogue actuel. Le pipeline de génération et les critères de chargement futur sont documentés dans [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1).
+
+### Nomenclature d'interface
+
+Les libellés visibles restent courts pour préserver la lisibilité de l'outil pendant une session de jeu.
+
+- `monstre` : créature choisie depuis le bestiaire ;
+- `joueur` : personnage joueur saisi manuellement ;
+- `acteur` : terme générique pour une entrée de l'ordre du tour ;
+- `ordre du tour` : liste de combat générée depuis les initiatives ;
+- `initiative`, `CA`, `PV actuels` et `PV max` : libellés de statistiques ;
+- `à jouer` et `joué` : états d'un acteur dans l'ordre du tour.
+
+### Tests
+
+- Configuration Vitest : [vitest.config.mjs](/var/www/projects/benleminbe/vitest.config.mjs:1)
+- Tests du modèle de rencontre : [tests/js/lab/dnd/encounter-state.test.js](/var/www/projects/benleminbe/tests/js/lab/dnd/encounter-state.test.js:1)
+
+Les tests JavaScript se lancent avec `npm run test:js` ou `composer js:test`. Ils couvrent aujourd'hui la création de slots monstres, la sélection depuis le bestiaire injecté, les jets d'initiative, le tri, les règles maison, l'état joué/non joué, l'acteur actif et le réordonnancement manuel.
 
 ## Architecture actuelle
 
@@ -104,7 +124,7 @@ Flux de données principal :
 1. Twig rend la structure initiale et les templates DOM.
 2. `dnd_initiative.js` crée un état de rencontre via `createEncounterState()` et initialise les panneaux.
 3. Les panneaux DOM possèdent leurs éléments, valident leurs entrées locales et remontent les interactions utilisateur vers le modèle.
-4. `encounter-state.js` applique les mutations métier : slots monstres, sélection, PV, règles, joueurs et ordre du tour.
+4. `encounter-state.js` applique les mutations métier : slots monstres, sélection, PV, règles, joueurs et ordre du tour. Le bestiaire peut être injecté à la création de l'état pour tester le modèle avec une fixture légère.
 5. `validation.js` vérifie les entrées avant la création de la liste et la génération de l'ordre du tour.
 6. `turn-order.js`, `monsters.js`, `players.js` et `rules.js` rendent l'état ou les contrôles, sans conserver l'état métier principal.
 
@@ -140,10 +160,13 @@ Le formulaire joueur reste encore un buffer DOM éditable, mais les données uti
 
 ### Règles maison configurables
 
-Deux règles sont actuellement pilotables depuis la popup "Règles appliquées" :
+Trois règles sont actuellement pilotables depuis la popup "Règles" :
 
 - ignorer les acteurs dont l'initiative finale est inférieure ou égale à `1` ;
-- accorder un tour supplémentaire à un acteur dont l'initiative finale est exactement `20`.
+- accorder un tour supplémentaire à un acteur dont l'initiative finale est exactement `20` ;
+- départager les égalités d'initiative par modificateur de DEX.
+
+La règle de départage par DEX est désactivée par défaut. Les monstres utilisent le modificateur de DEX extrait du bestiaire. Les joueurs valent `0` pour l'instant, en attendant de confirmer si leur DEX doit être saisie dans le formulaire.
 
 Ces règles sont considérées comme des règles maison volontaires. Elles ne sont pas des bugs connus, mais elles restent candidates à une clarification ou à une extension si plusieurs jeux de règles doivent être supportés.
 

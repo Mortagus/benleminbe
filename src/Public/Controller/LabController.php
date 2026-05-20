@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/lab', name: 'app_lab_')]
 class LabController extends AbstractController
 {
-    #[Route(path: '/dnd-initiative', name: 'dnd_initiative')]
+    #[Route(path: '/dnd-initiative', name: 'dnd_initiative', methods: ['GET'])]
     final public function initiativeDnd(): Response
     {
         return $this->render('lab/dnd/initiative_tracker.html.twig');

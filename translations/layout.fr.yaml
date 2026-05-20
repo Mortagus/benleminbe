@@ -10,6 +10,12 @@ header:
         open_menu: "Ouvrir le menu principal"
         close_menu: "Fermer le menu principal"
 
+theme:
+    toggle: "Changer le thème"
+    system: "Auto"
+    light: "Clair"
+    dark: "Sombre"
+
 footer:
     identity: "Informations sur l’éditeur du site"
     legal_title: "Informations légales"

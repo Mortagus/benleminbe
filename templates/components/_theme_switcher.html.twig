@@ -3,7 +3,7 @@
         type="button"
         class="theme-switcher__toggle"
         data-theme-toggle
-        aria-label="Changer le thème"
+        aria-label="{{ 'theme.toggle'|trans({}, 'layout') }}"
         aria-expanded="false"
     >
         <span data-theme-icon>◐</span>
@@ -11,17 +11,17 @@
 
     <div class="theme-switcher__options">
         <button type="button" data-theme-choice="system" data-theme-icon-value="◐">
-            <span class="theme-switcher__label">Auto</span>
+            <span class="theme-switcher__label">{{ 'theme.system'|trans({}, 'layout') }}</span>
             <span class="theme-switcher__icon">◐</span>
         </button>
 
         <button type="button" data-theme-choice="light" data-theme-icon-value="☀">
-            <span class="theme-switcher__label">Clair</span>
+            <span class="theme-switcher__label">{{ 'theme.light'|trans({}, 'layout') }}</span>
             <span class="theme-switcher__icon">☀</span>
         </button>
 
         <button type="button" data-theme-choice="dark" data-theme-icon-value="☾">
-            <span class="theme-switcher__label">Sombre</span>
+            <span class="theme-switcher__label">{{ 'theme.dark'|trans({}, 'layout') }}</span>
             <span class="theme-switcher__icon">☾</span>
         </button>
     </div>

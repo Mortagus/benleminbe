@@ -10,6 +10,12 @@ header:
         open_menu: "Open main menu"
         close_menu: "Close main menu"
 
+theme:
+    toggle: "Change theme"
+    system: "Auto"
+    light: "Light"
+    dark: "Dark"
+
 footer:
     identity: "Site publisher information"
     legal_title: "Legal information"

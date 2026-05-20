@@ -326,7 +326,7 @@ Git, Atlassian Suite, Docker-based development environment
 
 ## Period
 
-August 2017 – February 2018
+July 2017 – February 2018
 
 ## Role
 

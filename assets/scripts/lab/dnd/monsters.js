@@ -1,130 +1,111 @@
-import { monsterClasses } from './monster_classes.js';
-import { formatInitiative, getInitiativeClass, rollD20 } from './initiative.js';
-
-let monsters = [];
+import { bestiary } from './bestiary.js';
+import { formatInitiative, getInitiativeClass } from './initiative.js';
+import {
+    createMonsterSlots,
+    hasSelectedMonsters,
+    rollMonsterInitiatives,
+    selectMonster,
+    updateMonsterHitPoints,
+} from './encounter-state.js';
+import {
+    clearValidationState,
+    focusFirstInvalidField,
+    hasValidationErrors,
+    mergeValidationResults,
+    showValidationErrors,
+    validateMonsterCountInput,
+    validateMonsterHitPointsInput,
+} from './validation.js';
 
 const monsterItemTemplate = document.getElementById('monsterItemTemplate');
 const monsterOptionTemplate = document.getElementById('monsterOptionTemplate');
 
-export function createEmptyMonster(index) {
-    return {
-        id: `monster-${index + 1}`,
-        slug: null,
-        name: `Monstre ${index + 1}`,
-        className: null,
-        challengeRating: null,
-        type: '-',
-        size: null,
-        armorClass: '-',
-        baseHitPoints: 0,
-        currentHitPoints: 0,
-        alignment: null,
-        isLegendary: false,
-        abilities: {},
-        initiativeModifier: 0,
-        roll: null,
-        initiative: null,
-        originalData: null,
-    };
-}
+export function initializeMonstersPanel(encounter, callbacks = {}) {
+    const monsterCountInput = document.getElementById('monsterCount');
+    const createMonstersButton = document.getElementById('createMonsters');
+    const rollInitiativeButton = document.getElementById('rollInitiative');
+    const monsterPanel = document.querySelector('.dnd-panel--monsters');
+    const monsterList = document.getElementById('monsterList');
+    const monsterValidationSummary = document.getElementById('monsterValidationSummary');
 
-export function createMonsterFromClass(monsterClass, index) {
-    const initiativeModifier = getMonsterInitiativeModifier(monsterClass);
-
-    return {
-        id: `${monsterClass.slug}-${index + 1}`,
-        slug: monsterClass.slug,
-        name: `${monsterClass.name} ${index + 1}`,
-        className: monsterClass.name,
-        challengeRating: monsterClass.challenge_rating,
-        type: monsterClass.type,
-        size: monsterClass.size,
-        armorClass: monsterClass.armor_class,
-        baseHitPoints: monsterClass.hit_points,
-        currentHitPoints: monsterClass.hit_points,
-        alignment: monsterClass.alignment,
-        isLegendary: monsterClass.is_legendary,
-        abilities: monsterClass.abilities ?? {},
-        initiativeModifier: initiativeModifier,
-        roll: null,
-        initiative: null,
-        originalData: monsterClass,
-    };
-}
-
-export function createMonsterSlots(count) {
-    monsters = [];
-
-    for (let i = 0; i < count; i++) {
-        monsters.push(createEmptyMonster(i));
+    function refreshRollInitiativeButtonState() {
+        rollInitiativeButton.disabled = !hasSelectedMonsters(encounter);
     }
-}
 
-export function hasSelectedMonsters() {
-    return monsters.some(monster => monster.slug !== null);
-}
+    function refresh() {
+        renderMonsters(monsterList, encounter.monsters, {
+            onMonsterSelectionChange: (index, selectedSlug) => {
+                selectMonster(encounter, index, selectedSlug);
+                refreshRollInitiativeButtonState();
+                refresh();
+                callbacks.onEncounterChange?.();
+            },
+            onMonsterHitPointsChange: (index, hitPoints) => {
+                updateMonsterHitPoints(encounter, index, hitPoints);
+                callbacks.onEncounterChange?.();
+            },
+        });
+    }
 
-export function rollMonsterInitiatives() {
-    monsters = monsters.map(monster => {
-        if (monster.slug === null) {
-            return monster;
-        }
+    createMonstersButton.addEventListener('click', () => {
+        clearValidationState(monsterPanel);
 
-        const roll = rollD20();
-        const initiative = roll + monster.initiativeModifier;
+        const count = Number(monsterCountInput.value);
+        const validationResult = validateMonsterCountInput(monsterCountInput);
 
-        return {
-            ...monster,
-            roll,
-            initiative,
-        };
-    });
+        showMonsterValidationErrors(validationResult);
 
-    monsters.sort((a, b) => {
-        if (a.initiative === null) {
-            return 1;
-        }
-
-        if (b.initiative === null) {
-            return -1;
-        }
-
-        return b.initiative - a.initiative;
-    });
-}
-
-export function syncMonsterHitPointsFromDom(monsterList) {
-    const monsterItems = monsterList.querySelectorAll('.monster-item');
-
-    monsterItems.forEach((item, index) => {
-        const hitPointsInput = item.querySelector('.monster-hp input');
-
-        if (!hitPointsInput || !monsters[index]) {
+        if (hasValidationErrors(validationResult)) {
+            focusFirstInvalidField(validationResult);
             return;
         }
 
-        monsters[index].currentHitPoints = Number(hitPointsInput.value || 0);
+        createMonsterSlots(encounter, count);
+
+        rollInitiativeButton.disabled = true;
+        refresh();
+        callbacks.onEncounterChange?.();
     });
+
+    rollInitiativeButton.addEventListener('click', () => {
+        rollMonsterInitiatives(encounter);
+        refresh();
+        callbacks.onEncounterChange?.();
+    });
+
+    function validateForTurnOrder() {
+        const validationResult = mergeValidationResults(
+            validateMonsterCountInput(monsterCountInput),
+            ...getMonsterHitPointValidationResults(),
+        );
+
+        showMonsterValidationErrors(validationResult);
+
+        return validationResult;
+    }
+
+    function showMonsterValidationErrors(validationResult) {
+        showValidationErrors(
+            validationResult,
+            monsterValidationSummary,
+            'Un monstre contient une erreur.',
+        );
+    }
+
+    function getMonsterHitPointValidationResults() {
+        return Array.from(monsterList.querySelectorAll('.monster-item'))
+            .map((monsterItem, index) => validateMonsterHitPointsInput(monsterItem, index));
+    }
+
+    return {
+        clearValidation: () => clearValidationState(monsterPanel),
+        getListElement: () => monsterList,
+        refresh,
+        validateForTurnOrder,
+    };
 }
 
-export function getMonsterActors() {
-    return monsters
-        .filter(monster => monster.slug !== null && monster.initiative !== null)
-        .map(monster => ({
-            id: monster.id,
-            type: 'monster',
-            name: monster.name,
-            armorClass: monster.armorClass,
-            currentHitPoints: monster.currentHitPoints,
-            baseHitPoints: monster.baseHitPoints,
-            initiative: monster.initiative,
-            roll: monster.roll,
-            initiativeModifier: monster.initiativeModifier,
-            done: false,
-        }));
-}
-
-export function renderMonsters(monsterList, onMonsterSelectionChange) {
+export function renderMonsters(monsterList, monsters, callbacks) {
     const monsterItems = document.createDocumentFragment();
 
     monsters.forEach((monster, index) => {
@@ -140,6 +121,7 @@ export function renderMonsters(monsterList, onMonsterSelectionChange) {
         const initiativeModifier = li.querySelector('.monster-initiative-modifier');
 
         select.dataset.index = String(index);
+        select.setAttribute('aria-label', `Choisir le monstre ${index + 1}`);
         renderMonsterOptions(select, monster.slug);
 
         type.textContent = monster.type;
@@ -148,11 +130,12 @@ export function renderMonsters(monsterList, onMonsterSelectionChange) {
         hpInput.max = String(monster.baseHitPoints);
         hpInput.value = String(monster.currentHitPoints);
         hpInput.disabled = monster.slug === null;
+        hpInput.setAttribute('aria-label', `PV actuels du monstre ${index + 1}`);
 
         hpMax.textContent = String(monster.baseHitPoints);
 
         initiativeModifier.textContent = formatModifier(monster.initiativeModifier);
-        initiativeModifier.title = `Modificateur d’initiative : ${formatModifier(monster.initiativeModifier)}. Ajouté au résultat du d20 lors du jet d’initiative.`;
+        initiativeModifier.title = `Mod. initiative : ${formatModifier(monster.initiativeModifier)}`;
         initiativeModifier.setAttribute(
             'aria-label',
             `Modificateur d’initiative : ${formatModifier(monster.initiativeModifier)}`
@@ -167,7 +150,7 @@ export function renderMonsters(monsterList, onMonsterSelectionChange) {
             initiative.classList.add(initiativeClass);
         }
 
-        bindMonsterItemEvents(li, index, onMonsterSelectionChange);
+        bindMonsterItemEvents(li, index, callbacks);
         monsterItems.appendChild(li);
     });
 
@@ -176,16 +159,16 @@ export function renderMonsters(monsterList, onMonsterSelectionChange) {
 
 function getInitiativeTooltip(monster) {
     if (monster.roll === null) {
-        return 'Aucun jet d’initiative effectué.';
+        return 'Initiative non lancée.';
     }
 
     const modifier = formatModifier(monster.initiativeModifier);
     const finalScore = formatInitiative(monster);
 
     let tooltip = [
-        `Jet de d20 : ${monster.roll}`,
+        `D20 : ${monster.roll}`,
         `Modificateur : ${modifier}`,
-        `Initiative finale : ${finalScore}`,
+        `Initiative : ${finalScore}`,
     ];
 
     if (monster.roll === 20) {
@@ -210,18 +193,18 @@ function formatModifier(value) {
 function renderMonsterOptions(select, selectedSlug) {
     const placeholderOption = document.createElement('option');
     placeholderOption.value = '';
-    placeholderOption.textContent = 'Choisir un monstre';
+    placeholderOption.textContent = 'Choisir';
 
     const options = [placeholderOption];
 
-    monsterClasses.forEach(monsterClass => {
+    bestiary.forEach(monster => {
         const option = monsterOptionTemplate.content
             .cloneNode(true)
             .querySelector('option');
 
-        option.value = monsterClass.slug;
-        option.textContent = monsterClass.name;
-        option.selected = monsterClass.slug === selectedSlug;
+        option.value = monster.slug;
+        option.textContent = monster.name;
+        option.selected = monster.slug === selectedSlug;
 
         options.push(option);
     });
@@ -229,34 +212,15 @@ function renderMonsterOptions(select, selectedSlug) {
     select.replaceChildren(...options);
 }
 
-function bindMonsterItemEvents(monsterItem, index, onMonsterSelectionChange) {
+function bindMonsterItemEvents(monsterItem, index, callbacks) {
     const monsterSelect = monsterItem.querySelector('.monster-select');
     const hitPointsInput = monsterItem.querySelector('.monster-hp input');
 
     monsterSelect.addEventListener('change', event => {
-        const selectedSlug = event.target.value;
-        const selectedMonsterClass = monsterClasses.find(monsterClass => monsterClass.slug === selectedSlug);
-
-        monsters[index] = selectedMonsterClass
-            ? createMonsterFromClass(selectedMonsterClass, index, monsters[index])
-            : createEmptyMonster(index);
-
-        onMonsterSelectionChange();
+        callbacks.onMonsterSelectionChange(index, event.target.value);
     });
 
     hitPointsInput?.addEventListener('input', event => {
-        monsters[index].currentHitPoints = Number(event.target.value || 0);
+        callbacks.onMonsterHitPointsChange(index, event.target.value);
     });
-}
-
-function getMonsterInitiativeModifier(monsterClass) {
-    if (typeof monsterClass.initiative_modifier === 'number') {
-        return monsterClass.initiative_modifier;
-    }
-
-    if (typeof monsterClass.abilities?.dex?.modifier === 'number') {
-        return monsterClass.abilities.dex.modifier;
-    }
-
-    return 0;
 }

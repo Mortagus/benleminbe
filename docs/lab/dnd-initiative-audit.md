@@ -1,240 +1,187 @@
-# Audit technique - Dnd Initiative
+# Description technique - DnD Initiative Tracker
 
-Date de l'audit: 2026-05-09
+Date de mise à jour : 2026-05-15
 
-> Historical note, 2026-05-20:
-> This document is kept as an older audit snapshot. Some route names, template paths and implementation details have changed since it was written. For the current consolidated architecture priorities, see `docs/site-architecture-audit-phase-6.md` and `docs/site-architecture-audit-phase-8.md`. For the current monster catalog pipeline, see `docs/lab/dnd-monster-catalog.md`.
+Ce document décrit l'état actuel du projet `DnD Initiative Tracker` dans le site personnel. Il sert de point d'entrée technique : objectif du module, emplacement des fichiers, architecture actuelle et fonctionnement observé.
 
-## Résumé
+Les constats d'audit, les améliorations réalisées et les fonctionnalités à venir sont suivis dans [dnd-initiative-tracker-backlog.md](/var/www/projects/benleminbe/docs/lab/dnd-initiative-tracker-backlog.md:1).
 
-`Dnd Initiative` est aujourd'hui un prototype front-end intégré au site Symfony principal via une route dédiée. L'ensemble est lisible, relativement simple à parcourir et déjà assez modulaire pour un prototype. La séparation Twig / JavaScript / CSS est claire, et le flux d'usage principal est compréhensible sans backend métier.
+## Description du projet
 
-Le niveau de qualité technique est cependant celui d'un prototype avancé, pas encore celui d'un outil stabilisé. La logique métier repose sur des états globaux JavaScript, il n'y a pas de tests automatisés, certaines règles d'initiative s'écartent fortement du comportement attendu dans D&D, et une partie du rendu HTML injecte directement des données utilisateur.
+`DnD Initiative Tracker` est un outil de laboratoire intégré au site Symfony principal. Il aide un Maître du Jeu à préparer une rencontre D&D, ajouter les personnages joueurs, sélectionner les monstres, lancer l'initiative des monstres et générer un ordre de tour exploitable pendant un combat.
 
-Appréciation globale:
+Le module est actuellement une application front-end légère en JavaScript vanilla, rendue par Twig et branchée via l'importmap Symfony. Il ne possède pas encore de backend métier dédié : les données de rencontre vivent dans le navigateur pendant la session courante.
 
-- Lisibilité: bonne
-- Modularité initiale: bonne
-- Robustesse: moyenne à faible
-- Sécurité front-end: faible
-- Maintenabilité long terme: moyenne
-- Maturité produit: prototype
+Fonctionnalités actuellement présentes :
 
-## Composants actuels
+- création d'une liste de slots monstres ;
+- sélection des monstres depuis un catalogue embarqué ;
+- calcul automatique de l'initiative des monstres ;
+- saisie manuelle des joueurs, PV, CA et initiative ;
+- validation des entrées avant les actions principales ;
+- génération d'un ordre du tour fusionnant monstres et joueurs ;
+- tri automatique par initiative ;
+- réordonnancement manuel par glisser-déposer ;
+- suivi des tours joués par clic sur une carte ;
+- mise en évidence du prochain acteur à jouer ;
+- affichage des initiales, PV, CA et initiative dans l'ordre du tour ;
+- activation ou désactivation de règles maison via une popup de règles.
+
+## Emplacement des fichiers
 
 ### Intégration Symfony
 
-- Route: [src/Public/Controller/LabController.php](/var/www/projects/benleminbe/src/Public/Controller/LabController.php:12)
-- Vue principale: [templates/lab/dnd/initiative_dnd.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/initiative_dnd.html.twig:1)
-- Entrée JavaScript importmap: [importmap.php](/var/www/projects/benleminbe/importmap.php:19)
+- Contrôleur : [src/Public/Controller/LabController.php](/var/www/projects/benleminbe/src/Public/Controller/LabController.php:1)
+- Route publique : `/lab/dnd-initiative`
+- Nom de route : `app_lab_dnd_initiative`
+- Entrée importmap : [importmap.php](/var/www/projects/benleminbe/importmap.php:19)
 
-Le contrôleur ne porte aucune logique métier: il expose simplement la page `/lab/initiative-dnd` et délègue tout le comportement à Twig et au JavaScript.
+Le contrôleur expose uniquement la page du lab. Il ne porte pas de logique métier D&D.
 
-### Structure Twig
+### Templates Twig
 
-La page principale assemble trois panneaux:
+- Page principale : [templates/lab/dnd/initiative_tracker.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/initiative_tracker.html.twig:1)
+- Panneau monstres : [templates/lab/dnd/_monsters_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_monsters_panel.html.twig:1)
+- Panneau joueurs : [templates/lab/dnd/_players_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_players_panel.html.twig:1)
+- Panneau ordre du tour : [templates/lab/dnd/_turn_order_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_turn_order_panel.html.twig:1)
+- Popup de règles : [templates/lab/dnd/_rules_panels.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_rules_panels.html.twig:1)
 
-- Gestion des monstres: [templates/lab/dnd/_monsters_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_monsters_panel.html.twig:1)
-- Gestion des joueurs: [templates/lab/dnd/_players_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_players_panel.html.twig:1)
-- Ordre du tour: [templates/lab/dnd/_turn_order_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_turn_order_panel.html.twig:1)
-
-Les templates utilisent des balises `<template>` pour cloner dynamiquement les lignes joueurs et monstres côté navigateur. C'est une approche cohérente pour un prototype sans framework front-end.
+La page principale assemble trois panneaux : monstres, joueurs et ordre du tour. Les templates utilisent des balises `<template>` pour cloner dynamiquement les lignes de formulaire et les cartes d'ordre du tour côté navigateur.
 
 ### Modules JavaScript
 
-- Orchestration globale: [assets/scripts/lab/dnd/dnd_initiative.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/dnd_initiative.js:1)
-- Gestion des monstres: [assets/scripts/lab/dnd/monsters.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monsters.js:1)
-- Gestion des joueurs: [assets/scripts/lab/dnd/players.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/players.js:1)
-- Règles d'initiative: [assets/scripts/lab/dnd/initiative.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/initiative.js:1)
-- Construction et rendu de l'ordre du tour: [assets/scripts/lab/dnd/turn-order.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/turn-order.js:1)
-- Référentiel de monstres: [assets/scripts/lab/dnd/monster_classes.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monster_classes.js:1)
+- Orchestration globale : [assets/scripts/lab/dnd/dnd_initiative.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/dnd_initiative.js:1)
+- Modèle de rencontre : [assets/scripts/lab/dnd/encounter-state.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/encounter-state.js:1)
+- Gestion des monstres : [assets/scripts/lab/dnd/monsters.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monsters.js:1)
+- Gestion des joueurs : [assets/scripts/lab/dnd/players.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/players.js:1)
+- Calculs d'initiative : [assets/scripts/lab/dnd/initiative.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/initiative.js:1)
+- Règles maison configurables : [assets/scripts/lab/dnd/rules.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/rules.js:1)
+- Construction et rendu de l'ordre du tour : [assets/scripts/lab/dnd/turn-order.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/turn-order.js:1)
+- Validation des entrées : [assets/scripts/lab/dnd/validation.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/validation.js:1)
+- Bestiaire de monstres embarqué : [assets/scripts/lab/dnd/bestiary.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/bestiary.js:1)
 
-Responsabilités observées:
+Responsabilités principales :
 
-- `dnd_initiative.js` relie les boutons et les panneaux, mais centralise aussi les dépendances DOM.
-- `monsters.js` stocke l'état global des monstres, génère les slots, applique les sélections et calcule les initiatives.
-- `players.js` extrait les données du DOM vers des objets acteurs.
-- `initiative.js` contient les règles de calcul simplifiées.
-- `turn-order.js` construit la liste de combat, gère le marquage "joué" et le drag-and-drop.
+- `dnd_initiative.js` crée l'état central, initialise les panneaux et coordonne la génération de l'ordre du tour.
+- `encounter-state.js` conserve le modèle de rencontre et expose les mutations métier : monstres, joueurs, règles, ordre du tour, round et acteur actif.
+- `monsters.js` initialise le panneau monstres, valide ses entrées, rend la liste et remonte les interactions utilisateur vers le modèle.
+- `players.js` initialise le panneau joueurs, crée les lignes joueurs, valide les entrées et synchronise le formulaire avec le modèle.
+- `initiative.js` contient les helpers liés au d20, aux modificateurs et à l'affichage de l'initiative.
+- `rules.js` gère la popup de règles et remonte les changements vers le modèle de rencontre.
+- `turn-order.js` initialise le panneau ordre du tour, affiche les erreurs globales et rend les cartes de combat.
+- `validation.js` centralise les validations des champs monstres, joueurs et rencontre.
 
 ### Styles
 
-- Point d'entrée D&D: [assets/styles/lab/dnd/lab_dnd_initiative.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/lab_dnd_initiative.css:1)
-- Import global dans l'application: [assets/styles/app.css](/var/www/projects/benleminbe/assets/styles/app.css:14)
+- Point d'entrée CSS du module : [assets/styles/lab/dnd/lab_dnd_initiative.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/lab_dnd_initiative.css:1)
+- Styles de page : [assets/styles/lab/dnd/page.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/page.css:1)
+- Styles de panneaux : [assets/styles/lab/dnd/panels.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/panels.css:1)
+- Barre d'actions : [assets/styles/lab/dnd/toolbar.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/toolbar.css:1)
+- Validation : [assets/styles/lab/dnd/validation.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/validation.css:1)
+- Popup de règles : [assets/styles/lab/dnd/rules.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/rules.css:1)
+- Monstres : [assets/styles/lab/dnd/monsters.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/monsters.css:1)
+- Joueurs : [assets/styles/lab/dnd/players.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/players.css:1)
+- Ordre du tour : [assets/styles/lab/dnd/turn-order.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/turn-order.css:1)
+- Icônes : [assets/styles/lab/dnd/icons.css](/var/www/projects/benleminbe/assets/styles/lab/dnd/icons.css:1)
 
-Les styles sont bien découpés par sous-zone (`page`, `panels`, `toolbar`, `monsters`, `players`, `turn-order`, `icons`). En revanche, ils sont chargés globalement avec le reste du site, même hors de la page D&D.
+Le CSS du module est importé par l'entrée JavaScript `dnd_initiative`. Les règles sont majoritairement scopées sous `.dnd-initiative-page`.
 
-### Pipeline de données monstres
+### Données monstres et outillage
 
-- Générateur principal: [tools/dnd/complete_monster_extractor.php](/var/www/projects/benleminbe/tools/dnd/complete_monster_extractor.php:1)
-- Ancien extracteur: [tools/dnd/extract_monsters.php](/var/www/projects/benleminbe/tools/dnd/extract_monsters.php:1)
-- Données générées: [tools/dnd/monsters.generated.json](/var/www/projects/benleminbe/tools/dnd/monsters.generated.json:1)
-- Données embarquées côté front: [assets/scripts/lab/dnd/monster_classes.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monster_classes.js:1)
+- Documentation du pipeline : [docs/lab/dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1)
+- Générateur principal : [tools/dnd/complete_monster_extractor.php](/var/www/projects/benleminbe/tools/dnd/complete_monster_extractor.php:1)
+- Source HTML conservée : [tools/dnd/monsters-source.html](/var/www/projects/benleminbe/tools/dnd/monsters-source.html:1)
+- Test de contrat : [tools/dnd/validate_bestiary.php](/var/www/projects/benleminbe/tools/dnd/validate_bestiary.php:1)
+- Bestiaire embarqué côté front : [assets/scripts/lab/dnd/bestiary.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/bestiary.js:1)
+- Fixture bestiaire pour les tests JS : [tests/fixtures/dnd/bestiary-sample.js](/var/www/projects/benleminbe/tests/fixtures/dnd/bestiary-sample.js:1)
 
-Le fichier `monster_classes.js` pèse environ `418110` octets et embarque directement l'intégralité du catalogue dans le JavaScript du navigateur. C'est acceptable pour un prototype local, mais coûteux à long terme.
+Le navigateur consomme aujourd'hui un bestiaire JavaScript généré et embarqué dans le bundle de la page. Cette approche reste simple pour le lab avec le catalogue actuel. Le pipeline de génération et les critères de chargement futur sont documentés dans [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1).
+
+### Nomenclature d'interface
+
+Les libellés visibles restent courts pour préserver la lisibilité de l'outil pendant une session de jeu.
+
+- `monstre` : créature choisie depuis le bestiaire ;
+- `joueur` : personnage joueur saisi manuellement ;
+- `acteur` : terme générique pour une entrée de l'ordre du tour ;
+- `ordre du tour` : liste de combat générée depuis les initiatives ;
+- `initiative`, `CA`, `PV actuels` et `PV max` : libellés de statistiques ;
+- `à jouer` et `joué` : états d'un acteur dans l'ordre du tour.
+
+### Tests
+
+- Configuration Vitest : [vitest.config.mjs](/var/www/projects/benleminbe/vitest.config.mjs:1)
+- Tests du modèle de rencontre : [tests/js/lab/dnd/encounter-state.test.js](/var/www/projects/benleminbe/tests/js/lab/dnd/encounter-state.test.js:1)
+
+Les tests JavaScript se lancent avec `npm run test:js` ou `composer js:test`. Ils couvrent aujourd'hui la création de slots monstres, la sélection depuis le bestiaire injecté, les jets d'initiative, le tri, les règles maison, l'état joué/non joué, l'acteur actif et le réordonnancement manuel.
+
+## Architecture actuelle
+
+L'architecture repose sur une séparation simple entre rendu Twig, modules JavaScript et CSS par zone fonctionnelle.
+
+Flux de données principal :
+
+1. Twig rend la structure initiale et les templates DOM.
+2. `dnd_initiative.js` crée un état de rencontre via `createEncounterState()` et initialise les panneaux.
+3. Les panneaux DOM possèdent leurs éléments, valident leurs entrées locales et remontent les interactions utilisateur vers le modèle.
+4. `encounter-state.js` applique les mutations métier : slots monstres, sélection, PV, règles, joueurs et ordre du tour. Le bestiaire peut être injecté à la création de l'état pour tester le modèle avec une fixture légère.
+5. `validation.js` vérifie les entrées avant la création de la liste et la génération de l'ordre du tour.
+6. `turn-order.js`, `monsters.js`, `players.js` et `rules.js` rendent l'état ou les contrôles, sans conserver l'état métier principal.
+
+Sources de vérité actuelles :
+
+- état de rencontre : objet créé par `createEncounterState()` dans `encounter-state.js` ;
+- monstres : propriété `monsters` de l'état de rencontre ;
+- joueurs : propriété `players` de l'état de rencontre, synchronisée depuis le formulaire joueur ;
+- règles actives : propriété `rules` de l'état de rencontre ;
+- ordre du tour : propriété `turnOrder` de l'état de rencontre ;
+- round courant et acteur actif : propriétés `currentRound` et `activeTurnId` de l'état de rencontre.
+
+Le formulaire joueur reste encore un buffer DOM éditable, mais les données utilisées pour générer l'ordre du tour sont synchronisées dans le modèle de rencontre avant calcul.
 
 ## Fonctionnement actuel
 
 ### Flux principal
 
-1. L'utilisateur choisit un nombre de monstres.
-2. Le prototype crée des slots vides.
-3. L'utilisateur assigne un type de monstre à chaque slot.
-4. Le prototype lance les initiatives des monstres.
-5. L'utilisateur ajoute manuellement les joueurs et leurs statistiques.
-6. Le prototype génère un ordre de tour fusionnant monstres et joueurs.
-7. Le tour de table peut être réordonné manuellement par glisser-déposer.
+1. L'utilisateur indique le nombre de monstres à préparer.
+2. L'outil valide ce nombre et crée les slots de monstres.
+3. L'utilisateur sélectionne un type de monstre dans chaque slot utile.
+4. L'outil active le bouton d'initiative dès qu'au moins un monstre est sélectionné.
+5. L'utilisateur lance l'initiative des monstres.
+6. L'outil calcule un d20 plus le modificateur d'initiative dérivé de la dextérité du monstre.
+7. L'utilisateur ajoute ou retire des joueurs.
+8. L'utilisateur saisit pour chaque joueur son nom, sa CA, ses PV actuels, ses PV max et son initiative.
+9. L'utilisateur peut ouvrir la popup de règles et activer ou désactiver les règles maison disponibles.
+10. L'utilisateur génère l'ordre du tour.
+11. L'outil valide les monstres, les joueurs et la présence d'au moins un acteur exploitable.
+12. L'outil fusionne monstres et joueurs, applique les règles actives, trie par initiative décroissante et rend les cartes de tour.
+13. L'utilisateur peut cliquer sur une carte pour la marquer comme jouée ou non jouée.
+14. L'utilisateur peut réordonner les cartes par glisser-déposer.
 
-### Données réellement persistées
+### Règles maison configurables
 
-Aucune donnée n'est persistée côté serveur ou dans le navigateur. Toute la session de combat vit en mémoire dans l'onglet courant:
+Trois règles sont actuellement pilotables depuis la popup "Règles" :
 
-- état global `monsters` dans [assets/scripts/lab/dnd/monsters.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monsters.js:4)
-- état global `roundOrder` dans [assets/scripts/lab/dnd/turn-order.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/turn-order.js:3)
+- ignorer les acteurs dont l'initiative finale est inférieure ou égale à `1` ;
+- accorder un tour supplémentaire à un acteur dont l'initiative finale est exactement `20` ;
+- départager les égalités d'initiative par modificateur de DEX.
 
-Un rechargement de page efface donc complètement la rencontre.
+La règle de départage par DEX est désactivée par défaut. Les monstres utilisent le modificateur de DEX extrait du bestiaire. Les joueurs valent `0` pour l'instant, en attendant de confirmer si leur DEX doit être saisie dans le formulaire.
 
-## Points forts
+Ces règles sont considérées comme des règles maison volontaires. Elles ne sont pas des bugs connus, mais elles restent candidates à une clarification ou à une extension si plusieurs jeux de règles doivent être supportés.
 
-- Découpage initial clair entre présentation, logique d'orchestration et logique métier.
-- Prototype rapidement compréhensible, sans surcouche front-end inutile.
-- Templates HTML simples et efficaces pour le clonage dynamique.
-- CSS segmenté de manière saine.
-- Pipeline d'extraction de monstres déjà en place, ce qui évite la saisie manuelle.
-- Fonctionnalités visibles déjà utiles: création de monstres, ajout de joueurs, génération de l'ordre, drag-and-drop.
+### Données persistées
 
-## Findings
+Aucune donnée de rencontre n'est persistée côté serveur ou dans le navigateur.
 
-### Critique
+Un rechargement de page efface :
 
-1. Injection HTML possible depuis le nom des joueurs dans le rendu de l'ordre du tour.
+- la liste des monstres ;
+- les sélections de monstres ;
+- les jets d'initiative ;
+- les joueurs saisis ;
+- les PV modifiés ;
+- l'ordre du tour ;
+- les statuts joué/non joué.
 
-Référence: [assets/scripts/lab/dnd/turn-order.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/turn-order.js:55)
-
-Le code utilise `innerHTML` avec `actor.name`, alors que ce nom provient directement d'un champ texte libre. Un nom comme `<img src=x onerror=alert(1)>` serait injecté dans le DOM. Même si l'outil est personnel, c'est une vraie faiblesse de sécurité et une mauvaise base pour une future mise en ligne publique.
-
-2. Les personnages avec une initiative inférieure ou égale à `1` sont exclus du tour.
-
-Références:
-
-- [assets/scripts/lab/dnd/initiative.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/initiative.js:33)
-- [assets/scripts/lab/dnd/turn-order.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/turn-order.js:12)
-
-`shouldSkipTurn()` retourne `true` pour toute initiative `<= 1`, ce qui supprime purement et simplement ces acteurs du tour. Ce comportement ne correspond pas aux règles standards de D&D et produit des combats incorrects.
-
-### Majeur
-
-3. Une initiative exactement égale à `20` donne automatiquement deux tours.
-
-Référence: [assets/scripts/lab/dnd/initiative.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/initiative.js:37)
-
-`getTurnCount()` accorde deux tours à toute initiative finale égale à `20`. Ce n'est pas une règle D&D standard. Si c'est un choix expérimental, il doit être explicitement documenté et paramétrable. Sinon, c'est une erreur métier.
-
-4. Le rendu et l'état métier reposent sur des variables globales en mémoire, sans modèle central formalisé.
-
-Références:
-
-- [assets/scripts/lab/dnd/monsters.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monsters.js:4)
-- [assets/scripts/lab/dnd/turn-order.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/turn-order.js:3)
-
-Cette approche reste acceptable pour un prototype, mais elle limite vite la testabilité, la persistance, l'annulation, l'historisation et la synchronisation entre panneaux.
-
-5. Le parsing des joueurs dépend de la position des champs dans le DOM.
-
-Référence: [assets/scripts/lab/dnd/players.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/players.js:28)
-
-`getPlayerActors()` récupère la CA et l'initiative via `fields[1]` et `fields[3]`. La moindre évolution du template peut casser silencieusement l'extraction. Il serait plus robuste de cibler des sélecteurs nommés ou des `data-*`.
-
-### Moyen
-
-6. Les styles D&D sont chargés globalement pour l'ensemble du site.
-
-Référence: [assets/styles/app.css](/var/www/projects/benleminbe/assets/styles/app.css:14)
-
-Le scope CSS est globalement bien contenu par `.dnd-initiative-page`, donc le risque de collision est modéré. En revanche, le coût de chargement est payé sur toutes les pages du site.
-
-7. Le catalogue des monstres est embarqué en dur dans le bundle front-end.
-
-Références:
-
-- [assets/scripts/lab/dnd/monster_classes.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monster_classes.js:1)
-- [tools/dnd/monsters.generated.json](/var/www/projects/benleminbe/tools/dnd/monsters.generated.json:1)
-
-Le volume n'est pas critique à l'échelle du projet, mais l'approche complique la mise à jour, le chargement conditionnel et la réutilisation serveur.
-
-8. Le pipeline de génération de données manque de clarification.
-
-Références:
-
-- [tools/dnd/complete_monster_extractor.php](/var/www/projects/benleminbe/tools/dnd/complete_monster_extractor.php:1)
-- [tools/dnd/extract_monsters.php](/var/www/projects/benleminbe/tools/dnd/extract_monsters.php:1)
-
-Deux extracteurs coexistent, avec des formats de sortie différents et sans documentation d'usage. Cela augmente le risque d'obsolescence ou d'ambiguïté pour une future reprise.
-
-9. Aucun test automatisé n'encadre les règles critiques.
-
-Aucun test n'a été trouvé pour:
-
-- le calcul d'initiative
-- la génération de l'ordre du tour
-- le parsing du catalogue de monstres
-- les interactions principales du prototype
-
-## Dette technique prioritaire
-
-### Priorité 1
-
-- Remplacer le rendu `innerHTML` du tour de table par une construction DOM sécurisée.
-- Corriger les règles d'initiative non standard ou les rendre explicitement configurables.
-- Ajouter un petit jeu de tests automatisés sur les fonctions `initiative.js` et `turn-order.js`.
-
-### Priorité 2
-
-- Introduire un état central explicite de la rencontre, indépendant du DOM.
-- Remplacer les accès par index dans `players.js` par des sélecteurs stables.
-- Documenter officiellement la chaîne de génération des monstres.
-
-### Priorité 3
-
-- Charger les données monstres à la demande plutôt qu'en dur dans le bundle.
-- Ajouter une persistance locale de session via `localStorage` ou sauvegarde serveur.
-- Isoler le CSS D&D pour éviter son chargement global.
-
-## Améliorations possibles
-
-### Court terme
-
-- Bouton "Réinitialiser le combat".
-- Validation des champs joueurs et monstres.
-- Mise en évidence des valeurs incohérentes: PV restants > PV max, initiative vide, CA manquante.
-- Support clavier minimal pour le tour de table.
-- Indication visuelle du round courant et du combattant actif.
-
-### Moyen terme
-
-- Sauvegarde et reprise d'une rencontre.
-- Système de presets de groupes de monstres.
-- Filtres et recherche dans le catalogue de monstres.
-- Affichage détaillé d'un monstre sélectionné: taille, vitesse, alignement, caractéristiques.
-- Gestion des statuts simples: mort, inconscient, concentration, avantage/désavantage.
-
-### Long terme
-
-- Backend de persistance des rencontres.
-- Partage d'une rencontre par URL ou par identifiant.
-- Import/export JSON de combats.
-- Mode MJ mobile/tablette plus ergonomique.
-- Internationalisation si l'outil doit sortir du seul usage francophone.
-
-## Recommandation d'évolution
-
-La meilleure trajectoire n'est pas de "réécrire proprement" tout de suite. Le bon compromis serait plutôt:
-
-1. Stabiliser le prototype existant par quelques corrections ciblées de sécurité et de règles métier.
-2. Extraire les règles d'initiative et le modèle de rencontre dans des modules purs testables.
-3. Ajouter une persistance légère.
-4. Décider ensuite si l'outil doit rester un laboratoire intégré au site perso ou devenir un mini-produit autonome.
-
-## Limites de cet audit
-
-Cet audit repose sur une revue statique du code présent dans le dépôt. Je n'ai trouvé ni tests automatisés existants, ni documentation fonctionnelle décrivant des règles maison éventuelles. Les écarts relevés sur les règles D&D sont donc évalués par rapport au comportement standard attendu d'un tracker d'initiative.
+Les règles actives sont également conservées uniquement en mémoire pendant la session courante.

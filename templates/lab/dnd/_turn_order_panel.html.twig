@@ -2,28 +2,72 @@
     <header class="dnd-panel__header dnd-panel__header--with-action">
         <div>
             <h2>Ordre du tour</h2>
-            <p>La liste d’initiative complète apparaîtra ici.</p>
+            <p>Les acteurs prêts à jouer apparaîtront ici.</p>
         </div>
 
         <div class="dnd-panel__actions">
+            {% include 'lab/dnd/_rules_panels.html.twig' %}
+
             <button id="generateTurnOrder" type="button" class="dnd-secondary-button">
-                Générer le tour de table
+                Générer l’ordre
             </button>
 
-            {% include 'lab/dnd/_rules_panels.html.twig' %}
+            <button
+                id="toggleTurnOrderKeyboardHelp"
+                type="button"
+                class="turn-order-help-button dnd-icon-button"
+                aria-label="Afficher l’aide clavier"
+                aria-controls="turnOrderKeyboardHelp"
+                aria-expanded="false"
+                title="Aide clavier"
+            >
+                ?
+            </button>
         </div>
     </header>
 
     <div id="turnOrderValidationSummary" class="dnd-validation-summary" role="alert" hidden></div>
 
+    <div id="turnOrderKeyboardHelp" class="turn-order-keyboard-help" hidden>
+        <p>Contrôles clavier</p>
+        <ul>
+            <li><kbd>Tab</kbd> parcourt les tuiles.</li>
+            <li><kbd>Entrée</kbd> ou <kbd>Espace</kbd> bascule joué.</li>
+            <li><kbd>←</kbd> et <kbd>→</kbd> déplacent l’acteur.</li>
+        </ul>
+    </div>
+
     <div id="turnOrderPlaceholder" class="dnd-placeholder">
-        <p>Aucun tour de combat généré pour le moment.</p>
+        <p>Aucun ordre généré.</p>
     </div>
 
     <ol id="turnOrderList" class="turn-order-list" hidden></ol>
+    <div id="turnOrderLiveRegion" class="turn-order-live-region" aria-live="polite" aria-atomic="true"></div>
 
     <template id="turnOrderItemTemplate">
         <li class="turn-order-item">
+            <div class="turn-order-item__controls" aria-hidden="false">
+                <button
+                    type="button"
+                    class="turn-order-item__move-button dnd-icon-button"
+                    data-turn-move="previous"
+                >
+                    <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+
+                <button
+                    type="button"
+                    class="turn-order-item__move-button dnd-icon-button"
+                    data-turn-move="next"
+                >
+                    <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+
             <div class="turn-order-item__image-placeholder"></div>
 
             <div class="turn-order-item__name"></div>

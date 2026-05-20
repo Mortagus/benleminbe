@@ -22,7 +22,9 @@
         "symfony/apache-pack": "^1.0",
         "ext-dom": "*",
         "ext-iconv": "*",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "symfony/security-bundle": "^8.0",
+        "symfony/security-csrf": "^8.0"
     },
     "license": "MIT",
     "autoload": {

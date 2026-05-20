@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+
+    <title>{% block title %}Espace privé{% endblock %}</title>
+
+    {% block importmap %}{{ importmap('private') }}{% endblock %}
+</head>
+<body class="private-shell">
+    <main class="private-main">
+        {% block body %}{% endblock %}
+    </main>
+</body>
+</html>

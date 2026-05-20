@@ -1,0 +1,112 @@
+@import url("../base/init.css");
+@import url("../base/tokens.css");
+@import url("../base/typography.css");
+
+.private-shell {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.private-main {
+    width: min(100% - 2rem, 56rem);
+    margin: 0 auto;
+    padding: 4rem 0;
+}
+
+.private-panel {
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: var(--card);
+    box-shadow: 0 10px 32px var(--shadow);
+    padding: 1.5rem;
+}
+
+.private-panel__header {
+    margin-bottom: 1.5rem;
+}
+
+.private-panel__header--with-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.private-panel__header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.private-eyebrow {
+    margin: 0 0 0.25rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+}
+
+.private-muted {
+    margin: 0;
+    color: var(--muted);
+}
+
+.private-form {
+    display: grid;
+    gap: 1rem;
+}
+
+.private-form__field {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.private-form label {
+    font-weight: 700;
+}
+
+.private-form input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    padding: 0.7rem 0.8rem;
+    background: var(--bg-soft);
+    color: var(--text);
+    font: inherit;
+}
+
+.private-form button,
+.private-link-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    border: 1px solid var(--accent);
+    border-radius: 0.375rem;
+    padding: 0.65rem 0.9rem;
+    background: var(--accent);
+    color: var(--text);
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.private-alert {
+    border: 1px solid #b42318;
+    border-radius: 0.375rem;
+    margin: 0 0 1rem;
+    padding: 0.75rem;
+    color: #b42318;
+}
+
+@media (width < 40rem) {
+    .private-main {
+        width: min(100% - 1rem, 56rem);
+        padding: 1rem 0;
+    }
+
+    .private-panel__header--with-action {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

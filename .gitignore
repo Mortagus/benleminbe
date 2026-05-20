@@ -67,6 +67,7 @@ Thumbs.db
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
+/config/secrets/*/*.decrypt.private.php
 /public/bundles/
 /public/sitemap.xml
 /var/

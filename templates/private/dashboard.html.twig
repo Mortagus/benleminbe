@@ -1,0 +1,18 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Tableau de bord privé{% endblock %}
+
+{% block body %}
+    <section class="private-panel">
+        <header class="private-panel__header private-panel__header--with-action">
+            <div>
+                <p class="private-eyebrow">Espace privé</p>
+                <h1>Tableau de bord</h1>
+            </div>
+
+            <a class="private-link-button" href="{{ path('app_private_logout') }}">Déconnexion</a>
+        </header>
+
+        <p class="private-muted">Fondation prête pour les futurs outils privés.</p>
+    </section>
+{% endblock %}

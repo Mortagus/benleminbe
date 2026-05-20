@@ -20,4 +20,8 @@ return [
         'path' => './assets/scripts/lab/dnd/dnd_initiative.js',
         'entrypoint' => true,
     ],
+    'private' => [
+        'path' => './assets/scripts/private/private.js',
+        'entrypoint' => true,
+    ],
 ];

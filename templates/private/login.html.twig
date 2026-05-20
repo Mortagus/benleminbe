@@ -1,0 +1,45 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Connexion privée{% endblock %}
+
+{% block body %}
+    <section class="private-panel private-login">
+        <header class="private-panel__header">
+            <h1>Connexion privée</h1>
+        </header>
+
+        {% if error %}
+            <p class="private-alert" role="alert">Identifiants invalides.</p>
+        {% endif %}
+
+        <form class="private-form" method="post" action="{{ path('app_private_login') }}">
+            <div class="private-form__field">
+                <label for="username">Utilisateur</label>
+                <input
+                    id="username"
+                    type="text"
+                    name="_username"
+                    value="{{ lastUsername }}"
+                    autocomplete="username"
+                    required
+                    autofocus
+                >
+            </div>
+
+            <div class="private-form__field">
+                <label for="password">Mot de passe</label>
+                <input
+                    id="password"
+                    type="password"
+                    name="_password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit">Se connecter</button>
+        </form>
+    </section>
+{% endblock %}

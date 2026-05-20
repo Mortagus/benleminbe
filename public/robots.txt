@@ -3,5 +3,6 @@ Allow: /
 
 Disallow: /track/
 Disallow: /_profiler/
+Disallow: /private/
 
 Sitemap: https://benlemin.be/sitemap.xml

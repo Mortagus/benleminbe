@@ -4,7 +4,11 @@ Date de mise à jour : 2026-05-15
 
 Ce document remplace l'ancien backlog d'audit et la roadmap avancée. Il conserve les tâches déjà réalisées, aligne les fonctionnalités de la roadmap avec l'état réel du projet et liste les évolutions restantes.
 
-Document descriptif associé : [dnd-initiative-audit.md](/var/www/projects/benleminbe/docs/lab/dnd-initiative-audit.md:1)
+Documents descriptifs associés :
+
+- [dnd-initiative-audit.md](/var/www/projects/benleminbe/docs/lab/dnd-initiative-audit.md:1)
+- [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1)
+- [dnd-dom-contracts.md](/var/www/projects/benleminbe/docs/lab/dnd-dom-contracts.md:1)
 
 ## Légende
 

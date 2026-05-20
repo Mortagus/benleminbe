@@ -4,7 +4,7 @@ Date de mise à jour : 2026-05-15
 
 Ce document décrit l'état actuel du projet `DnD Initiative Tracker` dans le site personnel. Il sert de point d'entrée technique : objectif du module, emplacement des fichiers, architecture actuelle et fonctionnement observé.
 
-Les constats d'audit, les améliorations réalisées et les fonctionnalités à venir sont suivis dans [dnd-initiative-tracker-backlog.md](/var/www/projects/benleminbe/docs/lab/dnd-initiative-tracker-backlog.md:1).
+Les constats d'audit, les améliorations réalisées et les fonctionnalités à venir sont suivis dans [dnd-initiative-tracker-backlog.md](/var/www/projects/benleminbe/docs/lab/dnd-initiative-tracker-backlog.md:1). Les contrats techniques détaillés sont documentés dans [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1) et [dnd-dom-contracts.md](/var/www/projects/benleminbe/docs/lab/dnd-dom-contracts.md:1).
 
 ## Description du projet
 

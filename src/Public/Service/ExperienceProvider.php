@@ -137,7 +137,7 @@ final class ExperienceProvider
 
         return [
             'slug' => $experienceConfig['slug'],
-            'period' => $experienceConfig['period'],
+            'period' => $this->trans($translationPrefix . '.period', $locale),
             'start_year' => $experienceConfig['start_year'],
             'end_year' => $experienceConfig['end_year'],
             'technologies' => $experienceConfig['technologies'],

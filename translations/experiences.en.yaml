@@ -33,6 +33,7 @@ experiences:
         contraste_digital:
             company: "Contraste Digital"
             role: "Backend PHP Developer / Consultant"
+            period: "November 2019 – October 2025"
             meta_title: "Experience at Contraste Digital"
             summary: "Contributed to the development, maintenance and evolution of web platforms and business applications for several clients, with strong exposure to PHP, Drupal and microservice-oriented architectures."
             context:
@@ -58,6 +59,7 @@ experiences:
         blubird:
             company: "Blubird"
             role: "Backend PHP Developer / Consultant"
+            period: "April 2018 – July 2019"
             meta_title: "Experience at Blubird"
             summary: "Consulting missions integrated into client teams, mainly on existing PHP applications, including maintenance, feature development and improvements on production systems."
             context:
@@ -83,6 +85,7 @@ experiences:
         isobar:
             company: "Isobar"
             role: "Web Developer"
+            period: "July 2017 – February 2018"
             meta_title: "Experience at Isobar"
             summary: "Worked in a digital agency environment on marketing platforms, CMS-based websites and web applications, with short deadlines and close collaboration with project teams."
             context:
@@ -108,6 +111,7 @@ experiences:
         adneom:
             company: "Adneom"
             role: "Backend PHP Developer / Consultant"
+            period: "July 2016 – July 2017"
             meta_title: "Experience at Adneom"
             summary: "First significant consulting experience, working within client teams on existing PHP/Symfony platforms, including maintenance, evolution and backend development."
             context:
@@ -133,6 +137,7 @@ experiences:
         f2c:
             company: "Financial Communication Consult"
             role: "Backend PHP Developer"
+            period: "January 2015 – September 2015"
             meta_title: "Experience at Financial Communication Consult"
             summary: "Development and maintenance of internal tools related to the generation and distribution of financial documents, including process automation and financial data handling."
             context:
@@ -158,6 +163,7 @@ experiences:
         sogesa:
             company: "Sogesa"
             role: "Web Developer"
+            period: "November 2011 – December 2014"
             meta_title: "Experience at Sogesa"
             summary: "First long-term professional experience, focused on the progressive development of an internal business application for managing agricultural and administrative data."
             context:
@@ -183,6 +189,7 @@ experiences:
         cbmn:
             company: "CBMN"
             role: "Perl Analyst Developer"
+            period: "February 2010 – June 2010"
             meta_title: "Experience at CBMN"
             summary: "Final academic project carried out in a research laboratory, involving database design and Perl script development to process and automatically import biological data."
             context:

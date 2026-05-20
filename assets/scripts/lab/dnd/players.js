@@ -97,6 +97,7 @@ export function getPlayerActors(playerList) {
                 currentHitPoints: Number(currentHitPointsInput?.value || 0),
                 baseHitPoints: Number(baseHitPointsInput?.value || 0),
                 initiative: Number(initiativeInput?.value || 0),
+                roll: Number(initiativeInput?.value || 0),
                 done: false,
             };
         })

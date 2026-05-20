@@ -2,6 +2,9 @@
 
 Date de l'audit: 2026-05-09
 
+> Historical note, 2026-05-20:
+> This document is kept as an older audit snapshot. Some route names, template paths and implementation details have changed since it was written. For the current consolidated architecture priorities, see `docs/site-architecture-audit-phase-6.md` and `docs/site-architecture-audit-phase-8.md`. For the current monster catalog pipeline, see `docs/lab/dnd-monster-catalog.md`.
+
 ## Résumé
 
 `Dnd Initiative` est aujourd'hui un prototype front-end intégré au site Symfony principal via une route dédiée. L'ensemble est lisible, relativement simple à parcourir et déjà assez modulaire pour un prototype. La séparation Twig / JavaScript / CSS est claire, et le flux d'usage principal est compréhensible sans backend métier.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Public\Service;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ExperienceProvider
@@ -129,7 +130,7 @@ final class ExperienceProvider
     public function getExperienceData(string $experience, string $locale): array
     {
         if (!isset(self::EXPERIENCES[$experience])) {
-            throw new \InvalidArgumentException(sprintf('Experience "%s" was not found.', $experience));
+            throw new NotFoundHttpException(sprintf('Experience "%s" was not found.', $experience));
         }
 
         $experienceConfig = self::EXPERIENCES[$experience];
@@ -162,7 +163,7 @@ final class ExperienceProvider
     public function getExperienceSummary(string $experience, string $locale): array
     {
         if (!isset(self::EXPERIENCES[$experience])) {
-            throw new \InvalidArgumentException(sprintf('Experience "%s" was not found.', $experience));
+            throw new NotFoundHttpException(sprintf('Experience "%s" was not found.', $experience));
         }
 
         $experienceConfig = self::EXPERIENCES[$experience];

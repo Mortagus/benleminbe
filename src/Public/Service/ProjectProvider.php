@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Public\Service;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
 
-final readonly class ProjectProvider
+final class ProjectProvider
 {
     private const array PROJECTS = [
         [
@@ -67,9 +69,16 @@ final readonly class ProjectProvider
         ],
     ];
 
+    /**
+     * @var array<string, array<string, mixed>>
+     */
+    private array $projectTranslationsByLocale = [];
+
     public function __construct(
-        private KernelInterface $kernel,
-    ) {}
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
+    ) {
+    }
 
     /**
      * @return list<array{key: string, experience: string|null}>
@@ -185,9 +194,13 @@ final readonly class ProjectProvider
      */
     private function getProjectTranslations(string $locale): array
     {
+        if (isset($this->projectTranslationsByLocale[$locale])) {
+            return $this->projectTranslationsByLocale[$locale];
+        }
+
         $translationFile = sprintf(
             '%s/translations/projects.%s.yaml',
-            $this->kernel->getProjectDir(),
+            $this->projectDir,
             $locale,
         );
 
@@ -200,6 +213,8 @@ final readonly class ProjectProvider
         if (!is_array($translations)) {
             throw new NotFoundHttpException(sprintf('Project translation file "%s" is invalid.', $translationFile));
         }
+
+        $this->projectTranslationsByLocale[$locale] = $translations;
 
         return $translations;
     }

@@ -114,6 +114,8 @@ export function renderMonsters(monsterList, monsters, callbacks) {
 
         const select = li.querySelector('.monster-select');
         const type = li.querySelector('.monster-type');
+        const size = li.querySelector('.monster-size');
+        const challengeCating = li.querySelector('.monster-cr');
         const armorClass = li.querySelector('.monster-armor-class');
         const hpInput = li.querySelector('.monster-hp input');
         const hpMax = li.querySelector('.monster-hit-points-max');
@@ -125,6 +127,8 @@ export function renderMonsters(monsterList, monsters, callbacks) {
         renderMonsterOptions(select, monster.slug);
 
         type.textContent = monster.type;
+        size.textContent = 'Taille: ' + monster.size;
+        challengeCating.textContent = 'FP: ' + monster.challengeRating;
         armorClass.textContent = `CA ${monster.armorClass}`;
 
         hpInput.max = String(monster.baseHitPoints);
@@ -197,17 +201,35 @@ function renderMonsterOptions(select, selectedSlug) {
 
     const options = [placeholderOption];
 
-    bestiary.forEach(monster => {
-        const option = monsterOptionTemplate.content
-            .cloneNode(true)
-            .querySelector('option');
+    const monstersByType = Map.groupBy(
+        [...bestiary].sort((firstMonster, secondMonster) =>
+            firstMonster.name.localeCompare(secondMonster.name, 'fr', { sensitivity: 'base' })
+        ),
+        monster => monster.type,
+    );
 
-        option.value = monster.slug;
-        option.textContent = monster.name;
-        option.selected = monster.slug === selectedSlug;
+    Array.from(monstersByType.entries())
+        .sort(([firstType], [secondType]) =>
+            firstType.localeCompare(secondType, 'fr', { sensitivity: 'base' })
+        )
+        .forEach(([type, monsters]) => {
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = type;
 
-        options.push(option);
-    });
+            monsters.forEach(monster => {
+                const option = monsterOptionTemplate.content
+                    .cloneNode(true)
+                    .querySelector('option');
+
+                option.value = monster.slug;
+                option.textContent = monster.name + ' (FP: ' + monster.challenge_rating + ')';
+                option.selected = monster.slug === selectedSlug;
+
+                optgroup.appendChild(option);
+            });
+
+            options.push(optgroup);
+        });
 
     select.replaceChildren(...options);
 }

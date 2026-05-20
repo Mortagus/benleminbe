@@ -48,9 +48,30 @@
             </section>
         {% endif %}
 
-        {% if projectData.sections is defined %}
+        {% if projectData.sections is defined and projectData.sections is not empty %}
+            <button class="content-toc-toggle"
+                    type="button"
+                    data-content-toc-toggle
+                    aria-controls="project-toc"
+                    aria-expanded="false">
+                <span class="content-toc-toggle__icon" aria-hidden="true"></span>
+                <span class="content-toc-toggle__label">{{ 'project.toc_title'|trans({}, 'projects') }}</span>
+            </button>
+
+            <nav id="project-toc" class="content-toc" data-content-toc aria-labelledby="project-toc-title">
+                <h2 id="project-toc-title">{{ 'project.toc_title'|trans({}, 'projects') }}</h2>
+
+                <ol>
+                    {% for section in projectData.sections %}
+                        <li>
+                            <a href="#section-{{ loop.index }}">{{ section.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </nav>
+
             {% for section in projectData.sections %}
-                <section class="content-section{% if section.highlight is defined and section.highlight %} highlight-section{% endif %}">
+                <section id="section-{{ loop.index }}" class="content-section{% if section.highlight is defined and section.highlight %} highlight-section{% endif %}">
                     <h2>{{ section.title }}</h2>
 
                     {% if section.paragraphs is defined %}

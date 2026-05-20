@@ -7,6 +7,7 @@ experiences:
         description: "Une vue d’ensemble des postes, missions et environnements techniques dans lesquels j’ai travaillé."
         list_title: "Liste des expériences professionnelles"
         technologies_label: "Technologies utilisées"
+        more_technologies: "+%count%"
         read_more: "Voir le détail"
         read_more_about: "Voir le détail de l’expérience chez %company%"
 
@@ -14,6 +15,7 @@ experiences:
         eyebrow: "Expérience professionnelle"
         breadcrumb_label: "Navigation de l’expérience"
         back_to_list: "Retour aux expériences"
+        toc_title: "Sommaire"
         summary_title: "Vue d’ensemble"
         period_label: "Période"
         role_label: "Rôle"
@@ -33,6 +35,7 @@ experiences:
         contraste_digital:
             company: "Contraste Digital"
             role: "Développeur PHP backend / consultant"
+            period: "novembre 2019 – octobre 2025"
             meta_title: "Expérience chez Contraste Digital"
             summary: "Participation au développement, à la maintenance et à l’évolution de plateformes web et d’applications métier pour différents clients, avec une forte exposition aux écosystèmes PHP, Drupal et aux architectures orientées microservices."
             context:
@@ -58,6 +61,7 @@ experiences:
         blubird:
             company: "Blubird"
             role: "Développeur PHP backend / consultant"
+            period: "avril 2018 – juillet 2019"
             meta_title: "Expérience chez Blubird"
             summary: "Missions de consultance intégrées à des équipes clientes, principalement sur des applications PHP existantes, avec maintenance, développement de fonctionnalités et amélioration de systèmes en production."
             context:
@@ -83,6 +87,7 @@ experiences:
         isobar:
             company: "Isobar"
             role: "Développeur web"
+            period: "juillet 2017 – février 2018"
             meta_title: "Expérience chez Isobar"
             summary: "Travail en agence digitale sur des plateformes marketing, des CMS et des applications web, dans un environnement rythmé par des délais courts et une collaboration étroite avec les équipes projet."
             context:
@@ -108,6 +113,7 @@ experiences:
         adneom:
             company: "Adneom"
             role: "Développeur PHP backend / consultant"
+            period: "juillet 2016 – juillet 2017"
             meta_title: "Expérience chez Adneom"
             summary: "Première expérience significative en consultance, avec des missions au sein d’équipes clientes sur des plateformes PHP/Symfony existantes, incluant maintenance, évolution et développement backend."
             context:
@@ -133,6 +139,7 @@ experiences:
         f2c:
             company: "Financial Communication Consult"
             role: "Développeur PHP backend"
+            period: "janvier 2015 – septembre 2015"
             meta_title: "Expérience chez Financial Communication Consult"
             summary: "Développement et maintenance d’outils internes liés à la génération et à la distribution de documents financiers, avec automatisation de traitements et manipulation de données financières."
             context:
@@ -158,6 +165,7 @@ experiences:
         sogesa:
             company: "Sogesa"
             role: "Développeur web"
+            period: "novembre 2011 – décembre 2014"
             meta_title: "Expérience chez Sogesa"
             summary: "Première expérience professionnelle longue, centrée sur le développement progressif d’une application métier interne dédiée à la gestion de données agricoles et administratives."
             context:
@@ -183,6 +191,7 @@ experiences:
         cbmn:
             company: "CBMN"
             role: "Analyste-développeur Perl"
+            period: "février 2010 – juin 2010"
             meta_title: "Expérience au CBMN"
             summary: "Projet de fin d’études réalisé dans un laboratoire de recherche, avec conception d’une base de données et développement de scripts Perl pour traiter et importer automatiquement des données biologiques."
             context:

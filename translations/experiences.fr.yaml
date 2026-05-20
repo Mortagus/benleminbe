@@ -15,6 +15,7 @@ experiences:
         eyebrow: "Expérience professionnelle"
         breadcrumb_label: "Navigation de l’expérience"
         back_to_list: "Retour aux expériences"
+        toc_title: "Sommaire"
         summary_title: "Vue d’ensemble"
         period_label: "Période"
         role_label: "Rôle"

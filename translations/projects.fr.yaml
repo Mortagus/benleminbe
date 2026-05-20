@@ -2,6 +2,7 @@ project:
     navigation_label: 'Navigation entre les projets'
     previous: 'Projet précédent'
     next: 'Projet suivant'
+    toc_title: "Sommaire"
     associated_experience:
         eyebrow: "Expérience associée"
         link: "Voir l’expérience correspondante"

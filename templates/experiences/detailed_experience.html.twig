@@ -40,13 +40,57 @@
             </ul>
         </header>
 
-        <section class="experience-detail-highlight">
+        <button class="content-toc-toggle"
+                type="button"
+                data-content-toc-toggle
+                aria-controls="experience-toc"
+                aria-expanded="false">
+            <span class="content-toc-toggle__icon" aria-hidden="true"></span>
+            <span class="content-toc-toggle__label">{{ 'experiences.detail.toc_title'|trans }}</span>
+        </button>
+
+        <nav id="experience-toc" class="content-toc" data-content-toc aria-labelledby="experience-toc-title">
+            <h2 id="experience-toc-title">{{ 'experiences.detail.toc_title'|trans }}</h2>
+
+            <ol>
+                <li>
+                    <a href="#overview">{{ 'experiences.detail.summary_title'|trans }}</a>
+                </li>
+                {% if experienceData.context is not empty %}
+                    <li>
+                        <a href="#context">{{ 'experiences.detail.context_title'|trans }}</a>
+                    </li>
+                {% endif %}
+                {% if experienceData.responsibilities is not empty %}
+                    <li>
+                        <a href="#responsibilities">{{ 'experiences.detail.responsibilities_title'|trans }}</a>
+                    </li>
+                {% endif %}
+                {% if experienceData.technologies is not empty %}
+                    <li>
+                        <a href="#technologies">{{ 'experiences.detail.technologies_title'|trans }}</a>
+                    </li>
+                {% endif %}
+                {% if associatedProjects is defined and associatedProjects is not empty %}
+                    <li>
+                        <a href="#associated-projects">{{ 'experiences.detail.associated_projects_title'|trans }}</a>
+                    </li>
+                {% endif %}
+                {% if experienceData.takeaways is not empty %}
+                    <li>
+                        <a href="#takeaways">{{ 'experiences.detail.takeaways_title'|trans }}</a>
+                    </li>
+                {% endif %}
+            </ol>
+        </nav>
+
+        <section id="overview" class="experience-detail-highlight">
             <h2>{{ 'experiences.detail.summary_title'|trans }}</h2>
             <p>{{ experienceData.summary }}</p>
         </section>
 
         {% if experienceData.context is not empty %}
-            <section class="experience-detail-section">
+            <section id="context" class="experience-detail-section">
                 <h2>{{ 'experiences.detail.context_title'|trans }}</h2>
 
                 {% for paragraph in experienceData.context %}
@@ -56,7 +100,7 @@
         {% endif %}
 
         {% if experienceData.responsibilities is not empty %}
-            <section class="experience-detail-section">
+            <section id="responsibilities" class="experience-detail-section">
                 <h2>{{ 'experiences.detail.responsibilities_title'|trans }}</h2>
 
                 <ul>
@@ -68,7 +112,7 @@
         {% endif %}
 
         {% if experienceData.technologies is not empty %}
-            <section class="experience-detail-section">
+            <section id="technologies" class="experience-detail-section">
                 <h2>{{ 'experiences.detail.technologies_title'|trans }}</h2>
 
                 <ul class="experience-detail-technologies">
@@ -80,7 +124,7 @@
         {% endif %}
 
         {% if associatedProjects is defined and associatedProjects is not empty %}
-            <section class="experience-detail-section">
+            <section id="associated-projects" class="experience-detail-section">
                 <h2>{{ 'experiences.detail.associated_projects_title'|trans }}</h2>
                 <p>{{ 'experiences.detail.associated_projects_description'|trans }}</p>
 
@@ -102,7 +146,7 @@
         {% endif %}
 
         {% if experienceData.takeaways is not empty %}
-            <section class="experience-detail-highlight">
+            <section id="takeaways" class="experience-detail-highlight">
                 <h2>{{ 'experiences.detail.takeaways_title'|trans }}</h2>
 
                 <ul>

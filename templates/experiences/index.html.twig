@@ -22,6 +22,8 @@
 
             {% for experience in experiences %}
                 {% set translationPrefix = 'experiences.items.' ~ experience.translation_key %}
+                {% set visibleTechnologies = experience.technologies|slice(0, 3) %}
+                {% set remainingTechnologiesCount = experience.technologies|length - visibleTechnologies|length %}
 
                 <a class="experience-card-link"
                    href="{{ path('app_experiences_show', {
@@ -49,16 +51,17 @@
                         </p>
 
                         <ul class="experience-card__technologies" aria-label="{{ 'experiences.index.technologies_label'|trans }}">
-                            {% for technology in experience.technologies %}
+                            {% for technology in visibleTechnologies %}
                                 <li>{{ technology }}</li>
                             {% endfor %}
+                            {% if remainingTechnologiesCount > 0 %}
+                                <li>{{ 'experiences.index.more_technologies'|trans({ '%count%': remainingTechnologiesCount }) }}</li>
+                            {% endif %}
                         </ul>
 
-                        <p class="experience-card__actions">
-                            <span class="experience-card__link">
-                                {{ 'experiences.index.read_more'|trans }}
-                            </span>
-                        </p>
+                        <span class="experience-card__link">
+                            {{ 'experiences.index.read_more'|trans }}
+                        </span>
                     </article>
                 </a>
             {% endfor %}

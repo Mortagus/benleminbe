@@ -7,6 +7,7 @@ experiences:
         description: "Une vue d’ensemble des postes, missions et environnements techniques dans lesquels j’ai travaillé."
         list_title: "Liste des expériences professionnelles"
         technologies_label: "Technologies utilisées"
+        more_technologies: "+%count%"
         read_more: "Voir le détail"
         read_more_about: "Voir le détail de l’expérience chez %company%"
 

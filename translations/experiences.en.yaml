@@ -7,6 +7,7 @@ experiences:
         description: "An overview of the roles, missions and technical environments I have worked in."
         list_title: "List of professional experiences"
         technologies_label: "Technologies used"
+        more_technologies: "+%count%"
         read_more: "View details"
         read_more_about: "View details about the experience at %company%"
 

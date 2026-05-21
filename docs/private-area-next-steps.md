@@ -43,6 +43,7 @@ Commandes utiles :
 make check
 php bin/console asset-map:compile --env=prod
 php bin/console app:generate-sitemap --env=prod
+make private-prod-check
 ```
 
 ### 3. Verifier Le Parcours De Securite
@@ -60,6 +61,37 @@ Points de controle :
 - les pages privees doivent contenir `noindex,nofollow` ;
 - aucune route privee ne doit etre exposee dans le sitemap ;
 - le dashboard prive doit rester minimal tant qu'aucun module metier n'est ajoute.
+
+Commandes utiles depuis un poste local :
+
+```bash
+make private-prod-check
+make private-prod-auth-check
+```
+
+La premiere commande ne demande pas de secret. Elle verifie en production :
+
+- la redirection de `/private` vers `/private/login` sans session ;
+- la presence du champ CSRF sur le login ;
+- la presence de `noindex,nofollow` sur le login ;
+- la presence de `Disallow: /private/` dans `robots.txt` ;
+- l'absence de `/private` dans `sitemap.xml` ;
+- la disponibilite de l'entrypoint d'assets prive.
+
+La seconde commande demande le mot de passe admin via un prompt masque. Elle verifie :
+
+- qu'une connexion invalide reste sur le login avec le message d'erreur attendu ;
+- qu'une connexion valide atteint le dashboard prive ;
+- que le dashboard contient `noindex,nofollow` et le lien de deconnexion ;
+- que le logout redirige vers le login ;
+- que `/private` redevient inaccessible apres logout.
+
+Variables disponibles :
+
+```bash
+make private-prod-check PRIVATE_BASE_URL=https://example.com
+make private-prod-auth-check PRIVATE_BASE_URL=https://example.com PRIVATE_ADMIN_USERNAME=private_admin
+```
 
 ### 4. Documenter L'Exploitation
 
@@ -100,5 +132,5 @@ Le lot 6 peut etre considere termine quand :
 Prochaine action recommandee :
 
 ```text
-Commencer par executer le cycle reel de secret avec `make private-admin-secret` sur l'environnement cible, puis verifier le parcours /private sans et avec session.
+Commencer par executer le cycle reel de secret avec `make private-admin-secret` sur l'environnement cible, deployer, puis lancer `make private-prod-check` et `make private-prod-auth-check` depuis un poste local.
 ```

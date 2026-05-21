@@ -2,6 +2,7 @@
 
 {% block title %}{{ 'index.meta_title'|trans({}, 'projects') }}{% endblock %}
 {% block meta_description %}{{ 'index.meta_description'|trans({}, 'projects') }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_projects']) }}{% endblock %}
 
 {% block body %}
     <main class="projects-page">

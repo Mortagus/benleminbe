@@ -6,6 +6,7 @@
 
 {% block title %}{{ 'about.meta.title'|trans }}{% endblock %}
 {% block meta_description %}{{ 'about.meta.description'|trans }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_about']) }}{% endblock %}
 
 {% block body %}
     <main class="about-page">

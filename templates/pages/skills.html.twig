@@ -6,6 +6,7 @@
 
 {% block title %}{{ 'meta.title'|trans }}{% endblock %}
 {% block meta_description %}{{ 'meta.description'|trans }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_skills']) }}{% endblock %}
 
 {% block body %}
     <main class="skills-page">

@@ -4,6 +4,7 @@
 
 {% block title %}{{ experienceData.metaTitle }}{% endblock %}
 {% block meta_description %}{{ experienceData.summary }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_experience_detail']) }}{% endblock %}
 
 {% block body %}
     <main class="experience-detail-page">

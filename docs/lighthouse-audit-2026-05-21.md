@@ -233,6 +233,47 @@ Points de controle :
 - accessibilite : 100 sur les six pages ;
 - SEO : reste a 63 en local a cause de `x-robots-tag: noindex`, a verifier en production dans le dernier lot.
 
+## Verification Apres Decoupage CSS
+
+Date de verification : 2026-05-21
+
+Changement verifie :
+
+- `assets/styles/app.css` ne charge plus les CSS propres aux pages ;
+- chaque template public charge `app` plus son entrypoint page dedie ;
+- les CSS des pages non visitees ne sont plus charges en reseau.
+
+Rapports generes :
+
+- `var/audits/lighthouse/home-fr-after-css-split.report.html`
+- `var/audits/lighthouse/projects-fr-after-css-split.report.html`
+- `var/audits/lighthouse/project-delcampe-fr-after-css-split.report.html`
+- `var/audits/lighthouse/experiences-fr-after-css-split.report.html`
+- `var/audits/lighthouse/skills-fr-after-css-split.report.html`
+- `var/audits/lighthouse/contact-fr-after-css-split.report.html`
+
+| Page | Performance | Accessibilite | Bonnes pratiques | SEO | FCP | LCP | TBT | CLS | Speed Index |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Accueil FR | 100 | 100 | 100 | 63 | 1.1 s | 1.1 s | 70 ms | 0 | 1.1 s |
+| Projets FR | 100 | 100 | 100 | 63 | 1.0 s | 1.7 s | 60 ms | 0 | 1.0 s |
+| Fiche projet Delcampe FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
+| Experiences FR | 100 | 100 | 100 | 63 | 1.1 s | 1.8 s | 0 ms | 0 | 1.1 s |
+| Competences FR | 100 | 100 | 100 | 63 | 1.1 s | 1.7 s | 30 ms | 0 | 1.1 s |
+| Contact FR | 100 | 100 | 100 | 63 | 0.9 s | 0.9 s | 50 ms | 0 | 0.9 s |
+
+Controle reseau :
+
+- `/fr` charge `app.css` et `home.css`, plus les imports du socle commun ;
+- `/fr/contact` charge `app.css` et `contact.css`, plus les imports du socle commun ;
+- les CSS des autres pages restent presents dans l'importmap compilee, mais ne sont plus charges comme feuilles de style en reseau.
+
+Lecture :
+
+- le decoupage supprime bien le chargement des CSS de pages non visitees ;
+- cinq pages auditees atteignent 100 en performance locale ;
+- la fiche projet reste a 99, avec un LCP a 2.0 s et un signal de CSS bloquant residuel lie au CSS necessaire a cette page et au socle commun ;
+- SEO reste a 63 en local a cause de `x-robots-tag: noindex`, a verifier en production.
+
 ## Commandes Utilisees
 
 Chrome headless a ete lance manuellement pour contourner le comportement WSL du lanceur Lighthouse :

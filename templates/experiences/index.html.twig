@@ -4,6 +4,7 @@
 
 {% block title %}{{ 'experiences.index.meta_title'|trans }}{% endblock %}
 {% block meta_description %}{{ 'experiences.index.meta_description'|trans }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_experiences']) }}{% endblock %}
 
 {% block body %}
     <main class="page page--experiences">

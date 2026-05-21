@@ -49,7 +49,7 @@ install-hooks:
 	@echo "Git hooks installed from .githooks."
 
 gpt_css:
-	php tools/build_gpt_css.php var/gpt/css-context.css assets/styles/app.css assets/styles/lab/dnd/lab_dnd_initiative.css
+	php tools/build_gpt_css.php var/gpt/consolidated-css-context.css assets/styles
 
 private-admin-secret:
 	@bash -euo pipefail -c '\

@@ -4,6 +4,8 @@ Code source de mon site web personnel : [benlemin.be](https://benlemin.be).
 
 Le site sert à présenter mon profil de développeur web senior, mon parcours, mes projets représentatifs et les moyens de me contacter. Il remplace progressivement le simple CV PDF par une présence en ligne plus complète, bilingue et maintenable.
 
+Il joue aussi le rôle de CV vivant en ligne : le contenu peut évoluer avec mon parcours, mais le projet reste également un espace d'expérimentation. Certaines fonctionnalités annexes, regroupées notamment dans le `lab`, me permettent de tester des idées, des interfaces et des outils concrets directement dans le code du site, sans les séparer de son écosystème technique.
+
 ## Contenu du site
 
 Le site contient notamment :
@@ -17,7 +19,7 @@ Le site contient notamment :
 - une carte de visite web avec export vCard ;
 - des CV PDF en français et en anglais ;
 - des pages légales ;
-- un espace `lab` pour des expérimentations publiques, dont un outil de suivi d'initiative pour D&D.
+- un espace `lab` pour des expérimentations publiques rattachées au code du site, dont un outil de suivi d'initiative pour D&D.
 
 Le site est disponible en français et en anglais, avec un sélecteur de langue, un thème clair/sombre et un sitemap généré depuis les routes du site.
 
@@ -89,7 +91,7 @@ Générer un fichier CSS de contexte pour un échange avec ChatGPT :
 make gpt_css
 ```
 
-La commande génère le fichier temporaire `var/gpt/css-context.css` à partir des entrées CSS principales du projet.
+La commande génère le fichier temporaire `var/gpt/consolidated-css-context.css` à partir de l'ensemble des fichiers CSS de `assets/styles`.
 
 ## Hooks Git
 

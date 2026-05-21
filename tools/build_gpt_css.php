@@ -3,28 +3,26 @@
 declare(strict_types=1);
 
 $projectRoot = dirname(__DIR__);
-$outputPath = $argv[1] ?? 'var/gpt/css-context.css';
-$inputPaths = array_slice($argv, 2) ?: ['assets/styles/app.css'];
+$outputPath = $argv[1] ?? 'var/gpt/consolidated-css-context.css';
+$inputPaths = array_slice($argv, 2) ?: ['assets/styles'];
 
 $outputFile = buildProjectPath($projectRoot, $outputPath);
+$inputFiles = expandInputPaths($projectRoot, $inputPaths);
 
 $includedFiles = [];
 $compiledCss = '';
 
-foreach ($inputPaths as $inputPath) {
-    $inputFile = resolveProjectPath($projectRoot, $inputPath);
-
-    if ($inputFile === null || !is_file($inputFile)) {
-        fwrite(STDERR, "CSS entry file not found: {$inputPath}\n");
-        exit(1);
+foreach ($inputFiles as $inputFile) {
+    if (isset($includedFiles[$inputFile])) {
+        continue;
     }
 
     $compiledCss .= "/* Entry: " . relativePath($projectRoot, $inputFile) . " */\n\n";
     $compiledCss .= compileCssFile($inputFile, $projectRoot, $includedFiles);
 }
 
-$compiledCss = "/* Generated CSS context for ChatGPT.\n"
-    . " * Entries: " . implode(', ', $inputPaths) . "\n"
+$compiledCss = "/* Generated consolidated CSS context for ChatGPT.\n"
+    . " * Inputs: " . implode(', ', $inputPaths) . "\n"
     . " * Source files: " . count($includedFiles) . "\n"
     . " * Do not edit manually.\n"
     . " */\n\n"
@@ -44,6 +42,85 @@ if (file_put_contents($outputFile, rtrim($compiledCss) . "\n") === false) {
 
 echo "CSS context written to " . relativePath($projectRoot, $outputFile) . "\n";
 echo count($includedFiles) . " source files included.\n";
+
+/**
+ * @param list<string> $inputPaths
+ *
+ * @return list<string>
+ */
+function expandInputPaths(string $projectRoot, array $inputPaths): array
+{
+    $inputFiles = [];
+
+    foreach ($inputPaths as $inputPath) {
+        $resolvedInput = resolveProjectPath($projectRoot, $inputPath);
+
+        if ($resolvedInput === null) {
+            fwrite(STDERR, "CSS input not found: {$inputPath}\n");
+            exit(1);
+        }
+
+        if (is_file($resolvedInput)) {
+            if (!str_ends_with($resolvedInput, '.css')) {
+                fwrite(STDERR, "CSS input is not a CSS file: {$inputPath}\n");
+                exit(1);
+            }
+
+            $inputFiles[$resolvedInput] = $resolvedInput;
+            continue;
+        }
+
+        if (!is_dir($resolvedInput)) {
+            fwrite(STDERR, "CSS input is not a file or directory: {$inputPath}\n");
+            exit(1);
+        }
+
+        $directoryIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($resolvedInput, FilesystemIterator::SKIP_DOTS)
+        );
+
+        foreach ($directoryIterator as $fileInfo) {
+            if (!$fileInfo instanceof SplFileInfo || !$fileInfo->isFile()) {
+                continue;
+            }
+
+            $filePath = $fileInfo->getRealPath();
+
+            if ($filePath === false || !str_ends_with($filePath, '.css')) {
+                continue;
+            }
+
+            $inputFiles[$filePath] = $filePath;
+        }
+    }
+
+    usort($inputFiles, static function (string $left, string $right) use ($projectRoot): int {
+        $leftRelativePath = relativePath($projectRoot, $left);
+        $rightRelativePath = relativePath($projectRoot, $right);
+
+        $depthComparison = substr_count($leftRelativePath, DIRECTORY_SEPARATOR)
+            <=> substr_count($rightRelativePath, DIRECTORY_SEPARATOR);
+
+        if ($depthComparison !== 0) {
+            return $depthComparison;
+        }
+
+        $importComparison = (int) containsCssImports($right) <=> (int) containsCssImports($left);
+
+        if ($importComparison !== 0) {
+            return $importComparison;
+        }
+
+        return $leftRelativePath <=> $rightRelativePath;
+    });
+
+    if ($inputFiles === []) {
+        fwrite(STDERR, "No CSS files found in inputs: " . implode(', ', $inputPaths) . "\n");
+        exit(1);
+    }
+
+    return array_values($inputFiles);
+}
 
 /**
  * @param array<string, bool> $includedFiles
@@ -101,6 +178,18 @@ function compileCssFile(string $filePath, string $projectRoot, array &$includedF
     return "/* ===== " . relativePath($projectRoot, $realPath) . " ===== */\n"
         . rtrim($css)
         . "\n\n";
+}
+
+function containsCssImports(string $filePath): bool
+{
+    $css = file_get_contents($filePath);
+
+    if ($css === false) {
+        fwrite(STDERR, "Unable to read CSS file: {$filePath}\n");
+        exit(1);
+    }
+
+    return preg_match('/@import\s+(?:url\(\s*)?([\'"]?)([^\'"\)\s;]+)\1\s*\)?[^;]*;/i', $css) === 1;
 }
 
 function resolveProjectPath(string $projectRoot, string $path): ?string

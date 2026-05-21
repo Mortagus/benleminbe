@@ -1,6 +1,6 @@
 .project-tag {
     margin-bottom: 12px;
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-size: 0.9rem;
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -33,7 +33,7 @@
 
 .hero-section h2 {
     margin-bottom: 24px;
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-size: clamp(1.3rem, 3vw, 2rem);
     font-weight: 600;
 }
@@ -56,7 +56,7 @@
 }
 
 .landing-page .text-highlight {
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-weight: 700;
 }
 
@@ -153,7 +153,7 @@
 
     padding-left: 1px;
 
-    color: var(--accent-hover);
+    color: var(--accent-text);
 
     font-size: 1.1rem;
     font-weight: 700;
@@ -189,7 +189,7 @@
 
 .landing-page .project-card-link:hover h3,
 .landing-page .project-card-link:focus-visible h3 {
-    color: var(--accent-hover);
+    color: var(--accent-text);
 }
 
 .landing-page .project-card-link:focus-visible {

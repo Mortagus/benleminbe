@@ -15,7 +15,7 @@
 
 .experience-detail-page .experience-detail-hero__eyebrow {
     margin-block: 0 0.5rem;
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -192,7 +192,7 @@
 
 .experience-detail-page .experience-detail-navigation__link--back {
     margin-right: auto;
-    color: var(--accent-hover);
+    color: var(--accent-text);
 }
 
 .experience-detail-page .experience-detail-navigation__link--back::before {
@@ -257,7 +257,7 @@
     gap: 0.35rem;
     width: fit-content;
     margin-top: 0.35rem;
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-weight: 700;
 }
 

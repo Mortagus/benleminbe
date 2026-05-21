@@ -47,7 +47,7 @@
         border: 1px solid var(--border);
         border-radius: 999px;
         background: var(--card);
-        color: var(--accent-hover);
+        color: var(--accent-text);
         box-shadow: 0 8px 24px var(--shadow);
         font-size: 1.3rem;
         cursor: pointer;

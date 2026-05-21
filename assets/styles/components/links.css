@@ -7,13 +7,13 @@
 
 .external-links a,
 .text-link {
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-weight: 700;
     text-decoration: none;
 }
 
 .external-links--secondary a {
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-size: 0.9rem;
     text-decoration: none;
 }

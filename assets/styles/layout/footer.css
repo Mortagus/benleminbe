@@ -51,7 +51,7 @@
 
 .site-footer__legal a:hover,
 .site-footer__legal a:focus-visible {
-    color: var(--accent-hover);
+    color: var(--accent-text);
 }
 
 .site-footer__tracking {

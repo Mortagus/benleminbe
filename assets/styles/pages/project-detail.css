@@ -19,7 +19,7 @@
 
 .project-detail-page .page-hero .eyebrow {
     margin-block: 0 0.75rem;
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-size: 0.875rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -171,7 +171,7 @@
 
 .project-detail-page .project-associated-experience__eyebrow {
     margin-block: 0 0.5rem;
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -192,7 +192,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-weight: 700;
     text-decoration: none;
 }
@@ -255,7 +255,7 @@
 
 .project-detail-page .page-navigation .back-link {
     margin-right: auto;
-    color: #5f9ea8;
+    color: var(--accent-text);
 }
 
 .project-detail-page .page-navigation .previous-link::before {

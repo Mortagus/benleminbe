@@ -20,7 +20,7 @@
 .landing-page .stat-card strong {
     display: block;
     margin-bottom: 8px;
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-size: 1.8rem;
 }
 

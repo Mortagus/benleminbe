@@ -24,7 +24,7 @@
 
 .business-card-page .eyebrow {
     margin-block: 0 0.75rem;
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-size: 0.875rem;
     font-weight: 700;
     letter-spacing: 0;
@@ -78,7 +78,7 @@
 
 .business-card-page__contact-link:hover,
 .business-card-page__contact-link:focus-visible {
-    color: var(--accent-hover);
+    color: var(--accent-text);
     text-decoration-color: currentcolor;
 }
 

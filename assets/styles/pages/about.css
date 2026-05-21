@@ -15,7 +15,7 @@
 
 .about-hero .eyebrow {
     margin-block: 0 0.75rem;
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-size: 0.875rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -86,7 +86,7 @@
 }
 
 .about-page .feature-list a {
-    color: var(--accent-hover);
+    color: var(--accent-text);
     font-weight: 700;
     text-decoration: none;
 }

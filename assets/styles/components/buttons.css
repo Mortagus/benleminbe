@@ -21,17 +21,17 @@
 .button-secondary {
     border: 1px solid var(--accent);
     background: transparent;
-    color: var(--accent-hover);
+    color: var(--accent-text);
 }
 
 .button:hover {
     transform: translateY(-2px);
-    background: var(--accent-hover);
-    color: #fff;
+    background: var(--accent-text);
+    color: var(--accent-text-contrast);
     box-shadow: 0 8px 18px rgb(90 163 199 / 25%);
 }
 
 .button-secondary:hover {
     background: rgb(125 185 222 / 12%);
-    color: var(--accent-hover);
+    color: var(--accent-text);
 }

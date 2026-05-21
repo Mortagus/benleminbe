@@ -20,9 +20,9 @@
 
 .lang-switcher a:hover,
 .lang-switcher a:focus-visible {
-    color: var(--accent-hover);
+    color: var(--accent-text);
 }
 
 .lang-switcher a.active {
-    color: var(--accent-hover);
+    color: var(--accent-text);
 }

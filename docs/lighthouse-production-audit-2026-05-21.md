@@ -12,6 +12,10 @@ Rapports generes :
 - `var/audits/lighthouse/prod-projects-fr.report.html`
 - `var/audits/lighthouse/prod-experiences-fr.report.html`
 - `var/audits/lighthouse/prod-contact-fr.report.html`
+- `var/audits/lighthouse/prod-home-fr-after-cache.report.html`
+- `var/audits/lighthouse/prod-projects-fr-after-cache.report.html`
+- `var/audits/lighthouse/prod-experiences-fr-after-cache.report.html`
+- `var/audits/lighthouse/prod-contact-fr-after-cache.report.html`
 
 Les rapports JSON correspondants sont disponibles dans le meme dossier.
 
@@ -73,9 +77,9 @@ Lecture :
 - le rendu bloquant residuel est acceptable avec les mesures actuelles ;
 - aucune correction applicative urgente n'est identifiee par cet audit production.
 
-## Test De Cache Des Assets Versionnes
+## Mise En Cache Des Assets Versionnes
 
-Un premier test a ete ajoute dans `public/.htaccess` pour cibler uniquement les fichiers fingerprintes :
+Une regle a ete ajoutee dans `public/.htaccess` pour cibler uniquement les fichiers fingerprintes :
 
 ```apache
 <FilesMatch ".+-[A-Za-z0-9_-]{7,}\.(?:css|js|mjs|png|jpe?g|gif|svg|webp|avif|ico|woff2?)$">
@@ -88,21 +92,50 @@ Objectif :
 - ne pas appliquer de cache long aux fichiers de mapping comme `manifest.json`, `importmap.json` ou `entrypoint.*.json` ;
 - ne pas modifier le cache des pages HTML publiques ou privees.
 
-Verification a faire apres deploiement :
+Verification effectuee apres deploiement :
 
 ```bash
 curl -sI https://benlemin.be/assets/styles/app-O-xrRXy.css
 curl -sI https://benlemin.be/assets/app-4uIkO32.js
 curl -sI https://benlemin.be/assets/manifest.json
 curl -sI https://benlemin.be/assets/importmap.json
+curl -sI https://benlemin.be/assets/entrypoint.app.json
 curl -sI https://benlemin.be/fr
+curl -sI https://benlemin.be/private/login
 ```
 
-Resultat attendu :
+Resultat :
 
-- les fichiers CSS/JS fingerprintes doivent renvoyer un `Cache-Control` long ;
-- les fichiers JSON de mapping ne doivent pas recevoir de cache long ;
-- la page HTML doit conserver son comportement actuel.
+- les fichiers CSS/JS fingerprintes renvoient `Cache-Control: public, max-age=31536000, immutable` ;
+- les fichiers CSS/JS fingerprintes renvoient un `Expires` a 1 an ;
+- les fichiers JSON de mapping ne recoivent pas de cache long ;
+- la page HTML publique conserve `Cache-Control: no-cache, private` ;
+- la page de login privee conserve un cache court prive.
+
+## Verification Apres Cache
+
+Date de verification : 2026-05-21.
+
+Rapports generes :
+
+- `var/audits/lighthouse/prod-home-fr-after-cache.report.html`
+- `var/audits/lighthouse/prod-projects-fr-after-cache.report.html`
+- `var/audits/lighthouse/prod-experiences-fr-after-cache.report.html`
+- `var/audits/lighthouse/prod-contact-fr-after-cache.report.html`
+
+| Page | Performance | Accessibilite | Bonnes pratiques | SEO | FCP | LCP | TBT | CLS | Speed Index | Cache TTL |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| Accueil FR | 100 | 100 | 100 | 100 | 0.9 s | 0.9 s | 50 ms | 0 | 0.9 s | 0 ressource signalee |
+| Projets FR | 100 | 100 | 100 | 100 | 0.9 s | 0.9 s | 0 ms | 0 | 0.9 s | 0 ressource signalee |
+| Experiences FR | 100 | 100 | 100 | 100 | 0.9 s | 0.9 s | 0 ms | 0 | 0.9 s | 0 ressource signalee |
+| Contact FR | 100 | 100 | 100 | 100 | 0.9 s | 0.9 s | 0 ms | 0 | 0.9 s | 0 ressource signalee |
+
+Points de controle :
+
+- `uses-long-cache-ttl` : score 1 sur les quatre pages, avec 0 ressource signalee ;
+- `cache-insight` : score 1 sur les quatre pages ;
+- les scores Lighthouse restent a 100 sur les quatre categories ;
+- le cycle Lighthouse local puis production est clos pour les pages auditees.
 
 ## Commandes Lighthouse Utilisees
 
@@ -118,12 +151,18 @@ Exemple de commande Lighthouse :
 lighthouse https://benlemin.be/fr --hostname=127.000.000.001 --port=9222 --output=json --output=html --output-path=var/audits/lighthouse/prod-home-fr --quiet
 ```
 
+Exemple de commande Lighthouse apres cache :
+
+```bash
+lighthouse https://benlemin.be/fr --hostname=127.000.000.001 --port=9223 --output=json --output=html --output-path=var/audits/lighthouse/prod-home-fr-after-cache --quiet
+```
+
 ## Note De Reprise
 
-Le cycle Lighthouse local puis production est clos pour les pages auditees.
+Le cycle Lighthouse local, production, puis cache HTTP est clos pour les pages auditees.
 
 Prochaine action recommandee :
 
 ```text
-Traiter la politique de cache HTTP des assets versionnes cote serveur si l'objectif est d'eliminer les dernieres alertes Lighthouse non bloquantes. Sinon, reprendre la roadmap produit ou les prochains modules du lab.
+Reprendre les tests de production de la partie privee : secret admin cible, parcours login/logout, acces protege a /private, absence du sitemap et verification robots.txt.
 ```

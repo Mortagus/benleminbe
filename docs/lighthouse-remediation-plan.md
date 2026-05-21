@@ -247,7 +247,15 @@ Verification effectuee le 2026-05-21 :
 - score production a 100 en performance, accessibilite, bonnes pratiques et SEO sur les quatre pages testees ;
 - absence de `X-Robots-Tag: noindex` sur les pages publiques testees ;
 - compression gzip confirmee sur l'asset CSS versionne teste ;
-- absence de `Cache-Control` long explicite sur les assets versionnes testes.
+- absence initiale de `Cache-Control` long explicite sur les assets versionnes testes.
+
+Verification cache effectuee apres deploiement le 2026-05-21 :
+
+- cache long confirme sur les assets CSS/JS fingerprintes ;
+- pas de cache long sur `manifest.json`, `importmap.json` et `entrypoint.app.json` ;
+- pas de cache long sur les pages HTML publiques ou privees ;
+- Lighthouse production apres cache : 100 sur les quatre categories pour les quatre pages testees ;
+- `uses-long-cache-ttl` : 0 ressource signalee sur les quatre pages testees.
 
 ## Ordre D'Execution Recommande
 
@@ -272,5 +280,5 @@ Verification effectuee le 2026-05-21 :
 Prochaine action recommandee :
 
 ```text
-Le cycle Lighthouse local puis production est clos pour les pages auditees. La prochaine action utile cote performance est la politique de cache HTTP des assets versionnes, a traiter cote serveur si les dernieres alertes non bloquantes doivent etre eliminees.
+Le cycle Lighthouse local, production, puis cache HTTP est clos pour les pages auditees. Reprendre les tests de production de la partie privee.
 ```

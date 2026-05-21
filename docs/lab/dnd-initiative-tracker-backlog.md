@@ -10,6 +10,23 @@ Documents descriptifs associés :
 - [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1)
 - [dnd-dom-contracts.md](/var/www/projects/benleminbe/docs/lab/dnd-dom-contracts.md:1)
 
+## Note De Reprise - 2026-05-21
+
+Une fois le cycle Lighthouse/cache et la validation de la zone privee termines, le prochain projet hors partie professionnelle du site est de reprendre l'amelioration du `DnD Initiative Tracker`.
+
+Objectif de reprise recommande :
+
+- stabiliser l'outil pour un usage reel pendant une session de jeu ;
+- conserver l'approche front-end JavaScript vanilla actuelle ;
+- commencer par la sauvegarde locale de rencontre (`P8`) avant les fonctions de combat plus avancees ;
+- preparer ensuite l'import/export JSON (`P22`), les PV modifiables pendant le combat (`P10`) et les commandes explicites de round/tour (`P7`).
+
+Premiere action recommandee :
+
+```text
+Relire l'etat actuel du modèle de rencontre dans `encounter-state.js`, verifier les contrats DOM existants, puis cadrer le format versionne de sauvegarde locale avant d'ecrire le code.
+```
+
 ## Légende
 
 - `Fait` : fonctionnalité ou correction présente dans le code.

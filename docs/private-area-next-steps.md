@@ -6,6 +6,78 @@ Ce document sert de note de reprise apres le lot 5.
 
 Le lot 5 a pose la fondation de la zone privee : Symfony Security, login/logout, layout prive, dashboard minimal, entrypoint assets prive, protection robots/noindex et gestion recommandee de `PRIVATE_ADMIN_PASSWORD_HASH`.
 
+## Validation Production - 2026-05-21
+
+La mise en production du socle prive a ete validee le 2026-05-21 sur l'hebergement Infomaniak.
+
+Commandes executees sur le serveur de production :
+
+```bash
+make private-admin-secret
+make deploy
+make check
+make private-prod-check
+make private-prod-auth-check
+git status --short
+php bin/console secrets:list --env=prod
+find config/secrets -maxdepth 3 -type f -print
+find src/var -maxdepth 3 -type f -print
+```
+
+Resultats valides :
+
+- `PRIVATE_ADMIN_PASSWORD_HASH` est stocke dans Symfony Secrets pour `prod` ;
+- `make deploy` se termine correctement ;
+- le cache prod est vide puis rechauffe correctement ;
+- Asset Mapper compile les assets publics et prives ;
+- le sitemap est regenere avec 62 URLs ;
+- `make private-prod-check` passe ;
+- `make private-prod-auth-check` passe ;
+- `/private` redirige vers `/private/login` sans session ;
+- une connexion invalide reste sur le login ;
+- une connexion valide ouvre le dashboard prive ;
+- le logout invalide la session et renvoie vers le login ;
+- `/private` redevient inaccessible apres logout ;
+- `secrets:list --env=prod` liste `PRIVATE_ADMIN_PASSWORD_HASH` sans reveler sa valeur.
+
+Fichiers Symfony Secrets constates sur le serveur :
+
+```text
+config/secrets/prod/prod.encrypt.public.php
+config/secrets/prod/prod.decrypt.private.php
+config/secrets/prod/prod.PRIVATE_ADMIN_PASSWORD_HASH.23d73c.php
+config/secrets/prod/prod.list.php
+```
+
+Point critique :
+
+- `config/secrets/prod/prod.decrypt.private.php` doit rester uniquement sur le serveur et ne doit jamais etre committe.
+
+Points de suivi non bloquants :
+
+- `make check` echoue en production uniquement sur `npx stylelint` avec `Permission denied` ;
+- ce probleme concerne l'outillage Node disponible sur le serveur, pas la validation fonctionnelle de la zone privee ;
+- `git status --short` signale `config/secrets/` et `src/var/` comme non suivis sur le serveur ;
+- `src/var/log/cv-downloads.log` est un fichier de log genere au mauvais emplacement apparent et ne doit pas etre committe ;
+- le serveur peut ignorer localement ces chemins via `.git/info/exclude` pour eviter un ajout accidentel.
+
+Exclusion locale recommandee sur le serveur de production :
+
+```bash
+cat >> .git/info/exclude <<'EOF'
+
+# Production-only generated files
+/config/secrets/
+/src/var/
+EOF
+```
+
+Conclusion :
+
+```text
+Le socle prive est valide en production. Les prochains travaux peuvent se concentrer sur un premier module prive reel, apres clarification du besoin.
+```
+
 ## Lot 6 - Durcissement Et Mise En Production De La Zone Privee
 
 Objectif :
@@ -118,7 +190,7 @@ Ces sujets deviennent pertinents seulement quand le premier vrai besoin prive es
 
 Le lot 6 peut etre considere termine quand :
 
-- `make check` passe ;
+- `make check` passe localement ;
 - le secret de production est cree hors Git ;
 - la cle privee Symfony Secrets n'est pas versionnee ;
 - `/private` est inaccessible sans login ;
@@ -127,10 +199,15 @@ Le lot 6 peut etre considere termine quand :
 - `robots.txt` bloque `/private/` ;
 - la procedure de rotation est claire dans la documentation.
 
+Etat au 2026-05-21 :
+
+- le lot 6 est valide fonctionnellement en production ;
+- le seul ecart connu est l'execution de `npx stylelint` sur le serveur de production, a traiter comme sujet d'outillage separe.
+
 ## Note De Reprise
 
 Prochaine action recommandee :
 
 ```text
-Commencer par executer le cycle reel de secret avec `make private-admin-secret` sur l'environnement cible, deployer, puis lancer `make private-prod-check` et `make private-prod-auth-check` depuis un poste local.
+Le socle prive est valide. La prochaine phase peut demarrer par la definition du premier besoin metier prive avant d'ajouter stockage, roles, 2FA ou modules plus complexes.
 ```

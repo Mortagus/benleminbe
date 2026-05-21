@@ -199,6 +199,40 @@ Priorite : basse.
 4. Lancer Lighthouse sur la production pour distinguer les vrais problemes SEO/cache/compression des effets de l'environnement local.
 5. Reporter les optimisations CSS bloquantes tant que les scores performance restent a ce niveau.
 
+## Verification Apres Corrections Locales
+
+Date de verification : 2026-05-21
+
+Corrections verifiees :
+
+- contrastes des textes d'accent et des textes sur fonds doux ;
+- nom accessible des cartes experiences.
+
+Rapports generes :
+
+- `var/audits/lighthouse/home-fr-after-a11y.report.html`
+- `var/audits/lighthouse/projects-fr-after-a11y.report.html`
+- `var/audits/lighthouse/project-delcampe-fr-after-a11y.report.html`
+- `var/audits/lighthouse/experiences-fr-after-a11y.report.html`
+- `var/audits/lighthouse/skills-fr-after-a11y.report.html`
+- `var/audits/lighthouse/contact-fr-after-a11y.report.html`
+
+| Page | Performance | Accessibilite | Bonnes pratiques | SEO | FCP | LCP | TBT | CLS | Speed Index |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Accueil FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
+| Projets FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
+| Fiche projet Delcampe FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
+| Experiences FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
+| Competences FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
+| Contact FR | 100 | 100 | 100 | 63 | 1.1 s | 1.8 s | 0 ms | 0 | 1.1 s |
+
+Points de controle :
+
+- `color-contrast` : score 1 sur les six pages, avec 0 element signale ;
+- `label-content-name-mismatch` : score 1 sur les six pages, avec 0 element signale ;
+- accessibilite : 100 sur les six pages ;
+- SEO : reste a 63 en local a cause de `x-robots-tag: noindex`, a verifier en production dans le dernier lot.
+
 ## Commandes Utilisees
 
 Chrome headless a ete lance manuellement pour contourner le comportement WSL du lanceur Lighthouse :

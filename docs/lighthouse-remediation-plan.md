@@ -241,6 +241,14 @@ Livrable :
 
 - creer `docs/lighthouse-production-audit-YYYY-MM-DD.md` si les resultats different significativement du local.
 
+Verification effectuee le 2026-05-21 :
+
+- audit documente dans `docs/lighthouse-production-audit-2026-05-21.md` ;
+- score production a 100 en performance, accessibilite, bonnes pratiques et SEO sur les quatre pages testees ;
+- absence de `X-Robots-Tag: noindex` sur les pages publiques testees ;
+- compression gzip confirmee sur l'asset CSS versionne teste ;
+- absence de `Cache-Control` long explicite sur les assets versionnes testes.
+
 ## Ordre D'Execution Recommande
 
 1. Lot 1 : contrastes.
@@ -264,5 +272,5 @@ Livrable :
 Prochaine action recommandee :
 
 ```text
-Commencer par ajouter un token d'accent textuel accessible dans `assets/styles/base/tokens.css`, l'appliquer aux textes signales, supprimer l'aria-label des cartes experiences, puis relancer Lighthouse local sur les six pages auditees.
+Le cycle Lighthouse local puis production est clos pour les pages auditees. La prochaine action utile cote performance est la politique de cache HTTP des assets versionnes, a traiter cote serveur si les dernieres alertes non bloquantes doivent etre eliminees.
 ```

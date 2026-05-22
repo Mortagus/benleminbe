@@ -1,3 +1,6 @@
+// DOM controller for the monsters panel.
+// It renders monster slots from encounter state and sends user changes back
+// through encounter-state helpers.
 import { bestiary } from './bestiary.js';
 import { formatInitiative, getInitiativeClass } from './initiative.js';
 import {

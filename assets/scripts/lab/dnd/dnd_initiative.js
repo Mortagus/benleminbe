@@ -1,3 +1,6 @@
+// Entry point for the DnD initiative tracker.
+// It wires the shared encounter state to the DOM panels and keeps the main
+// "generate turn order" flow in one place.
 import '../../../styles/lab/dnd/lab_dnd_initiative.css';
 
 import {

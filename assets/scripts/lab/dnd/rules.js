@@ -1,3 +1,6 @@
+// DOM controller for the rules modal and rule toggles.
+// Rule changes update encounter state through callbacks; the turn order is
+// rebuilt only when the main generation flow runs.
 export function initializeRulesPanel(callbacks) {
     const openButton = document.getElementById('openRulesPanel');
     const rulesModal = document.getElementById('rulesModal');

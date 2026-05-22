@@ -1,3 +1,6 @@
+// Mutable encounter state and rules for the initiative tracker.
+// This module intentionally stays independent from the DOM so it can be tested
+// as the business contract of the tool.
 import { rollD20 } from './initiative.js';
 import { bestiary } from './bestiary.js';
 

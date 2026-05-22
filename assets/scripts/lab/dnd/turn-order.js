@@ -1,3 +1,6 @@
+// DOM controller for the turn order panel.
+// It renders the already-built turn order and handles played state, focus,
+// keyboard movement, button movement, and drag and drop.
 import {
     moveTurn,
     toggleTurnDone,

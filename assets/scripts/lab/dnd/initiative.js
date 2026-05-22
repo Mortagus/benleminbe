@@ -1,3 +1,5 @@
+// Small initiative helpers shared by state and rendering modules.
+// Random rolls live here; encounter rules and DOM rendering stay elsewhere.
 export function rollD20() {
     return Math.floor(Math.random() * 20) + 1;
 }

@@ -1,3 +1,6 @@
+// Validation and DOM feedback helpers for the DnD tracker forms.
+// The module keeps validation results and user-facing error rendering together
+// because the current panels validate directly from DOM fields.
 export const MAX_MONSTER_COUNT = 30;
 
 export function validateMonsterCountInput(monsterCountInput) {

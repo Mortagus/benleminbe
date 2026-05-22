@@ -1,3 +1,6 @@
+// DOM controller for the players panel.
+// Player form rows are the temporary source of truth until sync() writes them
+// into the encounter state before turn order generation.
 import { setPlayers } from './encounter-state.js';
 import {
     clearValidationState,

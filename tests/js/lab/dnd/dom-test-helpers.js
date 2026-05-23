@@ -20,6 +20,13 @@ export class TestElement {
     }
 
     appendChild(child) {
+        if (child.tagName === 'fragment') {
+            child.children.forEach(fragmentChild => this.appendChild(fragmentChild));
+            child.children = [];
+
+            return child;
+        }
+
         child.parentElement = this;
         this.children.push(child);
 
@@ -119,6 +126,7 @@ export function createInput(value = '', options = {}) {
 export function createDocumentDouble(elementsById = {}) {
     return {
         createElement: tagName => new TestElement(tagName),
+        createDocumentFragment: () => new TestElement('fragment'),
         getElementById: id => elementsById[id] ?? null,
         querySelector: () => null,
         querySelectorAll: () => [],
@@ -150,6 +158,45 @@ export function createTurnOrderTemplate() {
         content: {
             firstElementChild: item,
         },
+    };
+}
+
+export function createMonsterItemTemplate() {
+    const item = new TestElement('li', ['monster-item']);
+
+    const main = new TestElement('div', ['monster-main']);
+    main.appendChild(new TestElement('select', ['monster-select']));
+    main.appendChild(new TestElement('span', ['monster-type']));
+    main.appendChild(new TestElement('span', ['monster-size']));
+    main.appendChild(new TestElement('span', ['monster-cr']));
+    item.appendChild(main);
+
+    const stats = new TestElement('div', ['monster-stats']);
+    stats.appendChild(new TestElement('span', ['monster-stat', 'monster-armor-class']));
+
+    const hitPoints = new TestElement('label', ['monster-hp']);
+    hitPoints.appendChild(createInput());
+    hitPoints.appendChild(new TestElement('span', ['monster-hit-points-max']));
+    stats.appendChild(hitPoints);
+
+    stats.appendChild(new TestElement('span', ['monster-stat', 'monster-initiative-modifier']));
+    stats.appendChild(new TestElement('span', ['monster-stat', 'monster-initiative']));
+    item.appendChild(stats);
+
+    const content = new TestElement('fragment');
+    content.appendChild(item);
+
+    return {
+        content,
+    };
+}
+
+export function createMonsterOptionTemplate() {
+    const content = new TestElement('fragment');
+    content.appendChild(new TestElement('option'));
+
+    return {
+        content,
     };
 }
 

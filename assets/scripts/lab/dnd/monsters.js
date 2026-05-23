@@ -112,56 +112,64 @@ export function renderMonsters(monsterList, monsters, callbacks) {
     const monsterItems = document.createDocumentFragment();
 
     monsters.forEach((monster, index) => {
-        const fragment = monsterItemTemplate.content.cloneNode(true);
-        const li = fragment.querySelector('.monster-item');
-
-        const select = li.querySelector('.monster-select');
-        const type = li.querySelector('.monster-type');
-        const size = li.querySelector('.monster-size');
-        const challengeCating = li.querySelector('.monster-cr');
-        const armorClass = li.querySelector('.monster-armor-class');
-        const hpInput = li.querySelector('.monster-hp input');
-        const hpMax = li.querySelector('.monster-hit-points-max');
-        const initiative = li.querySelector('.monster-initiative');
-        const initiativeModifier = li.querySelector('.monster-initiative-modifier');
-
-        select.dataset.index = String(index);
-        select.setAttribute('aria-label', `Choisir le monstre ${index + 1}`);
-        renderMonsterOptions(select, monster.slug);
-
-        type.textContent = monster.type;
-        size.textContent = 'Taille: ' + monster.size;
-        challengeCating.textContent = 'FP: ' + monster.challengeRating;
-        armorClass.textContent = `CA ${monster.armorClass}`;
-
-        hpInput.max = String(monster.baseHitPoints);
-        hpInput.value = String(monster.currentHitPoints);
-        hpInput.disabled = monster.slug === null;
-        hpInput.setAttribute('aria-label', `PV actuels du monstre ${index + 1}`);
-
-        hpMax.textContent = String(monster.baseHitPoints);
-
-        initiativeModifier.textContent = formatModifier(monster.initiativeModifier);
-        initiativeModifier.title = `Mod. initiative : ${formatModifier(monster.initiativeModifier)}`;
-        initiativeModifier.setAttribute(
-            'aria-label',
-            `Modificateur d’initiative : ${formatModifier(monster.initiativeModifier)}`
-        );
-
-        initiative.textContent = `Init. ${formatInitiative(monster)}`;
-        initiative.title = getInitiativeTooltip(monster);
-
-        const initiativeClass = getInitiativeClass(monster);
-
-        if (initiativeClass !== '') {
-            initiative.classList.add(initiativeClass);
-        }
-
-        bindMonsterItemEvents(li, index, callbacks);
-        monsterItems.appendChild(li);
+        monsterItems.appendChild(renderMonsterItem(monster, index, callbacks));
     });
 
     monsterList.replaceChildren(monsterItems);
+}
+
+function renderMonsterItem(monster, index, callbacks) {
+    const fragment = monsterItemTemplate.content.cloneNode(true);
+    const monsterItem = fragment.querySelector('.monster-item');
+
+    populateMonsterItem(monsterItem, monster, index);
+    bindMonsterItemEvents(monsterItem, index, callbacks);
+
+    return monsterItem;
+}
+
+function populateMonsterItem(monsterItem, monster, index) {
+    const select = monsterItem.querySelector('.monster-select');
+    const type = monsterItem.querySelector('.monster-type');
+    const size = monsterItem.querySelector('.monster-size');
+    const challengeRating = monsterItem.querySelector('.monster-cr');
+    const armorClass = monsterItem.querySelector('.monster-armor-class');
+    const hpInput = monsterItem.querySelector('.monster-hp input');
+    const hpMax = monsterItem.querySelector('.monster-hit-points-max');
+    const initiative = monsterItem.querySelector('.monster-initiative');
+    const initiativeModifier = monsterItem.querySelector('.monster-initiative-modifier');
+
+    select.dataset.index = String(index);
+    select.setAttribute('aria-label', `Choisir le monstre ${index + 1}`);
+    renderMonsterOptions(select, monster.slug);
+
+    type.textContent = monster.type;
+    size.textContent = 'Taille: ' + monster.size;
+    challengeRating.textContent = 'FP: ' + monster.challengeRating;
+    armorClass.textContent = `CA ${monster.armorClass}`;
+
+    hpInput.max = String(monster.baseHitPoints);
+    hpInput.value = String(monster.currentHitPoints);
+    hpInput.disabled = monster.slug === null;
+    hpInput.setAttribute('aria-label', `PV actuels du monstre ${index + 1}`);
+
+    hpMax.textContent = String(monster.baseHitPoints);
+
+    initiativeModifier.textContent = formatModifier(monster.initiativeModifier);
+    initiativeModifier.title = `Mod. initiative : ${formatModifier(monster.initiativeModifier)}`;
+    initiativeModifier.setAttribute(
+        'aria-label',
+        `Modificateur d’initiative : ${formatModifier(monster.initiativeModifier)}`
+    );
+
+    initiative.textContent = `Init. ${formatInitiative(monster)}`;
+    initiative.title = getInitiativeTooltip(monster);
+
+    const initiativeClass = getInitiativeClass(monster);
+
+    if (initiativeClass !== '') {
+        initiative.classList.add(initiativeClass);
+    }
 }
 
 function getInitiativeTooltip(monster) {

@@ -10,7 +10,7 @@ import {
     showValidationErrors,
 } from './validation.js';
 
-let draggedActorId = null;
+let draggedTurnId = null;
 const turnOrderItemTemplate = document.getElementById('turnOrderItemTemplate');
 
 export function initializeTurnOrderPanel(encounter, callbacks = {}) {
@@ -93,116 +93,129 @@ export function renderRoundOrder(turnOrderList, turnOrderPlaceholder, roundOrder
     const firstActiveIndex = roundOrder.findIndex(actor => !actor.done);
 
     roundOrder.forEach((actor, index) => {
-        const li = turnOrderItemTemplate.content
-            .firstElementChild
-            .cloneNode(true);
-        const actorPosition = index + 1;
-        const actorDescription = getActorDescription(actor, actorPosition, roundOrder.length);
-
-        if (index === firstActiveIndex) {
-            li.classList.add('turn-order-item--active');
-        }
-
-        if (actor.done) {
-            li.classList.add('turn-order-item--done');
-        }
-
-        li.tabIndex = 0;
-        li.dataset.actorId = actor.id;
-        li.setAttribute('aria-label', actorDescription);
-        li.title = 'Entrée/Espace : joué. Flèches : déplacer.';
-
-        li.querySelector('.turn-order-item__image-placeholder').textContent = getActorInitial(actor);
-        li.querySelector('.turn-order-item__name').textContent = actor.name;
-        li.querySelector('.turn-order-item__initiative').textContent = `Init. ${actor.initiative}`;
-        li.querySelector('.turn-order-item__armor-class').textContent = `CA ${actor.armorClass}`;
-        li.querySelector('.turn-order-item__hit-points').textContent = `PV ${actor.currentHitPoints} / ${actor.baseHitPoints}`;
-
-        const badge = li.querySelector('.turn-order-item__badge');
-        badge.hidden = index !== firstActiveIndex;
-
-        bindMoveButton(
-            li.querySelector('[data-turn-move="previous"]'),
+        turnOrderList.appendChild(renderTurnOrderItem(
             roundOrder,
             actor,
             index,
-            'previous',
+            firstActiveIndex,
             callbacks,
-        );
-        bindMoveButton(
-            li.querySelector('[data-turn-move="next"]'),
-            roundOrder,
-            actor,
-            index,
-            'next',
-            callbacks,
-        );
+        ));
+    });
+}
 
-        li.addEventListener('click', () => {
+function renderTurnOrderItem(roundOrder, actor, index, firstActiveIndex, callbacks) {
+    const li = turnOrderItemTemplate.content
+        .firstElementChild
+        .cloneNode(true);
+    const actorPosition = index + 1;
+    const actorDescription = getActorDescription(actor, actorPosition, roundOrder.length);
+
+    if (index === firstActiveIndex) {
+        li.classList.add('turn-order-item--active');
+    }
+
+    if (actor.done) {
+        li.classList.add('turn-order-item--done');
+    }
+
+    li.tabIndex = 0;
+    li.dataset.actorId = actor.id;
+    li.setAttribute('aria-label', actorDescription);
+    li.title = 'Entrée/Espace : joué. Flèches : déplacer.';
+
+    li.querySelector('.turn-order-item__image-placeholder').textContent = getActorInitial(actor);
+    li.querySelector('.turn-order-item__name').textContent = actor.name;
+    li.querySelector('.turn-order-item__initiative').textContent = `Init. ${actor.initiative}`;
+    li.querySelector('.turn-order-item__armor-class').textContent = `CA ${actor.armorClass}`;
+    li.querySelector('.turn-order-item__hit-points').textContent = `PV ${actor.currentHitPoints} / ${actor.baseHitPoints}`;
+
+    const badge = li.querySelector('.turn-order-item__badge');
+    badge.hidden = index !== firstActiveIndex;
+
+    bindMoveButton(
+        li.querySelector('[data-turn-move="previous"]'),
+        roundOrder,
+        actor,
+        index,
+        'previous',
+        callbacks,
+    );
+    bindMoveButton(
+        li.querySelector('[data-turn-move="next"]'),
+        roundOrder,
+        actor,
+        index,
+        'next',
+        callbacks,
+    );
+    bindTurnOrderItemEvents(li, roundOrder, actor, index, callbacks);
+
+    return li;
+}
+
+function bindTurnOrderItemEvents(li, roundOrder, actor, index, callbacks) {
+    li.addEventListener('click', () => {
+        callbacks.onToggleTurnDone(actor.id);
+    });
+
+    li.addEventListener('keydown', event => {
+        if (event.target !== li) {
+            return;
+        }
+
+        if (['Enter', ' '].includes(event.key)) {
+            event.preventDefault();
             callbacks.onToggleTurnDone(actor.id);
-        });
+            return;
+        }
 
-        li.addEventListener('keydown', event => {
-            if (event.target !== li) {
-                return;
-            }
-
-            if (['Enter', ' '].includes(event.key)) {
-                event.preventDefault();
-                callbacks.onToggleTurnDone(actor.id);
-                return;
-            }
-
-            if (event.key === 'ArrowLeft') {
-                event.preventDefault();
-                moveActorWithKeyboard(roundOrder, actor, index, 'previous', callbacks);
-                return;
-            }
-
-            if (event.key === 'ArrowRight') {
-                event.preventDefault();
-                moveActorWithKeyboard(roundOrder, actor, index, 'next', callbacks);
-            }
-        });
-
-        li.draggable = true;
-
-        li.addEventListener('dragstart', () => {
-            draggedActorId = actor.id;
-            li.classList.add('turn-order-item--dragging');
-        });
-
-        li.addEventListener('dragend', () => {
-            draggedActorId = null;
-            li.classList.remove('turn-order-item--dragging');
-        });
-
-        li.addEventListener('dragover', (event) => {
+        if (event.key === 'ArrowLeft') {
             event.preventDefault();
-            li.classList.add('turn-order-item--drag-over');
-        });
+            moveActorWithKeyboard(roundOrder, actor, index, 'previous', callbacks);
+            return;
+        }
 
-        li.addEventListener('dragleave', () => {
-            li.classList.remove('turn-order-item--drag-over');
-        });
-
-        li.addEventListener('drop', (event) => {
+        if (event.key === 'ArrowRight') {
             event.preventDefault();
+            moveActorWithKeyboard(roundOrder, actor, index, 'next', callbacks);
+        }
+    });
 
-            li.classList.remove('turn-order-item--drag-over');
+    li.draggable = true;
 
-            if (!draggedActorId || draggedActorId === actor.id) {
-                return;
-            }
+    li.addEventListener('dragstart', () => {
+        draggedTurnId = actor.id;
+        li.classList.add('turn-order-item--dragging');
+    });
 
-            callbacks.onMoveTurn(
-                draggedActorId,
-                actor.id,
-                getDropPlacement(roundOrder, draggedActorId, actor.id),
-            );
-        });
+    li.addEventListener('dragend', () => {
+        draggedTurnId = null;
+        li.classList.remove('turn-order-item--dragging');
+    });
 
-        turnOrderList.appendChild(li);
+    li.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        li.classList.add('turn-order-item--drag-over');
+    });
+
+    li.addEventListener('dragleave', () => {
+        li.classList.remove('turn-order-item--drag-over');
+    });
+
+    li.addEventListener('drop', (event) => {
+        event.preventDefault();
+
+        li.classList.remove('turn-order-item--drag-over');
+
+        if (!draggedTurnId || draggedTurnId === actor.id) {
+            return;
+        }
+
+        callbacks.onMoveTurn(
+            draggedTurnId,
+            actor.id,
+            getDropPlacement(roundOrder, draggedTurnId, actor.id),
+        );
     });
 }
 
@@ -323,8 +336,8 @@ function bindKeyboardHelp(button, helpPanel) {
     });
 }
 
-function getDropPlacement(roundOrder, draggedActorId, targetActorId) {
-    const draggedIndex = roundOrder.findIndex(actor => actor.id === draggedActorId);
+function getDropPlacement(roundOrder, draggedTurnId, targetActorId) {
+    const draggedIndex = roundOrder.findIndex(actor => actor.id === draggedTurnId);
     const targetIndex = roundOrder.findIndex(actor => actor.id === targetActorId);
 
     if (draggedIndex === -1 || targetIndex === -1) {

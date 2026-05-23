@@ -3,6 +3,7 @@
 // because the current panels validate directly from DOM fields.
 export const MAX_MONSTER_COUNT = 30;
 
+// Field and encounter validators.
 export function validateMonsterCountInput(monsterCountInput) {
     return validateIntegerInput(monsterCountInput, {
         fieldName: 'nombre de monstres',
@@ -99,6 +100,7 @@ export function validateEncounterActors(monsterList, playerList) {
     ]);
 }
 
+// Validation result helpers.
 export function mergeValidationResults(...results) {
     const errors = results.flatMap(result => result.errors);
 
@@ -112,6 +114,7 @@ export function hasValidationErrors(...results) {
     return results.some(result => !result.isValid);
 }
 
+// DOM feedback helpers.
 export function focusFirstInvalidField(...results) {
     const firstInvalidInput = results
         .flatMap(result => result.errors)
@@ -169,6 +172,7 @@ export function showValidationErrors(validationResult, summaryElement, summaryMe
     summaryElement.hidden = false;
 }
 
+// Internal input parsing helpers.
 function validateIntegerInput(input, options) {
     if (!input) {
         return createValidationResult([

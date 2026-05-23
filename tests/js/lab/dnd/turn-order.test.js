@@ -98,6 +98,60 @@ describe('turn order rendering', () => {
         expect(onMoveTurn).toHaveBeenCalledWith('player-1', 'player-2', 'after');
         expect(onAnnounce).toHaveBeenCalledWith('Lia déplacé après Borin.');
     });
+
+    test('moves turns through keyboard arrows', async () => {
+        const { renderRoundOrder } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const turnOrderList = new TestElement('ol');
+        const turnOrderPlaceholder = new TestElement('div');
+        const onMoveTurn = vi.fn();
+        const onAnnounce = vi.fn();
+
+        renderRoundOrder(
+            turnOrderList,
+            turnOrderPlaceholder,
+            [
+                createTurn({ id: 'player-1', name: 'Lia', initiative: 14 }),
+                createTurn({ id: 'player-2', name: 'Borin', initiative: 9 }),
+            ],
+            {
+                onMoveTurn,
+                onAnnounce,
+            },
+        );
+
+        turnOrderList.children[0].dispatchEvent({
+            type: 'keydown',
+            key: 'ArrowRight',
+            preventDefault: vi.fn(),
+        });
+
+        expect(onMoveTurn).toHaveBeenCalledWith('player-1', 'player-2', 'after');
+        expect(onAnnounce).toHaveBeenCalledWith('Lia déplacé après Borin.');
+    });
+
+    test('moves turns through drag and drop', async () => {
+        const { renderRoundOrder } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const turnOrderList = new TestElement('ol');
+        const turnOrderPlaceholder = new TestElement('div');
+        const onMoveTurn = vi.fn();
+
+        renderRoundOrder(
+            turnOrderList,
+            turnOrderPlaceholder,
+            [
+                createTurn({ id: 'player-1', name: 'Lia', initiative: 14 }),
+                createTurn({ id: 'player-2', name: 'Borin', initiative: 9 }),
+            ],
+            {
+                onMoveTurn,
+            },
+        );
+
+        turnOrderList.children[0].dispatchEvent({ type: 'dragstart' });
+        turnOrderList.children[1].dispatchEvent({ type: 'drop' });
+
+        expect(onMoveTurn).toHaveBeenCalledWith('player-1', 'player-2', 'after');
+    });
 });
 
 function createTurn(overrides = {}) {

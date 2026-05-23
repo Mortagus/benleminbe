@@ -30,12 +30,17 @@ const turnOrderPanel = initializeTurnOrderPanel(encounter, {
     onGenerateTurnOrder: generateTurnOrder,
 });
 
+function refreshDisplayedTurnOrder() {
+    // Refreshes the current rendering only; buildRoundOrder() runs from generateTurnOrder().
+    turnOrderPanel.refresh();
+}
+
 const monstersPanel = initializeMonstersPanel(encounter, {
-    onEncounterChange: turnOrderPanel.refresh,
+    onEncounterChange: refreshDisplayedTurnOrder,
 });
 
 const playersPanel = initializePlayersPanel(encounter, {
-    onPlayersChange: turnOrderPanel.refresh,
+    onPlayersChange: refreshDisplayedTurnOrder,
 });
 
 initializeRulesPanel({

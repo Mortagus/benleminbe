@@ -2,7 +2,7 @@
 
 Date de redaction : 2026-05-21
 
-Source : [Audit Lighthouse - 2026-05-21](lighthouse-audit-2026-05-21.md)
+Source : [Audit Lighthouse - 2026-05-21](../audits/lighthouse-audit-2026-05-21.md)
 
 Objectif : transformer les constats Lighthouse en corrections applicables, verifiables et priorisees.
 
@@ -162,7 +162,7 @@ Resultats attendus :
 
 Livrable :
 
-- ajouter une section "Verification apres corrections" dans `docs/lighthouse-audit-2026-05-21.md` ou creer un nouveau fichier date si les changements sont importants.
+- ajouter une section "Verification apres corrections" dans `docs/termines/audits/lighthouse-audit-2026-05-21.md` ou creer un nouveau fichier date si les changements sont importants.
 
 ## Lot 4 - Decider Sur Les Ressources CSS Bloquantes
 
@@ -239,11 +239,11 @@ Pages production minimales :
 
 Livrable :
 
-- creer `docs/lighthouse-production-audit-YYYY-MM-DD.md` si les resultats different significativement du local.
+- creer `docs/termines/audits/lighthouse-production-audit-YYYY-MM-DD.md` si les resultats different significativement du local.
 
 Verification effectuee le 2026-05-21 :
 
-- audit documente dans `docs/lighthouse-production-audit-2026-05-21.md` ;
+- audit documente dans `docs/termines/audits/lighthouse-production-audit-2026-05-21.md` ;
 - score production a 100 en performance, accessibilite, bonnes pratiques et SEO sur les quatre pages testees ;
 - absence de `X-Robots-Tag: noindex` sur les pages publiques testees ;
 - compression gzip confirmee sur l'asset CSS versionne teste ;

@@ -6,9 +6,9 @@ Ce document remplace l'ancien backlog d'audit et la roadmap avancée. Il conserv
 
 Documents descriptifs associés :
 
-- [dnd-initiative-audit.md](/var/www/projects/benleminbe/docs/lab/dnd-initiative-audit.md:1)
-- [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1)
-- [dnd-dom-contracts.md](/var/www/projects/benleminbe/docs/lab/dnd-dom-contracts.md:1)
+- [dnd-initiative-audit.md](../lab/dnd-initiative-audit.md)
+- [dnd-bestiary-pipeline.md](../lab/dnd-bestiary-pipeline.md)
+- [dnd-dom-contracts.md](../lab/dnd-dom-contracts.md)
 
 ## Note De Reprise - 2026-05-21
 

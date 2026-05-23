@@ -11,7 +11,7 @@ Cette phase reste un audit et une proposition d'architecture. Aucun changement a
 Commandes executees :
 
 ```bash
-sed -n '220,320p' docs/site-architecture-audit-plan.md
+sed -n '220,320p' docs/termines/audits/site-architecture-audit-plan.md
 find config src templates assets docs -maxdepth 3 -type f | sort
 cat composer.json
 cat config/services.yaml
@@ -450,7 +450,7 @@ Avant implementation, il faut valider :
 Phase 7 terminee.
 
 Sources analysees :
-- docs/site-architecture-audit-plan.md
+- docs/termines/audits/site-architecture-audit-plan.md
 - composer.json
 - config/services.yaml
 - config/routes.yaml

@@ -425,7 +425,7 @@ Deux documents existent deja :
 
 ```text
 docs/lab/dnd-initiative-audit.md
-docs/lab/dnd-initiative-tracker-backlog.md
+docs/en-cours/dnd-initiative-tracker-backlog.md
 ```
 
 Constat :
@@ -503,7 +503,7 @@ Sources analysees :
 - assets/styles/lab/dnd/*
 - tools/dnd/*
 - docs/lab/dnd-initiative-audit.md
-- docs/lab/dnd-initiative-tracker-backlog.md
+- docs/en-cours/dnd-initiative-tracker-backlog.md
 
 Verifications :
 - php bin/console debug:router app_lab_dnd_initiative : OK

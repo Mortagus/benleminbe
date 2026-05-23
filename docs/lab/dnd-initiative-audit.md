@@ -4,7 +4,7 @@ Date de mise à jour : 2026-05-15
 
 Ce document décrit l'état actuel du projet `DnD Initiative Tracker` dans le site personnel. Il sert de point d'entrée technique : objectif du module, emplacement des fichiers, architecture actuelle et fonctionnement observé.
 
-Les constats d'audit, les améliorations réalisées et les fonctionnalités à venir sont suivis dans [dnd-initiative-tracker-backlog.md](/var/www/projects/benleminbe/docs/lab/dnd-initiative-tracker-backlog.md:1). Les contrats techniques détaillés sont documentés dans [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1) et [dnd-dom-contracts.md](/var/www/projects/benleminbe/docs/lab/dnd-dom-contracts.md:1).
+Les constats d'audit, les améliorations réalisées et les fonctionnalités à venir sont suivis dans [dnd-initiative-tracker-backlog.md](../en-cours/dnd-initiative-tracker-backlog.md). Les contrats techniques détaillés sont documentés dans [dnd-bestiary-pipeline.md](dnd-bestiary-pipeline.md) et [dnd-dom-contracts.md](dnd-dom-contracts.md).
 
 ## Description du projet
 
@@ -88,14 +88,14 @@ Le CSS du module est importé par l'entrée JavaScript `dnd_initiative`. Les rè
 
 ### Données monstres et outillage
 
-- Documentation du pipeline : [docs/lab/dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1)
+- Documentation du pipeline : [dnd-bestiary-pipeline.md](dnd-bestiary-pipeline.md)
 - Générateur principal : [tools/dnd/complete_monster_extractor.php](/var/www/projects/benleminbe/tools/dnd/complete_monster_extractor.php:1)
 - Source HTML conservée : [tools/dnd/monsters-source.html](/var/www/projects/benleminbe/tools/dnd/monsters-source.html:1)
 - Test de contrat : [tools/dnd/validate_bestiary.php](/var/www/projects/benleminbe/tools/dnd/validate_bestiary.php:1)
 - Bestiaire embarqué côté front : [assets/scripts/lab/dnd/bestiary.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/bestiary.js:1)
 - Fixture bestiaire pour les tests JS : [tests/fixtures/dnd/bestiary-sample.js](/var/www/projects/benleminbe/tests/fixtures/dnd/bestiary-sample.js:1)
 
-Le navigateur consomme aujourd'hui un bestiaire JavaScript généré et embarqué dans le bundle de la page. Cette approche reste simple pour le lab avec le catalogue actuel. Le pipeline de génération et les critères de chargement futur sont documentés dans [dnd-bestiary-pipeline.md](/var/www/projects/benleminbe/docs/lab/dnd-bestiary-pipeline.md:1).
+Le navigateur consomme aujourd'hui un bestiaire JavaScript généré et embarqué dans le bundle de la page. Cette approche reste simple pour le lab avec le catalogue actuel. Le pipeline de génération et les critères de chargement futur sont documentés dans [dnd-bestiary-pipeline.md](dnd-bestiary-pipeline.md).
 
 ### Nomenclature d'interface
 

@@ -11,13 +11,13 @@ Cette phase reste une synthese d'audit. Aucun changement applicatif n'a ete effe
 Documents consolides :
 
 ```text
-docs/site-architecture-audit-phase-1.md
-docs/site-architecture-audit-phase-2.md
-docs/site-architecture-audit-phase-3.md
-docs/site-architecture-audit-phase-4.md
-docs/site-architecture-audit-phase-5.md
-docs/site-architecture-audit-phase-6.md
-docs/site-architecture-audit-phase-7.md
+site-architecture-audit-phase-1.md
+site-architecture-audit-phase-2.md
+site-architecture-audit-phase-3.md
+site-architecture-audit-phase-4.md
+site-architecture-audit-phase-5.md
+site-architecture-audit-phase-6.md
+site-architecture-audit-phase-7.md
 ```
 
 Perimetres couverts :

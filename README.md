@@ -120,6 +120,7 @@ benleminbe/
 ├── assets/              # CSS, JavaScript et images sources
 ├── bin/                 # Exécutables Symfony
 ├── config/              # Configuration Symfony
+├── docs/                # Documentation stable, chantiers en cours et travaux terminés
 ├── public/              # Point d'entrée HTTP, assets compilés, CV et fichiers publics
 ├── src/                 # Code PHP applicatif
 ├── templates/           # Templates Twig
@@ -131,6 +132,8 @@ benleminbe/
 ├── makefile             # Commandes de développement et de déploiement
 └── README.md            # Documentation du projet
 ```
+
+La documentation détaillée commence dans [`docs/README.md`](docs/README.md). La vue stable de l'architecture est dans [`docs/architecture.md`](docs/architecture.md).
 
 ## Roadmap
 

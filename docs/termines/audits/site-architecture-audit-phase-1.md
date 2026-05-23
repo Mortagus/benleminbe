@@ -90,7 +90,7 @@ Assets :
 Documentation :
 
 - `docs/lab/dnd-initiative-audit.md`
-- `docs/lab/dnd-initiative-tracker-backlog.md`
+- `docs/en-cours/dnd-initiative-tracker-backlog.md`
 
 Outils :
 

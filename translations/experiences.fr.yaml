@@ -4,7 +4,7 @@ experiences:
         meta_description: "Explorez mon parcours professionnel, en détails, depuis 2010. Découvrez mes rôles, missions, environnements techniques, technologies utilisées, et ce que j’ai appris de chaque expérience."
         eyebrow: "Parcours"
         title: "Expériences professionnelles"
-        description: "Une vue d’ensemble des postes, missions et environnements techniques dans lesquels j’ai travaillé."
+        description: "Une vue d’ensemble des postes, missions et **environnements techniques** dans lesquels j’ai travaillé."
         list_title: "Liste des expériences professionnelles"
         technologies_label: "Technologies utilisées"
         more_technologies: "+%count%"
@@ -37,11 +37,11 @@ experiences:
             role: "Développeur PHP backend / consultant"
             period: "novembre 2019 – octobre 2025"
             meta_title: "Expérience chez Contraste Digital"
-            summary: "Participation au développement, à la maintenance et à l’évolution de plateformes web et d’applications métier pour différents clients, avec une forte exposition aux écosystèmes PHP, Drupal et aux architectures orientées microservices."
+            summary: "Participation au développement, à la maintenance et à l’évolution de **plateformes web et d’applications métier** pour différents clients, avec une forte exposition aux écosystèmes PHP, Drupal et aux architectures orientées microservices."
             context:
                 1: "Contraste Digital est une société de développement logiciel qui livre des plateformes web et des produits digitaux pour des clients externes."
                 2: "J’ai travaillé au sein d’équipes internes chargées de construire, maintenir et faire évoluer des plateformes client, principalement depuis les bureaux de l’entreprise."
-                3: "Le travail consistait à comprendre des systèmes existants, à implémenter de nouvelles fonctionnalités, à maintenir des plateformes en production et à collaborer avec des développeurs, product owners et chefs de projet."
+                3: "Le travail consistait à comprendre des **systèmes existants**, à implémenter de nouvelles fonctionnalités, à maintenir des plateformes en production et à collaborer avec des développeurs, product owners et chefs de projet."
                 4: "Une partie importante de cette expérience s’est déroulée dans des environnements Drupal, PHP et microservices, notamment sur des plateformes média et des applications métier."
             responsibilities:
                 1: "Développement backend sur des applications PHP et Drupal."
@@ -50,11 +50,11 @@ experiences:
                 4: "Intégration de services externes et d’API."
                 5: "Participation aux revues de code, aux discussions techniques et aux choix d’implémentation."
                 6: "Collaboration avec les développeurs, product owners et chefs de projet pour livrer des évolutions stables et maintenables."
-                7: "Contribution à des architectures orientées microservices, notamment autour de services d’authentification et de plateformes média."
+                7: "Contribution à des **architectures orientées microservices**, notamment autour de services d’authentification et de plateformes média."
             takeaways:
                 1: "Expérience longue sur des plateformes web existantes et des systèmes complexes."
                 2: "Renforcement important de mon expérience avec les écosystèmes PHP, Drupal et Symfony."
-                3: "Meilleure capacité à comprendre rapidement une base de code existante et à contribuer à son évolution."
+                3: "Meilleure capacité à **comprendre rapidement une base de code existante** et à contribuer à son évolution."
                 4: "Expérience concrète de la maintenance applicative, de l’intégration d’API et du travail en équipe sur des projets client."
                 5: "Exposition à des architectures microservices et à des environnements de développement modernes avec Docker et Azure DevOps."
 
@@ -63,10 +63,10 @@ experiences:
             role: "Développeur PHP backend / consultant"
             period: "avril 2018 – juillet 2019"
             meta_title: "Expérience chez Blubird"
-            summary: "Missions de consultance intégrées à des équipes clientes, principalement sur des applications PHP existantes, avec maintenance, développement de fonctionnalités et amélioration de systèmes en production."
+            summary: "Missions de consultance **intégrées à des équipes clientes**, principalement sur des applications PHP existantes, avec maintenance, développement de fonctionnalités et amélioration de systèmes en production."
             context:
                 1: "Blubird est une société de consultance logicielle qui fournit des services de développement à des clients externes."
-                2: "En tant que consultant, j’ai été intégré à des équipes clientes pour intervenir sur des plateformes déjà en production."
+                2: "En tant que consultant, j’ai été intégré à des **équipes clientes** pour intervenir sur des plateformes déjà en production."
                 3: "Les missions portaient principalement sur la maintenance, le développement de nouvelles fonctionnalités et l’amélioration technique de systèmes backend PHP."
                 4: "J’ai travaillé dans des contextes variés, notamment dans le secteur bancaire et sur une plateforme marketplace de grande taille."
             responsibilities:
@@ -74,14 +74,14 @@ experiences:
                 2: "Maintenance et évolution de systèmes en production."
                 3: "Correction de bugs, debugging et analyse d’anomalies."
                 4: "Implémentation de nouvelles fonctionnalités."
-                5: "Intégration avec des API REST et SOAP."
+                5: "Intégration avec des **API REST et SOAP**."
                 6: "Collaboration avec les équipes de développement, les responsables produit et les parties prenantes métier."
                 7: "Travail dans des environnements Agile avec Docker, GitLab, Jenkins, Jira et Confluence."
             takeaways:
                 1: "Expérience de consultance directement intégrée dans des équipes clientes."
                 2: "Exposition à des environnements techniques très différents, notamment des systèmes bancaires et une plateforme marketplace."
                 3: "Renforcement de mon expérience en maintenance d’applications PHP existantes."
-                4: "Expérience concrète du travail sur des applications en production avec contraintes métier et techniques."
+                4: "Expérience concrète du travail sur des **applications en production** avec contraintes métier et techniques."
                 5: "Pratique du développement Symfony, des API REST/SOAP et des workflows d’équipe Agile."
 
         isobar:
@@ -89,17 +89,17 @@ experiences:
             role: "Développeur web"
             period: "juillet 2017 – février 2018"
             meta_title: "Expérience chez Isobar"
-            summary: "Travail en agence digitale sur des plateformes marketing, des CMS et des applications web, dans un environnement rythmé par des délais courts et une collaboration étroite avec les équipes projet."
+            summary: "Travail en agence digitale sur des **plateformes marketing**, des CMS et des applications web, dans un environnement rythmé par des délais courts et une collaboration étroite avec les équipes projet."
             context:
                 1: "Isobar est une agence digitale spécialisée dans les plateformes marketing, les expériences digitales et les services en ligne pour des clients corporate."
                 2: "J’ai travaillé comme développeur full-stack au sein d’une équipe chargée de construire et maintenir des plateformes web pour différents clients."
-                3: "Le contexte agence impliquait des projets variés, des délais souvent courts et une collaboration régulière avec des designers, chefs de projet et autres développeurs."
+                3: "Le contexte agence impliquait des **projets variés**, des délais souvent courts et une collaboration régulière avec des designers, chefs de projet et autres développeurs."
                 4: "Le travail incluait également la création d’emails responsive et l’intervention sur plusieurs CMS et frameworks PHP."
             responsibilities:
                 1: "Développement backend sur des applications PHP."
                 2: "Implémentation de nouvelles fonctionnalités sur des plateformes existantes."
                 3: "Maintenance et debugging de systèmes web."
-                4: "Intervention sur des projets basés sur Laravel, Drupal, WordPress, Symfony et Zend."
+                4: "Intervention sur des projets basés sur **Laravel, Drupal, WordPress, Symfony et Zend**."
                 5: "Développement frontend avec HTML, CSS, JavaScript et jQuery."
                 6: "Collaboration avec les équipes design, projet et développement."
                 7: "Participation aux réunions quotidiennes et à la coordination d’équipe."
@@ -107,7 +107,7 @@ experiences:
                 1: "Expérience du fonctionnement d’une agence digitale."
                 2: "Collaboration avec des équipes multidisciplinaires mêlant design, marketing, projet et développement."
                 3: "Exposition à plusieurs CMS et frameworks dans un temps court."
-                4: "Capacité à passer rapidement d’un contexte projet à un autre."
+                4: "Capacité à **passer rapidement d’un contexte projet à un autre**."
                 5: "Expérience de projets avec contraintes fortes de délai et de livraison."
 
         adneom:
@@ -115,11 +115,11 @@ experiences:
             role: "Développeur PHP backend / consultant"
             period: "juillet 2016 – juillet 2017"
             meta_title: "Expérience chez Adneom"
-            summary: "Première expérience significative en consultance, avec des missions au sein d’équipes clientes sur des plateformes PHP/Symfony existantes, incluant maintenance, évolution et développement backend."
+            summary: "Première expérience significative en consultance, avec des missions au sein d’équipes clientes sur des **plateformes PHP/Symfony existantes**, incluant maintenance, évolution et développement backend."
             context:
                 1: "Adneom est une société de consultance proposant des services de développement logiciel et d’IT à des clients externes."
                 2: "En tant que consultant, j’ai travaillé au sein d’équipes clientes sur des plateformes web existantes."
-                3: "Les missions concernaient principalement du développement backend, de la maintenance applicative et l’implémentation de nouvelles fonctionnalités."
+                3: "Les missions concernaient principalement du **développement backend**, de la maintenance applicative et l’implémentation de nouvelles fonctionnalités."
                 4: "Cette expérience m’a exposé à plusieurs environnements clients, notamment dans la logistique et les médias."
             responsibilities:
                 1: "Développement backend sur des applications PHP."
@@ -128,7 +128,7 @@ experiences:
                 4: "Debugging et résolution d’anomalies."
                 5: "Collaboration avec des développeurs, équipes produit et parties prenantes métier."
                 6: "Travail dans des environnements Agile."
-                7: "Contribution à des applications Symfony et à des développements d’API REST."
+                7: "Contribution à des **applications Symfony** et à des développements d’API REST."
             takeaways:
                 1: "Première expérience longue en tant que consultant."
                 2: "Exposition à plusieurs environnements clients et équipes de développement."
@@ -141,12 +141,12 @@ experiences:
             role: "Développeur PHP backend"
             period: "janvier 2015 – septembre 2015"
             meta_title: "Expérience chez Financial Communication Consult"
-            summary: "Développement et maintenance d’outils internes liés à la génération et à la distribution de documents financiers, avec automatisation de traitements et manipulation de données financières."
+            summary: "Développement et maintenance d’**outils internes** liés à la génération et à la distribution de documents financiers, avec automatisation de traitements et manipulation de données financières."
             context:
                 1: "Financial Communication Consult, aussi appelée F2C, était une société spécialisée dans la distribution et la gestion de données financières liées aux fonds d’investissement."
                 2: "L’entreprise développait des systèmes permettant de générer et distribuer des documents et jeux de données nécessaires aux institutions financières et investisseurs."
                 3: "J’ai travaillé au sein d’une équipe de développement chargée de maintenir et améliorer des outils internes."
-                4: "Les systèmes traitaient notamment la génération automatisée de documents téléchargeables et la surveillance de données publiées sur des sites externes."
+                4: "Les systèmes traitaient notamment la **génération automatisée de documents** téléchargeables et la surveillance de données publiées sur des sites externes."
             responsibilities:
                 1: "Développement backend sur des outils internes en PHP."
                 2: "Génération de documents financiers téléchargeables aux formats PDF, Excel, CSV et ZIP."
@@ -158,7 +158,7 @@ experiences:
                 1: "Expérience dans le secteur financier."
                 2: "Développement de systèmes de génération automatique de documents."
                 3: "Exposition à des workflows de distribution de données utilisés par des institutions financières."
-                4: "Expérience de maintenance de scripts existants et d’outils d’automatisation."
+                4: "Expérience de maintenance de **scripts existants et d’outils d’automatisation**."
                 5: "Sensibilisation aux contraintes de performance et de fiabilité."
                 6: "Première expérience significative avec MongoDB."
 
@@ -167,12 +167,12 @@ experiences:
             role: "Développeur web"
             period: "novembre 2011 – décembre 2014"
             meta_title: "Expérience chez Sogesa"
-            summary: "Première expérience professionnelle longue, centrée sur le développement progressif d’une application métier interne dédiée à la gestion de données agricoles et administratives."
+            summary: "Première expérience professionnelle longue, centrée sur le développement progressif d’une **application métier interne** dédiée à la gestion de données agricoles et administratives."
             context:
                 1: "Sogesa est une société spécialisée dans la gestion de terres agricoles et de processus administratifs liés."
                 2: "L’entreprise développait des outils internes pour gérer des parcelles, des contrats et des informations utilisées dans le secteur agricole."
                 3: "Il s’agissait de ma première expérience professionnelle longue en tant que développeur web."
-                4: "J’ai travaillé sur le développement et l’évolution d’une application métier interne construite progressivement selon les besoins opérationnels."
+                4: "J’ai travaillé sur le développement et l’évolution d’une **application métier interne** construite progressivement selon les besoins opérationnels."
             responsibilities:
                 1: "Développement d’une application métier web."
                 2: "Conception et implémentation de nouvelles fonctionnalités."
@@ -185,7 +185,7 @@ experiences:
                 1: "Première expérience professionnelle longue comme développeur."
                 2: "Développement d’une application métier depuis ses premières étapes."
                 3: "Expérience de conception et d’évolution d’un système sur plusieurs années."
-                4: "Compréhension de workflows métier réels et de contraintes de domaine."
+                4: "Compréhension de **workflows métier réels** et de contraintes de domaine."
                 5: "Première expérience structurante avec PHP, Symfony 2, MySQL et des outils de versioning."
 
         cbmn:
@@ -193,16 +193,16 @@ experiences:
             role: "Analyste-développeur Perl"
             period: "février 2010 – juin 2010"
             meta_title: "Expérience au CBMN"
-            summary: "Projet de fin d’études réalisé dans un laboratoire de recherche, avec conception d’une base de données et développement de scripts Perl pour traiter et importer automatiquement des données biologiques."
+            summary: "Projet de fin d’études réalisé dans un laboratoire de recherche, avec **conception d’une base de données** et développement de scripts Perl pour traiter et importer automatiquement des données biologiques."
             context:
                 1: "Le CBMN, Centre de Biophysique moléculaire numérique, est un laboratoire public de recherche impliqué dans des projets de recherche biologique et moléculaire."
                 2: "Cette expérience a été réalisée dans le cadre de mon projet de fin d’études durant mon bachelier en informatique."
                 3: "Le projet s’inscrivait dans le programme de recherche wallon RAIDGBS."
-                4: "L’objectif était de concevoir et développer un système de traitement de données capable de collecter et stocker des données issues de recherches biologiques."
+                4: "L’objectif était de concevoir et développer un **système de traitement de données** capable de collecter et stocker des données issues de recherches biologiques."
             responsibilities:
                 1: "Analyse des besoins de traitement de données avec les responsables de recherche."
                 2: "Conception de la structure de base de données."
-                3: "Développement de scripts Perl pour traiter et importer automatiquement des jeux de données."
+                3: "Développement de **scripts Perl** pour traiter et importer automatiquement des jeux de données."
                 4: "Mise en place de workflows d’ingestion automatisée."
                 5: "Tests et validation du pipeline de traitement de données."
                 6: "Documentation du travail dans le cadre du projet académique final."

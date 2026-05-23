@@ -18,9 +18,9 @@
 
             <h2>{{ 'hero.name'|trans }} — {{ 'hero.subtitle'|trans }}</h2>
 
-            <p class="hero-intro">{{ 'hero.intro'|trans }}</p>
+            <p class="hero-intro">{{ 'hero.intro'|trans|highlight_keywords }}</p>
 
-            <p class="hero-details">{{ 'hero.details_p1'|trans }}</p>
+            <p class="hero-details">{{ 'hero.details_p1'|trans|highlight_keywords }}</p>
 
             <div class="buttons">
                 <a href="{{ path('app_contact', { _locale: app.request.locale}) }}" class="button">
@@ -43,32 +43,32 @@
             <div class="cards-grid help-grid">
                 <article class="card">
                     <h3>{{ 'help.card_1.title'|trans }}</h3>
-                    <p>{{ 'help.card_1.text'|trans|raw }}</p>
+                    <p>{{ 'help.card_1.text'|trans|highlight_keywords }}</p>
                 </article>
 
                 <article class="card">
                     <h3>{{ 'help.card_2.title'|trans }}</h3>
-                    <p>{{ 'help.card_2.text'|trans|raw }}</p>
+                    <p>{{ 'help.card_2.text'|trans|highlight_keywords }}</p>
                 </article>
 
                 <article class="card">
                     <h3>{{ 'help.card_3.title'|trans }}</h3>
-                    <p>{{ 'help.card_3.text'|trans|raw }}</p>
+                    <p>{{ 'help.card_3.text'|trans|highlight_keywords }}</p>
                 </article>
 
                 <article class="card">
                     <h3>{{ 'help.card_4.title'|trans }}</h3>
-                    <p>{{ 'help.card_4.text'|trans|raw }}</p>
+                    <p>{{ 'help.card_4.text'|trans|highlight_keywords }}</p>
                 </article>
 
                 <article class="card">
                     <h3>{{ 'help.card_5.title'|trans }}</h3>
-                    <p>{{ 'help.card_5.text'|trans|raw }}</p>
+                    <p>{{ 'help.card_5.text'|trans|highlight_keywords }}</p>
                 </article>
 
                 <article class="card">
                     <h3>{{ 'help.card_6.title'|trans }}</h3>
-                    <p>{{ 'help.card_6.text'|trans|raw }}</p>
+                    <p>{{ 'help.card_6.text'|trans|highlight_keywords }}</p>
                 </article>
             </div>
         </section>
@@ -77,11 +77,11 @@
             <h2>{{ 'concrete.title'|trans }}</h2>
 
             <ul class="feature-list">
-                <li>{{ 'concrete.item_1'|trans }}</li>
-                <li>{{ 'concrete.item_2'|trans }}</li>
-                <li>{{ 'concrete.item_3'|trans }}</li>
-                <li>{{ 'concrete.item_4'|trans }}</li>
-                <li>{{ 'concrete.item_5'|trans }}</li>
+                <li>{{ 'concrete.item_1'|trans|highlight_keywords }}</li>
+                <li>{{ 'concrete.item_2'|trans|highlight_keywords }}</li>
+                <li>{{ 'concrete.item_3'|trans|highlight_keywords }}</li>
+                <li>{{ 'concrete.item_4'|trans|highlight_keywords }}</li>
+                <li>{{ 'concrete.item_5'|trans|highlight_keywords }}</li>
             </ul>
         </section>
 
@@ -93,7 +93,7 @@
                     <article class="project-card">
                         <p class="project-tag">{{ 'projects.delcampe.tag'|trans }}</p>
                         <h3>{{ 'projects.delcampe.title'|trans }}</h3>
-                        <p>{{ 'projects.delcampe.text'|trans }}</p>
+                        <p>{{ 'projects.delcampe.text'|trans|highlight_keywords }}</p>
                     </article>
                 </a>
 
@@ -101,7 +101,7 @@
                     <article class="project-card">
                         <p class="project-tag">{{ 'projects.stanhome.tag'|trans }}</p>
                         <h3>{{ 'projects.stanhome.title'|trans }}</h3>
-                        <p>{{ 'projects.stanhome.text'|trans }}</p>
+                        <p>{{ 'projects.stanhome.text'|trans|highlight_keywords }}</p>
                     </article>
                 </a>
 
@@ -109,7 +109,7 @@
                     <article class="project-card">
                         <p class="project-tag">{{ 'projects.moveit.tag'|trans }}</p>
                         <h3>{{ 'projects.moveit.title'|trans }}</h3>
-                        <p>{{ 'projects.moveit.text'|trans }}</p>
+                        <p>{{ 'projects.moveit.text'|trans|highlight_keywords }}</p>
                     </article>
                 </a>
             </div>
@@ -145,7 +145,7 @@
         <section class="contact-section">
             <h2>{{ 'contact.title'|trans }}</h2>
 
-            <p>{{ 'contact.text'|trans }}</p>
+            <p>{{ 'contact.text'|trans|highlight_keywords }}</p>
 
             <div class="buttons">
 

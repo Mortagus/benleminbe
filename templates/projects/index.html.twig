@@ -10,7 +10,7 @@
         <section class="page-hero">
             <p class="eyebrow">{{ 'index.eyebrow'|trans({}, 'projects') }}</p>
             <h1>{{ 'index.title'|trans({}, 'projects') }}</h1>
-            <p class="lead">{{ 'index.lead'|trans({}, 'projects') }}</p>
+            <p class="lead">{{ 'index.lead'|trans({}, 'projects')|highlight_keywords }}</p>
         </section>
 
         <section class="projects-list">
@@ -19,7 +19,7 @@
                 <a href="{{ path('app_projects_show', { _locale: app.request.locale, project: project.key }) }}" class="project-card-link">
                     <article class="project-card">
                         <h2>{{ ('index.cards.' ~ project.key ~ '.title')|trans({}, 'projects') }}</h2>
-                        <p>{{ ('index.cards.' ~ project.key ~ '.description')|trans({}, 'projects') }}</p>
+                        <p>{{ ('index.cards.' ~ project.key ~ '.description')|trans({}, 'projects')|highlight_keywords }}</p>
                     </article>
                 </a>
             {% endfor %}

@@ -12,70 +12,70 @@ index:
     meta_description: "Explore a selection of my projects, focusing on context, technical challenges, and implemented solutions. Discover my work in agriculture, research, and finance."
     eyebrow: "Projects"
     title: "Selected projects"
-    lead: "A selection of projects I worked on, with a focus on context, technical challenges and implemented solutions."
+    lead: "A selection of projects I worked on, with a focus on **context**, **technical challenges** and implemented solutions."
 
     cards:
         raidgbs:
             title: "RAIDGBS Research Project"
-            description: "Design and implementation of a data processing system used to collect and structure biological sequence data as part of a research project."
+            description: "Design and implementation of a **data processing system** used to collect and structure biological sequence data as part of a research project."
 
         sogesa:
             title: "Sogesa ERP System"
-            description: "Development of an internal web-based ERP system supporting agronomists’ daily activities and the operational management of the company."
+            description: "Development of an **internal web-based ERP system** supporting agronomists’ daily activities and the operational management of the company."
 
         publifund:
             title: "Publifund Platform"
-            description: "Maintenance and evolution of a financial data aggregation, regulatory KIID document generation and information distribution platform."
+            description: "Maintenance and evolution of a **financial data aggregation** platform, regulatory KIID document generation and information distribution platform."
 
         easy4pro:
             title: "Easy4Pro"
-            description: "Contribution to the development of a web prototype designed to orchestrate urgent logistics operations from an existing application."
+            description: "Contribution to the development of a **web prototype** designed to orchestrate urgent logistics operations from an existing application."
 
         logic_immo:
             title: "Logic-Immo Image Delivery Platform"
-            description: "Design and development of a dedicated service for storing and delivering real estate listing images in order to improve loading performance."
+            description: "Design and development of a dedicated service for **storing and delivering real estate listing images** in order to improve loading performance."
 
         isobar:
             title: "Projects at Isobar"
-            description: "Contribution to several short-term digital agency client projects, including brand websites, event platforms, marketing campaigns and promotional tools."
+            description: "Contribution to several **short-term digital agency client projects**, including brand websites, event platforms, marketing campaigns and promotional tools."
 
         delcampe:
             title: "Delcampe Marketplace Platform"
-            description: "Maintenance and evolution of an international marketplace dedicated to collectors."
+            description: "Maintenance and evolution of an **international marketplace** dedicated to collectors."
 
         keytrade:
             title: "Keytrade Bank — Web Platforms Maintenance"
-            description: "Maintenance of several banking web platforms: public website, customer extranet and administrative intranet."
+            description: "Maintenance of several **banking web platforms**: public website, customer extranet and administrative intranet."
 
         famille_chretienne:
             title: "Famille Chrétienne — Editorial Platform DPI"
-            description: "Adaptation and deployment of a Drupal 7 editorial platform based on DPI for the Famille Chrétienne website."
+            description: "Adaptation and deployment of a **Drupal 7 editorial platform** based on DPI for the Famille Chrétienne website."
 
         stanhome:
             title: "Stanhome — E-commerce Platform (France & Italy)"
-            description: "Modernization of a multi-country e-commerce platform integrating a direct sales model."
+            description: "Modernization of a **multi-country e-commerce platform** integrating a direct sales model."
 
         his:
             title: "Hôpitaux Iris Sud — Institutional Website & Intranet"
-            description: "Setup of a unified Drupal 9 institutional website with intranet, practitioner search, appointment booking and ADFS authentication."
+            description: "Setup of a unified **Drupal 9 institutional website** with intranet, practitioner search, appointment booking and ADFS authentication."
 
         moveit:
             title: "Rossel — MoveIT (SSO platform)"
-            description: "Development of a unified authentication platform based on a microservices architecture."
+            description: "Development of a **unified authentication platform** based on a microservices architecture."
 
         marge_delhaize:
             title: "Marge Delhaize — Data Integration & Margin Analysis Platform"
-            description: "Development of an ETL and analytics platform consolidating operational data to analyze real product margins."
+            description: "Development of an **ETL and analytics platform** consolidating operational data to analyze real product margins."
 
         coaching:
             title: "Programming Coaching & Technical Mentoring"
-            description: "Individual mentoring for students, professionals and developers on programming, architecture, debugging and development best practices."
+            description: "Individual mentoring for students, professionals and developers on **programming, architecture, debugging and development best practices**."
 
 raidgbs:
     meta_title: "RAIDGBS Research Project | Benjamin Lemin"
     eyebrow: "Research project · Bioinformatics · Data ingestion"
     title: "RAIDGBS Research Project"
-    lead: "Design and implementation of a system capable of retrieving DNA sequence data from public biological databases and storing it in a structured local database."
+    lead: "Design and implementation of a system capable of retrieving **DNA sequence data** from public biological databases and storing it in a structured local database."
 
     meta:
         -   label: "Period:"
@@ -180,7 +180,7 @@ sogesa:
     meta_title: "Sogesa ERP System | Benjamin Lemin"
     eyebrow: "Internal project · ERP · Agriculture"
     title: "Sogesa ERP System"
-    lead: "Design and development of an internal web-based ERP system supporting agronomists’ daily activities and the operational management of the company."
+    lead: "Design and development of an **internal web-based ERP system** supporting agronomists’ daily activities and the operational management of the company."
 
     meta:
         -   label: "Period:"
@@ -327,7 +327,7 @@ publifund:
     meta_title: "Publifund Platform | Benjamin Lemin"
     eyebrow: "Client project · Finance · Document generation"
     title: "Publifund Platform"
-    lead: "Maintenance and evolution of an internal platform for financial data aggregation, regulatory KIID document generation and information distribution to financial media."
+    lead: "Maintenance and evolution of an internal platform for **financial data aggregation**, regulatory KIID document generation and information distribution to financial media."
 
     meta:
         -   label: "Period:"
@@ -472,7 +472,7 @@ easy4pro:
     meta_title: "Easy4Pro | Benjamin Lemin"
     eyebrow: "Consulting mission · Logistics · Prototype"
     title: "Easy4Pro"
-    lead: "Contribution to the development of a web prototype designed to orchestrate urgent logistics operations by connecting multiple transport providers."
+    lead: "Contribution to the development of a **web prototype** designed to orchestrate urgent logistics operations by connecting multiple transport providers."
 
     meta:
         -   label: "Period:"
@@ -571,7 +571,7 @@ logic_immo:
     meta_title: "Logic-Immo Image Delivery Platform | Benjamin Lemin"
     eyebrow: "Consulting mission · Real estate · Media performance"
     title: "Logic-Immo Image Delivery Platform"
-    lead: "Design and development of a dedicated service for storing and delivering real estate listing images in order to improve loading performance on the Logic-Immo platform."
+    lead: "Design and development of a dedicated service for **storing and delivering real estate listing images** in order to improve loading performance on the Logic-Immo platform."
 
     meta:
         -   label: "Period:"
@@ -688,7 +688,7 @@ isobar:
     meta_title: "Projects at Isobar | Benjamin Lemin"
     eyebrow: "Digital agency · Client projects · Multi-stack"
     title: "Projects at Isobar"
-    lead: "Contribution to several short-term digital agency client projects, including brand websites, event platforms, marketing campaigns and promotional tools."
+    lead: "Contribution to several **short-term digital agency client projects**, including brand websites, event platforms, marketing campaigns and promotional tools."
 
     meta:
         -   label: "Period:"
@@ -797,7 +797,7 @@ delcampe:
     meta_title: "Delcampe Marketplace Platform | Benjamin Lemin"
     eyebrow: "Client project · Marketplace · Symfony"
     title: "Delcampe Marketplace Platform"
-    lead: "Contribution to the maintenance, evolution and technical quality of an international marketplace platform dedicated to collectors."
+    lead: "Contribution to the maintenance, evolution and technical quality of an **international marketplace platform** dedicated to collectors."
 
     meta:
         -   label: "Period:"
@@ -812,10 +812,10 @@ delcampe:
     sections:
         -   title: "Project context"
             paragraphs:
-                - "Delcampe is an online marketplace dedicated to collectibles such as stamps, postcards, coins and other collector items."
+                - "Delcampe is an **online marketplace dedicated to collectibles** such as stamps, postcards, coins and other collector items."
                 - "The platform connects sellers and buyers worldwide and manages listings, transactions, messaging and user interactions."
                 - "In addition to the web marketplace, Delcampe also provides a desktop application used by professional sellers."
-                - "This application connects to the platform through a mix of REST and SOAP APIs to synchronize marketplace data."
+                - "This application connects to the platform through a mix of **REST and SOAP APIs** to synchronize marketplace data."
                 - "I joined the development team as a consultant through Blubird and contributed to the maintenance and evolution of the main marketplace platform."
 
         -   title: "Project objectives"
@@ -824,12 +824,12 @@ delcampe:
                 - "Fix bugs and ensure system stability"
                 - "Improve existing features and pages"
                 - "Contribute to new feature development"
-                - "Maintain high code quality within a large production codebase"
+                - "Maintain **high code quality** within a large production codebase"
 
         -   title: "System architecture"
             paragraphs:
                 - "The platform was built as a modular monolithic application based on the Symfony framework."
-                - "The system included several interconnected components: the web marketplace platform, APIs used by internal services and the desktop client, an internationalized user interface and internal services supporting marketplace operations."
+                - "The system included several **interconnected components**: the web marketplace platform, APIs used by internal services and the desktop client, an internationalized user interface and internal services supporting marketplace operations."
 
         -   title: "My role"
             paragraphs:
@@ -864,7 +864,7 @@ delcampe:
         -   title: "Development practices"
             paragraphs:
                 - "The team followed an Agile workflow inspired by Scrum practices."
-                - "The development process also included dedicated branches for each bug fix or feature, systematic code reviews before merging and controlled release branches for production deployments."
+                - "The development process also included dedicated branches for each bug fix or feature, **systematic code reviews** before merging and controlled release branches for production deployments."
                 - "This workflow helped ensure the stability and maintainability of the production platform."
             list:
                 - "Sprint planning cycles of two to three weeks"
@@ -923,7 +923,7 @@ delcampe:
             subsections:
                 -   title: "Working on a mature marketplace platform"
                     paragraphs:
-                        - "The project involved contributing to a large and long-lived production system serving an international community of users."
+                        - "The project involved contributing to a **large and long-lived production system** serving an international community of users."
                         - "Understanding the architecture and navigating the existing codebase required collaboration with experienced team members."
                 -   title: "High code quality standards"
                     paragraphs:
@@ -933,7 +933,7 @@ delcampe:
                         - "The marketplace supported multiple languages and international users, increasing application complexity."
                 -   title: "Connected ecosystem"
                     paragraphs:
-                        - "The web platform was connected to APIs and to a desktop application used by professional sellers, requiring particular attention to compatibility and stability of data exchanges."
+                        - "The web platform was connected to APIs and to a desktop application used by professional sellers, requiring particular attention to **compatibility and stability of data exchanges**."
 
         -   title: "Outcomes / impact"
             paragraphs:
@@ -952,7 +952,7 @@ keytrade:
     meta_title: "Keytrade Bank — Web Platforms Maintenance | Benjamin Lemin"
     eyebrow: "Consulting mission · Banking · Legacy maintenance"
     title: "Keytrade Bank — Web Platforms Maintenance"
-    lead: "Maintenance of several banking web platforms: public website, customer extranet and administrative intranet, within a legacy PHP environment subject to strict operational constraints."
+    lead: "Maintenance of several **banking web platforms**: public website, customer extranet and administrative intranet, within a legacy PHP environment subject to strict operational constraints."
 
     meta:
         -   label: "Period:"
@@ -1057,7 +1057,7 @@ famille_chretienne:
     meta_title: "Famille Chrétienne — Editorial Platform DPI | Benjamin Lemin"
     eyebrow: "Client project · Media · Drupal"
     title: "Famille Chrétienne — Editorial Platform DPI"
-    lead: "Adaptation and deployment of a Drupal 7 editorial platform based on DPI in order to create a reusable white-label version for other media organizations, then adapt it to the Famille Chrétienne website."
+    lead: "Adaptation and deployment of a **Drupal 7 editorial platform** based on DPI in order to create a reusable white-label version for other media organizations, then adapt it to the Famille Chrétienne website."
 
     meta:
         -   label: "Period:"
@@ -1158,7 +1158,7 @@ stanhome:
     meta_title: "Stanhome E-commerce Platform | Benjamin Lemin"
     eyebrow: "Client project · E-commerce · Drupal"
     title: "Stanhome — E-commerce Platform (France & Italy)"
-    lead: "Contribution to the modernization of a multi-country e-commerce platform combining online sales and a direct sales network."
+    lead: "Contribution to the modernization of a **multi-country e-commerce platform** combining online sales and a direct sales network."
 
     meta:
         -   label: "Period:"
@@ -1177,12 +1177,12 @@ stanhome:
             paragraphs:
                 - "Stanhome is a European direct-selling company specializing in home care and beauty products."
                 - "The project involved modernizing the company’s e-commerce platform, starting with the French market and later extending to Italy."
-                - "Stanhome operates partly through a direct-sales network model, where independent sellers organize product presentation events and sell products directly to customers, in a model similar to Tupperware-style home meetings."
+                - "Stanhome operates partly through a **direct-sales network model**, where independent sellers organize product presentation events and sell products directly to customers, in a model similar to Tupperware-style home meetings."
                 - "The platform therefore needed to support both traditional e-commerce capabilities and features aligned with this distribution model."
 
         -   title: "Project objectives"
             paragraphs:
-                - "The main objectives covered visual modernization, performance, purchase funnel optimization, support for the distributor network and integration with the company’s internal tools."
+                - "The main objectives covered visual modernization, **performance**, purchase funnel optimization, support for the distributor network and integration with the company’s internal tools."
                 - "After the French platform was delivered, the architecture was reused and adapted for the Italian market."
             list:
                 - "Redesigning the visual theme of the e-commerce platform"
@@ -1196,7 +1196,7 @@ stanhome:
             subsections:
                 -   title: "Product catalog optimization"
                     paragraphs:
-                        - "I improved catalog browsing performance by integrating ElasticSearch."
+                        - "I improved **catalog browsing performance** by integrating ElasticSearch."
                         - "ElasticSearch was used for product search, faceted navigation and product filtering within the catalog."
                         - "This integration significantly improved the performance and usability of product browsing."
                 -   title: "Checkout and sales funnel improvements"
@@ -1204,7 +1204,7 @@ stanhome:
                         - "I contributed to improvements in the purchase funnel, helping streamline the checkout process and improve the user experience."
                 -   title: "Dealer locator"
                     paragraphs:
-                        - "I implemented a dealer locator feature using Google Maps API, allowing users to find nearby distributors based on their geographic location."
+                        - "I implemented a **dealer locator feature using Google Maps API**, allowing users to find nearby distributors based on their geographic location."
                         - "This feature directly supported Stanhome’s direct-sales distribution model."
                 -   title: "Marketing automation"
                     paragraphs:
@@ -1212,7 +1212,7 @@ stanhome:
                         - "This included backend logic and cron-based synchronization tasks within the Drupal platform."
                 -   title: "CRM integration"
                     paragraphs:
-                        - "I worked on the integration between the e-commerce platform and the company’s Salesforce CRM."
+                        - "I worked on the integration between the **e-commerce platform and Salesforce CRM**."
                         - "Sales-related data was transmitted from Drupal Commerce to Salesforce, enabling internal teams to track sales activity and customer interactions within the CRM ecosystem."
                 -   title: "Multi-country deployment"
                     paragraphs:
@@ -1253,7 +1253,7 @@ stanhome:
             list:
                 - "Handling large product catalogs efficiently"
                 - "Implementing fast product filtering through ElasticSearch"
-                - "Supporting Stanhome’s hybrid model combining e-commerce and direct sales network"
+                - "Supporting **Stanhome’s hybrid model** combining e-commerce and direct sales network"
                 - "Adapting the architecture for multiple markets while maintaining a shared technical base"
 
         -   title: "Outcomes / impact"
@@ -1273,7 +1273,7 @@ his:
     meta_title: "Hôpitaux Iris Sud — Institutional Website & Intranet | Benjamin Lemin"
     eyebrow: "Client project · Healthcare · Drupal"
     title: "Hôpitaux Iris Sud — Institutional Website & Intranet"
-    lead: "Setup of a unified Drupal 9 institutional website for four Brussels hospitals, with intranet, practitioner search, appointment assistance and ADFS authentication."
+    lead: "Setup of a unified **Drupal 9 institutional website** for four Brussels hospitals, with intranet, practitioner search, appointment assistance and ADFS authentication."
 
     meta:
         -   label: "Period:"
@@ -1393,7 +1393,7 @@ moveit:
     meta_title: "Rossel — MoveIT (SSO Platform) | Benjamin Lemin"
     eyebrow: "Client project · SSO · Microservices"
     title: "Rossel — MoveIT (SSO Platform)"
-    lead: "Contribution to the design and development of a scalable unified authentication platform for the Rossel media ecosystem."
+    lead: "Contribution to the design and development of a **scalable unified authentication platform** for the Rossel media ecosystem."
 
     meta:
         -   label: "Period:"
@@ -1411,13 +1411,13 @@ moveit:
         -   title: "Context"
             paragraphs:
                 - "Rossel is one of the largest media groups in Belgium, operating multiple newspapers and digital media platforms, including Le Soir."
-                - "The MoveIT project aimed at redesigning the user management and authentication system across the Rossel ecosystem."
-                - "The objective was to build a new scalable Single Sign-On platform capable of supporting all Rossel media brands."
+                - "The MoveIT project aimed at redesigning the **user management and authentication system** across the Rossel ecosystem."
+                - "The objective was to build a new **scalable Single Sign-On platform** capable of supporting all Rossel media brands."
                 - "The new system was designed to progressively replace existing authentication mechanisms, starting with Le Soir and later expanding to other newspapers of the group."
 
         -   title: "Project objectives"
             paragraphs:
-                - "The project adopted a microservices architecture to ensure long-term scalability and modularity."
+                - "The project adopted a **microservices architecture** to ensure long-term scalability and modularity."
             list:
                 - "Building a scalable SSO system for the Rossel media ecosystem"
                 - "Supporting user authentication across multiple publications"
@@ -1429,11 +1429,11 @@ moveit:
                 -   title: "Microservices development"
                     paragraphs:
                         - "I participated in the development of backend services using Go and the Gin framework."
-                        - "I implemented two microservices responsible for user-related functionalities within the new authentication system."
+                        - "I implemented two **microservices** responsible for user-related functionalities within the new authentication system."
                         - "I adopted structured request handling using DTO, Data Transfer Object, patterns to ensure clear separation between API contracts and internal business logic."
                 -   title: "Event-driven communication"
                     paragraphs:
-                        - "I contributed to the design and implementation of Kafka message structures used for communication between services."
+                        - "I contributed to the design and implementation of **Kafka message structures** used for communication between services."
                         - "The architecture combined REST APIs for synchronous interactions and Kafka event queues for asynchronous communication."
                 -   title: "User registration system"
                     paragraphs:
@@ -1442,7 +1442,7 @@ moveit:
                 -   title: "Observability and logging"
                     paragraphs:
                         - "I worked with the ELK stack, Elasticsearch, Logstash and Kibana, to monitor and analyze logs generated by the microservices architecture."
-                        - "This setup allowed centralized log collection and improved debugging across the distributed system."
+                        - "This setup allowed **centralized log collection** and improved debugging across the distributed system."
 
         -   title: "Architecture"
             paragraphs:
@@ -1503,7 +1503,7 @@ marge_delhaize:
     meta_title: "Marge Delhaize — Data Integration & Margin Analysis Platform | Benjamin Lemin"
     eyebrow: "Product project · Data integration · Margin analysis"
     title: "Marge Delhaize — Data Integration & Margin Analysis Platform"
-    lead: "Development of an ETL and analytics platform designed to consolidate operational data from multiple systems in order to analyze real product margins over time."
+    lead: "Development of an **ETL and analytics platform** designed to consolidate operational data from multiple systems in order to analyze real product margins over time."
 
     meta:
         -   label: "Period:"
@@ -1631,7 +1631,7 @@ coaching:
     meta_title: "Programming Coaching & Technical Mentoring | Benjamin Lemin"
     eyebrow: "Coaching · Technical mentoring · Knowledge sharing"
     title: "Programming Coaching & Technical Mentoring"
-    lead: "Individual support for students, professionals and developers in their technical progression, through coaching sessions focused on programming, architecture, debugging and best practices."
+    lead: "Individual support for students, professionals and developers in their **technical progression**, through coaching sessions focused on programming, architecture, debugging and best practices."
 
     meta:
         -   label: "Period:"

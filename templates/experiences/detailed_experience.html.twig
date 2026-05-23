@@ -3,7 +3,7 @@
 {% trans_default_domain 'experiences' %}
 
 {% block title %}{{ experienceData.metaTitle }}{% endblock %}
-{% block meta_description %}{{ experienceData.summary }}{% endblock %}
+{% block meta_description %}{{ experienceData.summary|strip_keyword_highlights }}{% endblock %}
 {% block importmap %}{{ importmap(['app', 'page_experience_detail']) }}{% endblock %}
 
 {% block body %}
@@ -87,7 +87,7 @@
 
         <section id="overview" class="experience-detail-highlight">
             <h2>{{ 'experiences.detail.summary_title'|trans }}</h2>
-            <p>{{ experienceData.summary }}</p>
+            <p>{{ experienceData.summary|highlight_keywords }}</p>
         </section>
 
         {% if experienceData.context is not empty %}
@@ -95,7 +95,7 @@
                 <h2>{{ 'experiences.detail.context_title'|trans }}</h2>
 
                 {% for paragraph in experienceData.context %}
-                    <p>{{ paragraph }}</p>
+                    <p>{{ paragraph|highlight_keywords }}</p>
                 {% endfor %}
             </section>
         {% endif %}
@@ -106,7 +106,7 @@
 
                 <ul>
                     {% for responsibility in experienceData.responsibilities %}
-                        <li>{{ responsibility }}</li>
+                        <li>{{ responsibility|highlight_keywords }}</li>
                     {% endfor %}
                 </ul>
             </section>
@@ -136,7 +136,7 @@
                             project: project.key
                         }) }}">
                             <strong>{{ project.title }}</strong>
-                            <span>{{ project.description }}</span>
+                            <span>{{ project.description|highlight_keywords }}</span>
                             <span class="experience-associated-project-card__link">
                                 {{ 'experiences.detail.associated_project_link'|trans }}
                             </span>
@@ -152,7 +152,7 @@
 
                 <ul>
                     {% for takeaway in experienceData.takeaways %}
-                        <li>{{ takeaway }}</li>
+                        <li>{{ takeaway|highlight_keywords }}</li>
                     {% endfor %}
                 </ul>
             </section>

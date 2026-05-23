@@ -55,11 +55,6 @@
     max-width: 680px;
 }
 
-.landing-page .text-highlight {
-    color: var(--accent-text);
-    font-weight: 700;
-}
-
 .contact-section h2 {
     margin-bottom: 24px;
     font-size: clamp(1.7rem, 3vw, 2.4rem);

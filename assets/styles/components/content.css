@@ -17,6 +17,11 @@
     margin-top: 12px;
 }
 
+.text-highlight {
+    color: var(--accent-text);
+    font-weight: 700;
+}
+
 .content-section {
     width: 100%;
 }

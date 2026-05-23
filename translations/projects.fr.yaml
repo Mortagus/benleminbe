@@ -12,70 +12,70 @@ index:
     meta_description: "Découvrez mes projets marquants depuis 2010, avec leur contexte, les défis techniques rencontrés et les solutions mises en place. Explorez mes réalisations dans le domaine de l’agriculture, de la recherche, et de la finance."
     eyebrow: "Projets"
     title: "Projets marquants de mon parcours"
-    lead: "Une vue d’ensemble des principaux projets sur lesquels j’ai travaillé depuis 2010, avec leur contexte, les défis techniques rencontrés et les solutions mises en place."
+    lead: "Une vue d’ensemble des principaux projets sur lesquels j’ai travaillé depuis 2010, avec leur **contexte**, les **défis techniques** rencontrés et les solutions mises en place."
 
     cards:
         raidgbs:
             title: "RAIDGBS Research Project"
-            description: "Conception et implémentation d’un système de traitement de données destiné à collecter et structurer des séquences biologiques dans le cadre d’un projet de recherche."
+            description: "Conception et implémentation d’un **système de traitement de données** destiné à collecter et structurer des séquences biologiques dans le cadre d’un projet de recherche."
 
         sogesa:
             title: "Sogesa ERP System"
-            description: "Développement d’un ERP web interne destiné à soutenir les activités quotidiennes des agronomes et la gestion opérationnelle de l’entreprise."
+            description: "Développement d’un **ERP web interne** destiné à soutenir les activités quotidiennes des agronomes et la gestion opérationnelle de l’entreprise."
 
         publifund:
             title: "Publifund Platform"
-            description: "Maintenance et évolution d’une plateforme d’agrégation de données financières, de génération de documents réglementaires KIID et de distribution d’informations vers des médias financiers."
+            description: "Maintenance et évolution d’une **plateforme d’agrégation de données financières**, de génération de documents réglementaires KIID et de distribution d’informations vers des médias financiers."
 
         easy4pro:
             title: "Easy4Pro"
-            description: "Contribution au développement d’un prototype web destiné à orchestrer des opérations logistiques urgentes à partir d’une application existante."
+            description: "Contribution au développement d’un **prototype web** destiné à orchestrer des opérations logistiques urgentes à partir d’une application existante."
 
         logic_immo:
             title: "Logic-Immo Image Delivery Platform"
-            description: "Conception et développement d’un service dédié au stockage et à la diffusion d’images immobilières afin d’améliorer les performances de chargement."
+            description: "Conception et développement d’un service dédié au **stockage et à la diffusion d’images immobilières** afin d’améliorer les performances de chargement."
 
         isobar:
             title: "Projects at Isobar"
-            description: "Contribution à plusieurs projets clients courts en agence digitale, incluant des sites de marques, plateformes événementielles, campagnes marketing et outils promotionnels."
+            description: "Contribution à plusieurs **projets clients courts en agence digitale**, incluant des sites de marques, plateformes événementielles, campagnes marketing et outils promotionnels."
 
         delcampe:
             title: "Delcampe Marketplace Platform"
-            description: "Maintenance et évolution d’une marketplace internationale dédiée aux collectionneurs."
+            description: "Maintenance et évolution d’une **marketplace internationale** dédiée aux collectionneurs."
 
         keytrade:
             title: "Keytrade Bank — Web Platforms Maintenance"
-            description: "Maintenance de plusieurs plateformes web bancaires : site public, extranet client et intranet administratif."
+            description: "Maintenance de plusieurs **plateformes web bancaires** : site public, extranet client et intranet administratif."
 
         famille_chretienne:
             title: "Famille Chrétienne — Plateforme éditoriale DPI"
-            description: "Adaptation et déploiement d’une plateforme éditoriale Drupal 7 issue de DPI pour le site Famille Chrétienne."
+            description: "Adaptation et déploiement d’une **plateforme éditoriale Drupal 7** issue de DPI pour le site Famille Chrétienne."
 
         stanhome:
             title: "Stanhome — Plateforme e-commerce (France & Italie)"
-            description: "Modernisation d’une plateforme e-commerce multi-pays intégrant un modèle de vente directe."
+            description: "Modernisation d’une **plateforme e-commerce multi-pays** intégrant un modèle de vente directe."
 
         his:
             title: "Hôpitaux Iris Sud — Site institutionnel & intranet"
-            description: "Mise en place d’un site institutionnel Drupal 9 unifié avec intranet, recherche de praticiens, prise de rendez-vous et authentification ADFS."
+            description: "Mise en place d’un **site institutionnel Drupal 9** unifié avec intranet, recherche de praticiens, prise de rendez-vous et authentification ADFS."
 
         moveit:
             title: "Rossel — MoveIT (plateforme SSO)"
-            description: "Développement d’une plateforme d’authentification unifiée basée sur une architecture microservices."
+            description: "Développement d’une **plateforme d’authentification unifiée** basée sur une architecture microservices."
 
         marge_delhaize:
             title: "Marge Delhaize — Plateforme d’intégration de données et d’analyse de marge"
-            description: "Développement d’une plateforme ETL et analytique permettant de consolider des données opérationnelles pour analyser les marges réelles des produits."
+            description: "Développement d’une **plateforme ETL et analytique** permettant de consolider des données opérationnelles pour analyser les marges réelles des produits."
 
         coaching:
             title: "Programming Coaching & Technical Mentoring"
-            description: "Accompagnement individuel d’étudiants, professionnels et développeurs sur des sujets de programmation, architecture, debugging et bonnes pratiques."
+            description: "Accompagnement individuel d’étudiants, professionnels et développeurs sur des sujets de **programmation, architecture, debugging et bonnes pratiques**."
 
 raidgbs:
     meta_title: "RAIDGBS Research Project | Benjamin Lemin"
     eyebrow: "Projet de recherche · Bioinformatique · Data ingestion"
     title: "RAIDGBS Research Project"
-    lead: "Conception et implémentation d’un système capable de récupérer des données de séquences ADN depuis des bases de données biologiques publiques et de les stocker dans une base de données locale structurée."
+    lead: "Conception et implémentation d’un système capable de récupérer des **données de séquences ADN** depuis des bases de données biologiques publiques et de les stocker dans une base de données locale structurée."
 
     meta:
         -   label: "Période :"
@@ -180,7 +180,7 @@ sogesa:
     meta_title: "Sogesa ERP System | Benjamin Lemin"
     eyebrow: "Projet interne · ERP · Agriculture"
     title: "Sogesa ERP System"
-    lead: "Conception et développement d’un ERP web interne destiné à soutenir les activités quotidiennes des agronomes et la gestion opérationnelle de l’entreprise."
+    lead: "Conception et développement d’un **ERP web interne** destiné à soutenir les activités quotidiennes des agronomes et la gestion opérationnelle de l’entreprise."
 
     meta:
         -   label: "Période :"
@@ -327,7 +327,7 @@ publifund:
     meta_title: "Publifund Platform | Benjamin Lemin"
     eyebrow: "Projet client · Finance · Génération documentaire"
     title: "Publifund Platform"
-    lead: "Maintenance et évolution d’une plateforme interne d’agrégation de données financières, de génération de documents réglementaires KIID et de distribution d’informations vers des médias financiers."
+    lead: "Maintenance et évolution d’une **plateforme interne d’agrégation de données financières**, de génération de documents réglementaires KIID et de distribution d’informations vers des médias financiers."
 
     meta:
         -   label: "Période :"
@@ -472,7 +472,7 @@ easy4pro:
     meta_title: "Easy4Pro | Benjamin Lemin"
     eyebrow: "Mission de consultance · Logistique · Prototype"
     title: "Easy4Pro"
-    lead: "Contribution au développement d’un prototype web destiné à orchestrer des opérations logistiques urgentes en connectant plusieurs prestataires de transport."
+    lead: "Contribution au développement d’un **prototype web** destiné à orchestrer des opérations logistiques urgentes en connectant plusieurs prestataires de transport."
 
     meta:
         -   label: "Période :"
@@ -571,7 +571,7 @@ logic_immo:
     meta_title: "Logic-Immo Image Delivery Platform | Benjamin Lemin"
     eyebrow: "Mission de consultance · Immobilier · Performance média"
     title: "Logic-Immo Image Delivery Platform"
-    lead: "Conception et développement d’un service dédié au stockage et à la diffusion d’images immobilières afin d’améliorer les performances de chargement de la plateforme Logic-Immo."
+    lead: "Conception et développement d’un service dédié au **stockage et à la diffusion d’images immobilières** afin d’améliorer les performances de chargement de la plateforme Logic-Immo."
 
     meta:
         -   label: "Période :"
@@ -688,7 +688,7 @@ isobar:
     meta_title: "Projects at Isobar | Benjamin Lemin"
     eyebrow: "Agence digitale · Projets clients · Multi-stack"
     title: "Projects at Isobar"
-    lead: "Contribution à plusieurs projets clients courts en agence digitale, incluant des sites de marques, plateformes événementielles, campagnes marketing et outils promotionnels."
+    lead: "Contribution à plusieurs **projets clients courts en agence digitale**, incluant des sites de marques, plateformes événementielles, campagnes marketing et outils promotionnels."
 
     meta:
         -   label: "Période :"
@@ -797,7 +797,7 @@ delcampe:
     meta_title: "Delcampe Marketplace Platform | Benjamin Lemin"
     eyebrow: "Projet client · Marketplace · Symfony"
     title: "Delcampe Marketplace Platform"
-    lead: "Contribution à la maintenance, à l’évolution et à la qualité technique d’une plateforme marketplace internationale dédiée aux collectionneurs."
+    lead: "Contribution à la maintenance, à l’évolution et à la qualité technique d’une **plateforme marketplace internationale** dédiée aux collectionneurs."
 
     meta:
         -   label: "Période :"
@@ -812,10 +812,10 @@ delcampe:
     sections:
         -   title: "Contexte du projet"
             paragraphs:
-                - "Delcampe est une marketplace en ligne dédiée aux objets de collection tels que les timbres, les cartes postales, les monnaies et d’autres objets destinés aux collectionneurs."
+                - "Delcampe est une **marketplace en ligne dédiée aux objets de collection** tels que les timbres, les cartes postales, les monnaies et d’autres objets destinés aux collectionneurs."
                 - "La plateforme met en relation des vendeurs et des acheteurs à l’échelle mondiale et gère les annonces, les transactions, la messagerie et les interactions entre utilisateurs."
                 - "En complément de la marketplace web, Delcampe fournit également une application desktop utilisée par des vendeurs professionnels."
-                - "Cette application se connecte à la plateforme via un mélange d’APIs REST et SOAP afin de synchroniser les données de la marketplace."
+                - "Cette application se connecte à la plateforme via un mélange d’**APIs REST et SOAP** afin de synchroniser les données de la marketplace."
                 - "J’ai rejoint l’équipe de développement comme consultant via Blubird et contribué à la maintenance et à l’évolution de la plateforme marketplace principale."
 
         -   title: "Objectifs du projet"
@@ -824,12 +824,12 @@ delcampe:
                 - "Corriger les bugs et assurer la stabilité du système"
                 - "Améliorer des fonctionnalités et pages existantes"
                 - "Contribuer au développement de nouvelles fonctionnalités"
-                - "Maintenir un haut niveau de qualité de code dans une large base de code utilisée en production"
+                - "Maintenir un **haut niveau de qualité de code** dans une large base de code utilisée en production"
 
         -   title: "Architecture du système"
             paragraphs:
                 - "La plateforme était construite comme une application monolithique modulaire basée sur le framework Symfony."
-                - "Le système incluait plusieurs composants interconnectés : la plateforme web marketplace, les APIs utilisées par des services internes et par le client desktop, une interface utilisateur internationalisée et des services internes soutenant les opérations de la marketplace."
+                - "Le système incluait plusieurs **composants interconnectés** : la plateforme web marketplace, les APIs utilisées par des services internes et par le client desktop, une interface utilisateur internationalisée et des services internes soutenant les opérations de la marketplace."
 
         -   title: "Mon rôle"
             paragraphs:
@@ -864,7 +864,7 @@ delcampe:
         -   title: "Pratiques de développement"
             paragraphs:
                 - "L’équipe suivait un workflow Agile inspiré des pratiques Scrum."
-                - "Le processus de développement incluait également des branches dédiées pour chaque correction de bug ou fonctionnalité, des code reviews systématiques avant merge et des branches de release contrôlées pour les déploiements en production."
+                - "Le processus de développement incluait également des branches dédiées pour chaque correction de bug ou fonctionnalité, des **code reviews systématiques** avant merge et des branches de release contrôlées pour les déploiements en production."
                 - "Ce workflow contribuait à assurer la stabilité et la maintenabilité de la plateforme de production."
             list:
                 - "Cycles de sprint planning de deux à trois semaines"
@@ -923,7 +923,7 @@ delcampe:
             subsections:
                 -   title: "Travailler sur une marketplace mature"
                     paragraphs:
-                        - "Le projet impliquait de contribuer à un système de production large et existant depuis longtemps, utilisé par une communauté internationale d’utilisateurs."
+                        - "Le projet impliquait de contribuer à un **système de production large et existant depuis longtemps**, utilisé par une communauté internationale d’utilisateurs."
                         - "Comprendre l’architecture et naviguer dans la base de code existante nécessitait une collaboration avec des membres expérimentés de l’équipe."
                 -   title: "Standards élevés de qualité de code"
                     paragraphs:
@@ -933,7 +933,7 @@ delcampe:
                         - "La marketplace supportait plusieurs langues et des utilisateurs internationaux, ce qui augmentait la complexité applicative."
                 -   title: "Écosystème connecté"
                     paragraphs:
-                        - "La plateforme web était reliée à des APIs et à une application desktop utilisée par des vendeurs professionnels, ce qui demandait une attention particulière à la compatibilité et à la stabilité des échanges."
+                        - "La plateforme web était reliée à des APIs et à une application desktop utilisée par des vendeurs professionnels, ce qui demandait une attention particulière à la **compatibilité et à la stabilité des échanges**."
 
         -   title: "Résultats / impact"
             paragraphs:
@@ -952,7 +952,7 @@ keytrade:
     meta_title: "Keytrade Bank — Web Platforms Maintenance | Benjamin Lemin"
     eyebrow: "Mission de consultance · Banque · Maintenance legacy"
     title: "Keytrade Bank — Web Platforms Maintenance"
-    lead: "Maintenance de plusieurs plateformes web bancaires : site public, extranet client et intranet administratif, dans un environnement PHP legacy soumis à des contraintes opérationnelles strictes."
+    lead: "Maintenance de plusieurs **plateformes web bancaires** : site public, extranet client et intranet administratif, dans un environnement PHP legacy soumis à des contraintes opérationnelles strictes."
 
     meta:
         -   label: "Période :"
@@ -1057,7 +1057,7 @@ famille_chretienne:
     meta_title: "Famille Chrétienne — Plateforme éditoriale DPI | Benjamin Lemin"
     eyebrow: "Projet client · Média · Drupal"
     title: "Famille Chrétienne — Plateforme éditoriale DPI"
-    lead: "Adaptation et déploiement d’une plateforme éditoriale Drupal 7 issue de DPI afin de créer une version white-label réutilisable pour d’autres médias, puis de l’adapter au site Famille Chrétienne."
+    lead: "Adaptation et déploiement d’une **plateforme éditoriale Drupal 7** issue de DPI afin de créer une version white-label réutilisable pour d’autres médias, puis de l’adapter au site Famille Chrétienne."
 
     meta:
         -   label: "Période :"
@@ -1158,7 +1158,7 @@ stanhome:
     meta_title: "Stanhome E-commerce Platform | Benjamin Lemin"
     eyebrow: "Projet client · E-commerce · Drupal"
     title: "Stanhome — Plateforme e-commerce (France & Italie)"
-    lead: "Contribution à la modernisation d’une plateforme e-commerce multi-pays, combinant vente en ligne et réseau de distribution directe."
+    lead: "Contribution à la modernisation d’une **plateforme e-commerce multi-pays**, combinant vente en ligne et réseau de distribution directe."
 
     meta:
         -   label: "Période :"
@@ -1177,12 +1177,12 @@ stanhome:
             paragraphs:
                 - "Stanhome est une entreprise européenne de vente directe spécialisée dans les produits d’entretien et de beauté."
                 - "Le projet consistait à moderniser la plateforme e-commerce de l’entreprise, en commençant par le marché français puis en l’étendant au marché italien."
-                - "Stanhome fonctionne en partie avec un modèle de réseau de vente directe, dans lequel des vendeurs indépendants organisent des événements de présentation de produits et vendent directement aux clients, dans un modèle similaire à des réunions à domicile de type Tupperware."
+                - "Stanhome fonctionne en partie avec un **modèle de réseau de vente directe**, dans lequel des vendeurs indépendants organisent des événements de présentation de produits et vendent directement aux clients, dans un modèle similaire à des réunions à domicile de type Tupperware."
                 - "La plateforme devait donc supporter à la fois des capacités e-commerce classiques et des fonctionnalités alignées avec ce modèle de distribution."
 
         -   title: "Objectifs du projet"
             paragraphs:
-                - "Les objectifs principaux couvraient à la fois la modernisation visuelle, la performance, l’optimisation du parcours d’achat, le support du réseau de distributeurs et l’intégration avec les outils internes de l’entreprise."
+                - "Les objectifs principaux couvraient à la fois la modernisation visuelle, la **performance**, l’optimisation du parcours d’achat, le support du réseau de distributeurs et l’intégration avec les outils internes de l’entreprise."
                 - "Après la livraison de la plateforme française, l’architecture a été réutilisée et adaptée pour le marché italien."
             list:
                 - "Redesign du thème visuel de la plateforme e-commerce"
@@ -1196,7 +1196,7 @@ stanhome:
             subsections:
                 -   title: "Optimisation du catalogue produit"
                     paragraphs:
-                        - "J’ai amélioré les performances de navigation dans le catalogue en intégrant ElasticSearch."
+                        - "J’ai amélioré les **performances de navigation dans le catalogue** en intégrant ElasticSearch."
                         - "ElasticSearch était utilisé pour la recherche produit, la navigation à facettes et le filtrage des produits dans le catalogue."
                         - "Cette intégration a significativement amélioré les performances et l’utilisabilité de la navigation produit."
                 -   title: "Amélioration du checkout et du tunnel de vente"
@@ -1204,7 +1204,7 @@ stanhome:
                         - "J’ai contribué à l’amélioration du tunnel d’achat, en aidant à fluidifier le processus de commande et à améliorer l’expérience utilisateur."
                 -   title: "Dealer locator"
                     paragraphs:
-                        - "J’ai implémenté une fonctionnalité de dealer locator avec Google Maps API, permettant aux utilisateurs de trouver des distributeurs proches sur base de leur localisation géographique."
+                        - "J’ai implémenté une fonctionnalité de **dealer locator avec Google Maps API**, permettant aux utilisateurs de trouver des distributeurs proches sur base de leur localisation géographique."
                         - "Cette fonctionnalité soutenait directement le modèle de distribution en vente directe de Stanhome."
                 -   title: "Automatisation marketing"
                     paragraphs:
@@ -1212,7 +1212,7 @@ stanhome:
                         - "Cela incluait de la logique backend et des tâches de synchronisation basées sur des cron jobs au sein de la plateforme Drupal."
                 -   title: "Intégration CRM"
                     paragraphs:
-                        - "J’ai travaillé sur l’intégration entre la plateforme e-commerce et le CRM Salesforce de l’entreprise."
+                        - "J’ai travaillé sur l’intégration entre la **plateforme e-commerce et le CRM Salesforce** de l’entreprise."
                         - "Les données liées aux ventes étaient transmises depuis Drupal Commerce vers Salesforce, permettant aux équipes internes de suivre l’activité commerciale et les interactions clients dans l’écosystème CRM."
                 -   title: "Déploiement multi-pays"
                     paragraphs:
@@ -1253,7 +1253,7 @@ stanhome:
             list:
                 - "Gérer efficacement de larges catalogues de produits"
                 - "Implémenter un filtrage produit rapide via ElasticSearch"
-                - "Supporter le modèle hybride de Stanhome combinant e-commerce et réseau de vente directe"
+                - "Supporter le **modèle hybride de Stanhome** combinant e-commerce et réseau de vente directe"
                 - "Adapter l’architecture à plusieurs marchés tout en conservant une base technique commune"
 
         -   title: "Résultats / impact"
@@ -1273,7 +1273,7 @@ his:
     meta_title: "Hôpitaux Iris Sud — Site institutionnel & intranet | Benjamin Lemin"
     eyebrow: "Projet client · Santé · Drupal"
     title: "Hôpitaux Iris Sud — Site institutionnel & intranet"
-    lead: "Mise en place d’un site institutionnel Drupal 9 unifié pour quatre hôpitaux bruxellois, avec intranet, recherche de praticiens, aide à la prise de rendez-vous et authentification ADFS."
+    lead: "Mise en place d’un **site institutionnel Drupal 9** unifié pour quatre hôpitaux bruxellois, avec intranet, recherche de praticiens, aide à la prise de rendez-vous et authentification ADFS."
 
     meta:
         -   label: "Période :"
@@ -1393,7 +1393,7 @@ moveit:
     meta_title: "Rossel — MoveIT (SSO Platform) | Benjamin Lemin"
     eyebrow: "Projet client · SSO · Microservices"
     title: "Rossel — MoveIT (plateforme SSO)"
-    lead: "Contribution à la conception et au développement d’une plateforme d’authentification unifiée scalable pour l’écosystème média du groupe Rossel."
+    lead: "Contribution à la conception et au développement d’une **plateforme d’authentification unifiée scalable** pour l’écosystème média du groupe Rossel."
 
     meta:
         -   label: "Période :"
@@ -1411,13 +1411,13 @@ moveit:
         -   title: "Contexte"
             paragraphs:
                 - "Rossel est l’un des plus grands groupes médias en Belgique, opérant plusieurs journaux et plateformes médias numériques, dont Le Soir."
-                - "Le projet MoveIT visait à refondre le système de gestion des utilisateurs et d’authentification à l’échelle de l’écosystème Rossel."
-                - "L’objectif était de construire une nouvelle plateforme Single Sign-On scalable, capable de supporter l’ensemble des marques médias du groupe Rossel."
+                - "Le projet MoveIT visait à refondre le **système de gestion des utilisateurs et d’authentification** à l’échelle de l’écosystème Rossel."
+                - "L’objectif était de construire une nouvelle **plateforme Single Sign-On scalable**, capable de supporter l’ensemble des marques médias du groupe Rossel."
                 - "Le nouveau système était conçu pour remplacer progressivement les mécanismes d’authentification existants, en commençant par Le Soir puis en s’étendant ensuite aux autres journaux du groupe."
 
         -   title: "Objectifs du projet"
             paragraphs:
-                - "Le projet adoptait une architecture microservices afin d’assurer la scalabilité et la modularité à long terme."
+                - "Le projet adoptait une **architecture microservices** afin d’assurer la scalabilité et la modularité à long terme."
             list:
                 - "Construire un système SSO scalable pour l’écosystème média Rossel"
                 - "Supporter l’authentification des utilisateurs à travers plusieurs publications"
@@ -1429,11 +1429,11 @@ moveit:
                 -   title: "Développement de microservices"
                     paragraphs:
                         - "J’ai participé au développement de services backend en Go avec le framework Gin."
-                        - "J’ai implémenté deux microservices responsables de fonctionnalités liées aux utilisateurs dans le nouveau système d’authentification."
+                        - "J’ai implémenté deux **microservices** responsables de fonctionnalités liées aux utilisateurs dans le nouveau système d’authentification."
                         - "J’ai adopté une gestion structurée des requêtes avec des patterns DTO, Data Transfer Object, afin d’assurer une séparation claire entre les contrats API et la logique métier interne."
                 -   title: "Communication orientée événements"
                     paragraphs:
-                        - "J’ai contribué à la conception et à l’implémentation des structures de messages Kafka utilisées pour la communication entre services."
+                        - "J’ai contribué à la conception et à l’implémentation des **structures de messages Kafka** utilisées pour la communication entre services."
                         - "L’architecture combinait des APIs REST pour les interactions synchrones et des files d’événements Kafka pour la communication asynchrone."
                 -   title: "Système d’inscription utilisateur"
                     paragraphs:
@@ -1442,7 +1442,7 @@ moveit:
                 -   title: "Observabilité et logging"
                     paragraphs:
                         - "J’ai travaillé avec la stack ELK, Elasticsearch, Logstash et Kibana, afin de monitorer et analyser les logs générés par l’architecture microservices."
-                        - "Cette configuration permettait une collecte centralisée des logs et améliorait le debugging à travers le système distribué."
+                        - "Cette configuration permettait une **collecte centralisée des logs** et améliorait le debugging à travers le système distribué."
 
         -   title: "Architecture"
             paragraphs:
@@ -1503,7 +1503,7 @@ marge_delhaize:
     meta_title: "Marge Delhaize — Plateforme d’intégration de données et d’analyse de marge | Benjamin Lemin"
     eyebrow: "Projet produit · Data integration · Analyse de marge"
     title: "Marge Delhaize — Plateforme d’intégration de données et d’analyse de marge"
-    lead: "Développement d’une plateforme ETL et analytique destinée à consolider des données opérationnelles issues de plusieurs systèmes afin d’analyser les marges réelles des produits dans le temps."
+    lead: "Développement d’une **plateforme ETL et analytique** destinée à consolider des données opérationnelles issues de plusieurs systèmes afin d’analyser les marges réelles des produits dans le temps."
 
     meta:
         -   label: "Période :"
@@ -1631,7 +1631,7 @@ coaching:
     meta_title: "Programming Coaching & Technical Mentoring | Benjamin Lemin"
     eyebrow: "Coaching · Mentorat technique · Transmission"
     title: "Programming Coaching & Technical Mentoring"
-    lead: "Accompagnement individuel d’étudiants, professionnels et développeurs dans leur progression technique, à travers des sessions de coaching orientées programmation, architecture, debugging et bonnes pratiques."
+    lead: "Accompagnement individuel d’étudiants, professionnels et développeurs dans leur **progression technique**, à travers des sessions de coaching orientées programmation, architecture, debugging et bonnes pratiques."
 
     meta:
         -   label: "Période :"

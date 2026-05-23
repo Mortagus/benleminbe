@@ -16,7 +16,7 @@
             <h1>{{ 'hero.title'|trans }}</h1>
 
             <p class="skills-hero__intro">
-                {{ 'hero.intro'|trans }}
+                {{ 'hero.intro'|trans|highlight_keywords }}
             </p>
         </header>
 
@@ -27,22 +27,22 @@
                 <div class="skills-highlight-grid">
                     <article>
                         <h3>{{ 'contribution.backend.title'|trans }}</h3>
-                        <p>{{ 'contribution.backend.text'|trans }}</p>
+                        <p>{{ 'contribution.backend.text'|trans|highlight_keywords }}</p>
                     </article>
 
                     <article>
                         <h3>{{ 'contribution.complex_systems.title'|trans }}</h3>
-                        <p>{{ 'contribution.complex_systems.text'|trans }}</p>
+                        <p>{{ 'contribution.complex_systems.text'|trans|highlight_keywords }}</p>
                     </article>
 
                     <article>
                         <h3>{{ 'contribution.improvement.title'|trans }}</h3>
-                        <p>{{ 'contribution.improvement.text'|trans }}</p>
+                        <p>{{ 'contribution.improvement.text'|trans|highlight_keywords }}</p>
                     </article>
 
                     <article>
                         <h3>{{ 'contribution.communication.title'|trans }}</h3>
-                        <p>{{ 'contribution.communication.text'|trans }}</p>
+                        <p>{{ 'contribution.communication.text'|trans|highlight_keywords }}</p>
                     </article>
                 </div>
             </div>
@@ -160,32 +160,32 @@
                 <div class="skills-highlight-grid">
                     <article>
                         <h3>{{ 'soft_skills.analysis.title'|trans }}</h3>
-                        <p>{{ 'soft_skills.analysis.text'|trans }}</p>
+                        <p>{{ 'soft_skills.analysis.text'|trans|highlight_keywords }}</p>
                     </article>
 
                     <article>
                         <h3>{{ 'soft_skills.pragmatism.title'|trans }}</h3>
-                        <p>{{ 'soft_skills.pragmatism.text'|trans }}</p>
+                        <p>{{ 'soft_skills.pragmatism.text'|trans|highlight_keywords }}</p>
                     </article>
 
                     <article>
                         <h3>{{ 'soft_skills.collaboration.title'|trans }}</h3>
-                        <p>{{ 'soft_skills.collaboration.text'|trans }}</p>
+                        <p>{{ 'soft_skills.collaboration.text'|trans|highlight_keywords }}</p>
                     </article>
 
                     <article>
                         <h3>{{ 'soft_skills.communication.title'|trans }}</h3>
-                        <p>{{ 'soft_skills.communication.text'|trans }}</p>
+                        <p>{{ 'soft_skills.communication.text'|trans|highlight_keywords }}</p>
                     </article>
 
                     <article>
                         <h3>{{ 'soft_skills.transmission.title'|trans }}</h3>
-                        <p>{{ 'soft_skills.transmission.text'|trans }}</p>
+                        <p>{{ 'soft_skills.transmission.text'|trans|highlight_keywords }}</p>
                     </article>
 
                     <article>
                         <h3>{{ 'soft_skills.adaptability.title'|trans }}</h3>
-                        <p>{{ 'soft_skills.adaptability.text'|trans }}</p>
+                        <p>{{ 'soft_skills.adaptability.text'|trans|highlight_keywords }}</p>
                     </article>
                 </div>
             </div>
@@ -195,7 +195,7 @@
             <div class="card">
                 <h2 id="domains-title">{{ 'sections.domains.title'|trans }}</h2>
 
-                <p>{{ 'sections.domains.intro'|trans }}</p>
+                <p>{{ 'sections.domains.intro'|trans|highlight_keywords }}</p>
 
                 <ul class="tag-list tag-list--large">
                     <li>{{ 'domains.media'|trans }}</li>
@@ -216,8 +216,8 @@
             <div class="card card--accent">
                 <h2 id="skills-summary-title">{{ 'sections.summary.title'|trans }}</h2>
 
-                <p>{{ 'sections.summary.paragraph_1'|trans }}</p>
-                <p>{{ 'sections.summary.paragraph_2'|trans }}</p>
+                <p>{{ 'sections.summary.paragraph_1'|trans|highlight_keywords }}</p>
+                <p>{{ 'sections.summary.paragraph_2'|trans|highlight_keywords }}</p>
             </div>
         </section>
     </main>

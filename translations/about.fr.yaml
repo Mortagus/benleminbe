@@ -6,37 +6,37 @@ about:
     hero:
         eyebrow: "À propos"
         title: "Développeur web, coach et curieux du monde qui m'entoure"
-        intro: "Je développe des applications web depuis 2010, avec une attention particulière pour les projets existants, les systèmes métier et le code qui doit continuer à vivre."
+        intro: "Je développe des applications web depuis 2010, avec une attention particulière pour les **projets existants**, les systèmes métier et le code qui doit continuer à vivre."
 
     sections:
         why_it:
             title: "Pourquoi l’informatique ?"
             paragraphs:
                 1: "Mon intérêt pour l’informatique s’est construit en plusieurs étapes. J’ai grandi dans une maison où il y avait déjà un ordinateur dans les années 1990 : ma mère l’utilisait pour travailler, mon frère y passait beaucoup de temps, et moi, au départ, je voulais surtout savoir comment lancer mes jeux."
-                2: "Avec le temps, la curiosité a pris plus de place. Les films, les documentaires et les émissions de vulgarisation scientifique m’ont donné envie de comprendre comment les choses fonctionnent. L’informatique m’est progressivement apparue comme un domaine capable d’agir sur beaucoup de choses concrètes, parce que les machines et les logiciels sont partout."
-                3: "À la fin du secondaire, en découvrant les possibilités d’études supérieures, j’ai été attiré par la bioinformatique. C’était un croisement assez naturel entre mon intérêt pour la biologie, mon goût pour la compréhension des systèmes et cette intuition que l’informatique ouvrait énormément de portes."
-                4: "Pendant mes études en haute école, j’ai ensuite découvert le développement web. J’y ai trouvé une manière très concrète de construire des outils utiles : une interface, des données, de la logique métier, des bases de données, des algorithmes et de l’architecture logicielle. Tout ce que j’avais appris commençait à se relier dans quelque chose de tangible."
-                5: "Mon parcours vers la bioinformatique ne s’est finalement pas déroulé comme prévu, et j’ai eu besoin d’entrer dans la vie professionnelle. Le web s’est alors imposé comme un terrain à la fois concret, utile et suffisamment vaste pour continuer à apprendre. C’est comme ça que j’en ai fait mon métier."
+                2: "Avec le temps, la curiosité a pris plus de place. Les films, les documentaires et les émissions de vulgarisation scientifique m’ont donné envie de **comprendre comment les choses fonctionnent**. L’informatique m’est progressivement apparue comme un domaine capable d’agir sur beaucoup de choses concrètes, parce que les machines et les logiciels sont partout."
+                3: "À la fin du secondaire, en découvrant les possibilités d’études supérieures, j’ai été attiré par la **bioinformatique**. C’était un croisement assez naturel entre mon intérêt pour la biologie, mon goût pour la compréhension des systèmes et cette intuition que l’informatique ouvrait énormément de portes."
+                4: "Pendant mes études en haute école, j’ai ensuite découvert le **développement web**. J’y ai trouvé une manière très concrète de construire des outils utiles : une interface, des données, de la logique métier, des bases de données, des algorithmes et de l’architecture logicielle. Tout ce que j’avais appris commençait à se relier dans quelque chose de tangible."
+                5: "Mon parcours vers la bioinformatique ne s’est finalement pas déroulé comme prévu, et j’ai eu besoin d’entrer dans la vie professionnelle. Le web s’est alors imposé comme un terrain à la fois **concret, utile et suffisamment vaste** pour continuer à apprendre. C’est comme ça que j’en ai fait mon métier."
 
         work:
             title: "Ma façon de travailler"
             paragraphs:
-                1: "Avec les années, j’ai appris qu’il est rarement efficace de modifier un système sans avoir d’abord pris le temps de comprendre son contexte, ses contraintes et les besoins réels auxquels il répond."
-                2: "Ma première étape consiste donc à écouter, poser des questions et reformuler ce que j’ai compris. Cette phase permet souvent de clarifier le problème, de mettre en évidence les hypothèses implicites et d’identifier les solutions les plus adaptées."
-                3: "Lorsque le contexte est suffisamment clair, mon expérience me permet généralement de repérer rapidement les points sensibles et les pistes d’amélioration les plus pertinentes. J’accorde une attention particulière à la lisibilité du code, à sa maintenabilité et à la réduction des risques lors des mises en production."
-                4: "Ma manière de travailler continue d’évoluer. Le développement logiciel est un domaine où l’apprentissage permanent fait partie du métier, et j’essaie d’intégrer progressivement les idées, outils et pratiques qui permettent de travailler de manière plus claire et plus efficace."
+                1: "Avec les années, j’ai appris qu’il est rarement efficace de modifier un système sans avoir d’abord pris le temps de comprendre son **contexte**, ses contraintes et les besoins réels auxquels il répond."
+                2: "Ma première étape consiste donc à **écouter, poser des questions et reformuler** ce que j’ai compris. Cette phase permet souvent de clarifier le problème, de mettre en évidence les hypothèses implicites et d’identifier les solutions les plus adaptées."
+                3: "Lorsque le contexte est suffisamment clair, mon expérience me permet généralement de repérer rapidement les points sensibles et les pistes d’amélioration les plus pertinentes. J’accorde une attention particulière à la **lisibilité du code**, à sa maintenabilité et à la réduction des risques lors des mises en production."
+                4: "Ma manière de travailler continue d’évoluer. Le développement logiciel est un domaine où **l’apprentissage permanent** fait partie du métier, et j’essaie d’intégrer progressivement les idées, outils et pratiques qui permettent de travailler de manière plus claire et plus efficace."
 
         coaching:
             title: "Le coaching et la transmission"
             paragraphs:
                 1: "En parallèle du développement web, j’accompagne aussi des personnes qui apprennent la programmation ou qui souhaitent progresser dans leur pratique."
-                2: "J’aime particulièrement aider à clarifier les notions qui semblent floues au départ : structurer un raisonnement, découper un problème, comprendre une erreur, ou simplement reprendre confiance face au code."
-                3: "Cette activité nourrit aussi ma pratique de développeur. Expliquer oblige à être clair, à questionner ses propres habitudes et à revenir régulièrement aux fondamentaux."
+                2: "J’aime particulièrement aider à clarifier les notions qui semblent floues au départ : **structurer un raisonnement**, découper un problème, comprendre une erreur, ou simplement reprendre confiance face au code."
+                3: "Cette activité nourrit aussi ma pratique de développeur. **Expliquer oblige à être clair**, à questionner ses propres habitudes et à revenir régulièrement aux fondamentaux."
 
         interests:
             title: "Mes centres d’intérêt"
             paragraphs:
-                1: "Ma curiosité dépasse largement le cadre du développement web. Je m’intéresse aux sciences, aux mathématiques, à l’ingénierie, à l’économie, à la géopolitique et plus généralement aux systèmes complexes."
+                1: "Ma curiosité dépasse largement le cadre du développement web. Je m’intéresse aux sciences, aux mathématiques, à l’ingénierie, à l’économie, à la géopolitique et plus généralement aux **systèmes complexes**."
                 2: "J’aime comprendre comment les choses fonctionnent, faire des liens entre les sujets et explorer des idées par la pratique. C’est aussi ce qui m’amène à créer de petits outils, des expérimentations en JavaScript ou des projets plus ludiques."
                 3: "Les jeux, le jeu de rôle et la programmation créative font partie de ces terrains d’exploration. Ils permettent de mêler logique, imagination, règles, interfaces et expérience utilisateur dans des projets concrets."
 
@@ -44,16 +44,16 @@ about:
             title: "Où j’en suis aujourd’hui"
             paragraphs:
                 1: "Aujourd’hui, je construis progressivement une activité indépendante qui me permet de travailler autrement : avec plus de clarté, plus de recul et une meilleure attention portée à l’équilibre entre qualité du travail et rythme de vie."
-                2: "Je souhaite collaborer sur des projets où mon expérience peut être utile : comprendre un existant, stabiliser une application, faire évoluer un système métier, accompagner une équipe ou aider à remettre de l’ordre dans une base de code."
-                3: "Cette transition est aussi l’occasion de construire un cadre professionnel plus aligné avec ma manière de travailler : poser les bonnes questions, avancer étape par étape et privilégier les solutions durables plutôt que les réponses précipitées."
+                2: "Je souhaite collaborer sur des projets où mon expérience peut être utile : **comprendre un existant**, stabiliser une application, faire évoluer un système métier, accompagner une équipe ou aider à remettre de l’ordre dans une base de code."
+                3: "Cette transition est aussi l’occasion de construire un cadre professionnel plus aligné avec ma manière de travailler : poser les bonnes questions, avancer étape par étape et privilégier les **solutions durables** plutôt que les réponses précipitées."
 
         website:
             title: "Pourquoi ce site existe"
             paragraphs:
                 1: "Pendant longtemps, j’ai repoussé l’idée de créer un site web personnel. Comme beaucoup de développeurs, je passais plus facilement du temps à construire des outils pour les autres qu’à prendre le temps de présenter mon propre parcours."
                 2: "Un jour, je suis tombé sur une idée qui m’a marqué : un développeur sans site web, c’est un peu comme un charpentier sans atelier. Cette comparaison m’a convaincu qu’il était temps de construire un espace qui me ressemble."
-                3: "Ce site est d’abord un outil professionnel. Il me permet de présenter mon expérience, mes projets et ma manière de travailler dans un format beaucoup plus vivant et détaillé qu’un CV traditionnel."
-                4: "C’est aussi un terrain d’expérimentation. J’aime créer des outils utiles, tester de nouvelles idées et développer de petits projets pour moi-même ou pour mon entourage. Ce site évolue progressivement et reflète à la fois mon parcours, ma curiosité et mon goût pour la construction de solutions concrètes."
+                3: "Ce site est d’abord un **outil professionnel**. Il me permet de présenter mon expérience, mes projets et ma manière de travailler dans un format beaucoup plus vivant et détaillé qu’un CV traditionnel."
+                4: "C’est aussi un **terrain d’expérimentation**. J’aime créer des outils utiles, tester de nouvelles idées et développer de petits projets pour moi-même ou pour mon entourage. Ce site évolue progressivement et reflète à la fois mon parcours, ma curiosité et mon goût pour la construction de solutions concrètes."
 
         links:
             title: "Liens utiles"

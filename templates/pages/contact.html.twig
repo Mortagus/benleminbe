@@ -15,7 +15,7 @@
 
             <h1>{{ 'contact.hero.title'|trans }}</h1>
 
-            <p class="contact-hero__intro">{{ 'contact.hero.intro'|trans }}</p>
+            <p class="contact-hero__intro">{{ 'contact.hero.intro'|trans|highlight_keywords }}</p>
         </header>
 
         <section class="contact-methods" aria-labelledby="contact-methods-title">
@@ -26,7 +26,7 @@
                     <span class="contact-card__icon">in</span>
                     <span class="contact-card__content">
                         <strong>{{ 'contact.methods.linkedin.name'|trans }}</strong>
-                        <span>{{ 'contact.methods.linkedin.description'|trans }}</span>
+                    <span>{{ 'contact.methods.linkedin.description'|trans|highlight_keywords }}</span>
                     </span>
                     <span class="contact-card__action">{{ 'contact.methods.linkedin.action'|trans }}</span>
                 </a>
@@ -35,7 +35,7 @@
                     <span class="contact-card__icon">M</span>
                     <span class="contact-card__content">
                         <strong>{{ 'contact.methods.malt.name'|trans }}</strong>
-                        <span>{{ 'contact.methods.malt.description'|trans }}</span>
+                    <span>{{ 'contact.methods.malt.description'|trans|highlight_keywords }}</span>
                     </span>
                     <span class="contact-card__action">{{ 'contact.methods.malt.action'|trans }}</span>
                 </a>
@@ -44,7 +44,7 @@
                     <span class="contact-card__icon">@</span>
                     <span class="contact-card__content">
                         <strong>{{ 'contact.methods.email.name'|trans }}</strong>
-                        <span>{{ 'contact.methods.email.description'|trans }}</span>
+                    <span>{{ 'contact.methods.email.description'|trans|highlight_keywords }}</span>
                     </span>
                     <span class="contact-card__action">{{ 'contact.methods.email.action'|trans }}</span>
                 </a>
@@ -53,7 +53,7 @@
                     <span class="contact-card__icon">☎</span>
                     <span class="contact-card__content">
                         <strong>{{ 'contact.methods.whatsapp.name'|trans }}</strong>
-                        <span>{{ 'contact.methods.whatsapp.description'|trans }}</span>
+                    <span>{{ 'contact.methods.whatsapp.description'|trans|highlight_keywords }}</span>
                     </span>
                     <span class="contact-card__action">{{ 'contact.methods.whatsapp.action'|trans }}</span>
                 </a>
@@ -65,20 +65,20 @@
                 <h2>{{ 'contact.details.services.title'|trans }}</h2>
 
                 <ul>
-                    <li>{{ 'contact.details.services.item_1'|trans }}</li>
-                    <li>{{ 'contact.details.services.item_2'|trans }}</li>
-                    <li>{{ 'contact.details.services.item_3'|trans }}</li>
-                    <li>{{ 'contact.details.services.item_4'|trans }}</li>
-                    <li>{{ 'contact.details.services.item_5'|trans }}</li>
+                    <li>{{ 'contact.details.services.item_1'|trans|highlight_keywords }}</li>
+                    <li>{{ 'contact.details.services.item_2'|trans|highlight_keywords }}</li>
+                    <li>{{ 'contact.details.services.item_3'|trans|highlight_keywords }}</li>
+                    <li>{{ 'contact.details.services.item_4'|trans|highlight_keywords }}</li>
+                    <li>{{ 'contact.details.services.item_5'|trans|highlight_keywords }}</li>
                 </ul>
             </div>
 
             <div class="card contact-detail-card">
                 <h2>{{ 'contact.details.availability.title'|trans }}</h2>
 
-                <p>{{ 'contact.details.availability.paragraph_1'|trans }}</p>
+                <p>{{ 'contact.details.availability.paragraph_1'|trans|highlight_keywords }}</p>
 
-                <p>{{ 'contact.details.availability.paragraph_2'|trans }}</p>
+                <p>{{ 'contact.details.availability.paragraph_2'|trans|highlight_keywords }}</p>
             </div>
         </section>
     </main>

@@ -7,8 +7,8 @@ hero:
     name: "Benjamin Lemin"
     title: "Un besoin métier ? Un projet complexe ?"
     subtitle: "Développeur web senior PHP, Symfony, Drupal"
-    intro: "J'aide les entreprises à concevoir, reprendre et faire évoluer des applications web sur mesure."
-    details_p1: "15+ ans d'expérience sur des applications métier, des reprises d'existant et des plateformes en production."
+    intro: "J'aide les entreprises à concevoir, reprendre et faire évoluer des **applications web sur mesure**."
+    details_p1: "**15+ ans d'expérience** sur des applications métier, des reprises d'existant et des plateformes en production."
 
 actions:
     contact: "Me contacter"
@@ -19,45 +19,45 @@ help:
     title: "Je peux vous aider si..."
     card_1:
         title: "Vous avez une idée d'outil métier"
-        text: "Vous devez créer une <strong class=\"text-highlight\">application adaptée</strong> à vos processus réels."
+        text: "Vous devez créer une **application adaptée** à vos processus réels."
     card_2:
         title: "Votre application atteint ses limites"
-        text: "Ajouter, corriger ou faire évoluer l'outil <strong class=\"text-highlight\">devient difficile</strong>."
+        text: "Ajouter, corriger ou faire évoluer l'outil **devient difficile**."
     card_3:
         title: "Vous devez reprendre un projet existant"
-        text: "Le développeur précédent n'est plus disponible ou <strong class=\"text-highlight\">la connaissance s'est dispersée</strong>."
+        text: "Le développeur précédent n'est plus disponible ou **la connaissance s'est dispersée**."
     card_4:
         title: "Votre domaine métier est complexe"
-        text: "Vous avez besoin d'un regard capable de comprendre vite <strong class=\"text-highlight\">les règles et les risques</strong>."
+        text: "Vous avez besoin d'un regard capable de comprendre vite **les règles et les risques**."
     card_5:
         title: "Votre équipe manque de ressources"
-        text: "Je peux rejoindre une équipe existante comme <strong class=\"text-highlight\">renfort senior</strong> à temps partiel."
+        text: "Je peux rejoindre une équipe existante comme **renfort senior** à temps partiel."
     card_6:
         title: "Un outil standard ne suffit pas"
-        text: "Vous avez besoin d'une solution connectée à <strong class=\"text-highlight\">vos données et vos APIs</strong>."
+        text: "Vous avez besoin d'une solution connectée à **vos données et vos APIs**."
 
 concrete:
     title: "Ce que je peux prendre en charge"
-    item_1: "Concevoir et développer une application web métier sur mesure"
-    item_2: "Reprendre un projet PHP, Symfony ou Drupal déjà en production"
-    item_3: "Ajouter des fonctionnalités sans repartir de zéro"
-    item_4: "Moderniser progressivement un système existant"
-    item_5: "Intégrer des APIs, services externes et bases de données dans un outil métier"
+    item_1: "Concevoir et développer une **application web métier sur mesure**"
+    item_2: "Reprendre un projet **PHP, Symfony ou Drupal** déjà en production"
+    item_3: "Ajouter des fonctionnalités **sans repartir de zéro**"
+    item_4: "**Moderniser progressivement** un système existant"
+    item_5: "Intégrer des **APIs, services externes et bases de données** dans un outil métier"
 
 projects:
     title: "Quelques projets représentatifs"
     delcampe:
         tag: "Marketplace / Symfony"
         title: "Delcampe"
-        text: "Intervention sur une marketplace internationale en production, dédiée aux collectionneurs. Maintenance, évolution fonctionnelle et contribution à la qualité d'une large application Symfony avec code review et tests automatisés."
+        text: "Intervention sur une **marketplace internationale en production**, dédiée aux collectionneurs. Maintenance, évolution fonctionnelle et contribution à la qualité d'une large application Symfony avec code review et tests automatisés."
     stanhome:
         tag: "E-commerce / Drupal"
         title: "Stanhome"
-        text: "Contribution à l'évolution d'une plateforme e-commerce Drupal Commerce. Travail sur le catalogue et les intégrations (ElasticSearch, Salesforce, Google Maps API) dans un contexte métier existant."
+        text: "Contribution à l'évolution d'une **plateforme e-commerce Drupal Commerce**. Travail sur le catalogue et les intégrations (ElasticSearch, Salesforce, Google Maps API) dans un contexte métier existant."
     moveit:
         tag: "SSO / Microservices"
         title: "Rossel - MoveIT"
-        text: "Participation au développement de microservices Go pour une plateforme d'authentification SSO utilisée par plusieurs marques médias du groupe Rossel."
+        text: "Participation au développement de **microservices Go** pour une plateforme d'authentification SSO utilisée par plusieurs marques médias du groupe Rossel."
 
 stats:
     title: "Expérience en bref"
@@ -76,4 +76,4 @@ stats:
 
 contact:
     title: "Vous voulez savoir si je peux vous être utile ?"
-    text: "Expliquez-moi votre contexte, votre blocage ou l'outil que vous souhaitez faire évoluer. Je vous dirai rapidement si je peux aider et par où commencer."
+    text: "Expliquez-moi votre **contexte**, votre **blocage** ou l'outil que vous souhaitez faire évoluer. Je vous dirai rapidement si je peux aider et par où commencer."

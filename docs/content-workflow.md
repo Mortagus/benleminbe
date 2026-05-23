@@ -19,6 +19,30 @@ Practical rule:
 - update `docs/pro_exp/` when the editorial corpus should stay aligned;
 - when both exist for the same information, the YAML value is the source of truth for the website.
 
+## Editorial Keyword Highlights
+
+Long public texts can use a limited Markdown-like marker to improve scanability:
+
+```text
+This sentence highlights **one important idea** and leaves the rest normal.
+```
+
+The Twig filter `highlight_keywords` renders this marker as:
+
+```html
+<strong class="text-highlight">one important idea</strong>
+```
+
+Rules:
+
+- use this only in visible body copy, summaries, card descriptions and list items;
+- do not use it in meta titles, meta descriptions, route labels, button labels or legal identifiers;
+- prefer one highlighted idea per paragraph or list item;
+- highlight meaningful phrases, not isolated filler words;
+- keep French and English highlights broadly aligned;
+- render highlighted translations with `|highlight_keywords`;
+- render any highlighted value reused as metadata with `|strip_keyword_highlights`.
+
 ## Project Content Contract
 
 Project content is split between:

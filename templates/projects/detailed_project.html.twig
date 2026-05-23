@@ -3,7 +3,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ projectData.meta_title }}{% endblock %}
-{% block meta_description %}{{ projectData.lead }}{% endblock %}
+{% block meta_description %}{{ projectData.lead|strip_keyword_highlights }}{% endblock %}
 {% block importmap %}{{ importmap(['app', 'page_project_detail']) }}{% endblock %}
 
 {% block body %}
@@ -14,7 +14,7 @@
             <h1>{{ projectData.title }}</h1>
 
             <p class="lead">
-                {{ projectData.lead }}
+                {{ projectData.lead|highlight_keywords }}
             </p>
 
             {% if projectData.meta is defined and projectData.meta is not empty %}
@@ -77,14 +77,14 @@
 
                     {% if section.paragraphs is defined %}
                         {% for paragraph in section.paragraphs %}
-                            <p>{{ paragraph }}</p>
+                            <p>{{ paragraph|highlight_keywords }}</p>
                         {% endfor %}
                     {% endif %}
 
                     {% if section.flow is defined %}
                         <div class="project-flow">
                             {% for step in section.flow %}
-                                <div class="project-flow-step">{{ step }}</div>
+                                <div class="project-flow-step">{{ step|highlight_keywords }}</div>
                             {% endfor %}
                         </div>
                     {% endif %}
@@ -92,7 +92,7 @@
                     {% if section.list is defined %}
                         <ul>
                             {% for item in section.list %}
-                                <li>{{ item }}</li>
+                                <li>{{ item|highlight_keywords }}</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
@@ -101,7 +101,7 @@
                         <ul>
                             {% for item in section.labeled_list %}
                                 <li>
-                                    <strong>{{ item.label }}</strong> {{ item.text }}
+                                    <strong>{{ item.label }}</strong> {{ item.text|highlight_keywords }}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -115,14 +115,14 @@
 
                                     {% if group.paragraphs is defined %}
                                         {% for paragraph in group.paragraphs %}
-                                            <p>{{ paragraph }}</p>
+                                            <p>{{ paragraph|highlight_keywords }}</p>
                                         {% endfor %}
                                     {% endif %}
 
                                     {% if group.items is defined %}
                                         <ul>
                                             {% for item in group.items %}
-                                                <li>{{ item }}</li>
+                                                <li>{{ item|highlight_keywords }}</li>
                                             {% endfor %}
                                         </ul>
                                     {% endif %}
@@ -138,14 +138,14 @@
 
                                 {% if subsection.paragraphs is defined %}
                                     {% for paragraph in subsection.paragraphs %}
-                                        <p>{{ paragraph }}</p>
+                                        <p>{{ paragraph|highlight_keywords }}</p>
                                     {% endfor %}
                                 {% endif %}
 
                                 {% if subsection.list is defined %}
                                     <ul>
                                         {% for item in subsection.list %}
-                                            <li>{{ item }}</li>
+                                            <li>{{ item|highlight_keywords }}</li>
                                         {% endfor %}
                                     </ul>
                                 {% endif %}

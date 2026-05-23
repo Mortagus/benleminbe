@@ -6,37 +6,37 @@ about:
     hero:
         eyebrow: "About"
         title: "Web developer, coach, and curious about the world around me"
-        intro: "I have been building web applications since 2010, with a particular focus on existing projects, business systems, and code that needs to keep evolving."
+        intro: "I have been building web applications since 2010, with a particular focus on **existing projects**, business systems, and code that needs to keep evolving."
 
     sections:
         why_it:
             title: "Why computer science?"
             paragraphs:
                 1: "My interest in computer science developed in several stages. I grew up in a home where there was already a computer in the 1990s: my mother used it for work, my brother spent a lot of time on it, and at first, I mainly wanted to figure out how to launch my games."
-                2: "Over time, curiosity took a larger place. Films, documentaries, and popular science programs made me want to understand how things work. Computer science gradually appeared to me as a field capable of having a concrete impact on many aspects of life, because machines and software are everywhere."
-                3: "At the end of secondary school, while exploring higher education opportunities, I became interested in bioinformatics. It felt like a natural intersection between my interest in biology, my fascination with understanding systems, and the intuition that computer science opened an enormous number of doors."
-                4: "During my studies, I discovered web development. I found in it a very concrete way to build useful tools: interfaces, data, business logic, databases, algorithms, and software architecture. Everything I had learned began to come together into something tangible."
-                5: "My path toward bioinformatics did not unfold as planned, and I needed to enter professional life. Web development then emerged as a field that was practical, useful, and broad enough to keep learning for years to come. That is how it became my profession."
+                2: "Over time, curiosity took a larger place. Films, documentaries, and popular science programs made me want to **understand how things work**. Computer science gradually appeared to me as a field capable of having a concrete impact on many aspects of life, because machines and software are everywhere."
+                3: "At the end of secondary school, while exploring higher education opportunities, I became interested in **bioinformatics**. It felt like a natural intersection between my interest in biology, my fascination with understanding systems, and the intuition that computer science opened an enormous number of doors."
+                4: "During my studies, I discovered **web development**. I found in it a very concrete way to build useful tools: interfaces, data, business logic, databases, algorithms, and software architecture. Everything I had learned began to come together into something tangible."
+                5: "My path toward bioinformatics did not unfold as planned, and I needed to enter professional life. Web development then emerged as a field that was **practical, useful, and broad enough** to keep learning for years to come. That is how it became my profession."
 
         work:
             title: "How I work"
             paragraphs:
-                1: "Over the years, I have learned that it is rarely effective to modify a system without first taking the time to understand its context, constraints, and the real needs it is meant to address."
-                2: "My first step is therefore to listen, ask questions, and restate what I have understood. This phase often helps clarify the problem, reveal implicit assumptions, and identify the most appropriate solutions."
-                3: "Once the context is sufficiently clear, my experience usually allows me to quickly identify sensitive areas and the most relevant opportunities for improvement. I pay particular attention to code readability, maintainability, and reducing risks during production deployments."
-                4: "My way of working continues to evolve. Software development is a field where continuous learning is part of the profession, and I gradually integrate the ideas, tools, and practices that help make work clearer and more effective."
+                1: "Over the years, I have learned that it is rarely effective to modify a system without first taking the time to understand its **context**, constraints, and the real needs it is meant to address."
+                2: "My first step is therefore to **listen, ask questions, and restate** what I have understood. This phase often helps clarify the problem, reveal implicit assumptions, and identify the most appropriate solutions."
+                3: "Once the context is sufficiently clear, my experience usually allows me to quickly identify sensitive areas and the most relevant opportunities for improvement. I pay particular attention to **code readability**, maintainability, and reducing risks during production deployments."
+                4: "My way of working continues to evolve. Software development is a field where **continuous learning** is part of the profession, and I gradually integrate the ideas, tools, and practices that help make work clearer and more effective."
 
         coaching:
             title: "Coaching and knowledge sharing"
             paragraphs:
                 1: "Alongside web development, I also support people who are learning programming or who want to improve their practice."
-                2: "I particularly enjoy helping clarify concepts that seem unclear at first: structuring a line of reasoning, breaking down a problem, understanding an error, or simply regaining confidence when facing code."
-                3: "This activity also enriches my work as a developer. Explaining things forces me to be clear, question my own habits, and regularly return to the fundamentals."
+                2: "I particularly enjoy helping clarify concepts that seem unclear at first: **structuring a line of reasoning**, breaking down a problem, understanding an error, or simply regaining confidence when facing code."
+                3: "This activity also enriches my work as a developer. **Explaining things forces me to be clear**, question my own habits, and regularly return to the fundamentals."
 
         interests:
             title: "My interests"
             paragraphs:
-                1: "My curiosity extends far beyond web development. I am interested in science, mathematics, engineering, economics, geopolitics, and, more generally, complex systems."
+                1: "My curiosity extends far beyond web development. I am interested in science, mathematics, engineering, economics, geopolitics, and, more generally, **complex systems**."
                 2: "I enjoy understanding how things work, connecting ideas across subjects, and exploring concepts through practical experimentation. This is also what leads me to build small tools, JavaScript experiments, and more playful projects."
                 3: "Games, tabletop role-playing games, and creative programming are among these areas of exploration. They combine logic, imagination, rules, interfaces, and user experience in concrete projects."
 
@@ -44,16 +44,16 @@ about:
             title: "Where I am today"
             paragraphs:
                 1: "Today, I am gradually building an independent business that allows me to work differently: with more clarity, more perspective, and greater attention to balancing quality of work with personal well-being."
-                2: "I am looking to collaborate on projects where my experience can be useful: understanding an existing system, stabilizing an application, evolving a business platform, supporting a team, or helping bring order to a codebase."
-                3: "This transition is also an opportunity to build a professional framework that is more aligned with the way I work: asking the right questions, moving forward step by step, and favoring durable solutions over rushed answers."
+                2: "I am looking to collaborate on projects where my experience can be useful: **understanding an existing system**, stabilizing an application, evolving a business platform, supporting a team, or helping bring order to a codebase."
+                3: "This transition is also an opportunity to build a professional framework that is more aligned with the way I work: asking the right questions, moving forward step by step, and favoring **durable solutions** over rushed answers."
 
         website:
             title: "Why this website exists"
             paragraphs:
                 1: "For a long time, I postponed the idea of creating a personal website. Like many developers, I found it easier to spend time building tools for others than taking the time to present my own journey."
                 2: "One day, I came across an idea that stayed with me: a developer without a website is a bit like a carpenter without a workshop. This comparison convinced me that it was time to build a space that reflects who I am."
-                3: "This website is first and foremost a professional tool. It allows me to present my experience, projects, and way of working in a format that is far more vivid and detailed than a traditional résumé."
-                4: "It is also a playground for experimentation. I enjoy building useful tools, testing new ideas, and developing small projects for myself or for people around me. This site evolves gradually and reflects both my journey, my curiosity, and my enjoyment of creating concrete solutions."
+                3: "This website is first and foremost a **professional tool**. It allows me to present my experience, projects, and way of working in a format that is far more vivid and detailed than a traditional résumé."
+                4: "It is also a **playground for experimentation**. I enjoy building useful tools, testing new ideas, and developing small projects for myself or for people around me. This site evolves gradually and reflects both my journey, my curiosity, and my enjoyment of creating concrete solutions."
 
         links:
             title: "Useful links"

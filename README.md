@@ -71,7 +71,9 @@ Cette commande vérifie notamment :
 - les fichiers YAML ;
 - les templates Twig ;
 - le conteneur Symfony ;
-- les fichiers CSS avec Stylelint.
+- les fichiers CSS avec Stylelint ;
+- les fichiers JavaScript avec ESLint ;
+- les tests JavaScript avec Vitest.
 
 Recompiler les assets :
 

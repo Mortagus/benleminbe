@@ -1,5 +1,7 @@
 {
     "devDependencies": {
+        "@eslint/js": "^9.39.4",
+        "eslint": "^9.39.4",
         "prettier": "^3.8.3",
         "stylelint": "^16.26.1",
         "stylelint-config-standard": "^39.0.1",
@@ -7,6 +9,8 @@
     },
     "scripts": {
         "format:css": "prettier --write \"assets/styles/**/*.css\"",
+        "lint:js": "eslint \"assets/**/*.js\" \"tests/js/**/*.js\" \"vitest.config.mjs\"",
+        "check:js": "npm run lint:js && npm run test:js",
         "lint:css": "stylelint \"assets/styles/**/*.css\" --fix",
         "test:js": "vitest run"
     }

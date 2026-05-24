@@ -41,6 +41,10 @@ check:
 	php bin/console lint:container
 	@echo "==> CSS lint"
 	npx stylelint "assets/styles/**/*.css"
+	@echo "==> JavaScript lint"
+	npm run lint:js
+	@echo "==> JavaScript tests"
+	npm run test:js
 	@echo "All checks passed."
 
 install-hooks:

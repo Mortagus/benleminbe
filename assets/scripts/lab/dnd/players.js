@@ -1,7 +1,6 @@
 // DOM controller for the players panel.
 // Player form rows are the temporary source of truth until sync() writes them
 // into the encounter state before turn order generation.
-import { setPlayers } from './encounter-state.js';
 import {
     clearValidationState,
     mergeValidationResults,
@@ -10,50 +9,65 @@ import {
 } from './validation.js';
 
 export function initializePlayersPanel(encounter, callbacks = {}) {
-    const addPlayerButton = document.getElementById('addPlayer');
-    const playerPanel = document.querySelector('.dnd-panel--players');
-    const playerList = document.getElementById('playerList');
-    const playerValidationSummary = document.getElementById('playerValidationSummary');
+    const panel = new PlayersPanel(encounter, callbacks);
 
-    function sync() {
-        refreshPlayerAccessibility(playerList);
-        setPlayers(encounter, getPlayerActors(playerList));
-        callbacks.onPlayersChange?.();
+    panel.start();
+
+    return panel;
+}
+
+export class PlayersPanel {
+    constructor(encounter, callbacks = {}) {
+        this.encounter = encounter;
+        this.callbacks = callbacks;
+        this.addPlayerButton = document.getElementById('addPlayer');
+        this.playerPanel = document.querySelector('.dnd-panel--players');
+        this.playerList = document.getElementById('playerList');
+        this.playerValidationSummary = document.getElementById('playerValidationSummary');
     }
 
-    addPlayerButton.addEventListener('click', () => {
-        playerList.appendChild(createPlayerItem(sync));
-        sync();
-    });
+    start() {
+        this.addPlayerButton.addEventListener('click', () => {
+            this.playerList.appendChild(createPlayerItem(() => this.sync()));
+            this.sync();
+        });
 
-    bindExistingPlayerItems(playerList, sync);
-    sync();
+        bindExistingPlayerItems(this.playerList, () => this.sync());
+        this.sync();
+    }
 
-    function validateForTurnOrder() {
+    clearValidation() {
+        clearValidationState(this.playerPanel);
+    }
+
+    getListElement() {
+        return this.playerList;
+    }
+
+    sync() {
+        refreshPlayerAccessibility(this.playerList);
+        this.encounter.setPlayers(getPlayerActors(this.playerList));
+        this.callbacks.onPlayersChange?.();
+    }
+
+    validateForTurnOrder() {
         const validationResult = mergeValidationResults(
-            ...getPlayerValidationResults(),
+            ...this.getPlayerValidationResults(),
         );
 
         showValidationErrors(
             validationResult,
-            playerValidationSummary,
+            this.playerValidationSummary,
             'Un joueur contient une erreur.',
         );
 
         return validationResult;
     }
 
-    function getPlayerValidationResults() {
-        return Array.from(playerList.querySelectorAll('.player-item'))
+    getPlayerValidationResults() {
+        return Array.from(this.playerList.querySelectorAll('.player-item'))
             .map((playerItem, index) => validatePlayerItem(playerItem, index));
     }
-
-    return {
-        clearValidation: () => clearValidationState(playerPanel),
-        getListElement: () => playerList,
-        sync,
-        validateForTurnOrder,
-    };
 }
 
 export function createPlayerItem(onPlayerListChange) {

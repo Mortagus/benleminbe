@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { EncounterState } from '../../../../assets/scripts/lab/dnd/encounter-state.js';
 import {
     createDocumentDouble,
     createTurnOrderTemplate,
@@ -152,6 +153,26 @@ describe('turn order rendering', () => {
 
         expect(onMoveTurn).toHaveBeenCalledWith('player-1', 'player-2', 'after');
     });
+
+    test('keeps initializeTurnOrderPanel as a compatibility wrapper', async () => {
+        const encounter = new EncounterState();
+        const onGenerateTurnOrder = vi.fn();
+
+        globalThis.document = createTurnOrderDocument();
+
+        const { initializeTurnOrderPanel, TurnOrderPanel } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const panel = initializeTurnOrderPanel(encounter, {
+            onGenerateTurnOrder,
+        });
+
+        expect(panel).toBeInstanceOf(TurnOrderPanel);
+
+        globalThis.document
+            .getElementById('generateTurnOrder')
+            .dispatchEvent({ type: 'click' });
+
+        expect(onGenerateTurnOrder).toHaveBeenCalledOnce();
+    });
 });
 
 function createTurn(overrides = {}) {
@@ -167,5 +188,30 @@ function createTurn(overrides = {}) {
         roll: 10,
         done: false,
         ...overrides,
+    };
+}
+
+function createTurnOrderDocument() {
+    const generateTurnOrderButton = new TestElement('button');
+    const turnOrderPanel = new TestElement('section', ['dnd-panel--turn-order']);
+    const turnOrderValidationSummary = new TestElement('div', ['dnd-validation-summary']);
+    const keyboardHelpButton = new TestElement('button');
+    const keyboardHelp = new TestElement('div');
+    const turnOrderPlaceholder = new TestElement('div');
+    const turnOrderList = new TestElement('ol');
+    const turnOrderLiveRegion = new TestElement('div');
+
+    return {
+        ...createDocumentDouble({
+            generateTurnOrder: generateTurnOrderButton,
+            turnOrderValidationSummary,
+            toggleTurnOrderKeyboardHelp: keyboardHelpButton,
+            turnOrderKeyboardHelp: keyboardHelp,
+            turnOrderPlaceholder,
+            turnOrderList,
+            turnOrderLiveRegion,
+            turnOrderItemTemplate: createTurnOrderTemplate(),
+        }),
+        querySelector: selector => selector === '.dnd-panel--turn-order' ? turnOrderPanel : null,
     };
 }

@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { initializeRulesPanel } from '../../../../assets/scripts/lab/dnd/rules.js';
+import {
+    initializeRulesPanel,
+    RulesPanel,
+} from '../../../../assets/scripts/lab/dnd/rules.js';
 import { TestElement } from './dom-test-helpers.js';
 
 describe('rules panel', () => {
@@ -31,6 +34,19 @@ describe('rules panel', () => {
         extraTurnToggle.dispatchEvent({ type: 'change' });
 
         expect(setRuleActive).toHaveBeenCalledWith('extra-turn-on-twenty', true);
+    });
+
+    test('keeps initializeRulesPanel as a compatibility wrapper', () => {
+        globalThis.document = createRulesDocument({
+            ruleToggles: [],
+        });
+
+        const panel = initializeRulesPanel({
+            isRuleActive: () => false,
+            setRuleActive: () => {},
+        });
+
+        expect(panel).toBeInstanceOf(RulesPanel);
     });
 });
 

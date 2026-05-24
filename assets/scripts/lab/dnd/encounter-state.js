@@ -19,148 +19,238 @@ export const RULES = {
     },
 };
 
+export class EncounterState {
+    constructor(options = {}) {
+        this.monsters = [];
+        this.players = [];
+        this.rules = createDefaultRulesState();
+        this.turnOrder = [];
+        this.currentRound = 1;
+        this.activeTurnId = null;
+
+        Object.defineProperty(this, 'bestiary', {
+            value: options.bestiary ?? bestiary,
+            enumerable: false,
+        });
+    }
+
+    createMonsterSlots(count) {
+        this.monsters = Array.from(
+            { length: count },
+            (_, index) => createEmptyMonster(index),
+        );
+    }
+
+    selectMonster(index, monsterSlug) {
+        if (!this.monsters[index]) {
+            return;
+        }
+
+        const selectedMonster = this.bestiary.find(monster => monster.slug === monsterSlug);
+
+        this.monsters[index] = selectedMonster
+            ? createMonsterFromBestiaryEntry(selectedMonster, index)
+            : createEmptyMonster(index);
+    }
+
+    updateMonsterHitPoints(index, hitPoints) {
+        if (!this.monsters[index]) {
+            return;
+        }
+
+        this.monsters[index].currentHitPoints = Number(hitPoints || 0);
+    }
+
+    hasSelectedMonsters() {
+        return this.monsters.some(monster => monster.slug !== null);
+    }
+
+    rollMonsterInitiatives(roll = rollD20) {
+        this.monsters = this.monsters.map(monster => {
+            if (monster.slug === null) {
+                return monster;
+            }
+
+            const initiativeRoll = roll();
+
+            return {
+                ...monster,
+                roll: initiativeRoll,
+                initiative: initiativeRoll + monster.initiativeModifier,
+            };
+        });
+
+        this.monsters.sort((a, b) => this.compareByInitiative(a, b));
+    }
+
+    setPlayers(players) {
+        this.players = players;
+    }
+
+    buildRoundOrder() {
+        const actors = [
+            ...getMonsterActors(this),
+            ...this.players,
+        ];
+
+        this.turnOrder = actors
+            .filter(actor => !this.shouldSkipTurn(actor))
+            .flatMap(actor => {
+                const turnCount = this.getTurnCount(actor);
+
+                return Array.from({ length: turnCount }, (_, index) => ({
+                    ...actor,
+                    id: turnCount > 1 ? `${actor.id}-turn-${index + 1}` : actor.id,
+                    actorId: actor.id,
+                    done: false,
+                }));
+            })
+            .sort((a, b) => this.compareByInitiative(a, b));
+
+        this.currentRound = 1;
+        this.refreshActiveTurn();
+
+        return this.turnOrder;
+    }
+
+    toggleTurnDone(turnId) {
+        const turn = this.turnOrder.find(actor => actor.id === turnId);
+
+        if (!turn) {
+            return;
+        }
+
+        turn.done = !turn.done;
+        this.refreshActiveTurn();
+    }
+
+    moveTurn(draggedTurnId, targetTurnId, placement = 'before') {
+        const draggedIndex = this.turnOrder.findIndex(actor => actor.id === draggedTurnId);
+
+        if (draggedIndex === -1) {
+            return;
+        }
+
+        const [draggedTurn] = this.turnOrder.splice(draggedIndex, 1);
+        const targetIndex = this.turnOrder.findIndex(actor => actor.id === targetTurnId);
+
+        if (targetIndex === -1) {
+            this.turnOrder.push(draggedTurn);
+            this.refreshActiveTurn();
+            return;
+        }
+
+        const insertionIndex = placement === 'after'
+            ? targetIndex + 1
+            : targetIndex;
+
+        this.turnOrder.splice(insertionIndex, 0, draggedTurn);
+        this.refreshActiveTurn();
+    }
+
+    isRuleActive(ruleId) {
+        return this.rules[ruleId] === true;
+    }
+
+    setRuleActive(ruleId, isActive) {
+        if (!isKnownRule(ruleId)) {
+            return;
+        }
+
+        this.rules[ruleId] = isActive;
+    }
+
+    shouldSkipTurn(actor) {
+        if (!this.isRuleActive(RULES.skipLowInitiative.id)) {
+            return false;
+        }
+
+        return actor.initiative <= 1;
+    }
+
+    getTurnCount(actor) {
+        if (!this.isRuleActive(RULES.extraTurnOnTwenty.id)) {
+            return 1;
+        }
+
+        return actor.roll === 20 ? 2 : 1;
+    }
+
+    compareByInitiative(a, b) {
+        if (a.initiative === null) {
+            return 1;
+        }
+
+        if (b.initiative === null) {
+            return -1;
+        }
+
+        const initiativeOrder = b.initiative - a.initiative;
+
+        if (initiativeOrder !== 0) {
+            return initiativeOrder;
+        }
+
+        if (!this.isRuleActive(RULES.breakInitiativeTiesWithDexterity.id)) {
+            return 0;
+        }
+
+        return getInitiativeTieBreaker(b) - getInitiativeTieBreaker(a);
+    }
+
+    refreshActiveTurn() {
+        const activeTurn = this.turnOrder.find(actor => !actor.done);
+        this.activeTurnId = activeTurn?.id ?? null;
+    }
+}
+
+// Compatibility wrappers kept while DOM panels migrate to the EncounterState API.
 export function createEncounterState(options = {}) {
-    const encounter = {
-        monsters: [],
-        players: [],
-        rules: createDefaultRulesState(),
-        turnOrder: [],
-        currentRound: 1,
-        activeTurnId: null,
-    };
-
-    Object.defineProperty(encounter, 'bestiary', {
-        value: options.bestiary ?? bestiary,
-        enumerable: false,
-    });
-
-    return encounter;
+    return new EncounterState(options);
 }
 
 export function createMonsterSlots(encounter, count) {
-    encounter.monsters = Array.from(
-        { length: count },
-        (_, index) => createEmptyMonster(index),
-    );
+    encounter.createMonsterSlots(count);
 }
 
 export function selectMonster(encounter, index, monsterSlug) {
-    if (!encounter.monsters[index]) {
-        return;
-    }
-
-    const selectedMonster = encounter.bestiary.find(monster => monster.slug === monsterSlug);
-
-    encounter.monsters[index] = selectedMonster
-        ? createMonsterFromBestiaryEntry(selectedMonster, index)
-        : createEmptyMonster(index);
+    encounter.selectMonster(index, monsterSlug);
 }
 
 export function updateMonsterHitPoints(encounter, index, hitPoints) {
-    if (!encounter.monsters[index]) {
-        return;
-    }
-
-    encounter.monsters[index].currentHitPoints = Number(hitPoints || 0);
+    encounter.updateMonsterHitPoints(index, hitPoints);
 }
 
 export function hasSelectedMonsters(encounter) {
-    return encounter.monsters.some(monster => monster.slug !== null);
+    return encounter.hasSelectedMonsters();
 }
 
 export function rollMonsterInitiatives(encounter, roll = rollD20) {
-    encounter.monsters = encounter.monsters.map(monster => {
-        if (monster.slug === null) {
-            return monster;
-        }
-
-        const initiativeRoll = roll();
-
-        return {
-            ...monster,
-            roll: initiativeRoll,
-            initiative: initiativeRoll + monster.initiativeModifier,
-        };
-    });
-
-    encounter.monsters.sort((a, b) => compareByInitiative(encounter, a, b));
+    encounter.rollMonsterInitiatives(roll);
 }
 
 export function setPlayers(encounter, players) {
-    encounter.players = players;
+    encounter.setPlayers(players);
 }
 
 export function buildRoundOrder(encounter) {
-    const actors = [
-        ...getMonsterActors(encounter),
-        ...encounter.players,
-    ];
-
-    encounter.turnOrder = actors
-        .filter(actor => !shouldSkipTurn(encounter, actor))
-        .flatMap(actor => {
-            const turnCount = getTurnCount(encounter, actor);
-
-            return Array.from({ length: turnCount }, (_, index) => ({
-                ...actor,
-                id: turnCount > 1 ? `${actor.id}-turn-${index + 1}` : actor.id,
-                actorId: actor.id,
-                done: false,
-            }));
-        })
-        .sort((a, b) => compareByInitiative(encounter, a, b));
-
-    encounter.currentRound = 1;
-    refreshActiveTurn(encounter);
-
-    return encounter.turnOrder;
+    return encounter.buildRoundOrder();
 }
 
 export function toggleTurnDone(encounter, turnId) {
-    const turn = encounter.turnOrder.find(actor => actor.id === turnId);
-
-    if (!turn) {
-        return;
-    }
-
-    turn.done = !turn.done;
-    refreshActiveTurn(encounter);
+    encounter.toggleTurnDone(turnId);
 }
 
 export function moveTurn(encounter, draggedTurnId, targetTurnId, placement = 'before') {
-    const draggedIndex = encounter.turnOrder.findIndex(actor => actor.id === draggedTurnId);
-
-    if (draggedIndex === -1) {
-        return;
-    }
-
-    const [draggedTurn] = encounter.turnOrder.splice(draggedIndex, 1);
-    const targetIndex = encounter.turnOrder.findIndex(actor => actor.id === targetTurnId);
-
-    if (targetIndex === -1) {
-        encounter.turnOrder.push(draggedTurn);
-        refreshActiveTurn(encounter);
-        return;
-    }
-
-    const insertionIndex = placement === 'after'
-        ? targetIndex + 1
-        : targetIndex;
-
-    encounter.turnOrder.splice(insertionIndex, 0, draggedTurn);
-    refreshActiveTurn(encounter);
+    encounter.moveTurn(draggedTurnId, targetTurnId, placement);
 }
 
 export function isRuleActive(encounter, ruleId) {
-    return encounter.rules[ruleId] === true;
+    return encounter.isRuleActive(ruleId);
 }
 
 export function setRuleActive(encounter, ruleId, isActive) {
-    if (!isKnownRule(ruleId)) {
-        return;
-    }
-
-    encounter.rules[ruleId] = isActive;
+    encounter.setRuleActive(ruleId, isActive);
 }
 
 function createEmptyMonster(index) {
@@ -243,53 +333,10 @@ function createDefaultRulesState() {
     }), {});
 }
 
-function shouldSkipTurn(encounter, actor) {
-    if (!isRuleActive(encounter, RULES.skipLowInitiative.id)) {
-        return false;
-    }
-
-    return actor.initiative <= 1;
-}
-
-function getTurnCount(encounter, actor) {
-    if (!isRuleActive(encounter, RULES.extraTurnOnTwenty.id)) {
-        return 1;
-    }
-
-    return actor.roll === 20 ? 2 : 1;
-}
-
-function compareByInitiative(encounter, a, b) {
-    if (a.initiative === null) {
-        return 1;
-    }
-
-    if (b.initiative === null) {
-        return -1;
-    }
-
-    const initiativeOrder = b.initiative - a.initiative;
-
-    if (initiativeOrder !== 0) {
-        return initiativeOrder;
-    }
-
-    if (!isRuleActive(encounter, RULES.breakInitiativeTiesWithDexterity.id)) {
-        return 0;
-    }
-
-    return getInitiativeTieBreaker(b) - getInitiativeTieBreaker(a);
-}
-
 function getInitiativeTieBreaker(actor) {
     return typeof actor.initiativeModifier === 'number'
         ? actor.initiativeModifier
         : 0;
-}
-
-function refreshActiveTurn(encounter) {
-    const activeTurn = encounter.turnOrder.find(actor => !actor.done);
-    encounter.activeTurnId = activeTurn?.id ?? null;
 }
 
 function isKnownRule(ruleId) {

@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { EncounterState } from '../../../../assets/scripts/lab/dnd/encounter-state.js';
 import {
     createDocumentDouble,
+    createInput,
     createMonsterItemTemplate,
     createMonsterOptionTemplate,
     TestElement,
@@ -75,7 +77,44 @@ describe('monsters panel rendering', () => {
         expect(onMonsterSelectionChange).toHaveBeenCalledWith(0, 'aarakocra');
         expect(onMonsterHitPointsChange).toHaveBeenCalledWith(0, '6');
     });
+
+    test('keeps initializeMonstersPanel as a compatibility wrapper', async () => {
+        const { initializeMonstersPanel, MonstersPanel } = await import('../../../../assets/scripts/lab/dnd/monsters.js');
+        const encounter = new EncounterState();
+        const onEncounterChange = vi.fn();
+
+        globalThis.document = createMonstersDocument();
+
+        const panel = initializeMonstersPanel(encounter, {
+            onEncounterChange,
+        });
+
+        expect(panel).toBeInstanceOf(MonstersPanel);
+        expect(onEncounterChange).not.toHaveBeenCalled();
+    });
 });
+
+function createMonstersDocument() {
+    const monsterCountInput = createInput('');
+    const createMonstersButton = new TestElement('button');
+    const rollInitiativeButton = new TestElement('button');
+    const monsterPanel = new TestElement('section', ['dnd-panel--monsters']);
+    const monsterList = new TestElement('ul');
+    const monsterValidationSummary = new TestElement('div', ['dnd-validation-summary']);
+
+    return {
+        ...createDocumentDouble({
+            monsterCount: monsterCountInput,
+            createMonsters: createMonstersButton,
+            rollInitiative: rollInitiativeButton,
+            monsterList,
+            monsterValidationSummary,
+            monsterItemTemplate: createMonsterItemTemplate(),
+            monsterOptionTemplate: createMonsterOptionTemplate(),
+        }),
+        querySelector: selector => selector === '.dnd-panel--monsters' ? monsterPanel : null,
+    };
+}
 
 function groupBy(items, callback) {
     const groups = new Map();

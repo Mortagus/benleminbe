@@ -4,6 +4,7 @@ import {
     buildRoundOrder,
     createEncounterState,
     createMonsterSlots,
+    EncounterState,
     hasSelectedMonsters,
     moveTurn,
     rollMonsterInitiatives,
@@ -22,6 +23,13 @@ function getMonster(slug) {
 }
 
 describe('encounter state', () => {
+    test('creates an EncounterState instance through the compatibility factory', () => {
+        const encounter = createTestEncounter();
+
+        expect(encounter).toBeInstanceOf(EncounterState);
+        expect(encounter.bestiary).toBe(bestiarySample);
+    });
+
     test('creates empty monster slots', () => {
         const encounter = createTestEncounter();
 

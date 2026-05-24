@@ -2,40 +2,60 @@
 // Rule changes update encounter state through callbacks; the turn order is
 // rebuilt only when the main generation flow runs.
 export function initializeRulesPanel(callbacks) {
-    const openButton = document.getElementById('openRulesPanel');
-    const rulesModal = document.getElementById('rulesModal');
-    const modalContent = rulesModal?.querySelector('.rules-modal__content');
-    const closeButtons = rulesModal?.querySelectorAll('[data-rules-close]') ?? [];
-    const ruleToggles = document.querySelectorAll('[data-rule-toggle]');
+    const panel = new RulesPanel(callbacks);
 
-    ruleToggles.forEach(ruleToggle => {
-        const ruleId = ruleToggle.dataset.ruleToggle;
+    panel.start();
 
-        ruleToggle.checked = callbacks.isRuleActive(ruleId);
-        ruleToggle.addEventListener('change', () => {
-            callbacks.setRuleActive(ruleId, ruleToggle.checked);
-        });
-    });
+    return panel;
+}
 
-    if (!openButton || !rulesModal) {
-        return;
+export class RulesPanel {
+    constructor(callbacks) {
+        this.callbacks = callbacks;
+        this.openButton = document.getElementById('openRulesPanel');
+        this.rulesModal = document.getElementById('rulesModal');
+        this.modalContent = this.rulesModal?.querySelector('.rules-modal__content');
+        this.closeButtons = this.rulesModal?.querySelectorAll('[data-rules-close]') ?? [];
+        this.ruleToggles = document.querySelectorAll('[data-rule-toggle]');
     }
 
-    openButton.addEventListener('click', () => {
-        openRulesModal(openButton, rulesModal, modalContent);
-    });
+    start() {
+        this.bindRuleToggles();
+        this.bindRulesModal();
+    }
 
-    closeButtons.forEach(closeButton => {
-        closeButton.addEventListener('click', () => {
-            closeRulesModal(openButton, rulesModal);
+    bindRuleToggles() {
+        this.ruleToggles.forEach(ruleToggle => {
+            const ruleId = ruleToggle.dataset.ruleToggle;
+
+            ruleToggle.checked = this.callbacks.isRuleActive(ruleId);
+            ruleToggle.addEventListener('change', () => {
+                this.callbacks.setRuleActive(ruleId, ruleToggle.checked);
+            });
         });
-    });
+    }
 
-    document.addEventListener('keydown', event => {
-        if (event.key === 'Escape' && !rulesModal.hidden) {
-            closeRulesModal(openButton, rulesModal);
+    bindRulesModal() {
+        if (!this.openButton || !this.rulesModal) {
+            return;
         }
-    });
+
+        this.openButton.addEventListener('click', () => {
+            openRulesModal(this.openButton, this.rulesModal, this.modalContent);
+        });
+
+        this.closeButtons.forEach(closeButton => {
+            closeButton.addEventListener('click', () => {
+                closeRulesModal(this.openButton, this.rulesModal);
+            });
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && !this.rulesModal.hidden) {
+                closeRulesModal(this.openButton, this.rulesModal);
+            }
+        });
+    }
 }
 
 function openRulesModal(openButton, rulesModal, modalContent) {

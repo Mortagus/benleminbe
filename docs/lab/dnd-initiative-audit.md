@@ -64,11 +64,11 @@ Responsabilités principales :
 
 - `dnd_initiative.js` crée l'état central, initialise les panneaux et coordonne la génération de l'ordre du tour.
 - `encounter-state.js` conserve le modèle de rencontre et expose les mutations métier : monstres, joueurs, règles, ordre du tour, round et acteur actif.
-- `monsters.js` initialise le panneau monstres, valide ses entrées, rend la liste et remonte les interactions utilisateur vers le modèle.
-- `players.js` initialise le panneau joueurs, crée les lignes joueurs, valide les entrées et synchronise le formulaire avec le modèle.
+- `monsters.js` expose `MonstersPanel`, qui initialise le panneau monstres, valide ses entrées, rend la liste et remonte les interactions utilisateur vers le modèle.
+- `players.js` expose `PlayersPanel`, qui initialise le panneau joueurs, crée les lignes joueurs, valide les entrées et synchronise le formulaire avec le modèle.
 - `initiative.js` contient les helpers liés au d20, aux modificateurs et à l'affichage de l'initiative.
-- `rules.js` gère la popup de règles et remonte les changements vers le modèle de rencontre.
-- `turn-order.js` initialise le panneau ordre du tour, affiche les erreurs globales et rend les cartes de combat.
+- `rules.js` expose `RulesPanel`, qui gère la popup de règles et remonte les changements vers le modèle de rencontre.
+- `turn-order.js` expose `TurnOrderPanel`, qui initialise le panneau ordre du tour, affiche les erreurs globales et rend les cartes de combat.
 - `validation.js` centralise les validations des champs monstres, joueurs et rencontre.
 
 ### Styles
@@ -122,15 +122,15 @@ L'architecture repose sur une séparation simple entre rendu Twig, modules JavaS
 Flux de données principal :
 
 1. Twig rend la structure initiale et les templates DOM.
-2. `dnd_initiative.js` crée un état de rencontre via `createEncounterState()` et initialise les panneaux.
+2. `dnd_initiative.js` crée un état de rencontre via `new EncounterState()` et initialise les panneaux.
 3. Les panneaux DOM possèdent leurs éléments, valident leurs entrées locales et remontent les interactions utilisateur vers le modèle.
 4. `encounter-state.js` applique les mutations métier : slots monstres, sélection, PV, règles, joueurs et ordre du tour. Le bestiaire peut être injecté à la création de l'état pour tester le modèle avec une fixture légère.
 5. `validation.js` vérifie les entrées avant la création de la liste et la génération de l'ordre du tour.
-6. `turn-order.js`, `monsters.js`, `players.js` et `rules.js` rendent l'état ou les contrôles, sans conserver l'état métier principal.
+6. `TurnOrderPanel`, `MonstersPanel`, `PlayersPanel` et `RulesPanel` rendent l'état ou les contrôles, sans conserver l'état métier principal.
 
 Sources de vérité actuelles :
 
-- état de rencontre : objet créé par `createEncounterState()` dans `encounter-state.js` ;
+- état de rencontre : instance de `EncounterState` créée dans `dnd_initiative.js` ;
 - monstres : propriété `monsters` de l'état de rencontre ;
 - joueurs : propriété `players` de l'état de rencontre, synchronisée depuis le formulaire joueur ;
 - règles actives : propriété `rules` de l'état de rencontre ;

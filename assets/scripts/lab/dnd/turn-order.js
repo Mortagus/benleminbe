@@ -2,10 +2,6 @@
 // It renders the already-built turn order and handles played state, focus,
 // keyboard movement, button movement, and drag and drop.
 import {
-    moveTurn,
-    toggleTurnDone,
-} from './encounter-state.js';
-import {
     clearValidationState,
     showValidationErrors,
 } from './validation.js';
@@ -14,67 +10,79 @@ let draggedTurnId = null;
 const turnOrderItemTemplate = document.getElementById('turnOrderItemTemplate');
 
 export function initializeTurnOrderPanel(encounter, callbacks = {}) {
-    const generateTurnOrderButton = document.getElementById('generateTurnOrder');
-    const turnOrderPanel = document.querySelector('.dnd-panel--turn-order');
-    const turnOrderValidationSummary = document.getElementById('turnOrderValidationSummary');
-    const turnOrderKeyboardHelpButton = document.getElementById('toggleTurnOrderKeyboardHelp');
-    const turnOrderKeyboardHelp = document.getElementById('turnOrderKeyboardHelp');
-    const turnOrderPlaceholder = document.getElementById('turnOrderPlaceholder');
-    const turnOrderList = document.getElementById('turnOrderList');
-    const turnOrderLiveRegion = document.getElementById('turnOrderLiveRegion');
-    let pendingFocusTurnId = null;
+    const panel = new TurnOrderPanel(encounter, callbacks);
 
-    generateTurnOrderButton.addEventListener('click', () => {
-        callbacks.onGenerateTurnOrder?.();
-    });
+    panel.start();
 
-    bindKeyboardHelp(turnOrderKeyboardHelpButton, turnOrderKeyboardHelp);
+    return panel;
+}
 
-    function refresh(options = {}) {
+export class TurnOrderPanel {
+    constructor(encounter, callbacks = {}) {
+        this.encounter = encounter;
+        this.callbacks = callbacks;
+        this.generateTurnOrderButton = document.getElementById('generateTurnOrder');
+        this.turnOrderPanel = document.querySelector('.dnd-panel--turn-order');
+        this.turnOrderValidationSummary = document.getElementById('turnOrderValidationSummary');
+        this.turnOrderKeyboardHelpButton = document.getElementById('toggleTurnOrderKeyboardHelp');
+        this.turnOrderKeyboardHelp = document.getElementById('turnOrderKeyboardHelp');
+        this.turnOrderPlaceholder = document.getElementById('turnOrderPlaceholder');
+        this.turnOrderList = document.getElementById('turnOrderList');
+        this.turnOrderLiveRegion = document.getElementById('turnOrderLiveRegion');
+        this.pendingFocusTurnId = null;
+    }
+
+    start() {
+        this.generateTurnOrderButton.addEventListener('click', () => {
+            this.callbacks.onGenerateTurnOrder?.();
+        });
+
+        bindKeyboardHelp(this.turnOrderKeyboardHelpButton, this.turnOrderKeyboardHelp);
+    }
+
+    clearValidation() {
+        clearValidationState(this.turnOrderPanel);
+    }
+
+    refresh(options = {}) {
         if (options.focusFirst) {
-            pendingFocusTurnId = encounter.turnOrder[0]?.id ?? null;
+            this.pendingFocusTurnId = this.encounter.turnOrder[0]?.id ?? null;
         }
 
         renderRoundOrder(
-            turnOrderList,
-            turnOrderPlaceholder,
-            encounter.turnOrder,
+            this.turnOrderList,
+            this.turnOrderPlaceholder,
+            this.encounter.turnOrder,
             {
                 onToggleTurnDone: (turnId) => {
-                    toggleTurnDone(encounter, turnId);
-                    pendingFocusTurnId = turnId;
-                    refresh();
+                    this.encounter.toggleTurnDone(turnId);
+                    this.pendingFocusTurnId = turnId;
+                    this.refresh();
                 },
                 onMoveTurn: (draggedTurnId, targetTurnId, placement) => {
-                    moveTurn(encounter, draggedTurnId, targetTurnId, placement);
-                    pendingFocusTurnId = draggedTurnId;
-                    refresh();
+                    this.encounter.moveTurn(draggedTurnId, targetTurnId, placement);
+                    this.pendingFocusTurnId = draggedTurnId;
+                    this.refresh();
                 },
                 onAnnounce: (message) => {
-                    announceTurnOrderChange(turnOrderLiveRegion, message);
+                    announceTurnOrderChange(this.turnOrderLiveRegion, message);
                 },
             },
         );
 
-        if (pendingFocusTurnId) {
-            focusTurnItem(turnOrderList, pendingFocusTurnId);
-            pendingFocusTurnId = null;
+        if (this.pendingFocusTurnId) {
+            focusTurnItem(this.turnOrderList, this.pendingFocusTurnId);
+            this.pendingFocusTurnId = null;
         }
     }
 
-    function showEncounterValidationErrors(validationResult) {
+    showEncounterValidationErrors(validationResult) {
         showValidationErrors(
             validationResult,
-            turnOrderValidationSummary,
+            this.turnOrderValidationSummary,
             'Impossible de générer l’ordre du tour.',
         );
     }
-
-    return {
-        clearValidation: () => clearValidationState(turnOrderPanel),
-        refresh,
-        showEncounterValidationErrors,
-    };
 }
 
 export function renderRoundOrder(turnOrderList, turnOrderPlaceholder, roundOrder, callbacks) {

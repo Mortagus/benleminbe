@@ -1,11 +1,21 @@
-import { describe, expect, test } from 'vitest';
-import { getPlayerActors } from '../../../../assets/scripts/lab/dnd/players.js';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { EncounterState } from '../../../../assets/scripts/lab/dnd/encounter-state.js';
+import {
+    getPlayerActors,
+    initializePlayersPanel,
+    PlayersPanel,
+} from '../../../../assets/scripts/lab/dnd/players.js';
 import {
     createInput,
     createPlayerItem,
+    TestElement,
 } from './dom-test-helpers.js';
 
 describe('players panel data mapping', () => {
+    afterEach(() => {
+        delete globalThis.document;
+    });
+
     test('maps started player rows to encounter actors', () => {
         const playerList = createPlayerList([
             createPlayerItem({
@@ -56,10 +66,41 @@ describe('players panel data mapping', () => {
             },
         ]);
     });
+
+    test('keeps initializePlayersPanel as a compatibility wrapper', () => {
+        const encounter = new EncounterState();
+        const onPlayersChange = vi.fn();
+
+        globalThis.document = createPlayersDocument();
+
+        const panel = initializePlayersPanel(encounter, {
+            onPlayersChange,
+        });
+
+        expect(panel).toBeInstanceOf(PlayersPanel);
+        expect(encounter.players).toEqual([]);
+        expect(onPlayersChange).toHaveBeenCalledOnce();
+    });
 });
 
 function createPlayerList(playerItems) {
     return {
         querySelectorAll: selector => selector === '.player-item' ? playerItems : [],
+    };
+}
+
+function createPlayersDocument() {
+    const addPlayerButton = new TestElement('button');
+    const playerPanel = new TestElement('section', ['dnd-panel--players']);
+    const playerList = new TestElement('ul');
+    const playerValidationSummary = new TestElement('div', ['dnd-validation-summary']);
+
+    return {
+        getElementById: id => ({
+            addPlayer: addPlayerButton,
+            playerList,
+            playerValidationSummary,
+        })[id] ?? null,
+        querySelector: selector => selector === '.dnd-panel--players' ? playerPanel : null,
     };
 }

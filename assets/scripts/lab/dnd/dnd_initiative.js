@@ -3,20 +3,15 @@
 // "generate turn order" flow in one place.
 import '../../../styles/lab/dnd/lab_dnd_initiative.css';
 
-import {
-    buildRoundOrder,
-    createEncounterState,
-    isRuleActive,
-    setRuleActive,
-} from './encounter-state.js';
+import { EncounterState } from './encounter-state.js';
 
-import { initializeMonstersPanel } from './monsters.js';
+import { MonstersPanel } from './monsters.js';
 
-import { initializePlayersPanel } from './players.js';
+import { PlayersPanel } from './players.js';
 
-import { initializeTurnOrderPanel } from './turn-order.js';
+import { TurnOrderPanel } from './turn-order.js';
 
-import { initializeRulesPanel } from './rules.js';
+import { RulesPanel } from './rules.js';
 
 import {
     focusFirstInvalidField,
@@ -24,64 +19,82 @@ import {
     validateEncounterActors,
 } from './validation.js';
 
-const encounter = createEncounterState();
-
-const turnOrderPanel = initializeTurnOrderPanel(encounter, {
-    onGenerateTurnOrder: generateTurnOrder,
-});
-
-function refreshDisplayedTurnOrder() {
-    // Refreshes the current rendering only; buildRoundOrder() runs from generateTurnOrder().
-    turnOrderPanel.refresh();
-}
-
-const monstersPanel = initializeMonstersPanel(encounter, {
-    onEncounterChange: refreshDisplayedTurnOrder,
-});
-
-const playersPanel = initializePlayersPanel(encounter, {
-    onPlayersChange: refreshDisplayedTurnOrder,
-});
-
-initializeRulesPanel({
-    isRuleActive: (ruleId) => isRuleActive(encounter, ruleId),
-    setRuleActive: (ruleId, active) => {
-        setRuleActive(encounter, ruleId, active);
-        turnOrderPanel.refresh();
-    },
-});
-
-function generateTurnOrder() {
-    monstersPanel.clearValidation();
-    playersPanel.clearValidation();
-    turnOrderPanel.clearValidation();
-
-    const encounterValidationResult = validateEncounterActors(
-        monstersPanel.getListElement(),
-        playersPanel.getListElement(),
-    );
-
-    const monsterValidationResult = monstersPanel.validateForTurnOrder();
-    const playerValidationResult = playersPanel.validateForTurnOrder();
-
-    turnOrderPanel.showEncounterValidationErrors(encounterValidationResult);
-
-    if (
-        hasValidationErrors(
-            monsterValidationResult,
-            encounterValidationResult,
-            playerValidationResult,
-        )
-    ) {
-        focusFirstInvalidField(
-            monsterValidationResult,
-            playerValidationResult,
-        );
-        return;
+class DndInitiativeTrackerApp {
+    constructor() {
+        this.encounter = new EncounterState();
+        this.monstersPanel = null;
+        this.playersPanel = null;
+        this.rulesPanel = null;
+        this.turnOrderPanel = null;
     }
 
-    playersPanel.sync();
-    buildRoundOrder(encounter);
+    start() {
+        this.turnOrderPanel = new TurnOrderPanel(this.encounter, {
+            onGenerateTurnOrder: () => this.generateTurnOrder(),
+        });
+        this.turnOrderPanel.start();
 
-    turnOrderPanel.refresh({ focusFirst: true });
+        this.monstersPanel = new MonstersPanel(this.encounter, {
+            onEncounterChange: () => this.refreshDisplayedTurnOrder(),
+        });
+        this.monstersPanel.start();
+
+        this.playersPanel = new PlayersPanel(this.encounter, {
+            onPlayersChange: () => this.refreshDisplayedTurnOrder(),
+        });
+        this.playersPanel.start();
+
+        this.rulesPanel = new RulesPanel({
+            isRuleActive: (ruleId) => this.encounter.isRuleActive(ruleId),
+            setRuleActive: (ruleId, active) => this.setRuleActive(ruleId, active),
+        });
+        this.rulesPanel.start();
+    }
+
+    refreshDisplayedTurnOrder() {
+        // Refreshes the current rendering only; buildRoundOrder() runs from generateTurnOrder().
+        this.turnOrderPanel.refresh();
+    }
+
+    setRuleActive(ruleId, active) {
+        this.encounter.setRuleActive(ruleId, active);
+        this.turnOrderPanel.refresh();
+    }
+
+    generateTurnOrder() {
+        this.monstersPanel.clearValidation();
+        this.playersPanel.clearValidation();
+        this.turnOrderPanel.clearValidation();
+
+        const encounterValidationResult = validateEncounterActors(
+            this.monstersPanel.getListElement(),
+            this.playersPanel.getListElement(),
+        );
+
+        const monsterValidationResult = this.monstersPanel.validateForTurnOrder();
+        const playerValidationResult = this.playersPanel.validateForTurnOrder();
+
+        this.turnOrderPanel.showEncounterValidationErrors(encounterValidationResult);
+
+        if (
+            hasValidationErrors(
+                monsterValidationResult,
+                encounterValidationResult,
+                playerValidationResult,
+            )
+        ) {
+            focusFirstInvalidField(
+                monsterValidationResult,
+                playerValidationResult,
+            );
+            return;
+        }
+
+        this.playersPanel.sync();
+        this.encounter.buildRoundOrder();
+
+        this.turnOrderPanel.refresh({ focusFirst: true });
+    }
 }
+
+new DndInitiativeTrackerApp().start();

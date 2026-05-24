@@ -1,15 +1,8 @@
 // DOM controller for the monsters panel.
 // It renders monster slots from encounter state and sends user changes back
-// through encounter-state helpers.
+// through EncounterState methods.
 import { bestiary } from './bestiary.js';
 import { formatInitiative, getInitiativeClass } from './initiative.js';
-import {
-    createMonsterSlots,
-    hasSelectedMonsters,
-    rollMonsterInitiatives,
-    selectMonster,
-    updateMonsterHitPoints,
-} from './encounter-state.js';
 import {
     clearValidationState,
     focusFirstInvalidField,
@@ -24,88 +17,107 @@ const monsterItemTemplate = document.getElementById('monsterItemTemplate');
 const monsterOptionTemplate = document.getElementById('monsterOptionTemplate');
 
 export function initializeMonstersPanel(encounter, callbacks = {}) {
-    const monsterCountInput = document.getElementById('monsterCount');
-    const createMonstersButton = document.getElementById('createMonsters');
-    const rollInitiativeButton = document.getElementById('rollInitiative');
-    const monsterPanel = document.querySelector('.dnd-panel--monsters');
-    const monsterList = document.getElementById('monsterList');
-    const monsterValidationSummary = document.getElementById('monsterValidationSummary');
+    const panel = new MonstersPanel(encounter, callbacks);
 
-    function refreshRollInitiativeButtonState() {
-        rollInitiativeButton.disabled = !hasSelectedMonsters(encounter);
+    panel.start();
+
+    return panel;
+}
+
+export class MonstersPanel {
+    constructor(encounter, callbacks = {}) {
+        this.encounter = encounter;
+        this.callbacks = callbacks;
+        this.monsterCountInput = document.getElementById('monsterCount');
+        this.createMonstersButton = document.getElementById('createMonsters');
+        this.rollInitiativeButton = document.getElementById('rollInitiative');
+        this.monsterPanel = document.querySelector('.dnd-panel--monsters');
+        this.monsterList = document.getElementById('monsterList');
+        this.monsterValidationSummary = document.getElementById('monsterValidationSummary');
     }
 
-    function refresh() {
-        renderMonsters(monsterList, encounter.monsters, {
+    start() {
+        this.createMonstersButton.addEventListener('click', () => {
+            this.createMonsterSlotsFromInput();
+        });
+
+        this.rollInitiativeButton.addEventListener('click', () => {
+            this.encounter.rollMonsterInitiatives();
+            this.refresh();
+            this.callbacks.onEncounterChange?.();
+        });
+    }
+
+    clearValidation() {
+        clearValidationState(this.monsterPanel);
+    }
+
+    getListElement() {
+        return this.monsterList;
+    }
+
+    refresh() {
+        renderMonsters(this.monsterList, this.encounter.monsters, {
             onMonsterSelectionChange: (index, selectedSlug) => {
-                selectMonster(encounter, index, selectedSlug);
-                refreshRollInitiativeButtonState();
-                refresh();
-                callbacks.onEncounterChange?.();
+                this.encounter.selectMonster(index, selectedSlug);
+                this.refreshRollInitiativeButtonState();
+                this.refresh();
+                this.callbacks.onEncounterChange?.();
             },
             onMonsterHitPointsChange: (index, hitPoints) => {
-                updateMonsterHitPoints(encounter, index, hitPoints);
-                callbacks.onEncounterChange?.();
+                this.encounter.updateMonsterHitPoints(index, hitPoints);
+                this.callbacks.onEncounterChange?.();
             },
         });
     }
 
-    createMonstersButton.addEventListener('click', () => {
-        clearValidationState(monsterPanel);
+    validateForTurnOrder() {
+        const validationResult = mergeValidationResults(
+            validateMonsterCountInput(this.monsterCountInput),
+            ...this.getMonsterHitPointValidationResults(),
+        );
 
-        const count = Number(monsterCountInput.value);
-        const validationResult = validateMonsterCountInput(monsterCountInput);
+        this.showMonsterValidationErrors(validationResult);
 
-        showMonsterValidationErrors(validationResult);
+        return validationResult;
+    }
+
+    createMonsterSlotsFromInput() {
+        this.clearValidation();
+
+        const count = Number(this.monsterCountInput.value);
+        const validationResult = validateMonsterCountInput(this.monsterCountInput);
+
+        this.showMonsterValidationErrors(validationResult);
 
         if (hasValidationErrors(validationResult)) {
             focusFirstInvalidField(validationResult);
             return;
         }
 
-        createMonsterSlots(encounter, count);
+        this.encounter.createMonsterSlots(count);
 
-        rollInitiativeButton.disabled = true;
-        refresh();
-        callbacks.onEncounterChange?.();
-    });
-
-    rollInitiativeButton.addEventListener('click', () => {
-        rollMonsterInitiatives(encounter);
-        refresh();
-        callbacks.onEncounterChange?.();
-    });
-
-    function validateForTurnOrder() {
-        const validationResult = mergeValidationResults(
-            validateMonsterCountInput(monsterCountInput),
-            ...getMonsterHitPointValidationResults(),
-        );
-
-        showMonsterValidationErrors(validationResult);
-
-        return validationResult;
+        this.rollInitiativeButton.disabled = true;
+        this.refresh();
+        this.callbacks.onEncounterChange?.();
     }
 
-    function showMonsterValidationErrors(validationResult) {
+    refreshRollInitiativeButtonState() {
+        this.rollInitiativeButton.disabled = !this.encounter.hasSelectedMonsters();
+    }
+
+    showMonsterValidationErrors(validationResult) {
         showValidationErrors(
             validationResult,
-            monsterValidationSummary,
+            this.monsterValidationSummary,
             'Un monstre contient une erreur.',
         );
     }
 
-    function getMonsterHitPointValidationResults() {
-        return Array.from(monsterList.querySelectorAll('.monster-item'))
+    getMonsterHitPointValidationResults() {
+        return Array.from(this.monsterList.querySelectorAll('.monster-item'))
             .map((monsterItem, index) => validateMonsterHitPointsInput(monsterItem, index));
     }
-
-    return {
-        clearValidation: () => clearValidationState(monsterPanel),
-        getListElement: () => monsterList,
-        refresh,
-        validateForTurnOrder,
-    };
 }
 
 export function renderMonsters(monsterList, monsters, callbacks) {

@@ -1,6 +1,6 @@
 # Backlog unifié - DnD Initiative Tracker
 
-Date de mise à jour : 2026-05-15
+Date de mise à jour : 2026-05-24
 
 Ce document remplace l'ancien backlog d'audit et la roadmap avancée. Il conserve les tâches déjà réalisées, aligne les fonctionnalités de la roadmap avec l'état réel du projet et liste les évolutions restantes.
 
@@ -9,6 +9,46 @@ Documents descriptifs associés :
 - [dnd-initiative-audit.md](../lab/dnd-initiative-audit.md)
 - [dnd-bestiary-pipeline.md](../lab/dnd-bestiary-pipeline.md)
 - [dnd-dom-contracts.md](../lab/dnd-dom-contracts.md)
+
+## Note De Reprise - 2026-05-24
+
+La dernière session a porté sur la lisibilité du JavaScript du `DnD Initiative Tracker` et sur la consolidation des vérifications automatiques.
+
+Travail livré :
+
+- introduction d'une orchestration explicite avec `DndInitiativeTrackerApp` dans `dnd_initiative.js` ;
+- introduction de `EncounterState` comme modèle mutable central de rencontre ;
+- conversion des panneaux DOM en classes explicites : `RulesPanel`, `PlayersPanel`, `MonstersPanel`, `TurnOrderPanel` ;
+- suppression des anciens wrappers d'initialisation des panneaux ;
+- passe de lisibilité sur `turn-order.js` pour séparer le rendu, les contrôles, le focus, les déplacements et le drag and drop ;
+- mise à jour des tests JS pour instancier directement les classes de panneaux ;
+- mise à jour de la cartographie JS et de l'audit DnD pour refléter l'état réel ;
+- ajout d'ESLint et intégration du lint JS + tests Vitest dans `make check`.
+
+Vérifications passées en fin de session :
+
+```bash
+npm run lint:js
+npm run check:js
+make check
+git diff --check
+```
+
+État de reprise recommandé :
+
+- le dépôt était propre après les commits de fin de session ;
+- l'orientation OOP explicite est validée pour les zones qui portent une responsabilité durable, sans chercher à transformer chaque helper pur en classe ;
+- la règle de travail validée est de continuer par petites passes, avec tests et documentation mis à jour à chaque passe ;
+- la prochaine passe de lisibilité recommandée est `validation.js`, car ce module mélange encore règles de validation, inspection DOM, affichage des erreurs et gestion du focus ;
+- après cette passe, reprendre `monsters.js` ou la frontière joueurs DOM -> `EncounterState`, selon ce qui paraît le plus difficile à relire.
+
+Plan de reprise possible pour `validation.js` :
+
+1. Cartographier les usages actuels depuis `monsters.js`, `players.js`, `turn-order.js` et `dnd_initiative.js`.
+2. Séparer sans changer le comportement les fonctions pures de validation des fonctions d'affichage DOM.
+3. Ajouter ou ajuster les tests autour des règles de validation qui deviennent isolables.
+4. Mettre à jour `docs/lab/dnd-initiative-js-map.md` et cette note si les responsabilités changent.
+5. Lancer `npm run check:js` puis `make check`.
 
 ## Note De Reprise - 2026-05-21
 

@@ -1,8 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import {
-    initializeRulesPanel,
-    RulesPanel,
-} from '../../../../assets/scripts/lab/dnd/rules.js';
+import { RulesPanel } from '../../../../assets/scripts/lab/dnd/rules.js';
 import { TestElement } from './dom-test-helpers.js';
 
 describe('rules panel', () => {
@@ -22,10 +19,11 @@ describe('rules panel', () => {
             ],
         });
 
-        initializeRulesPanel({
+        const panel = new RulesPanel({
             isRuleActive: ruleId => ruleId === 'skip-low-initiative',
             setRuleActive,
         });
+        panel.start();
 
         expect(skipLowInitiativeToggle.checked).toBe(true);
         expect(extraTurnToggle.checked).toBe(false);
@@ -34,19 +32,6 @@ describe('rules panel', () => {
         extraTurnToggle.dispatchEvent({ type: 'change' });
 
         expect(setRuleActive).toHaveBeenCalledWith('extra-turn-on-twenty', true);
-    });
-
-    test('keeps initializeRulesPanel as a compatibility wrapper', () => {
-        globalThis.document = createRulesDocument({
-            ruleToggles: [],
-        });
-
-        const panel = initializeRulesPanel({
-            isRuleActive: () => false,
-            setRuleActive: () => {},
-        });
-
-        expect(panel).toBeInstanceOf(RulesPanel);
     });
 });
 

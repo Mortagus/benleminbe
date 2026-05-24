@@ -78,16 +78,17 @@ describe('monsters panel rendering', () => {
         expect(onMonsterHitPointsChange).toHaveBeenCalledWith(0, '6');
     });
 
-    test('keeps initializeMonstersPanel as a compatibility wrapper', async () => {
-        const { initializeMonstersPanel, MonstersPanel } = await import('../../../../assets/scripts/lab/dnd/monsters.js');
+    test('starts the panel without changing the encounter immediately', async () => {
+        const { MonstersPanel } = await import('../../../../assets/scripts/lab/dnd/monsters.js');
         const encounter = new EncounterState();
         const onEncounterChange = vi.fn();
 
         globalThis.document = createMonstersDocument();
 
-        const panel = initializeMonstersPanel(encounter, {
+        const panel = new MonstersPanel(encounter, {
             onEncounterChange,
         });
+        panel.start();
 
         expect(panel).toBeInstanceOf(MonstersPanel);
         expect(onEncounterChange).not.toHaveBeenCalled();

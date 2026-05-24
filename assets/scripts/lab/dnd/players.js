@@ -8,14 +8,6 @@ import {
     validatePlayerItem,
 } from './validation.js';
 
-export function initializePlayersPanel(encounter, callbacks = {}) {
-    const panel = new PlayersPanel(encounter, callbacks);
-
-    panel.start();
-
-    return panel;
-}
-
 export class PlayersPanel {
     constructor(encounter, callbacks = {}) {
         this.encounter = encounter;

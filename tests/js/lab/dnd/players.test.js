@@ -2,7 +2,6 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import { EncounterState } from '../../../../assets/scripts/lab/dnd/encounter-state.js';
 import {
     getPlayerActors,
-    initializePlayersPanel,
     PlayersPanel,
 } from '../../../../assets/scripts/lab/dnd/players.js';
 import {
@@ -67,15 +66,16 @@ describe('players panel data mapping', () => {
         ]);
     });
 
-    test('keeps initializePlayersPanel as a compatibility wrapper', () => {
+    test('starts the panel and synchronizes the initial player list', () => {
         const encounter = new EncounterState();
         const onPlayersChange = vi.fn();
 
         globalThis.document = createPlayersDocument();
 
-        const panel = initializePlayersPanel(encounter, {
+        const panel = new PlayersPanel(encounter, {
             onPlayersChange,
         });
+        panel.start();
 
         expect(panel).toBeInstanceOf(PlayersPanel);
         expect(encounter.players).toEqual([]);

@@ -9,14 +9,6 @@ import {
 let draggedTurnId = null;
 const turnOrderItemTemplate = document.getElementById('turnOrderItemTemplate');
 
-export function initializeTurnOrderPanel(encounter, callbacks = {}) {
-    const panel = new TurnOrderPanel(encounter, callbacks);
-
-    panel.start();
-
-    return panel;
-}
-
 export class TurnOrderPanel {
     constructor(encounter, callbacks = {}) {
         this.encounter = encounter;
@@ -33,11 +25,14 @@ export class TurnOrderPanel {
     }
 
     start() {
+        this.bindGenerateTurnOrderButton();
+        bindKeyboardHelp(this.turnOrderKeyboardHelpButton, this.turnOrderKeyboardHelp);
+    }
+
+    bindGenerateTurnOrderButton() {
         this.generateTurnOrderButton.addEventListener('click', () => {
             this.callbacks.onGenerateTurnOrder?.();
         });
-
-        bindKeyboardHelp(this.turnOrderKeyboardHelpButton, this.turnOrderKeyboardHelp);
     }
 
     clearValidation() {
@@ -45,10 +40,18 @@ export class TurnOrderPanel {
     }
 
     refresh(options = {}) {
+        this.rememberFocusTarget(options);
+        this.renderTurnOrder();
+        this.restorePendingFocus();
+    }
+
+    rememberFocusTarget(options) {
         if (options.focusFirst) {
             this.pendingFocusTurnId = this.encounter.turnOrder[0]?.id ?? null;
         }
+    }
 
+    renderTurnOrder() {
         renderRoundOrder(
             this.turnOrderList,
             this.turnOrderPlaceholder,
@@ -69,7 +72,9 @@ export class TurnOrderPanel {
                 },
             },
         );
+    }
 
+    restorePendingFocus() {
         if (this.pendingFocusTurnId) {
             focusTurnItem(this.turnOrderList, this.pendingFocusTurnId);
             this.pendingFocusTurnId = null;
@@ -116,9 +121,21 @@ function renderTurnOrderItem(roundOrder, actor, index, firstActiveIndex, callbac
         .firstElementChild
         .cloneNode(true);
     const actorPosition = index + 1;
-    const actorDescription = getActorDescription(actor, actorPosition, roundOrder.length);
 
-    if (index === firstActiveIndex) {
+    populateTurnOrderItem(li, actor, {
+        isActive: index === firstActiveIndex,
+        position: actorPosition,
+        total: roundOrder.length,
+    });
+    bindTurnOrderItemControls(li, roundOrder, actor, index, callbacks);
+
+    return li;
+}
+
+function populateTurnOrderItem(li, actor, options) {
+    const actorDescription = getActorDescription(actor, options.position, options.total);
+
+    if (options.isActive) {
         li.classList.add('turn-order-item--active');
     }
 
@@ -138,8 +155,10 @@ function renderTurnOrderItem(roundOrder, actor, index, firstActiveIndex, callbac
     li.querySelector('.turn-order-item__hit-points').textContent = `PV ${actor.currentHitPoints} / ${actor.baseHitPoints}`;
 
     const badge = li.querySelector('.turn-order-item__badge');
-    badge.hidden = index !== firstActiveIndex;
+    badge.hidden = !options.isActive;
+}
 
+function bindTurnOrderItemControls(li, roundOrder, actor, index, callbacks) {
     bindMoveButton(
         li.querySelector('[data-turn-move="previous"]'),
         roundOrder,
@@ -157,15 +176,21 @@ function renderTurnOrderItem(roundOrder, actor, index, firstActiveIndex, callbac
         callbacks,
     );
     bindTurnOrderItemEvents(li, roundOrder, actor, index, callbacks);
-
-    return li;
 }
 
 function bindTurnOrderItemEvents(li, roundOrder, actor, index, callbacks) {
+    bindTurnToggleEvents(li, actor, callbacks);
+    bindTurnKeyboardEvents(li, roundOrder, actor, index, callbacks);
+    bindTurnDragAndDropEvents(li, roundOrder, actor, callbacks);
+}
+
+function bindTurnToggleEvents(li, actor, callbacks) {
     li.addEventListener('click', () => {
         callbacks.onToggleTurnDone(actor.id);
     });
+}
 
+function bindTurnKeyboardEvents(li, roundOrder, actor, index, callbacks) {
     li.addEventListener('keydown', event => {
         if (event.target !== li) {
             return;
@@ -188,7 +213,9 @@ function bindTurnOrderItemEvents(li, roundOrder, actor, index, callbacks) {
             moveActorWithKeyboard(roundOrder, actor, index, 'next', callbacks);
         }
     });
+}
 
+function bindTurnDragAndDropEvents(li, roundOrder, actor, callbacks) {
     li.draggable = true;
 
     li.addEventListener('dragstart', () => {
@@ -238,19 +265,8 @@ function bindMoveButton(button, roundOrder, actor, index, direction, callbacks) 
 
     button.tabIndex = -1;
 
-    const isPrevious = direction === 'previous';
-    const target = isPrevious
-        ? roundOrder[index - 1]
-        : roundOrder[index + 1];
-    let label;
-
-    if (!target) {
-        label = `${actor.name} ne peut pas être déplacé ${isPrevious ? 'avant' : 'après'}`;
-    } else {
-        label = isPrevious
-            ? `Déplacer ${actor.name} avant`
-            : `Déplacer ${actor.name} après`;
-    }
+    const target = getAdjacentTurn(roundOrder, index, direction);
+    const label = getMoveButtonLabel(actor, target, direction);
 
     button.setAttribute('aria-label', label);
     button.title = label;
@@ -269,21 +285,14 @@ function bindMoveButton(button, roundOrder, actor, index, direction, callbacks) 
         callbacks.onMoveTurn(
             actor.id,
             target.id,
-            isPrevious ? 'before' : 'after',
+            getMovePlacement(direction),
         );
-        callbacks.onAnnounce?.(
-            isPrevious
-                ? `${actor.name} déplacé avant ${target.name}.`
-                : `${actor.name} déplacé après ${target.name}.`,
-        );
+        callbacks.onAnnounce?.(getMoveAnnouncement(actor, target, direction));
     });
 }
 
 function moveActorWithKeyboard(roundOrder, actor, index, direction, callbacks) {
-    const isPrevious = direction === 'previous';
-    const target = isPrevious
-        ? roundOrder[index - 1]
-        : roundOrder[index + 1];
+    const target = getAdjacentTurn(roundOrder, index, direction);
 
     if (!target) {
         return;
@@ -292,13 +301,35 @@ function moveActorWithKeyboard(roundOrder, actor, index, direction, callbacks) {
     callbacks.onMoveTurn(
         actor.id,
         target.id,
-        isPrevious ? 'before' : 'after',
+        getMovePlacement(direction),
     );
-    callbacks.onAnnounce?.(
-        isPrevious
-            ? `${actor.name} déplacé avant ${target.name}.`
-            : `${actor.name} déplacé après ${target.name}.`,
-    );
+    callbacks.onAnnounce?.(getMoveAnnouncement(actor, target, direction));
+}
+
+function getAdjacentTurn(roundOrder, index, direction) {
+    return direction === 'previous'
+        ? roundOrder[index - 1]
+        : roundOrder[index + 1];
+}
+
+function getMovePlacement(direction) {
+    return direction === 'previous' ? 'before' : 'after';
+}
+
+function getMoveButtonLabel(actor, target, direction) {
+    if (!target) {
+        return `${actor.name} ne peut pas être déplacé ${direction === 'previous' ? 'avant' : 'après'}`;
+    }
+
+    return direction === 'previous'
+        ? `Déplacer ${actor.name} avant`
+        : `Déplacer ${actor.name} après`;
+}
+
+function getMoveAnnouncement(actor, target, direction) {
+    return direction === 'previous'
+        ? `${actor.name} déplacé avant ${target.name}.`
+        : `${actor.name} déplacé après ${target.name}.`;
 }
 
 function getActorDescription(actor, position, total) {

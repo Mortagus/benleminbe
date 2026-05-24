@@ -242,7 +242,7 @@ Clavier:
 
 Drag and drop:
 
-1. `dragstart` stocke l'id dans la variable de module `draggedActorId`.
+1. `dragstart` stocke l'id dans la variable de module `draggedTurnId`.
 2. `dragover` autorise le drop.
 3. `drop` compare l'acteur déplacé et la cible.
 4. `getDropPlacement()` choisit `before` ou `after`.
@@ -442,7 +442,6 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `start()`                   | Brancher les actions de création de slots et de jet d'initiative.              |
 | `refresh()`                 | Rendre la liste de monstres depuis `encounter.monsters`.                       |
 | `validateForTurnOrder()`    | Valider le nombre de monstres et les PV des monstres rendus.                   |
-| `initializeMonstersPanel()` | Wrapper de compatibilité qui instancie `MonstersPanel` et appelle `start()`.   |
 | `renderMonsters()`          | Construire les `<li>` de monstres et brancher leurs événements.                |
 | `renderMonsterOptions()`    | Remplir le `<select>` avec le bestiaire groupé par type.                       |
 | `bindMonsterItemEvents()`   | Relier une ligne de monstre aux callbacks de sélection et de PV.               |
@@ -455,7 +454,6 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `start()`                      | Brancher les événements, synchroniser l'état initial et exposer l'API du panneau via l'instance.            |
 | `sync()`                       | Lire le DOM joueur, mettre à jour `EncounterState`, appeler le callback de changement.                      |
 | `validateForTurnOrder()`       | Valider les lignes joueur avant génération de l'ordre du tour.                                              |
-| `initializePlayersPanel()`     | Wrapper de compatibilité qui instancie `PlayersPanel` et appelle `start()`.                                 |
 | `createPlayerItem()`           | Cloner le template joueur et brancher ses événements.                                                       |
 | `bindExistingPlayerItems()`    | Brancher les joueurs présents au chargement.                                                                |
 | `getPlayerActors()`            | Transformer les lignes DOM en acteurs joueur.                                                               |
@@ -469,8 +467,8 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `start()`                    | Brancher le bouton de génération et l'aide clavier.                                |
 | `refresh()`                  | Rerendre l'ordre du tour et gérer le focus post-rendu.                             |
 | `showEncounterValidationErrors()` | Afficher les erreurs globales de génération.                                 |
-| `initializeTurnOrderPanel()` | Wrapper de compatibilité qui instancie `TurnOrderPanel` et appelle `start()`.      |
-| `renderRoundOrder()`         | Construire les entrées DOM de l'ordre du tour et brancher toutes les interactions. |
+| `renderRoundOrder()`         | Vider puis rerendre la liste, en déléguant chaque entrée à `renderTurnOrderItem()`. |
+| `renderTurnOrderItem()`      | Créer une entrée, la remplir et brancher ses contrôles.                            |
 | `bindMoveButton()`           | Brancher un bouton de déplacement et son annonce accessible.                       |
 | `moveActorWithKeyboard()`    | Déplacer un acteur via flèches clavier.                                            |
 | `getDropPlacement()`         | Déterminer avant/après pour le drag and drop.                                      |
@@ -482,7 +480,6 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 |------------------------------------------|---------------------------------------------------------------------------------|
 | `RulesPanel`                             | Contrôleur DOM des checkboxes de règles et de la modale.                        |
 | `start()`                                | Brancher les checkboxes et la modale de règles.                                 |
-| `initializeRulesPanel()`                 | Wrapper de compatibilité qui instancie `RulesPanel` et appelle `start()`.       |
 | `openRulesModal()` / `closeRulesModal()` | Gérer l'état DOM et le focus de la modale.                                      |
 
 ### `validation.js`
@@ -503,20 +500,20 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 
 1. `dnd_initiative.js` donne une bonne vue d'ensemble: un état unique, quatre panneaux initialisés, une classe coordinatrice et une méthode de génération.
 2. `encounter-state.js` isole bien une partie importante de la logique métier hors DOM.
-3. `EncounterState` et ses wrappers de compatibilité sont testables et déjà couverts par Vitest.
+3. `EncounterState` et ses fonctions de compatibilité métier sont testables et déjà couverts par Vitest.
 4. Les panneaux retournent une petite API explicite: `refresh`, `clearValidation`, `validateForTurnOrder`, `sync`.
 5. Le flux de génération dans `generateTurnOrder()` est linéaire et compréhensible.
 6. Les templates DOM ont des ids/classes assez stables et les modules les utilisent directement.
 
 ## Endroits demandant trop d'effort de lecture
 
-1. `turn-order.js` contient beaucoup d'interactions dans `renderRoundOrder()`: rendu, accessibilité, clic, clavier, boutons, drag and drop.
+1. `turn-order.js` contient beaucoup d'interactions, mais le rendu d'une entrée est maintenant séparé entre création, remplissage, contrôles et interactions.
 2. `validation.js` mélange validation métier, inspection DOM, rendu des erreurs et focus.
 3. `monsters.js` mélange encore rendu complet, lecture du bestiaire, gestion des événements et validation, même si les mutations passent maintenant par `MonstersPanel` et `EncounterState`.
 4. Les callbacks entre panneaux sont simples mais implicites: `onEncounterChange` et `onPlayersChange` rafraîchissent l'ordre sans le reconstruire.
 5. Le mot `refresh()` existe dans plusieurs modules avec des effets différents.
-6. L'état `encounter` est central et mutable. `DndInitiativeTrackerApp` et tous les panneaux DOM utilisent maintenant ses méthodes directement; les wrappers de compatibilité restent disponibles pour la transition et les tests métier existants.
-7. `draggedActorId` est une variable globale de module dans `turn-order.js`, séparée de `encounter`.
+6. L'état `encounter` est central et mutable. `DndInitiativeTrackerApp` et tous les panneaux DOM utilisent maintenant ses méthodes directement.
+7. `draggedTurnId` est une variable globale de module dans `turn-order.js`, séparée de `encounter`.
 8. Les joueurs sont d'abord des champs DOM, puis deviennent des acteurs dans `encounter.players`; cette frontière est importante mais pas documentée dans le code.
 9. Certaines règles s'appliquent seulement lors de `buildRoundOrder()`, alors que leur changement déclenche seulement `refresh()`. C'est probablement voulu ou acceptable, mais la lecture peut laisser croire à un recalcul immédiat.
 
@@ -524,8 +521,8 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 
 | Sujet                              | Fichier / fonction                                                                               | Constat                                                                                                     | Impact sur la compréhension                                                                       | Suggestion légère                                                                                                                                                             |
 |------------------------------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Fichier long                       | `turn-order.js`                                                                                  | 332 lignes pour initialisation, rendu, clic, clavier, drag and drop, focus et annonces.                     | Le lecteur doit garder beaucoup de comportements en tête dans un seul fichier.                    | Regrouper visuellement les fonctions par niveau: initialisation, rendu, interactions souris/clavier, accessibilité. Extraction seulement si un bloc devient plus clair isolé. |
-| Fonction longue                    | `turn-order.js` / `renderRoundOrder()`                                                           | La fonction construit chaque item et branche toutes les interactions.                                       | Le flux "rendre une ligne" est noyé dans les détails de déplacement et drag/drop.                 | Extraire éventuellement `renderTurnOrderItem()` ou `bindTurnOrderItemEvents()` après ajout de tests DOM ciblés.                                                               |
+| Fichier long                       | `turn-order.js`                                                                                  | Le fichier regroupe initialisation, rendu, clic, clavier, drag and drop, focus et annonces.                 | Le lecteur doit encore garder plusieurs comportements en tête dans un seul fichier.               | Garder les fonctions groupées par rôle; extraire un sous-contrôleur seulement si un futur changement le justifie.                                                             |
+| Rendu d'une entrée                 | `turn-order.js` / `renderTurnOrderItem()`                                                        | La création, le remplissage, les contrôles et les interactions d'une entrée sont séparés.                   | Le flux est plus lisible, mais reste dans le même fichier pour éviter une abstraction prématurée. | Conserver cette séparation locale avant d'envisager un `TurnOrderRenderer`.                                                                                                  |
 | Fichier long                       | `validation.js`                                                                                  | 259 lignes mêlant règles, DOM et affichage d'erreurs.                                                       | Le lecteur ne sait pas toujours si une fonction valide une donnée ou modifie l'interface.         | Ajouter un commentaire d'intention en haut du fichier et regrouper les exports: validateurs, helpers de résultat, helpers DOM.                                                |
 | Responsabilités mélangées          | `validation.js` / `showValidationErrors()`, `clearValidationState()`, `focusFirstInvalidField()` | Le module valide et rend les erreurs dans le DOM.                                                           | La validation pure est plus difficile à tester séparément.                                        | Ne pas extraire tout de suite; documenter clairement que ce module est volontairement "validation + feedback DOM".                                                            |
 | Responsabilités mélangées          | `monsters.js` / `renderMonsters()`                                                               | La fonction rend les champs, remplit les textes, applique classes/titres, branche les événements.           | Le rendu d'un monstre demande une lecture complète de la fonction.                                | Éventuellement extraire ou isoler davantage le remplissage d'une ligne si cela réduit la longueur.                                                                            |
@@ -536,9 +533,9 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | Duplication raisonnable            | `players.js` et `validation.js` / `hasStartedPlayer()`, `getPlayerInput()`                       | Deux helpers similaires existent dans deux modules.                                                         | Petite duplication, mais elle évite pour l'instant un couplage artificiel.                        | Laisser tel quel ou extraire seulement si une troisième duplication apparaît.                                                                                                 |
 | Logique métier mélangée au DOM     | `players.js` / `getPlayerActors()`                                                               | La transformation DOM -> acteur contient les valeurs métier joueur.                                         | Il faut lire le DOM pour comprendre la forme des joueurs.                                         | Ajouter un commentaire près de `getPlayerActors()` indiquant que le DOM est la source des joueurs jusqu'à la génération.                                                      |
 | Logique métier mélangée au DOM     | `validation.js` / `validateEncounterActors()`                                                    | La règle "au moins un acteur" est évaluée depuis le DOM, pas depuis `encounter`.                            | La source de vérité varie selon le moment du flux.                                                | Documenter cette exception: avant génération, le DOM est validé pour éviter un état non synchronisé.                                                                          |
-| Événements DOM difficiles à tracer | `turn-order.js` / `renderRoundOrder()`                                                           | Beaucoup d'écouteurs sont créés à chaque rendu.                                                             | Le lecteur doit comprendre que `replaceChildren()` supprime les anciens items et leurs listeners. | Ajouter une section commentaire "Interactions d'une entrée de tour".                                                                                                          |
+| Événements DOM                     | `turn-order.js` / `bindTurnOrderItemEvents()`                                                    | Les écouteurs d'une entrée sont regroupés par type: toggle, clavier, drag and drop.                         | Le lecteur doit toujours comprendre que `replaceChildren()` supprime les anciens items et listeners. | Garder ces trois groupes locaux tant qu'ils restent courts.                                                                                                                  |
 | État global difficile à suivre     | `dnd_initiative.js` / `encounter`                                                                | L'état est mutable et partagé par tous les panneaux.                                                        | Les mutations passent par plusieurs callbacks, surtout entre panneaux.                            | Ajouter au document ou au code un résumé "source de vérité: `encounter`; source temporaire joueurs: DOM".                                                                     |
-| État global de module              | `turn-order.js` / `draggedActorId`                                                               | Le drag and drop utilise une variable de module hors `encounter`.                                           | C'est simple, mais caché par rapport au reste de l'état.                                          | Renommer en `draggedTurnId` pour aligner avec le vocabulaire `turn`.                                                                                                          |
+| État global de module              | `turn-order.js` / `draggedTurnId`                                                                | Le drag and drop utilise une variable de module hors `encounter`.                                           | C'est simple, mais séparé du reste de l'état.                                                     | Le garder local au module sauf si le drag and drop devient plus complexe.                                                                                                     |
 | Tests existants                    | `tests/js/lab/dnd/encounter-state.test.js`                                                       | Les fonctions métier principales sont bien couvertes.                                                       | Bonne protection avant clarification de noms ou petites extractions métier.                       | Garder ces tests comme base avant toute modification de `encounter-state.js`.                                                                                                 |
 | Tests DOM existants                | `monsters.js`, `players.js`, `turn-order.js`, `rules.js`, `validation.js`                        | Des tests ciblés couvrent déjà le rendu, les callbacks, la validation et quelques interactions DOM.          | Les conversions internes peuvent être faites progressivement avec une base de non-régression.     | Garder ces tests verts et ajouter un test ciblé quand une conversion modifie une interaction non couverte.                                                                    |
 | Fichier généré                     | `bestiary.js`                                                                                    | 17 126 lignes de données générées.                                                                          | Il pollue les recherches et ne doit pas être lu comme du code applicatif.                         | Le laisser hors refactor; s'appuyer sur le pipeline de génération documenté ailleurs.                                                                                         |
@@ -650,15 +647,15 @@ Tests prioritaires à conserver ou compléter:
 - Bénéfice : éviter une mauvaise interprétation du `refresh()` après changement de règle.
 - À ne pas faire : modifier immédiatement le comportement pour recalculer l'ordre existant sans décision fonctionnelle explicite.
 
-### 9. Extraire une petite fonction de rendu dans `turn-order.js`
+### 9. Garder la séparation locale du rendu dans `turn-order.js`
 
-- Objectif : alléger `renderRoundOrder()` si les tests DOM sont en place.
+- Objectif : conserver la séparation entre création, remplissage et interactions d'une entrée.
 - Fichiers concernés : `turn-order.js`.
 - Type :
-  - extraction légère
+  - clarification de flux
 - Risque :
-  - moyen
-- Bénéfice : séparer "créer une ligne" de "parcourir l'ordre".
+  - faible
+- Bénéfice : séparer "parcourir l'ordre", "remplir une ligne" et "brancher les interactions".
 - À ne pas faire : éclater le fichier en plusieurs modules ou introduire une classe de composant.
 
 ### 10. Extraire une petite fonction de remplissage dans `monsters.js`

@@ -16,14 +16,6 @@ import {
 const monsterItemTemplate = document.getElementById('monsterItemTemplate');
 const monsterOptionTemplate = document.getElementById('monsterOptionTemplate');
 
-export function initializeMonstersPanel(encounter, callbacks = {}) {
-    const panel = new MonstersPanel(encounter, callbacks);
-
-    panel.start();
-
-    return panel;
-}
-
 export class MonstersPanel {
     constructor(encounter, callbacks = {}) {
         this.encounter = encounter;

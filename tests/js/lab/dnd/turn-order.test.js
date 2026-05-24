@@ -154,16 +154,17 @@ describe('turn order rendering', () => {
         expect(onMoveTurn).toHaveBeenCalledWith('player-1', 'player-2', 'after');
     });
 
-    test('keeps initializeTurnOrderPanel as a compatibility wrapper', async () => {
+    test('starts the panel and reports generate requests', async () => {
         const encounter = new EncounterState();
         const onGenerateTurnOrder = vi.fn();
 
         globalThis.document = createTurnOrderDocument();
 
-        const { initializeTurnOrderPanel, TurnOrderPanel } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
-        const panel = initializeTurnOrderPanel(encounter, {
+        const { TurnOrderPanel } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const panel = new TurnOrderPanel(encounter, {
             onGenerateTurnOrder,
         });
+        panel.start();
 
         expect(panel).toBeInstanceOf(TurnOrderPanel);
 

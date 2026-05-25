@@ -13,6 +13,7 @@ Ce document décrit le code JavaScript actuel de l'outil `DnD Initiative Tracker
 | `assets/scripts/lab/dnd/turn-order.js`      | Panneau DOM de l'ordre du tour. Rend la liste des tours, gère le bouton de génération, les tours joués, les déplacements, le drag and drop et l'aide clavier. |
 | `assets/scripts/lab/dnd/rules.js`           | Panneau DOM des règles. Synchronise les checkboxes de règles avec l'état, ouvre/ferme la modale.                                                              |
 | `assets/scripts/lab/dnd/validation.js`      | Validation des entrées et affichage des erreurs. Les panneaux l'appellent avec des noeuds DOM, puis les règles travaillent sur des données normalisées.         |
+| `assets/scripts/lab/dnd/dtos.js`            | Contrats JSDoc des DTOs persistables prioritaires : snapshot, monstres, joueurs, tours et règles.                                                              |
 | `assets/scripts/lab/dnd/initiative.js`      | Petites fonctions d'initiative: lancer un d20, formater l'initiative, choisir une classe CSS pour critique/échec.                                             |
 | `assets/scripts/lab/dnd/bestiary.js`        | Données générées du bestiaire. Fichier volumineux, explicitement marqué comme généré et à ne pas éditer manuellement.                                         |
 
@@ -371,6 +372,8 @@ Objet central porté par une instance de `EncounterState`:
 
 `encounter` est créé une fois par `DndInitiativeTrackerApp`, puis passé aux panneaux.
 
+Les contrats de persistance prioritaires sont décrits dans `assets/scripts/lab/dnd/dtos.js` sous forme de typedefs JSDoc. Le fichier contient aussi des helpers purs pour convertir l'état actuel vers ces DTOs et restaurer un snapshot vers l'état runtime, sans encore brancher de persistance `localStorage`.
+
 ### Règles
 
 Définies dans `RULES`:
@@ -508,6 +511,33 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `focusFirstInvalidField()`        | Donner le focus au premier champ invalide.                    |
 | `clearValidationState()`          | Nettoyer les classes et résumés d'erreur dans un scope DOM.   |
 | `showValidationErrors()`          | Afficher un résumé d'erreurs et marquer les champs invalides. |
+
+### `dtos.js`
+
+| Élément                        | Responsabilité                                                                 |
+|--------------------------------|--------------------------------------------------------------------------------|
+| `ENCOUNTER_SNAPSHOT_VERSION`   | Version initiale du futur format persistable de rencontre.                     |
+| `EncounterSnapshotDto`         | Racine persistable pour `localStorage` et futur import/export JSON.            |
+| `EncounterMonsterDto`          | Instance de monstre dans une rencontre, liée au catalogue par `slug`.          |
+| `EncounterPlayerDto`           | Participant joueur stocké dans la rencontre.                                   |
+| `TurnEntryDto`                 | Entrée de tour contenant l'identité de l'acteur et l'état joué/non joué.       |
+| `RulesStateDto`                | État des règles optionnelles actives.                                          |
+| `createEncounterSnapshotDto()` | Convertir une instance `EncounterState` en snapshot versionné.                 |
+| `createEncounterMonsterDto()`  | Convertir un monstre de rencontre actuel en DTO persistable.                   |
+| `createEncounterPlayerDto()`   | Convertir un joueur de rencontre actuel en DTO persistable.                    |
+| `createTurnEntryDto()`         | Convertir une entrée actuelle de `turnOrder` en entrée de tour minimale.       |
+| `createRulesStateDto()`        | Normaliser l'état des règles connues.                                          |
+| `restoreEncounterFromSnapshot()` | Restaurer une instance `EncounterState` depuis un snapshot persistable.      |
+| `createRuntimeMonsterFromDto()` | Convertir un monstre persistable vers la forme runtime actuelle.              |
+| `createRuntimePlayerFromDto()` | Convertir un joueur persistable vers la forme runtime actuelle.                |
+| `createRuntimeTurnOrderFromDto()` | Hydrater les entrées de tour minimales depuis les participants restaurés.   |
+
+Règles de restauration validées:
+
+1. Les entrées de tour orphelines sont ignorées.
+2. Un snapshot avec `turnOrder` vide reste vide; `buildRoundOrder()` n'est pas appelé automatiquement.
+3. Les monstres sont restaurés depuis les données sauvegardées, sans relecture du bestiaire.
+4. `persistence.js` sera créé uniquement au moment de brancher `localStorage`.
 
 ## Endroits faciles à suivre
 

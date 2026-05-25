@@ -10,6 +10,56 @@ Documents descriptifs associés :
 - [dnd-bestiary-pipeline.md](../lab/dnd-bestiary-pipeline.md)
 - [dnd-dom-contracts.md](../lab/dnd-dom-contracts.md)
 
+## Note De Reprise - 2026-05-25 - Passe DTOs
+
+La session a démarré le chantier DTOs avant la persistance `P8`.
+
+Décision validée :
+
+- limiter la première passe aux DTOs nécessaires pour préparer `localStorage` ;
+- ne pas traiter les DTOs secondaires maintenant : champ/résultat de validation et groupes d'options monstres restent des structures locales à revoir plus tard si le besoin augmente ;
+- distinguer clairement les données persistables de rencontre des données de catalogue et de rendu.
+
+Travail livré :
+
+- création de `assets/scripts/lab/dnd/dtos.js` avec les typedefs JSDoc prioritaires, sans intégration applicative ;
+- ajout de `ENCOUNTER_SNAPSHOT_VERSION` ;
+- définition de `EncounterSnapshotDto`, `EncounterMonsterDto`, `EncounterPlayerDto`, `TurnEntryDto` et `RulesStateDto` ;
+- mise à jour de la cartographie JS.
+
+Suite livrée :
+
+- ajout de helpers purs de conversion dans `dtos.js` ;
+- `createEncounterSnapshotDto()` convertit une instance `EncounterState` en snapshot versionné ;
+- `createEncounterMonsterDto()` normalise les monstres de rencontre, y compris les slots vides dont les valeurs d'affichage comme `'-'` deviennent `null` dans le DTO ;
+- `createEncounterPlayerDto()` convertit les joueurs actuels de `encounter.players` ;
+- `createTurnEntryDto()` produit une entrée de tour minimale avec `id`, `actorId`, `actorType` et `done`, sans recopier les détails d'acteur ;
+- `createRulesStateDto()` normalise les règles connues ;
+- ajout de tests Vitest dédiés aux helpers DTO.
+
+Restauration livrée :
+
+- ajout de `restoreEncounterFromSnapshot()` pour restaurer une instance `EncounterState` depuis un snapshot ;
+- ajout de `createRuntimeMonsterFromDto()` et `createRuntimePlayerFromDto()` pour convertir les DTOs persistables vers les formes runtime actuelles ;
+- ajout de `createRuntimeTurnOrderFromDto()` pour hydrater les entrées de tour minimales depuis les participants restaurés ;
+- les entrées de tour orphelines sont ignorées ;
+- un snapshot avec `turnOrder` vide reste vide, sans appel automatique à `buildRoundOrder()` ;
+- les monstres sont restaurés depuis les données sauvegardées, sans relecture du bestiaire ;
+- `persistence.js` reste volontairement absent et sera créé uniquement au moment de brancher `localStorage`.
+
+Vérification passée pendant la passe :
+
+```bash
+npm run check:js
+make check
+```
+
+État de reprise recommandé :
+
+- prochaine étape : brancher ces helpers dans la sauvegarde locale `P8` ;
+- éviter de remplacer tout de suite les structures runtime par les DTOs persistables, car le rendu actuel dépend encore de certaines valeurs d'affichage ;
+- créer `persistence.js` seulement à ce moment-là.
+
 ## Note De Reprise - 2026-05-25 - Passe `players.js`
 
 La session a continué avec la clarification de la frontière joueurs DOM -> `EncounterState`.

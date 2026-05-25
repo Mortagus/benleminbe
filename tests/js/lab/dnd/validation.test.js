@@ -1,6 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import {
     showValidationErrors,
+    validateCurrentHitPointsLimit,
+    validateIntegerValue,
     validateMonsterCountInput,
     validatePlayerItem,
 } from '../../../../assets/scripts/lab/dnd/validation.js';
@@ -12,6 +14,70 @@ import {
 } from './dom-test-helpers.js';
 
 describe('validation helpers', () => {
+    test('validates normalized integer field values', () => {
+        expect(validateIntegerValue(
+            {
+                input: null,
+                rawValue: ' 4 ',
+                badInput: false,
+            },
+            {
+                fieldName: 'initiative joueur 1',
+                min: 1,
+                max: 20,
+                required: true,
+            },
+        )).toEqual({
+            isValid: true,
+            errors: [],
+        });
+
+        expect(validateIntegerValue(
+            {
+                input: null,
+                rawValue: '4.5',
+                badInput: false,
+            },
+            {
+                fieldName: 'initiative joueur 1',
+                required: true,
+            },
+        )).toMatchObject({
+            isValid: false,
+            errors: [
+                {
+                    message: 'Le champ initiative joueur 1 doit être un nombre entier.',
+                },
+            ],
+        });
+    });
+
+    test('validates current hit points against max hit points without DOM reads', () => {
+        expect(validateCurrentHitPointsLimit({
+            currentHitPoints: 12,
+            maxHitPoints: 20,
+            currentHitPointsInput: null,
+            actorLabel: 'joueur 1',
+        })).toEqual({
+            isValid: true,
+            errors: [],
+        });
+
+        expect(validateCurrentHitPointsLimit({
+            currentHitPoints: 21,
+            maxHitPoints: 20,
+            currentHitPointsInput: null,
+            actorLabel: 'joueur 1',
+        })).toMatchObject({
+            isValid: false,
+            errors: [
+                {
+                    message: 'Les PV actuels du joueur 1 ne peuvent pas dépasser ses PV max.',
+                },
+            ],
+        });
+    });
+
     test('validates monster count boundaries', () => {
         expect(validateMonsterCountInput(createInput('3'))).toEqual({
             isValid: true,

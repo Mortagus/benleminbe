@@ -1,6 +1,6 @@
 # Backlog unifié - DnD Initiative Tracker
 
-Date de mise à jour : 2026-05-24
+Date de mise à jour : 2026-05-25
 
 Ce document remplace l'ancien backlog d'audit et la roadmap avancée. Il conserve les tâches déjà réalisées, aligne les fonctionnalités de la roadmap avec l'état réel du projet et liste les évolutions restantes.
 
@@ -9,6 +9,33 @@ Documents descriptifs associés :
 - [dnd-initiative-audit.md](../lab/dnd-initiative-audit.md)
 - [dnd-bestiary-pipeline.md](../lab/dnd-bestiary-pipeline.md)
 - [dnd-dom-contracts.md](../lab/dnd-dom-contracts.md)
+
+## Note De Reprise - 2026-05-25
+
+La session a repris sur la passe de lisibilité recommandée pour `validation.js`.
+
+Travail livré :
+
+- séparation interne entre façades de validation appelées avec des noeuds DOM, règles pures et helpers de feedback DOM ;
+- extraction de `validateIntegerValue()` pour valider une valeur entière normalisée sans lecture DOM ;
+- extraction de `validateCurrentHitPointsLimit()` pour isoler la règle PV actuels <= PV max ;
+- conservation de l'API publique utilisée par `monsters.js`, `players.js`, `turn-order.js` et `dnd_initiative.js` ;
+- ajout de tests Vitest ciblés sur les règles pures de validation ;
+- mise à jour de la cartographie JS pour refléter la nouvelle responsabilité de `validation.js`.
+
+Vérification passée :
+
+```bash
+npm run check:js
+make check
+```
+
+État de reprise recommandé :
+
+- continuer par petites passes avec tests et documentation ;
+- ne plus prioriser `validation.js` sauf nouveau besoin fonctionnel ;
+- reprendre ensuite `monsters.js`, car il mélange encore rendu, lecture du bestiaire, branchement d'événements et validation ;
+- autre option valable : travailler la frontière joueurs DOM -> `EncounterState`, surtout si la sauvegarde locale `P8` devient la priorité immédiate.
 
 ## Note De Reprise - 2026-05-24
 
@@ -34,15 +61,15 @@ make check
 git diff --check
 ```
 
-État de reprise recommandé :
+État de reprise recommandé initial :
 
 - le dépôt était propre après les commits de fin de session ;
 - l'orientation OOP explicite est validée pour les zones qui portent une responsabilité durable, sans chercher à transformer chaque helper pur en classe ;
 - la règle de travail validée est de continuer par petites passes, avec tests et documentation mis à jour à chaque passe ;
-- la prochaine passe de lisibilité recommandée est `validation.js`, car ce module mélange encore règles de validation, inspection DOM, affichage des erreurs et gestion du focus ;
+- la prochaine passe de lisibilité recommandée était `validation.js`, car ce module mélangeait encore règles de validation, inspection DOM, affichage des erreurs et gestion du focus ;
 - après cette passe, reprendre `monsters.js` ou la frontière joueurs DOM -> `EncounterState`, selon ce qui paraît le plus difficile à relire.
 
-Plan de reprise possible pour `validation.js` :
+Plan de reprise réalisé pour `validation.js` le 2026-05-25 :
 
 1. Cartographier les usages actuels depuis `monsters.js`, `players.js`, `turn-order.js` et `dnd_initiative.js`.
 2. Séparer sans changer le comportement les fonctions pures de validation des fonctions d'affichage DOM.

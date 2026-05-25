@@ -1,9 +1,9 @@
-// Validation and DOM feedback helpers for the DnD tracker forms.
-// The module keeps validation results and user-facing error rendering together
-// because the current panels validate directly from DOM fields.
+// Validation helpers for the DnD tracker forms.
+// Public validators still accept DOM nodes because panels own their forms, but
+// validation rules below operate on normalized field data.
 export const MAX_MONSTER_COUNT = 30;
 
-// Field and encounter validators.
+// DOM-facing validators.
 export function validateMonsterCountInput(monsterCountInput) {
     return validateIntegerInput(monsterCountInput, {
         fieldName: 'nombre de monstres',
@@ -14,18 +14,18 @@ export function validateMonsterCountInput(monsterCountInput) {
 }
 
 export function validateMonsterHitPointsInput(monsterItem, index) {
-    const hitPointsInput = monsterItem.querySelector('.monster-hp input');
+    const hitPointsInput = getMonsterHitPointsInput(monsterItem);
 
     if (!hitPointsInput || hitPointsInput.disabled) {
         return createValidationResult();
     }
 
-    const maxHitPoints = Number(hitPointsInput.max);
+    const maxHitPoints = parseFiniteNumber(hitPointsInput.max);
 
     return validateIntegerInput(hitPointsInput, {
         fieldName: `PV actuels monstre ${index + 1}`,
         min: 0,
-        max: Number.isFinite(maxHitPoints) ? maxHitPoints : null,
+        max: maxHitPoints,
         required: true,
     });
 }
@@ -35,51 +35,35 @@ export function validatePlayerItem(playerItem, index) {
         return createValidationResult();
     }
 
-    const armorClassInput = getPlayerInput(playerItem, 'armor-class');
-    const currentHitPointsInput = getPlayerInput(playerItem, 'current-hit-points');
-    const baseHitPointsInput = getPlayerInput(playerItem, 'base-hit-points');
-    const initiativeInput = getPlayerInput(playerItem, 'initiative');
+    const fields = getPlayerFields(playerItem);
 
-    const result = mergeValidationResults(
-        validateIntegerInput(armorClassInput, {
+    return mergeValidationResults(
+        validateIntegerInput(fields.armorClass, {
             fieldName: `CA joueur ${index + 1}`,
             min: 0,
             required: true,
         }),
-        validateIntegerInput(currentHitPointsInput, {
+        validateIntegerInput(fields.currentHitPoints, {
             fieldName: `PV actuels joueur ${index + 1}`,
             min: 0,
             required: true,
         }),
-        validateIntegerInput(baseHitPointsInput, {
+        validateIntegerInput(fields.baseHitPoints, {
             fieldName: `PV max joueur ${index + 1}`,
             min: 0,
             required: true,
         }),
-        validateIntegerInput(initiativeInput, {
+        validateIntegerInput(fields.initiative, {
             fieldName: `initiative joueur ${index + 1}`,
             required: true,
         }),
+        validateCurrentHitPointsLimit({
+            currentHitPoints: parseIntegerInputValue(fields.currentHitPoints),
+            maxHitPoints: parseIntegerInputValue(fields.baseHitPoints),
+            currentHitPointsInput: fields.currentHitPoints,
+            actorLabel: `joueur ${index + 1}`,
+        }),
     );
-
-    const currentHitPoints = parseIntegerInputValue(currentHitPointsInput);
-    const maxHitPoints = parseIntegerInputValue(baseHitPointsInput);
-
-    if (
-        currentHitPoints !== null
-        && maxHitPoints !== null
-        && currentHitPoints > maxHitPoints
-    ) {
-        result.errors.push({
-            input: currentHitPointsInput,
-            message: `Les PV actuels du joueur ${index + 1} ne peuvent pas dépasser ses PV max.`,
-        });
-    }
-
-    return {
-        isValid: result.errors.length === 0,
-        errors: result.errors,
-    };
 }
 
 export function validateEncounterActors(monsterList, playerList) {
@@ -96,6 +80,86 @@ export function validateEncounterActors(monsterList, playerList) {
         {
             input: null,
             message: 'Ajoute au moins un monstre ou un joueur avant de générer l’ordre du tour.',
+        },
+    ]);
+}
+
+// Pure validation rules.
+export function validateIntegerValue(field, options) {
+    if (field.badInput) {
+        return createValidationResult([
+            {
+                input: field.input,
+                message: `Le champ ${options.fieldName} doit être un nombre entier.`,
+            },
+        ]);
+    }
+
+    const rawValue = field.rawValue.trim();
+
+    if (options.required && rawValue === '') {
+        return createValidationResult([
+            {
+                input: field.input,
+                message: `Le champ ${options.fieldName} est obligatoire.`,
+            },
+        ]);
+    }
+
+    if (rawValue === '') {
+        return createValidationResult();
+    }
+
+    const value = parseIntegerValue(rawValue);
+
+    if (value === null) {
+        return createValidationResult([
+            {
+                input: field.input,
+                message: `Le champ ${options.fieldName} doit être un nombre entier.`,
+            },
+        ]);
+    }
+
+    if (typeof options.min === 'number' && value < options.min) {
+        return createValidationResult([
+            {
+                input: field.input,
+                message: `Le champ ${options.fieldName} doit être supérieur ou égal à ${options.min}.`,
+            },
+        ]);
+    }
+
+    if (typeof options.max === 'number' && value > options.max) {
+        return createValidationResult([
+            {
+                input: field.input,
+                message: `Le champ ${options.fieldName} doit être inférieur ou égal à ${options.max}.`,
+            },
+        ]);
+    }
+
+    return createValidationResult();
+}
+
+export function validateCurrentHitPointsLimit({
+    currentHitPoints,
+    maxHitPoints,
+    currentHitPointsInput,
+    actorLabel,
+}) {
+    if (
+        currentHitPoints === null
+        || maxHitPoints === null
+        || currentHitPoints <= maxHitPoints
+    ) {
+        return createValidationResult();
+    }
+
+    return createValidationResult([
+        {
+            input: currentHitPointsInput,
+            message: `Les PV actuels du ${actorLabel} ne peuvent pas dépasser ses PV max.`,
         },
     ]);
 }
@@ -172,7 +236,7 @@ export function showValidationErrors(validationResult, summaryElement, summaryMe
     summaryElement.hidden = false;
 }
 
-// Internal input parsing helpers.
+// DOM field readers.
 function validateIntegerInput(input, options) {
     if (!input) {
         return createValidationResult([
@@ -183,70 +247,52 @@ function validateIntegerInput(input, options) {
         ]);
     }
 
-    if (input.validity?.badInput) {
-        return createValidationResult([
-            {
-                input,
-                message: `Le champ ${options.fieldName} doit être un nombre entier.`,
-            },
-        ]);
-    }
-
-    const rawValue = input.value.trim();
-
-    if (options.required && rawValue === '') {
-        return createValidationResult([
-            {
-                input,
-                message: `Le champ ${options.fieldName} est obligatoire.`,
-            },
-        ]);
-    }
-
-    if (rawValue === '') {
-        return createValidationResult();
-    }
-
-    const value = Number(rawValue);
-
-    if (!Number.isInteger(value)) {
-        return createValidationResult([
-            {
-                input,
-                message: `Le champ ${options.fieldName} doit être un nombre entier.`,
-            },
-        ]);
-    }
-
-    if (typeof options.min === 'number' && value < options.min) {
-        return createValidationResult([
-            {
-                input,
-                message: `Le champ ${options.fieldName} doit être supérieur ou égal à ${options.min}.`,
-            },
-        ]);
-    }
-
-    if (typeof options.max === 'number' && value > options.max) {
-        return createValidationResult([
-            {
-                input,
-                message: `Le champ ${options.fieldName} doit être inférieur ou égal à ${options.max}.`,
-            },
-        ]);
-    }
-
-    return createValidationResult();
+    return validateIntegerValue(readInputField(input), options);
 }
 
 function parseIntegerInputValue(input) {
-    if (!input || input.value.trim() === '') {
+    if (!input) {
         return null;
     }
 
-    const value = Number(input.value.trim());
+    return parseIntegerValue(input.value);
+}
+
+function parseIntegerValue(rawValue) {
+    if (rawValue.trim() === '') {
+        return null;
+    }
+
+    const value = Number(rawValue.trim());
 
     return Number.isInteger(value) ? value : null;
+}
+
+function parseFiniteNumber(rawValue) {
+    const value = Number(rawValue);
+
+    return Number.isFinite(value) ? value : null;
+}
+
+function readInputField(input) {
+    return {
+        input,
+        rawValue: input.value,
+        badInput: Boolean(input.validity?.badInput),
+    };
+}
+
+function getMonsterHitPointsInput(monsterItem) {
+    return monsterItem.querySelector('.monster-hp input');
+}
+
+function getPlayerFields(playerItem) {
+    return {
+        armorClass: getPlayerInput(playerItem, 'armor-class'),
+        currentHitPoints: getPlayerInput(playerItem, 'current-hit-points'),
+        baseHitPoints: getPlayerInput(playerItem, 'base-hit-points'),
+        initiative: getPlayerInput(playerItem, 'initiative'),
+    };
 }
 
 function hasStartedPlayer(playerItem) {

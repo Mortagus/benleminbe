@@ -81,6 +81,41 @@ describe('players panel data mapping', () => {
         expect(encounter.players).toEqual([]);
         expect(onPlayersChange).toHaveBeenCalledOnce();
     });
+
+    test('synchronizes existing player input changes to the encounter', () => {
+        const encounter = new EncounterState();
+        const onPlayersChange = vi.fn();
+        const playerItem = createPanelPlayerItem({
+            name: createInput('Lia'),
+            'armor-class': createInput('15'),
+            'current-hit-points': createInput('18'),
+            'base-hit-points': createInput('20'),
+            initiative: createInput('12'),
+        });
+
+        globalThis.document = createPlayersDocument([playerItem.item]);
+
+        const panel = new PlayersPanel(encounter, {
+            onPlayersChange,
+        });
+        panel.start();
+
+        expect(encounter.players[0]).toMatchObject({
+            name: 'Lia',
+            initiative: 12,
+            roll: 12,
+        });
+
+        playerItem.inputs.initiative.value = '16';
+        playerItem.inputs.initiative.dispatchEvent({ type: 'input' });
+
+        expect(encounter.players[0]).toMatchObject({
+            name: 'Lia',
+            initiative: 16,
+            roll: 16,
+        });
+        expect(onPlayersChange).toHaveBeenCalledTimes(2);
+    });
 });
 
 function createPlayerList(playerItems) {
@@ -89,11 +124,15 @@ function createPlayerList(playerItems) {
     };
 }
 
-function createPlayersDocument() {
+function createPlayersDocument(playerItems = []) {
     const addPlayerButton = new TestElement('button');
     const playerPanel = new TestElement('section', ['dnd-panel--players']);
     const playerList = new TestElement('ul');
     const playerValidationSummary = new TestElement('div', ['dnd-validation-summary']);
+
+    playerItems.forEach(playerItem => {
+        playerList.appendChild(playerItem);
+    });
 
     return {
         getElementById: id => ({
@@ -102,5 +141,15 @@ function createPlayersDocument() {
             playerValidationSummary,
         })[id] ?? null,
         querySelector: selector => selector === '.dnd-panel--players' ? playerPanel : null,
+    };
+}
+
+function createPanelPlayerItem(inputs) {
+    const item = createPlayerItem(inputs);
+    item.appendChild(new TestElement('button', ['player-remove-button']));
+
+    return {
+        item,
+        inputs,
     };
 }

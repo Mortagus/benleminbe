@@ -10,6 +10,32 @@ Documents descriptifs associés :
 - [dnd-bestiary-pipeline.md](../lab/dnd-bestiary-pipeline.md)
 - [dnd-dom-contracts.md](../lab/dnd-dom-contracts.md)
 
+## Note De Reprise - 2026-05-25 - Passe `players.js`
+
+La session a continué avec la clarification de la frontière joueurs DOM -> `EncounterState`.
+
+Travail livré :
+
+- ajout d'un test Vitest qui vérifie la synchronisation d'un joueur existant vers `encounter.players` lors d'une modification de champ ;
+- extraction d'un handler `handleAddPlayer()` dans `PlayersPanel` ;
+- conservation de `PlayersPanel.sync()` comme API publique appelée par le coordinateur ;
+- introduction de `syncPlayerFormsToEncounter()` pour nommer explicitement la frontière entre formulaire joueur et état de rencontre ;
+- séparation du mapping joueur en deux étapes : `readPlayerForm()` lit les champs `data-player-field`, puis `createPlayerActor()` produit la structure consommée par `EncounterState` ;
+- mise à jour de la cartographie JS.
+
+Vérification passée pendant la passe :
+
+```bash
+npm run check:js
+make check
+```
+
+État de reprise recommandé :
+
+- prochaine passe : cadrer les DTO joueurs/monstres avant toute persistance ;
+- partir des fonctions `createPlayerActor()` et des constructeurs de monstres dans `encounter-state.js` pour identifier les formes actuelles ;
+- ne pas démarrer `P8` localStorage avant d'avoir stabilisé les formes de données à persister.
+
 ## Note De Reprise - 2026-05-25 - Passe `monsters.js`
 
 La session a continué avec une passe ciblée sur `monsters.js`, après validation du périmètre avec Benjamin.

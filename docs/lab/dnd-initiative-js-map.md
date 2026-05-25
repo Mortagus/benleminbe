@@ -290,8 +290,10 @@ Source principale: DOM du panneau joueurs.
 Transformation:
 
 1. `getPlayerActors(playerList)` lit les `.player-item`.
-2. Il ignore les lignes totalement vides.
-3. Il crée des objets de type:
+2. `getStartedPlayerForms()` ignore les lignes totalement vides.
+3. `readPlayerForm()` extrait les valeurs via les attributs `data-player-field`.
+4. `createPlayerActor()` convertit ces valeurs en acteur stocké dans `encounter.players`.
+5. Les acteurs sans nom après fallback sont ignorés.
 
 ```js
 {
@@ -458,10 +460,14 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `PlayersPanel`                 | Contrôleur DOM du panneau joueurs.                                                                          |
 | `start()`                      | Brancher les événements, synchroniser l'état initial et exposer l'API du panneau via l'instance.            |
 | `sync()`                       | Lire le DOM joueur, mettre à jour `EncounterState`, appeler le callback de changement.                      |
+| `syncPlayerFormsToEncounter()` | Frontière explicite entre les champs joueur DOM et `encounter.players`.                                     |
+| `handleAddPlayer()`            | Ajouter une ligne joueur puis synchroniser le panneau.                                                      |
 | `validateForTurnOrder()`       | Valider les lignes joueur avant génération de l'ordre du tour.                                              |
 | `createPlayerItem()`           | Cloner le template joueur et brancher ses événements.                                                       |
 | `bindExistingPlayerItems()`    | Brancher les joueurs présents au chargement.                                                                |
 | `getPlayerActors()`            | Transformer les lignes DOM en acteurs joueur.                                                               |
+| `readPlayerForm()`             | Lire les valeurs d'une ligne joueur depuis les champs `data-player-field`.                                  |
+| `createPlayerActor()`          | Convertir une ligne formulaire normalisée en acteur consommé par `EncounterState`.                          |
 | `refreshPlayerAccessibility()` | Recalculer ids, labels et aria-labels selon l'ordre des joueurs.                                            |
 
 ### `turn-order.js`
@@ -521,7 +527,7 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 5. Le mot `refresh()` existe dans plusieurs modules avec des effets différents.
 6. L'état `encounter` est central et mutable. `DndInitiativeTrackerApp` et tous les panneaux DOM utilisent maintenant ses méthodes directement.
 7. `draggedTurnId` est une variable globale de module dans `turn-order.js`, séparée de `encounter`.
-8. Les joueurs sont d'abord des champs DOM, puis deviennent des acteurs dans `encounter.players`; cette frontière est importante mais pas documentée dans le code.
+8. Les joueurs sont d'abord des champs DOM, puis deviennent des acteurs dans `encounter.players`; cette frontière est maintenant isolée, mais reste un bon candidat pour la future passe DTO.
 9. Certaines règles s'appliquent seulement lors de `buildRoundOrder()`, alors que leur changement déclenche seulement `refresh()`. C'est probablement voulu ou acceptable, mais la lecture peut laisser croire à un recalcul immédiat.
 
 ## Diagnostic de maintenabilité JS
@@ -538,7 +544,7 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | Ordre d'exécution                  | `dnd_initiative.js`                                                                              | `turnOrderPanel` est créé avant `monstersPanel` et `playersPanel`, car leurs callbacks rafraîchissent son rendu. | Ce choix est porté par `DndInitiativeTrackerApp.start()`, ce qui rend l'enchaînement plus visible. | Garder cet ordre explicite pendant la conversion progressive des panneaux en classes.                                                                                         |
 | Ordre d'exécution                  | `rules.js` + `encounter-state.js`                                                                | Changer une règle appelle `refresh()` mais pas `buildRoundOrder()`.                                         | Un lecteur peut croire que l'ordre existant est recalculé.                                        | Documenter explicitement: les règles sont appliquées à la prochaine génération, ou décider plus tard avec test si le recalcul immédiat est souhaité.                          |
 | Duplication raisonnable            | `players.js` et `validation.js` / `hasStartedPlayer()`, `getPlayerInput()`                       | Deux helpers similaires existent dans deux modules.                                                         | Petite duplication, mais elle évite pour l'instant un couplage artificiel.                        | Laisser tel quel ou extraire seulement si une troisième duplication apparaît.                                                                                                 |
-| Logique métier mélangée au DOM     | `players.js` / `getPlayerActors()`                                                               | La transformation DOM -> acteur contient les valeurs métier joueur.                                         | Il faut lire le DOM pour comprendre la forme des joueurs.                                         | Ajouter un commentaire près de `getPlayerActors()` indiquant que le DOM est la source des joueurs jusqu'à la génération.                                                      |
+| Frontière DOM -> état              | `players.js` / `getPlayerActors()`                                                               | La transformation passe par `readPlayerForm()` puis `createPlayerActor()`.                                  | La frontière est plus visible, mais la forme finale reste une structure libre.                    | Utiliser cette zone comme point de départ pour la future passe DTO joueur.                                                                                                    |
 | Logique métier mélangée au DOM     | `validation.js` / `validateEncounterActors()`                                                    | La règle "au moins un acteur" est évaluée depuis le DOM, pas depuis `encounter`.                            | La source de vérité varie selon le moment du flux.                                                | Documenter cette exception: avant génération, le DOM est validé pour éviter un état non synchronisé.                                                                          |
 | Événements DOM                     | `turn-order.js` / `bindTurnOrderItemEvents()`                                                    | Les écouteurs d'une entrée sont regroupés par type: toggle, clavier, drag and drop.                         | Le lecteur doit toujours comprendre que `replaceChildren()` supprime les anciens items et listeners. | Garder ces trois groupes locaux tant qu'ils restent courts.                                                                                                                  |
 | État global difficile à suivre     | `dnd_initiative.js` / `encounter`                                                                | L'état est mutable et partagé par tous les panneaux.                                                        | Les mutations passent par plusieurs callbacks, surtout entre panneaux.                            | Ajouter au document ou au code un résumé "source de vérité: `encounter`; source temporaire joueurs: DOM".                                                                     |
@@ -639,6 +645,7 @@ Tests prioritaires à conserver ou compléter:
 - Risque :
   - faible
 - Bénéfice : moins de confusion autour de `playersPanel.sync()` avant `buildRoundOrder()`.
+- État : réalisé en séparant lecture des champs, formulaire joueur normalisé et création de l'acteur envoyé à `EncounterState`.
 - À ne pas faire : introduire un store ou une synchronisation bidirectionnelle complexe.
 
 ### 8. Clarifier l'effet réel des règles

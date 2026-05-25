@@ -20,8 +20,7 @@ export class PlayersPanel {
 
     start() {
         this.addPlayerButton.addEventListener('click', () => {
-            this.playerList.appendChild(createPlayerItem(() => this.sync()));
-            this.sync();
+            this.handleAddPlayer();
         });
 
         bindExistingPlayerItems(this.playerList, () => this.sync());
@@ -37,6 +36,15 @@ export class PlayersPanel {
     }
 
     sync() {
+        this.syncPlayerFormsToEncounter();
+    }
+
+    handleAddPlayer() {
+        this.playerList.appendChild(createPlayerItem(() => this.sync()));
+        this.sync();
+    }
+
+    syncPlayerFormsToEncounter() {
         refreshPlayerAccessibility(this.playerList);
         this.encounter.setPlayers(getPlayerActors(this.playerList));
         this.callbacks.onPlayersChange?.();
@@ -86,30 +94,11 @@ export function bindExistingPlayerItems(playerList, onPlayerListChange) {
     refreshPlayerAccessibility(playerList);
 }
 
+// Boundary from player form rows to the encounter state shape.
+// The future DTO pass should start from this mapping instead of reading DOM fields elsewhere.
 export function getPlayerActors(playerList) {
-    const playerItems = playerList.querySelectorAll('.player-item');
-
-    return Array.from(playerItems)
-        .filter(playerItem => hasStartedPlayer(playerItem))
-        .map((item, index) => {
-            const nameInput = getPlayerInput(item, 'name');
-            const armorClassInput = getPlayerInput(item, 'armor-class');
-            const currentHitPointsInput = getPlayerInput(item, 'current-hit-points');
-            const baseHitPointsInput = getPlayerInput(item, 'base-hit-points');
-            const initiativeInput = getPlayerInput(item, 'initiative');
-
-            return {
-                id: `player-${index + 1}`,
-                type: 'player',
-                name: nameInput?.value || `Joueur ${index + 1}`,
-                armorClass: Number(armorClassInput?.value || 0),
-                currentHitPoints: Number(currentHitPointsInput?.value || 0),
-                baseHitPoints: Number(baseHitPointsInput?.value || 0),
-                initiative: Number(initiativeInput?.value || 0),
-                roll: Number(initiativeInput?.value || 0),
-                done: false,
-            };
-        })
+    return getStartedPlayerForms(playerList)
+        .map((playerForm, index) => createPlayerActor(playerForm, index))
         .filter(actor => actor.name.trim() !== '');
 }
 
@@ -126,6 +115,40 @@ function bindPlayerItemEvents(playerItem, onPlayerListChange) {
             onPlayerListChange();
         });
     });
+}
+
+function getStartedPlayerForms(playerList) {
+    const playerItems = playerList.querySelectorAll('.player-item');
+
+    return Array.from(playerItems)
+        .filter(playerItem => hasStartedPlayer(playerItem))
+        .map(readPlayerForm);
+}
+
+function readPlayerForm(playerItem) {
+    return {
+        name: readPlayerField(playerItem, 'name'),
+        armorClass: readPlayerField(playerItem, 'armor-class'),
+        currentHitPoints: readPlayerField(playerItem, 'current-hit-points'),
+        baseHitPoints: readPlayerField(playerItem, 'base-hit-points'),
+        initiative: readPlayerField(playerItem, 'initiative'),
+    };
+}
+
+function createPlayerActor(playerForm, index) {
+    const playerNumber = index + 1;
+
+    return {
+        id: `player-${playerNumber}`,
+        type: 'player',
+        name: playerForm.name || `Joueur ${playerNumber}`,
+        armorClass: Number(playerForm.armorClass || 0),
+        currentHitPoints: Number(playerForm.currentHitPoints || 0),
+        baseHitPoints: Number(playerForm.baseHitPoints || 0),
+        initiative: Number(playerForm.initiative || 0),
+        roll: Number(playerForm.initiative || 0),
+        done: false,
+    };
 }
 
 function refreshPlayerAccessibility(playerList) {
@@ -181,6 +204,10 @@ function assignInputAriaLabel(playerItem, fieldName, labelText) {
 
 function getPlayerInput(playerItem, fieldName) {
     return playerItem.querySelector(`[data-player-field="${fieldName}"]`);
+}
+
+function readPlayerField(playerItem, fieldName) {
+    return getPlayerInput(playerItem, fieldName)?.value ?? '';
 }
 
 function hasStartedPlayer(playerItem) {

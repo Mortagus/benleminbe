@@ -10,6 +10,33 @@ Documents descriptifs associés :
 - [dnd-bestiary-pipeline.md](../lab/dnd-bestiary-pipeline.md)
 - [dnd-dom-contracts.md](../lab/dnd-dom-contracts.md)
 
+## Note De Reprise - 2026-05-25 - Passe `monsters.js`
+
+La session a continué avec une passe ciblée sur `monsters.js`, après validation du périmètre avec Benjamin.
+
+Travail livré :
+
+- ajout de tests Vitest sur `MonstersPanel` pour la création valide de slots monstres et le refus d'un nombre invalide ;
+- extraction de handlers explicites dans `MonstersPanel` : création de slots, jet d'initiative, sélection d'un monstre et modification des PV ;
+- `renderMonsters()` accepte maintenant un catalogue injecté ;
+- `MonstersPanel` rend les options depuis `encounter.bestiary`, avec fallback conservé vers le bestiaire importé pour les appels existants ;
+- la préparation des options est isolée avec des helpers de groupement et de création d'options ;
+- `populateMonsterItem()` n'a pas été découpée davantage : la fonction reste dense mais linéaire et limitée au remplissage DOM ;
+- mise à jour de la cartographie JS.
+
+Vérification passée pendant la passe :
+
+```bash
+npm run check:js
+make check
+```
+
+État de reprise recommandé :
+
+- prochaine passe : améliorer la frontière joueurs DOM -> `EncounterState` ;
+- passe suivante avant reprise des points `PX` : explorer et cadrer des DTO explicites pour les structures joueur et monstre ;
+- objectif de cette passe DTO : préparer un format plus rigoureux pour la sauvegarde locale `P8` et l'import/export `P22`, sans mélanger ce travail avec la persistance elle-même.
+
 ## Note De Reprise - 2026-05-25
 
 La session a repris sur la passe de lisibilité recommandée pour `validation.js`.

@@ -8,7 +8,7 @@ Ce document décrit le code JavaScript actuel de l'outil `DnD Initiative Tracker
 |---------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `assets/scripts/lab/dnd/dnd_initiative.js`  | Point d'entrée de l'outil. Crée l'état de rencontre, initialise les panneaux et orchestre la génération de l'ordre du tour.                                   |
 | `assets/scripts/lab/dnd/encounter-state.js` | Module d'état et de règles métier. Crée et modifie la rencontre, les monstres, les joueurs, les règles et l'ordre du tour.                                    |
-| `assets/scripts/lab/dnd/monsters.js`        | Panneau DOM des monstres. Crée les emplacements de monstres, rend la liste, gère la sélection, les PV et le lancement d'initiative des monstres.              |
+| `assets/scripts/lab/dnd/monsters.js`        | Panneau DOM des monstres. Crée les emplacements, rend la liste depuis `encounter.monsters`, utilise le catalogue de `EncounterState` et gère sélection/PV/initiative. |
 | `assets/scripts/lab/dnd/players.js`         | Panneau DOM des joueurs. Ajoute/supprime des joueurs, lit les champs joueur et synchronise `encounter.players`.                                               |
 | `assets/scripts/lab/dnd/turn-order.js`      | Panneau DOM de l'ordre du tour. Rend la liste des tours, gère le bouton de génération, les tours joués, les déplacements, le drag and drop et l'aide clavier. |
 | `assets/scripts/lab/dnd/rules.js`           | Panneau DOM des règles. Synchronise les checkboxes de règles avec l'état, ouvre/ferme la modale.                                                              |
@@ -116,9 +116,9 @@ Flux:
 Sélection d'un monstre dans une ligne:
 
 1. `renderMonsters()` crée les lignes depuis `#monsterItemTemplate`.
-2. `renderMonsterOptions()` remplit le `<select>` depuis `bestiary`.
+2. `renderMonsterOptions()` remplit le `<select>` depuis le catalogue fourni par `encounter.bestiary`.
 3. `bindMonsterItemEvents()` branche `change` sur `.monster-select`.
-4. Au changement, `encounter.selectMonster(index, selectedSlug)` remplace le monstre vide par un monstre issu du bestiaire.
+4. Au changement, `handleMonsterSelectionChange()` appelle `encounter.selectMonster(index, selectedSlug)` et remplace le monstre vide par un monstre issu du catalogue de rencontre.
 5. Le bouton de lancement d'initiative est activé si `encounter.hasSelectedMonsters()` vaut vrai.
 6. `refresh()` rerend la liste.
 7. `callbacks.onEncounterChange?.()` rafraîchit l'affichage de l'ordre du tour existant.
@@ -136,7 +136,7 @@ Action utilisateur: clic sur `#rollInitiative`.
 Flux:
 
 1. `MonstersPanel` reçoit le clic.
-2. `encounter.rollMonsterInitiatives()` parcourt `encounter.monsters`.
+2. `handleRollInitiative()` appelle `encounter.rollMonsterInitiatives()`, qui parcourt `encounter.monsters`.
 3. Chaque monstre sélectionné reçoit:
    - `roll`: résultat de `rollD20()`;
    - `initiative`: `roll + initiativeModifier`.
@@ -279,7 +279,7 @@ Dépendances principales:
 2. `encounter-state.js` ne dépend pas du DOM. Il dépend de `initiative.js` et `bestiary.js`.
 3. `monsters.js`, `players.js`, `turn-order.js`, `rules.js` dépendent du DOM.
 4. `validation.js` expose des validateurs appelés depuis le DOM, des règles pures testables, et les helpers de feedback DOM pour les erreurs et le focus.
-5. `bestiary.js` est consommé par `encounter-state.js` et `monsters.js`.
+5. `bestiary.js` est consommé par `encounter-state.js`; `monsters.js` garde un fallback importé, mais `MonstersPanel` rend les options depuis `encounter.bestiary`.
 
 ## Données principales manipulées
 
@@ -442,8 +442,13 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `start()`                   | Brancher les actions de création de slots et de jet d'initiative.              |
 | `refresh()`                 | Rendre la liste de monstres depuis `encounter.monsters`.                       |
 | `validateForTurnOrder()`    | Valider le nombre de monstres et les PV des monstres rendus.                   |
+| `handleCreateMonsterSlots()` | Valider le nombre demandé, créer les slots et rafraîchir le panneau.          |
+| `handleRollInitiative()`    | Lancer les initiatives des monstres puis rafraîchir le panneau.                |
+| `handleMonsterSelectionChange()` | Appliquer une sélection de monstre et rafraîchir l'état du panneau.     |
+| `handleMonsterHitPointsChange()` | Synchroniser les PV modifiés vers `EncounterState`.                     |
 | `renderMonsters()`          | Construire les `<li>` de monstres et brancher leurs événements.                |
-| `renderMonsterOptions()`    | Remplir le `<select>` avec le bestiaire groupé par type.                       |
+| `renderMonsterOptions()`    | Remplir le `<select>` avec le catalogue injecté, groupé par type.              |
+| `getSortedMonsterGroups()`  | Trier les monstres par nom puis les groupes par type pour les options.         |
 | `bindMonsterItemEvents()`   | Relier une ligne de monstre aux callbacks de sélection et de PV.               |
 
 ### `players.js`
@@ -511,7 +516,7 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 
 1. `turn-order.js` contient beaucoup d'interactions, mais le rendu d'une entrée est maintenant séparé entre création, remplissage, contrôles et interactions.
 2. `validation.js` reste le point d'entrée des validations de panneaux, mais les règles testables sont séparées de la lecture DOM et du rendu d'erreurs.
-3. `monsters.js` mélange encore rendu complet, lecture du bestiaire, gestion des événements et validation, même si les mutations passent maintenant par `MonstersPanel` et `EncounterState`.
+3. `monsters.js` garde un rendu de ligne dense mais linéaire; les actions utilisateur et la préparation des options sont maintenant mieux séparées.
 4. Les callbacks entre panneaux sont simples mais implicites: `onEncounterChange` et `onPlayersChange` rafraîchissent l'ordre sans le reconstruire.
 5. Le mot `refresh()` existe dans plusieurs modules avec des effets différents.
 6. L'état `encounter` est central et mutable. `DndInitiativeTrackerApp` et tous les panneaux DOM utilisent maintenant ses méthodes directement.
@@ -527,7 +532,7 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | Rendu d'une entrée                 | `turn-order.js` / `renderTurnOrderItem()`                                                        | La création, le remplissage, les contrôles et les interactions d'une entrée sont séparés.                   | Le flux est plus lisible, mais reste dans le même fichier pour éviter une abstraction prématurée. | Conserver cette séparation locale avant d'envisager un `TurnOrderRenderer`.                                                                                                  |
 | Fichier long                       | `validation.js`                                                                                  | Le fichier regroupe les façades DOM de validation, les règles pures, la lecture des champs et le feedback DOM. | La lecture est plus guidée, mais le fichier reste un point de passage central pour les panneaux.  | Garder ce regroupement tant que les règles restent peu nombreuses; extraire seulement si de nouveaux formulaires complexifient le module.                                      |
 | Responsabilités mélangées          | `validation.js` / `showValidationErrors()`, `clearValidationState()`, `focusFirstInvalidField()` | Le module rend encore les erreurs dans le DOM, mais les règles `validateIntegerValue()` et `validateCurrentHitPointsLimit()` sont testables séparément. | Les futures règles peuvent être ajoutées sans dépendre directement du DOM.                         | Continuer à isoler les nouvelles règles en fonctions pures, sans déplacer tout le feedback DOM dans un nouveau module pour l'instant.                                          |
-| Responsabilités mélangées          | `monsters.js` / `renderMonsters()`                                                               | La fonction rend les champs, remplit les textes, applique classes/titres, branche les événements.           | Le rendu d'un monstre demande une lecture complète de la fonction.                                | Éventuellement extraire ou isoler davantage le remplissage d'une ligne si cela réduit la longueur.                                                                            |
+| Responsabilités mélangées          | `monsters.js` / `populateMonsterItem()`                                                          | La fonction remplit tous les champs DOM d'une ligne monstre, mais reste linéaire et limitée au rendu.       | Le rendu d'un monstre demande une lecture complète de la fonction, sans logique métier cachée.     | Laisser tel quel tant que les futures fonctions de recherche, filtres, portraits ou états de combat ne l'alourdissent pas.                                                    |
 | Nom générique                      | Plusieurs fichiers / `refresh()`                                                                 | `refresh()` existe dans `monsters.js`, `turn-order.js`, et comme callback.                                  | Le lecteur doit vérifier le scope pour savoir ce qui est rafraîchi.                               | Renommer progressivement dans les objets retournés ou ajouter commentaires d'intention. Exemple: `refreshTurnOrderPanel`, `renderMonsterPanel`.                               |
 | Dépendances implicites             | `monsters.js`, `turn-order.js`                                                                   | Les templates sont lus au niveau module avec `document.getElementById(...)`.                                | Le module suppose que le DOM existe déjà au moment de l'import.                                   | Documenter le contrat DOM en commentaire court. Déplacer dans `initialize...` seulement si un test ou un besoin concret le justifie.                                          |
 | Ordre d'exécution                  | `dnd_initiative.js`                                                                              | `turnOrderPanel` est créé avant `monstersPanel` et `playersPanel`, car leurs callbacks rafraîchissent son rendu. | Ce choix est porté par `DndInitiativeTrackerApp.start()`, ce qui rend l'enchaînement plus visible. | Garder cet ordre explicite pendant la conversion progressive des panneaux en classes.                                                                                         |
@@ -660,16 +665,16 @@ Tests prioritaires à conserver ou compléter:
 - Bénéfice : séparer "parcourir l'ordre", "remplir une ligne" et "brancher les interactions".
 - À ne pas faire : éclater le fichier en plusieurs modules ou introduire une classe de composant.
 
-### 10. Extraire une petite fonction de remplissage dans `monsters.js`
+### 10. Surveiller le remplissage d'une ligne dans `monsters.js`
 
-- Objectif : isoler le mapping d'un objet monstre vers une ligne DOM.
+- Objectif : garder `populateMonsterItem()` lisible sans extraction prématurée.
 - Fichiers concernés : `monsters.js`.
 - Type :
-  - extraction légère
+  - clarification de flux
 - Risque :
-  - moyen
-- Bénéfice : rendre `renderMonsters()` plus lisible.
-- À ne pas faire : changer la structure du DOM ou optimiser le rendu.
+  - faible
+- Bénéfice : conserver un rendu DOM linéaire tant qu'il ne porte pas de nouvelle responsabilité fonctionnelle.
+- À ne pas faire : découper le remplissage par principe alors que la fonction reste compréhensible.
 
 ### 11. Séparer légèrement les helpers de validation et de feedback DOM
 

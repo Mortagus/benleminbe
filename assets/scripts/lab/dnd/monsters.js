@@ -30,13 +30,11 @@ export class MonstersPanel {
 
     start() {
         this.createMonstersButton.addEventListener('click', () => {
-            this.createMonsterSlotsFromInput();
+            this.handleCreateMonsterSlots();
         });
 
         this.rollInitiativeButton.addEventListener('click', () => {
-            this.encounter.rollMonsterInitiatives();
-            this.refresh();
-            this.callbacks.onEncounterChange?.();
+            this.handleRollInitiative();
         });
     }
 
@@ -51,15 +49,13 @@ export class MonstersPanel {
     refresh() {
         renderMonsters(this.monsterList, this.encounter.monsters, {
             onMonsterSelectionChange: (index, selectedSlug) => {
-                this.encounter.selectMonster(index, selectedSlug);
-                this.refreshRollInitiativeButtonState();
-                this.refresh();
-                this.callbacks.onEncounterChange?.();
+                this.handleMonsterSelectionChange(index, selectedSlug);
             },
             onMonsterHitPointsChange: (index, hitPoints) => {
-                this.encounter.updateMonsterHitPoints(index, hitPoints);
-                this.callbacks.onEncounterChange?.();
+                this.handleMonsterHitPointsChange(index, hitPoints);
             },
+        }, {
+            catalog: this.encounter.bestiary,
         });
     }
 
@@ -74,7 +70,7 @@ export class MonstersPanel {
         return validationResult;
     }
 
-    createMonsterSlotsFromInput() {
+    handleCreateMonsterSlots() {
         this.clearValidation();
 
         const count = Number(this.monsterCountInput.value);
@@ -91,6 +87,24 @@ export class MonstersPanel {
 
         this.rollInitiativeButton.disabled = true;
         this.refresh();
+        this.callbacks.onEncounterChange?.();
+    }
+
+    handleRollInitiative() {
+        this.encounter.rollMonsterInitiatives();
+        this.refresh();
+        this.callbacks.onEncounterChange?.();
+    }
+
+    handleMonsterSelectionChange(index, selectedSlug) {
+        this.encounter.selectMonster(index, selectedSlug);
+        this.refreshRollInitiativeButtonState();
+        this.refresh();
+        this.callbacks.onEncounterChange?.();
+    }
+
+    handleMonsterHitPointsChange(index, hitPoints) {
+        this.encounter.updateMonsterHitPoints(index, hitPoints);
         this.callbacks.onEncounterChange?.();
     }
 
@@ -112,27 +126,28 @@ export class MonstersPanel {
     }
 }
 
-export function renderMonsters(monsterList, monsters, callbacks) {
+export function renderMonsters(monsterList, monsters, callbacks, options = {}) {
     const monsterItems = document.createDocumentFragment();
+    const catalog = options.catalog ?? bestiary;
 
     monsters.forEach((monster, index) => {
-        monsterItems.appendChild(renderMonsterItem(monster, index, callbacks));
+        monsterItems.appendChild(renderMonsterItem(monster, index, callbacks, catalog));
     });
 
     monsterList.replaceChildren(monsterItems);
 }
 
-function renderMonsterItem(monster, index, callbacks) {
+function renderMonsterItem(monster, index, callbacks, catalog) {
     const fragment = monsterItemTemplate.content.cloneNode(true);
     const monsterItem = fragment.querySelector('.monster-item');
 
-    populateMonsterItem(monsterItem, monster, index);
+    populateMonsterItem(monsterItem, monster, index, catalog);
     bindMonsterItemEvents(monsterItem, index, callbacks);
 
     return monsterItem;
 }
 
-function populateMonsterItem(monsterItem, monster, index) {
+function populateMonsterItem(monsterItem, monster, index, catalog) {
     const select = monsterItem.querySelector('.monster-select');
     const type = monsterItem.querySelector('.monster-type');
     const size = monsterItem.querySelector('.monster-size');
@@ -145,7 +160,7 @@ function populateMonsterItem(monsterItem, monster, index) {
 
     select.dataset.index = String(index);
     select.setAttribute('aria-label', `Choisir le monstre ${index + 1}`);
-    renderMonsterOptions(select, monster.slug);
+    renderMonsterOptions(select, monster.slug, catalog);
 
     type.textContent = monster.type;
     size.textContent = 'Taille: ' + monster.size;
@@ -209,44 +224,56 @@ function formatModifier(value) {
     return modifier > 0 ? `+${modifier}` : String(modifier);
 }
 
-function renderMonsterOptions(select, selectedSlug) {
-    const placeholderOption = document.createElement('option');
-    placeholderOption.value = '';
-    placeholderOption.textContent = 'Choisir';
+function renderMonsterOptions(select, selectedSlug, catalog) {
+    const options = [createMonsterPlaceholderOption()];
 
-    const options = [placeholderOption];
-
-    const monstersByType = Map.groupBy(
-        [...bestiary].sort((firstMonster, secondMonster) =>
-            firstMonster.name.localeCompare(secondMonster.name, 'fr', { sensitivity: 'base' })
-        ),
-        monster => monster.type,
-    );
-
-    Array.from(monstersByType.entries())
-        .sort(([firstType], [secondType]) =>
-            firstType.localeCompare(secondType, 'fr', { sensitivity: 'base' })
-        )
+    getSortedMonsterGroups(catalog)
         .forEach(([type, monsters]) => {
             const optgroup = document.createElement('optgroup');
             optgroup.label = type;
 
             monsters.forEach(monster => {
-                const option = monsterOptionTemplate.content
-                    .cloneNode(true)
-                    .querySelector('option');
-
-                option.value = monster.slug;
-                option.textContent = monster.name + ' (FP: ' + monster.challenge_rating + ')';
-                option.selected = monster.slug === selectedSlug;
-
-                optgroup.appendChild(option);
+                optgroup.appendChild(createMonsterOption(monster, selectedSlug));
             });
 
             options.push(optgroup);
         });
 
     select.replaceChildren(...options);
+}
+
+function getSortedMonsterGroups(catalog) {
+    const monstersByType = Map.groupBy(
+        [...catalog].sort((firstMonster, secondMonster) =>
+            firstMonster.name.localeCompare(secondMonster.name, 'fr', { sensitivity: 'base' })
+        ),
+        monster => monster.type,
+    );
+
+    return Array.from(monstersByType.entries())
+        .sort(([firstType], [secondType]) =>
+            firstType.localeCompare(secondType, 'fr', { sensitivity: 'base' })
+        );
+}
+
+function createMonsterPlaceholderOption() {
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Choisir';
+
+    return placeholderOption;
+}
+
+function createMonsterOption(monster, selectedSlug) {
+    const option = monsterOptionTemplate.content
+        .cloneNode(true)
+        .querySelector('option');
+
+    option.value = monster.slug;
+    option.textContent = monster.name + ' (FP: ' + monster.challenge_rating + ')';
+    option.selected = monster.slug === selectedSlug;
+
+    return option;
 }
 
 function bindMonsterItemEvents(monsterItem, index, callbacks) {

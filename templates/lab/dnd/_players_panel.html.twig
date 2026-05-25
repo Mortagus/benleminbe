@@ -5,18 +5,32 @@
             <p>Ajoute les joueurs de la rencontre.</p>
         </div>
 
-        <button
-            id="addPlayer"
-            type="button"
-            class="dnd-icon-button dnd-secondary-button"
-            aria-label="Ajouter un joueur"
-            title="Ajouter un joueur"
-        >
-            <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-        </button>
+        <div class="dnd-panel__actions">
+            <button
+                id="importPlayerXml"
+                type="button"
+                class="dnd-secondary-button"
+                aria-haspopup="dialog"
+                aria-expanded="false"
+                aria-controls="playerImportModal"
+                aria-label="Ouvrir l'import XML"
+                title="Ouvrir l'import XML"
+            >
+                Import.
+            </button>
+            <button
+                id="addPlayer"
+                type="button"
+                class="dnd-icon-button dnd-secondary-button"
+                aria-label="Ajouter un joueur"
+                title="Ajouter un joueur"
+            >
+                <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+            </button>
+        </div>
     </header>
 
     <div id="playerValidationSummary" class="dnd-validation-summary" role="alert" hidden></div>
@@ -28,4 +42,83 @@
     <template id="playerItemTemplate">
         {% include 'lab/dnd/_player_item.html.twig' %}
     </template>
+
+    <div
+        id="playerImportModal"
+        class="player-import-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="playerImportModalTitle"
+        data-player-import-url="{{ path('app_lab_dnd_player_import') }}"
+        hidden
+    >
+        <div class="player-import-modal__backdrop" data-player-import-close></div>
+
+        <section class="player-import-modal__content" tabindex="-1">
+            <header class="player-import-modal__header">
+                <div>
+                    <h2 id="playerImportModalTitle">Importer un joueur</h2>
+                    <p>Choisis un fichier XML puis lance l'import.</p>
+                </div>
+
+                <button type="button" class="dnd-secondary-button" data-player-import-close>
+                    Fermer
+                </button>
+            </header>
+
+            <div class="player-import-modal__body">
+                <label class="player-import-modal__file">
+                    <span>Fichier XML</span>
+                    <input
+                        id="playerXmlImportInput"
+                        type="file"
+                        accept=".xml,text/xml,application/xml"
+                    >
+                </label>
+
+                <p id="playerImportStatus" class="player-import-modal__status" aria-live="polite" hidden></p>
+            </div>
+
+            <footer class="player-import-modal__footer">
+                <button
+                    id="playerImportSubmit"
+                    type="button"
+                    class="dnd-secondary-button"
+                    disabled
+                >
+                    Importer
+                </button>
+            </footer>
+        </section>
+    </div>
+
+    <div
+        id="playerDetailsModal"
+        class="player-details-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="playerDetailsModalTitle"
+        hidden
+    >
+        <div class="player-details-modal__backdrop" data-player-details-close></div>
+
+        <section class="player-details-modal__content" tabindex="-1">
+            <header class="player-details-modal__header">
+                <div>
+                    <h2 id="playerDetailsModalTitle">Fiche du joueur</h2>
+                    <p>Lecture complète des données retournées par l’import.</p>
+                </div>
+
+                <button type="button" class="dnd-secondary-button" data-player-details-close>
+                    Fermer
+                </button>
+            </header>
+
+            <div class="player-details-modal__body">
+                <table class="player-details-modal__table">
+                    <tbody id="playerDetailsTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
 </section>

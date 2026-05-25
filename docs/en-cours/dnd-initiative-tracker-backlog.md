@@ -85,8 +85,36 @@ make check
 
 État de reprise recommandé :
 
-- prochaine priorité fonctionnelle : `P32`, import XML de fiche personnage joueur ;
+- `P32` a été amorcé et le socle d'import XML est maintenant en place ;
 - garder les filtres avancés, favoris ou presets de monstres pour une future extension si l'usage réel le demande.
+
+## Note De Reprise - 2026-05-25 - P32 Import XML Joueur
+
+Le socle de `P32` est livré et le flux import joueur existe déjà dans l'outil.
+
+Travail livré :
+
+- modale d'import XML côté UI ;
+- route publique `POST /lab/dnd-initiative/import-player` dans `LabController` ;
+- service PHP `PlayerXmlImportParser` pour lire le XML externe ;
+- préremplissage de la ligne joueur avec les champs visibles utiles ;
+- conservation du payload complet dans `importData` du DTO joueur ;
+- modale de consultation simple de la fiche complète, affichée à la demande sous forme clé-valeur ;
+- tests Vitest pour le flux d'import, la conservation DTO et les helpers DOM ;
+- mise à jour des contrats DOM, de la cartographie JS et des notes d'architecture.
+
+Reste à faire plus tard si nécessaire :
+
+- affiner le mapping de certains champs XML vers des sections lisibles ;
+- décider du futur emplacement de persistance pour `importData` si le stockage se déplace hors du DOM ;
+- retrouver ou reconstituer la page source complète de la fiche si elle redevient utile pour comparaison.
+
+Vérification passée pendant la passe :
+
+```bash
+npm run check:js
+make check
+```
 
 ## Note De Reprise - 2026-05-25 - Passe DTOs
 
@@ -305,9 +333,9 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | 10              | P11 | Réalisé           | ✅ **Fait**      | Twig                       | Réduction de duplication du template joueur              | Le markup joueur est factorisé dans `_player_item.html.twig` pour la ligne initiale et le template dynamique.                    | Limite les doubles modifications futures du formulaire joueur.                                               |
 | 11              | P12 | Réalisé           | ✅ **Fait**      | Accessibilité / Twig       | Accessibilité des formulaires dynamiques                 | Labels reliés, identifiants recalculés, noms accessibles des PV, boutons contextualisés et selects monstres labellisés.          | Maintenir ces attributs lors des prochains changements de formulaire.                                        |
 | 12              | P13 | Réalisé           | ✅ **Fait**      | Accessibilité / UX         | Drag-and-drop utilisable autrement qu'à la souris        | Drag souris gauche/droite, déplacement au clavier par flèches, focus conservé, aide clavier repliable et annonces `aria-live`.   | Les boutons de déplacement restent cliquables à la souris mais sont retirés de l'enchaînement `Tab`.         |
-| 13              | P31 | Réalisé           | ✅ **Fait**      | UX / Audio                 | Son au jet d'initiative des monstres                     | Un module audio réutilisable joue aléatoirement un des deux sons de dés lors du lancement d'initiative des monstres.             | Pas de toggle UI pour l'instant ; les erreurs audio sont non bloquantes.                                      |
-| 14              | P15 | Socle livré       | ✅ **Fait**      | Fonctionnalité / UX        | Aides de sélection et affichage des monstres             | Filtre par type, recherche par nom masquée pour le moment, affichage enrichi et jet progressif des initiatives sont en place.     | Filtres avancés, favoris ou presets restent possibles plus tard selon l'usage réel.                          |
-| 15              | P32 | Très haute        | 🔶 **À faire**  | Import / Joueurs           | Import XML de fiche personnage joueur                    | Importer un fichier XML issu d'un outil externe pour préremplir une fiche joueur aussi complètement que possible.                | Nouveau point ; commencer par analyser des exemples XML et mapper nom, CA, PV, initiative et données utiles. |
+| 13              | P31 | Réalisé           | ✅ **Fait**      | UX / Audio                 | Son au jet d'initiative des monstres                     | Un module audio réutilisable joue aléatoirement un des deux sons de dés lors du lancement d'initiative des monstres.             | Pas de toggle UI pour l'instant ; les erreurs audio sont non bloquantes.                                     |
+| 14              | P15 | Socle livré       | ✅ **Fait**      | Fonctionnalité / UX        | Aides de sélection et affichage des monstres             | Filtre par type, recherche par nom masquée pour le moment, affichage enrichi et jet progressif des initiatives sont en place.    | Filtres avancés, favoris ou presets restent possibles plus tard selon l'usage réel.                          |
+| 15              | P32 | Très haute        | 🟡 **Socle livré** | Import / Joueurs           | Import XML de fiche personnage joueur                    | Importer un fichier XML issu d'un outil externe pour préremplir une fiche joueur aussi complètement que possible.                | Route, parsing, DTO enrichi, modale de fiche et stockage du payload d'import sont en place ; le mapping peut encore s'affiner. |
 | 16              | P25 | Haute             | 🔶 **À faire**  | UX                         | Différenciation visuelle des types d'acteurs             | Distinguer joueurs, alliés, ennemis, boss ou monstres légendaires avec des classes visuelles sobres.                             | À faire après stabilisation du rendu des cartes.                                                             |
 | 17              | P19 | Haute             | 🔶 **À faire**  | Fonctionnalité / Règles    | Gestion des conditions                                   | Ajouter/retrouver des conditions, les afficher visuellement et suivre leur durée en rounds.                                      | Dépend idéalement de commandes de round fiables, mais peut être cadré avant `P7`.                            |
 | 18              | P20 | Haute             | 🔶 **À faire**  | Fonctionnalité             | Marqueurs binaires de combat                             | Suivre concentration, réaction utilisée, inspiration, avantage et désavantage via toggles visuels.                               | À commencer sans automatisme de règles ; peut partager l'UI des conditions.                                  |
@@ -332,7 +360,7 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 |---------------|----------------------------------------------------------------------|-----------------------|-----------------------------------------------------------------------------------------|
 | Participants  | Gestion séparée des joueurs et monstres                              | Fait                  | Trois panneaux distincts : monstres, joueurs, ordre du tour.                            |
 | Participants  | Ajout de joueurs                                                     | Fait                  | Ajout et suppression de lignes joueurs.                                                 |
-| Participants  | Import XML de fiche personnage joueur                                | À faire               | Nouveau besoin : importer un XML externe pour préremplir une fiche joueur.              |
+| Participants  | Import XML de fiche personnage joueur                                | Socle livré           | Import XML externe branché avec préremplissage visible, modale de fiche et payload DTO. |
 | Participants  | Création de plusieurs monstres                                       | Fait                  | Création de slots puis sélection depuis le catalogue.                                   |
 | Participants  | Duplication rapide d'un monstre déjà choisi                          | Partiel               | Possible manuellement en choisissant le même monstre plusieurs fois, sans bouton dédié. |
 | Monstres      | Catalogue prédéfini                                                  | Fait                  | Bestiaire généré et embarqué dans `bestiary.js`.                                        |

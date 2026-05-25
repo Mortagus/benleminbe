@@ -13,9 +13,20 @@ export class PlayersPanel {
         this.encounter = encounter;
         this.callbacks = callbacks;
         this.addPlayerButton = document.getElementById('addPlayer');
+        this.importPlayerButton = document.getElementById('importPlayerXml');
+        this.playerImportInput = document.getElementById('playerXmlImportInput');
+        this.playerImportSubmitButton = document.getElementById('playerImportSubmit');
         this.playerPanel = document.querySelector('.dnd-panel--players');
         this.playerList = document.getElementById('playerList');
         this.playerValidationSummary = document.getElementById('playerValidationSummary');
+        this.playerImportModal = document.getElementById('playerImportModal');
+        this.playerImportModalContent = this.playerImportModal?.querySelector('.player-import-modal__content');
+        this.playerImportStatus = document.getElementById('playerImportStatus');
+        this.playerDetailsModal = document.getElementById('playerDetailsModal');
+        this.playerDetailsModalContent = this.playerDetailsModal?.querySelector('.player-details-modal__content');
+        this.playerDetailsTableBody = document.getElementById('playerDetailsTableBody');
+        this.playerDetailsReturnFocus = null;
+        this.playerImportSelectedFile = null;
     }
 
     start() {
@@ -23,7 +34,24 @@ export class PlayersPanel {
             this.handleAddPlayer();
         });
 
-        bindExistingPlayerItems(this.playerList, () => this.sync());
+        this.importPlayerButton.addEventListener('click', () => {
+            this.handleImportPlayerXml();
+        });
+
+        this.playerImportInput.addEventListener('change', event => {
+            this.handlePlayerImportSelection(event);
+        });
+
+        this.playerImportSubmitButton.addEventListener('click', () => {
+            this.handleConfirmPlayerImport();
+        });
+
+        this.bindPlayerImportModal();
+        this.setPlayerImportSubmitEnabled(false);
+
+        bindExistingPlayerItems(this.playerList, () => this.sync(), (playerItem, triggerButton) => {
+            this.handleShowPlayerDetails(playerItem, triggerButton);
+        });
         this.sync();
     }
 
@@ -40,8 +68,76 @@ export class PlayersPanel {
     }
 
     handleAddPlayer() {
-        this.playerList.appendChild(createPlayerItem(() => this.sync()));
+        this.playerList.appendChild(createPlayerItem(
+            () => this.sync(),
+            (playerItem, triggerButton) => {
+                this.handleShowPlayerDetails(playerItem, triggerButton);
+            },
+        ));
         this.sync();
+    }
+
+    handleImportPlayerXml() {
+        this.playerImportSelectedFile = null;
+        this.playerImportInput.value = '';
+        this.setPlayerImportSubmitEnabled(false);
+        this.setPlayerImportStatus('');
+        openPlayerImportModal(this.importPlayerButton, this.playerImportModal, this.playerImportModalContent);
+    }
+
+    handlePlayerImportSelection(event) {
+        const file = event.target?.files?.[0] ?? this.playerImportInput.files?.[0] ?? null;
+
+        if (!file) {
+            this.playerImportSelectedFile = null;
+            this.setPlayerImportSubmitEnabled(false);
+            this.setPlayerImportStatus('');
+            return;
+        }
+
+        this.playerImportSelectedFile = file;
+        this.setPlayerImportSubmitEnabled(true);
+        this.setPlayerImportStatus(`Fichier sélectionné : ${file.name}`);
+    }
+
+    handleConfirmPlayerImport() {
+        if (!this.playerImportSelectedFile) {
+            return;
+        }
+
+        const selectedFile = this.playerImportSelectedFile;
+
+        this.setPlayerImportSubmitEnabled(false);
+        this.setPlayerImportStatus('Import en cours...');
+
+        try {
+            const importResult = this.callbacks.onPlayerImportFile?.(selectedFile);
+
+            if (isPromiseLike(importResult)) {
+                importResult
+                    .then(response => {
+                        this.handleSuccessfulPlayerImport(response, selectedFile);
+                    })
+                    .catch(error => {
+                        this.setPlayerImportStatus(error instanceof Error
+                            ? error.message
+                            : 'Impossible d’importer ce fichier XML.');
+                    })
+                    .finally(() => {
+                        this.setPlayerImportSubmitEnabled(true);
+                    });
+
+                return;
+            }
+
+            this.handleSuccessfulPlayerImport(importResult, selectedFile);
+            this.setPlayerImportSubmitEnabled(true);
+        } catch (error) {
+            this.setPlayerImportStatus(error instanceof Error
+                ? error.message
+                : 'Impossible d’importer ce fichier XML.');
+            this.setPlayerImportSubmitEnabled(true);
+        }
     }
 
     syncPlayerFormsToEncounter() {
@@ -68,9 +164,119 @@ export class PlayersPanel {
         return Array.from(this.playerList.querySelectorAll('.player-item'))
             .map((playerItem, index) => validatePlayerItem(playerItem, index));
     }
+
+    setPlayerImportStatus(message) {
+        if (!this.playerImportStatus) {
+            return;
+        }
+
+        if (!message) {
+            this.playerImportStatus.replaceChildren();
+            this.playerImportStatus.hidden = true;
+            return;
+        }
+
+        this.playerImportStatus.textContent = message;
+        this.playerImportStatus.hidden = false;
+    }
+
+    setPlayerImportSubmitEnabled(isEnabled) {
+        if (!this.playerImportSubmitButton) {
+            return;
+        }
+
+        this.playerImportSubmitButton.disabled = !isEnabled;
+    }
+
+    handleSuccessfulPlayerImport(importResult, selectedFile) {
+        const importedPlayer = importResult?.player;
+
+        if (!importedPlayer) {
+            throw new Error('La réponse d’import ne contient pas de joueur.');
+        }
+
+        const playerItem = createPlayerItem(
+            () => this.sync(),
+            (item, triggerButton) => {
+                this.handleShowPlayerDetails(item, triggerButton);
+            },
+        );
+        this.playerList.appendChild(playerItem);
+        fillPlayerItemFromImportedPlayer(playerItem, importedPlayer);
+        playerItem.playerDetails = importResult;
+        playerItem.playerImportData = importResult;
+        this.sync();
+        this.setPlayerImportStatus(`Joueur importé : ${importedPlayer.name ?? selectedFile.name}`);
+        closePlayerImportModal(this.importPlayerButton, this.playerImportModal);
+        this.setPlayerImportSubmitEnabled(true);
+    }
+
+    bindPlayerImportModal() {
+        if (!this.playerImportModal) {
+            return;
+        }
+
+        this.playerImportModal.querySelectorAll('[data-player-import-close]').forEach(closeButton => {
+            closeButton.addEventListener('click', () => {
+                closePlayerImportModal(this.importPlayerButton, this.playerImportModal);
+            });
+        });
+
+        if (typeof document.addEventListener === 'function') {
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape' && !this.playerImportModal.hidden) {
+                    closePlayerImportModal(this.importPlayerButton, this.playerImportModal);
+                }
+            });
+        }
+
+        this.playerDetailsModal?.querySelectorAll('[data-player-details-close]').forEach(closeButton => {
+            closeButton.addEventListener('click', () => {
+                this.closePlayerDetailsModal();
+            });
+        });
+
+        if (typeof document.addEventListener === 'function') {
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape' && !this.playerDetailsModal?.hidden) {
+                    this.closePlayerDetailsModal();
+                }
+            });
+        }
+    }
+
+    handleShowPlayerDetails(playerItem, triggerButton = null) {
+        if (!this.playerDetailsModal || !this.playerDetailsTableBody) {
+            return;
+        }
+
+        const playerDetails = playerItem.playerDetails;
+
+        if (!playerDetails) {
+            return;
+        }
+
+        this.playerDetailsReturnFocus = triggerButton ?? null;
+        renderPlayerDetailsTable(this.playerDetailsTableBody, playerDetails);
+        openPlayerDetailsModal(this.playerDetailsModal, this.playerDetailsModalContent);
+    }
+
+    closePlayerDetailsModal() {
+        if (!this.playerDetailsModal) {
+            return;
+        }
+
+        closePlayerDetailsModal(this.playerDetailsModal);
+
+        if (this.playerDetailsReturnFocus?.focus) {
+            this.playerDetailsReturnFocus.focus();
+        }
+
+        this.playerDetailsReturnFocus = null;
+    }
 }
 
-export function createPlayerItem(onPlayerListChange) {
+export function createPlayerItem(onPlayerListChange, onPlayerDetailsRequest = null) {
     const template = document.getElementById('playerItemTemplate');
 
     if (!template) {
@@ -80,16 +286,16 @@ export function createPlayerItem(onPlayerListChange) {
     const fragment = template.content.cloneNode(true);
     const playerItem = fragment.querySelector('.player-item');
 
-    bindPlayerItemEvents(playerItem, onPlayerListChange);
+    bindPlayerItemEvents(playerItem, onPlayerListChange, onPlayerDetailsRequest);
 
     return playerItem;
 }
 
-export function bindExistingPlayerItems(playerList, onPlayerListChange) {
+export function bindExistingPlayerItems(playerList, onPlayerListChange, onPlayerDetailsRequest = null) {
     const playerItems = playerList.querySelectorAll('.player-item');
 
     playerItems.forEach(playerItem => {
-        bindPlayerItemEvents(playerItem, onPlayerListChange);
+        bindPlayerItemEvents(playerItem, onPlayerListChange, onPlayerDetailsRequest);
     });
     refreshPlayerAccessibility(playerList);
 }
@@ -102,12 +308,17 @@ export function getPlayerActors(playerList) {
         .filter(actor => actor.name.trim() !== '');
 }
 
-function bindPlayerItemEvents(playerItem, onPlayerListChange) {
+function bindPlayerItemEvents(playerItem, onPlayerListChange, onPlayerDetailsRequest = null) {
     const removeButton = playerItem.querySelector('.player-remove-button');
+    const detailsButton = playerItem.querySelector('[data-player-details-open]');
 
     removeButton.addEventListener('click', () => {
         playerItem.remove();
         onPlayerListChange();
+    });
+
+    detailsButton?.addEventListener('click', () => {
+        onPlayerDetailsRequest?.(playerItem, detailsButton);
     });
 
     playerItem.querySelectorAll('input').forEach(input => {
@@ -132,23 +343,39 @@ function readPlayerForm(playerItem) {
         currentHitPoints: readPlayerField(playerItem, 'current-hit-points'),
         baseHitPoints: readPlayerField(playerItem, 'base-hit-points'),
         initiative: readPlayerField(playerItem, 'initiative'),
+        importData: playerItem.playerImportData ?? null,
     };
 }
 
 function createPlayerActor(playerForm, index) {
     const playerNumber = index + 1;
+    const initiative = normalizeNullablePlayerNumber(playerForm.initiative);
 
-    return {
+    const playerActor = {
         id: `player-${playerNumber}`,
         type: 'player',
         name: playerForm.name || `Joueur ${playerNumber}`,
         armorClass: Number(playerForm.armorClass || 0),
         currentHitPoints: Number(playerForm.currentHitPoints || 0),
         baseHitPoints: Number(playerForm.baseHitPoints || 0),
-        initiative: Number(playerForm.initiative || 0),
-        roll: Number(playerForm.initiative || 0),
+        initiative,
+        roll: initiative,
         done: false,
     };
+
+    if (playerForm.importData) {
+        playerActor.importData = playerForm.importData;
+    }
+
+    return playerActor;
+}
+
+function fillPlayerItemFromImportedPlayer(playerItem, player) {
+    setPlayerInputValue(playerItem, 'name', player.name ?? player.identity?.name ?? '');
+    setPlayerInputValue(playerItem, 'armor-class', normalizePlayerFieldValue(player.armorClass));
+    setPlayerInputValue(playerItem, 'current-hit-points', normalizePlayerFieldValue(player.currentHitPoints));
+    setPlayerInputValue(playerItem, 'base-hit-points', normalizePlayerFieldValue(player.baseHitPoints));
+    setPlayerInputValue(playerItem, 'initiative', normalizePlayerFieldValue(player.initiative));
 }
 
 function refreshPlayerAccessibility(playerList) {
@@ -175,6 +402,15 @@ function refreshPlayerAccessibility(playerList) {
             const removeLabel = `Supprimer le joueur ${playerNumber}`;
             removeButton.setAttribute('aria-label', removeLabel);
             removeButton.title = removeLabel;
+        }
+
+        const detailsButton = playerItem.querySelector('[data-player-details-open]');
+
+        if (detailsButton) {
+            const detailsLabel = `Afficher la fiche du joueur ${playerNumber}`;
+            detailsButton.setAttribute('aria-label', detailsLabel);
+            detailsButton.title = detailsLabel;
+            detailsButton.disabled = playerItem.playerDetails == null;
         }
     });
 }
@@ -210,7 +446,138 @@ function readPlayerField(playerItem, fieldName) {
     return getPlayerInput(playerItem, fieldName)?.value ?? '';
 }
 
+function setPlayerInputValue(playerItem, fieldName, value) {
+    const input = getPlayerInput(playerItem, fieldName);
+
+    if (!input) {
+        return;
+    }
+
+    input.value = value;
+}
+
+function normalizePlayerFieldValue(value) {
+    return value === null || value === undefined ? '' : String(value);
+}
+
+function normalizeNullablePlayerNumber(value) {
+    if (value === null || value === undefined) {
+        return null;
+    }
+
+    const normalized = String(value).trim();
+
+    if (normalized === '') {
+        return null;
+    }
+
+    const number = Number(normalized);
+
+    return Number.isFinite(number) ? number : null;
+}
+
+function openPlayerDetailsModal(playerDetailsModal, modalContent) {
+    playerDetailsModal.hidden = false;
+    modalContent?.focus();
+}
+
+function closePlayerDetailsModal(playerDetailsModal) {
+    playerDetailsModal.hidden = true;
+}
+
+function renderPlayerDetailsTable(tableBody, playerDetails) {
+    tableBody.replaceChildren();
+
+    flattenDetailsEntries(playerDetails).forEach(([label, value]) => {
+        const row = document.createElement('tr');
+        const keyCell = document.createElement('th');
+        const valueCell = document.createElement('td');
+
+        keyCell.textContent = label;
+        valueCell.textContent = value;
+
+        row.appendChild(keyCell);
+        row.appendChild(valueCell);
+        tableBody.appendChild(row);
+    });
+}
+
+function flattenDetailsEntries(value, prefix = '') {
+    const rows = [];
+
+    collectFlattenedEntries(value, prefix, rows);
+
+    return rows;
+}
+
+function collectFlattenedEntries(value, prefix, rows) {
+    if (value === null) {
+        rows.push([prefix || 'value', 'null']);
+        return;
+    }
+
+    if (value === undefined) {
+        rows.push([prefix || 'value', '']);
+        return;
+    }
+
+    if (Array.isArray(value)) {
+        if (value.length === 0) {
+            rows.push([prefix || 'value', '[]']);
+            return;
+        }
+
+        value.forEach((item, index) => {
+            collectFlattenedEntries(item, `${prefix}[${index}]`, rows);
+        });
+
+        return;
+    }
+
+    if (typeof value === 'object') {
+        const entries = Object.entries(value);
+
+        if (entries.length === 0) {
+            rows.push([prefix || 'value', '{}']);
+            return;
+        }
+
+        entries.forEach(([key, childValue]) => {
+            const label = prefix ? `${prefix}.${key}` : key;
+            collectFlattenedEntries(childValue, label, rows);
+        });
+
+        return;
+    }
+
+    rows.push([prefix || 'value', String(value)]);
+}
+
 function hasStartedPlayer(playerItem) {
     return Array.from(playerItem.querySelectorAll('input'))
         .some(input => input.value.trim() !== '' || input.validity?.badInput);
+}
+
+function openPlayerImportModal(openButton, playerImportModal, modalContent) {
+    if (!openButton || !playerImportModal) {
+        return;
+    }
+
+    openButton.setAttribute('aria-expanded', 'true');
+    playerImportModal.hidden = false;
+    modalContent?.focus();
+}
+
+function closePlayerImportModal(openButton, playerImportModal) {
+    if (!openButton || !playerImportModal) {
+        return;
+    }
+
+    openButton.setAttribute('aria-expanded', 'false');
+    playerImportModal.hidden = true;
+    openButton.focus();
+}
+
+function isPromiseLike(value) {
+    return value !== null && typeof value === 'object' && typeof value.then === 'function';
 }

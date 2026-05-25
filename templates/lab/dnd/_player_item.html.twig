@@ -23,15 +23,28 @@
         <input data-player-field="initiative" type="number" placeholder="0">
     </div>
 
-    <button
-        type="button"
-        class="player-remove-button dnd-icon-button"
-        aria-label="Supprimer ce joueur"
-        title="Supprimer ce joueur"
-    >
-        <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-        </svg>
-    </button>
+    <div class="player-actions">
+        <button
+            type="button"
+            class="player-details-button"
+            data-player-details-open
+            aria-label="Afficher la fiche du joueur"
+            title="Afficher la fiche du joueur"
+            disabled
+        >
+            <span class="player-details-glyph" aria-hidden="true">⋮</span>
+        </button>
+
+        <button
+            type="button"
+            class="player-remove-button dnd-icon-button"
+            aria-label="Supprimer ce joueur"
+            title="Supprimer ce joueur"
+        >
+            <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+            </svg>
+        </button>
+    </div>
 </li>

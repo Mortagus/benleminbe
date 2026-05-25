@@ -28,6 +28,8 @@ class DndInitiativeTrackerApp {
         this.playersPanel = null;
         this.rulesPanel = null;
         this.turnOrderPanel = null;
+        this.playerImportUrl = document.getElementById('playerImportModal')?.dataset.playerImportUrl
+            ?? '/lab/dnd-initiative/import-player';
     }
 
     start() {
@@ -44,6 +46,7 @@ class DndInitiativeTrackerApp {
 
         this.playersPanel = new PlayersPanel(this.encounter, {
             onPlayersChange: () => this.refreshDisplayedTurnOrder(),
+            onPlayerImportFile: (file) => this.importPlayerXml(file),
         });
         this.playersPanel.start();
 
@@ -62,6 +65,27 @@ class DndInitiativeTrackerApp {
     setRuleActive(ruleId, active) {
         this.encounter.setRuleActive(ruleId, active);
         this.turnOrderPanel.refresh();
+    }
+
+    async importPlayerXml(file) {
+        const formData = new globalThis.FormData();
+        formData.append('file', file, file.name);
+
+        const response = await globalThis.fetch(this.playerImportUrl, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        const payload = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(payload.message ?? 'L’import XML a échoué.');
+        }
+
+        return payload;
     }
 
     generateTurnOrder() {

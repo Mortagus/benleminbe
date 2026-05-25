@@ -26,6 +26,80 @@ describe('DND DTO helpers', () => {
                 baseHitPoints: 20,
                 initiative: 16,
                 roll: 16,
+                initiativeModifier: 2,
+                identity: {
+                    race: 'Humaine',
+                    className: 'Barde',
+                    classPath: 'College des epes',
+                    background: 'Historique sur mesure',
+                    level: 3,
+                    alignment: 6,
+                    age: 20,
+                    sex: 1,
+                },
+                abilityScores: {
+                    strength: 9,
+                    dexterity: 15,
+                    constitution: 14,
+                    intelligence: 13,
+                    wisdom: 10,
+                    charisma: 17,
+                },
+                presentation: {
+                    height: '1,65 m',
+                    weight: '55 kg',
+                    eyes: 'Bleu-vert',
+                    skin: 'Blanche',
+                    hair: 'Bruns',
+                    appearance: 'Physique : Ma peau est constellee de taches de rousseur.',
+                },
+                proficiencies: {
+                    skills: ['Persuasion', 'Discretion'],
+                    tools: ['flute', 'luth'],
+                    languages: ['commun', 'elfique'],
+                },
+                spellbook: {
+                    known: [
+                        { name: 'illusion mineure', level: 0 },
+                        { name: 'mot de guerison', level: 1 },
+                    ],
+                },
+                equipment: {
+                    weapons: ['epée courte'],
+                    armor: ['armure de cuir'],
+                    items: ['etui de flute'],
+                    currency: {
+                        gp: 171,
+                        pp: 0,
+                        ep: 0,
+                        sp: 53,
+                        cp: 34,
+                    },
+                },
+                story: {
+                    traits: 'Je semble legere et insouciante.',
+                    ideals: 'Justice, pas vengeance.',
+                    bonds: 'Je possede une preuve irrefutable.',
+                    flaws: 'Je mens avec une aisance deconcertante.',
+                    backstory: 'Mon vrai nom est Elianora Valcoren.',
+                    allies: 'Aucun',
+                    features: 'Inspiration bardique',
+                    treasure: 'Une preuve cachee dans un etui de flute',
+                },
+                importData: {
+                    warnings: ['Les compétences extraites depuis le XML restent conservées en ids bruts pour le moment.'],
+                    raw: {
+                        toolsProf: {
+                            1: ['flute', 'luth'],
+                        },
+                    },
+                },
+                source: {
+                    format: 'xml',
+                    origin: 'builder',
+                    fileName: 'Lyriel-Selthir.xml',
+                    importedAt: '2026-05-25T09:00:00.000Z',
+                },
             },
         ]);
         encounter.buildRoundOrder();
@@ -49,7 +123,7 @@ describe('DND DTO helpers', () => {
                 }),
             ],
             players: [
-                {
+                expect.objectContaining({
                     id: 'player-1',
                     type: 'player',
                     name: 'Lia',
@@ -58,7 +132,8 @@ describe('DND DTO helpers', () => {
                     currentHitPoints: 18,
                     initiative: 16,
                     roll: 16,
-                },
+                    initiativeModifier: 2,
+                }),
             ],
             rules: {
                 'skip-low-initiative': true,
@@ -83,6 +158,45 @@ describe('DND DTO helpers', () => {
             activeTurnId: 'player-1',
         });
         expect(snapshot).not.toHaveProperty('bestiary');
+        expect(snapshot.players[0]).toMatchObject({
+            identity: {
+                race: 'Humaine',
+                className: 'Barde',
+                classPath: 'College des epes',
+                background: 'Historique sur mesure',
+                level: 3,
+                alignment: 6,
+                age: 20,
+                sex: 1,
+            },
+            abilityScores: {
+                strength: 9,
+                dexterity: 15,
+                constitution: 14,
+                intelligence: 13,
+                wisdom: 10,
+                charisma: 17,
+            },
+            proficiencies: {
+                skills: ['Persuasion', 'Discretion'],
+                tools: ['flute', 'luth'],
+                languages: ['commun', 'elfique'],
+            },
+            importData: {
+                warnings: ['Les compétences extraites depuis le XML restent conservées en ids bruts pour le moment.'],
+                raw: {
+                    toolsProf: {
+                        1: ['flute', 'luth'],
+                    },
+                },
+            },
+            source: {
+                format: 'xml',
+                origin: 'builder',
+                fileName: 'Lyriel-Selthir.xml',
+                importedAt: '2026-05-25T09:00:00.000Z',
+            },
+        });
     });
 
     test('normalizes display placeholders from empty monster slots', () => {
@@ -199,6 +313,24 @@ describe('DND DTO helpers', () => {
         expect(encounter.players[0]).toMatchObject({
             id: 'player-1',
             name: 'Lia',
+            identity: {
+                race: null,
+                className: null,
+                classPath: null,
+                background: null,
+                level: null,
+                alignment: null,
+                age: null,
+                sex: null,
+            },
+            abilityScores: {
+                strength: null,
+                dexterity: null,
+                constitution: null,
+                intelligence: null,
+                wisdom: null,
+                charisma: null,
+            },
         });
         expect(encounter.turnOrder).toEqual([
             expect.objectContaining({
@@ -297,5 +429,136 @@ describe('DND DTO helpers', () => {
         expect(encounter.turnOrder).toEqual([]);
         expect(encounter.activeTurnId).toBe(null);
         expect(encounter.currentRound).toBe(2);
+    });
+
+    test('restores an enriched player dto without losing identifiable fields', () => {
+        const encounter = new EncounterState({ bestiary: bestiarySample });
+
+        restoreEncounterFromSnapshot(encounter, {
+            version: ENCOUNTER_SNAPSHOT_VERSION,
+            savedAt: '2026-05-25T09:00:00.000Z',
+            monsters: [],
+            players: [
+                {
+                    id: 'player-lyriel',
+                    type: 'player',
+                    name: 'Lyriel Selthir',
+                    armorClass: 14,
+                    baseHitPoints: 21,
+                    currentHitPoints: 18,
+                    initiative: 12,
+                    roll: 10,
+                    identity: {
+                        race: 'Demi-elfe',
+                        className: 'Barde',
+                        classPath: 'College des epees',
+                        background: 'Historique sur mesure',
+                        level: 3,
+                        alignment: 6,
+                        age: 20,
+                        sex: 1,
+                    },
+                    abilityScores: {
+                        strength: 9,
+                        dexterity: 15,
+                        constitution: 14,
+                        intelligence: 13,
+                        wisdom: 10,
+                        charisma: 17,
+                    },
+                    proficiencies: {
+                        skills: ['Persuasion', 'Sagesse'],
+                        tools: ['flute', 'luth'],
+                        languages: ['commun', 'elfique', 'nain'],
+                    },
+                    spellbook: {
+                        known: [
+                            { name: 'illusion mineure', level: 0 },
+                            { name: 'fou rire de tasha', level: 1 },
+                        ],
+                    },
+                    equipment: {
+                        weapons: ['epée courte'],
+                        armor: ['armure de cuir'],
+                        items: ['etui de flute'],
+                        currency: {
+                            gp: 171,
+                            pp: 0,
+                            ep: 0,
+                            sp: 53,
+                            cp: 34,
+                        },
+                    },
+                    story: {
+                        traits: 'Charmante en apparence.',
+                        ideals: 'Justice, pas vengeance.',
+                        bonds: 'Preuve d’un crime familial.',
+                        flaws: 'Je mens avec aisance.',
+                        backstory: 'Mon vrai nom est Elianora Valcoren.',
+                        allies: 'Aucun',
+                        features: 'Inspiration bardique',
+                        treasure: 'Preuve cachee dans une flute',
+                    },
+                    importData: {
+                        warnings: ['Les compétences extraites depuis le XML restent conservées en ids bruts pour le moment.'],
+                        raw: {
+                            toolsProf: {
+                                1: ['flute', 'luth'],
+                            },
+                        },
+                    },
+                    source: {
+                        format: 'xml',
+                        origin: 'builder',
+                        fileName: 'Lyriel-Selthir.xml',
+                        importedAt: '2026-05-25T09:00:00.000Z',
+                    },
+                },
+            ],
+            rules: {},
+            turnOrder: [],
+            currentRound: 1,
+            activeTurnId: null,
+        });
+
+        expect(encounter.players[0]).toMatchObject({
+            id: 'player-lyriel',
+            name: 'Lyriel Selthir',
+            initiativeModifier: 2,
+            race: 'Demi-elfe',
+            className: 'Barde',
+            classPath: 'College des epees',
+            background: 'Historique sur mesure',
+            level: 3,
+            alignment: 6,
+            age: 20,
+            sex: 1,
+            height: null,
+            weight: null,
+            abilityScores: {
+                dexterity: 15,
+                charisma: 17,
+            },
+            spellbook: {
+                known: [
+                    { name: 'illusion mineure', level: 0 },
+                    { name: 'fou rire de tasha', level: 1 },
+                ],
+            },
+            importData: {
+                warnings: ['Les compétences extraites depuis le XML restent conservées en ids bruts pour le moment.'],
+                raw: {
+                    toolsProf: {
+                        1: ['flute', 'luth'],
+                    },
+                },
+            },
+            source: {
+                format: 'xml',
+                origin: 'builder',
+                fileName: 'Lyriel-Selthir.xml',
+                importedAt: '2026-05-25T09:00:00.000Z',
+            },
+        });
     });
 });

@@ -5,6 +5,7 @@ import {
     clearValidationState,
     showValidationErrors,
 } from './validation.js';
+import { formatInitiative } from './initiative.js';
 
 let draggedTurnId = null;
 const turnOrderItemTemplate = document.getElementById('turnOrderItemTemplate');
@@ -150,7 +151,7 @@ function populateTurnOrderItem(li, actor, options) {
 
     li.querySelector('.turn-order-item__image-placeholder').textContent = getActorInitial(actor);
     li.querySelector('.turn-order-item__name').textContent = actor.name;
-    li.querySelector('.turn-order-item__initiative').textContent = `Init. ${actor.initiative}`;
+    li.querySelector('.turn-order-item__initiative').textContent = `Init. ${formatInitiative(actor)}`;
     li.querySelector('.turn-order-item__armor-class').textContent = `CA ${actor.armorClass}`;
     li.querySelector('.turn-order-item__hit-points').textContent = `PV ${actor.currentHitPoints} / ${actor.baseHitPoints}`;
 

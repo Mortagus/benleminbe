@@ -91,10 +91,18 @@ Contrats critiques :
 |-----------|------|
 | `.dnd-panel--players` | Scope utilisé pour effacer les erreurs du panneau. |
 | `#addPlayer` | Bouton d'ajout d'une ligne joueur. |
+| `#importPlayerXml` | Bouton pour ouvrir la modale d'import XML. |
+| `#playerImportModal` | Modale de sélection et confirmation d'import XML. |
+| `#playerXmlImportInput` | Champ fichier dans la modale d'import. |
+| `#playerImportSubmit` | Bouton de confirmation qui lance l'import. |
 | `#playerValidationSummary` | Résumé accessible des erreurs du panneau. |
+| `#playerImportStatus` | Zone de statut pour afficher le fichier sélectionné. |
+| `#playerDetailsModal` | Modale de consultation de la fiche joueur importée. |
+| `#playerDetailsTableBody` | Corps du tableau clé-valeur de la fiche joueur. |
 | `#playerList` | Conteneur des lignes joueurs. |
 | `#playerItemTemplate` | Template cloné pour chaque nouveau joueur. |
 | `.player-item` | Racine d'une ligne joueur. |
+| `[data-player-details-open]` | Bouton compact qui ouvre la fiche complète du joueur. |
 | `.player-remove-button` | Bouton de suppression d'un joueur, renommé dynamiquement pour l'accessibilité. |
 | `[data-player-field="name"]` | Nom du joueur. |
 | `[data-player-field="armor-class"]` | CA du joueur. |

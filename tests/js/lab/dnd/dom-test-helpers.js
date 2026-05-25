@@ -87,6 +87,11 @@ export class TestElement {
         this.wasFocused = true;
     }
 
+    click() {
+        this.wasClicked = true;
+        this.dispatchEvent({ type: 'click' });
+    }
+
     cloneNode(deep = false) {
         const clone = new TestElement(this.tagName, [...this.classList.values()]);
         clone.textContent = this.textContent;
@@ -206,6 +211,29 @@ export function createMonsterOptionTemplate() {
     };
 }
 
+export function createPlayerItemTemplate() {
+    const content = new TestElement('fragment');
+    const item = createPlayerItem({
+        name: createInput(),
+        'armor-class': createInput(),
+        'current-hit-points': createInput(),
+        'base-hit-points': createInput(),
+        initiative: createInput(),
+    });
+    const actions = new TestElement('div', ['player-actions']);
+    const detailsButton = new TestElement('button', ['player-details-button']);
+    detailsButton.dataset.playerDetailsOpen = '';
+    detailsButton.disabled = true;
+    actions.appendChild(detailsButton);
+    actions.appendChild(new TestElement('button', ['player-remove-button']));
+    item.appendChild(actions);
+    content.appendChild(item);
+
+    return {
+        content,
+    };
+}
+
 export function createPlayerItem(fields) {
     const item = new TestElement('li', ['player-item']);
     const inputs = Object.entries(fields).map(([fieldName, input]) => {
@@ -275,13 +303,16 @@ function matchesSelector(element, selector) {
         return element.classList.contains(selector.slice(1));
     }
 
-    const dataAttributeMatch = selector.match(/^\[data-([a-z-]+)="([^"]+)"\]$/);
+    const dataAttributeMatch = selector.match(/^\[data-([a-z-]+)(?:="([^"]+)")?\]$/);
 
     if (dataAttributeMatch) {
         const [, attributeName, expectedValue] = dataAttributeMatch;
         const datasetKey = attributeName.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+        const actualValue = element.dataset[datasetKey];
 
-        return element.dataset[datasetKey] === expectedValue;
+        return expectedValue === undefined
+            ? actualValue !== undefined
+            : actualValue === expectedValue;
     }
 
     return element.tagName === selector.toLowerCase();

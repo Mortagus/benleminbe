@@ -1,6 +1,6 @@
 # Description technique - DnD Initiative Tracker
 
-Date de mise à jour : 2026-05-15
+Date de mise à jour : 2026-05-25
 
 Ce document décrit l'état actuel du projet `DnD Initiative Tracker` dans le site personnel. Il sert de point d'entrée technique : objectif du module, emplacement des fichiers, architecture actuelle et fonctionnement observé.
 
@@ -10,7 +10,7 @@ Les constats d'audit, les améliorations réalisées et les fonctionnalités à 
 
 `DnD Initiative Tracker` est un outil de laboratoire intégré au site Symfony principal. Il aide un Maître du Jeu à préparer une rencontre D&D, ajouter les personnages joueurs, sélectionner les monstres, lancer l'initiative des monstres et générer un ordre de tour exploitable pendant un combat.
 
-Le module est actuellement une application front-end légère en JavaScript vanilla, rendue par Twig et branchée via l'importmap Symfony. Il ne possède pas encore de backend métier dédié : les données de rencontre vivent dans le navigateur pendant la session courante.
+Le module reste une application front-end légère en JavaScript vanilla, rendue par Twig et branchée via l'importmap Symfony. La rencontre vit encore dans le navigateur pendant la session courante, mais l'import XML joueur passe déjà par un contrôleur et un service PHP dédiés.
 
 Fonctionnalités actuellement présentes :
 
@@ -26,17 +26,20 @@ Fonctionnalités actuellement présentes :
 - mise en évidence du prochain acteur à jouer ;
 - affichage des initiales, PV, CA et initiative dans l'ordre du tour ;
 - activation ou désactivation de règles maison via une popup de règles.
+- import XML d'une fiche joueur avec préremplissage des champs visibles, puis consultation à la demande de la fiche complète via une modale dédiée.
 
 ## Emplacement des fichiers
 
 ### Intégration Symfony
 
-- Contrôleur : [src/Public/Controller/LabController.php](/var/www/projects/benleminbe/src/Public/Controller/LabController.php:1)
+ - Contrôleur : [src/Public/Controller/LabController.php](/var/www/projects/benleminbe/src/Public/Controller/LabController.php:1)
 - Route publique : `/lab/dnd-initiative`
 - Nom de route : `app_lab_dnd_initiative`
+- Route d'import XML : `/lab/dnd-initiative/import-player`
+- La réponse d'import est affichée dans une modale de fiche simple, sous forme de tableau clé-valeur, pour ne pas alourdir la ligne joueur.
 - Entrée importmap : [importmap.php](/var/www/projects/benleminbe/importmap.php:19)
 
-Le contrôleur expose uniquement la page du lab. Il ne porte pas de logique métier D&D.
+`LabController` conserve les routes publiques du lab, y compris celles du tracker DnD. La logique de parsing reste isolée dans un service dédié.
 
 ### Templates Twig
 

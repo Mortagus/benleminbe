@@ -9,14 +9,16 @@ Ce document décrit le code JavaScript actuel de l'outil `DnD Initiative Tracker
 | `assets/scripts/lab/dnd/dnd_initiative.js`  | Point d'entrée de l'outil. Crée l'état de rencontre, initialise les panneaux et orchestre la génération de l'ordre du tour.                                   |
 | `assets/scripts/lab/dnd/encounter-state.js` | Module d'état et de règles métier. Crée et modifie la rencontre, les monstres, les joueurs, les règles et l'ordre du tour.                                    |
 | `assets/scripts/lab/dnd/monsters.js`        | Panneau DOM des monstres. Crée les emplacements, rend la liste depuis `encounter.monsters`, utilise le catalogue de `EncounterState` et gère sélection/PV/initiative. |
-| `assets/scripts/lab/dnd/players.js`         | Panneau DOM des joueurs. Ajoute/supprime des joueurs, lit les champs joueur et synchronise `encounter.players`.                                               |
+| `assets/scripts/lab/dnd/players.js`         | Panneau DOM des joueurs. Ajoute/supprime des joueurs, gère la modale d'import XML, conserve la réponse importée sur la ligne, ouvre la fiche détaillée à la demande et synchronise `encounter.players`. |
 | `assets/scripts/lab/dnd/turn-order.js`      | Panneau DOM de l'ordre du tour. Rend la liste des tours, gère le bouton de génération, les tours joués, les déplacements, le drag and drop et l'aide clavier. |
 | `assets/scripts/lab/dnd/rules.js`           | Panneau DOM des règles. Synchronise les checkboxes de règles avec l'état, ouvre/ferme la modale.                                                              |
 | `assets/scripts/lab/dnd/validation.js`      | Validation des entrées et affichage des erreurs. Les panneaux l'appellent avec des noeuds DOM, puis les règles travaillent sur des données normalisées.         |
-| `assets/scripts/lab/dnd/dtos.js`            | Contrats JSDoc des DTOs persistables prioritaires : snapshot, monstres, joueurs, tours et règles.                                                              |
+| `assets/scripts/lab/dnd/dtos.js`            | Contrats JSDoc des DTOs persistables prioritaires : snapshot, monstres, joueurs riches, payload d’import XML, tours et règles.                               |
 | `assets/scripts/lab/dnd/sound-effects.js`   | Effets sonores réutilisables. Gère le registre de sons, le choix de source, le cache lazy `Audio` et les erreurs de lecture non bloquantes.                    |
 | `assets/scripts/lab/dnd/initiative.js`      | Petites fonctions d'initiative: lancer un d20, formater l'initiative, choisir une classe CSS pour critique/échec.                                             |
 | `assets/scripts/lab/dnd/bestiary.js`        | Données générées du bestiaire. Fichier volumineux, explicitement marqué comme généré et à ne pas éditer manuellement.                                         |
+| `src/Public/Controller/LabController.php`   | Contrôleur public du lab. Rend la page d'index et porte aussi les routes du tracker DnD et de son import XML.                                                |
+| `src/Public/Service/Dnd/PlayerXmlImportParser.php` | Service PHP qui lit le XML importé et le convertit en structure exploitable.                                                                           |
 
 Fichier de test lié:
 
@@ -57,6 +59,14 @@ Pendant cette initialisation:
 2. `MonstersPanel.start()` branche `#createMonsters` et `#rollInitiative`.
 3. `PlayersPanel.start()` branche `#addPlayer`, branche les joueurs déjà présents dans le DOM, puis appelle `sync()`.
 4. `RulesPanel.start()` lit les checkboxes `[data-rule-toggle]`, les aligne sur les règles par défaut, puis branche les changements et l'ouverture/fermeture de la modale.
+
+Flux import joueur:
+
+1. `PlayersPanel` ouvre la modale d'import XML via `#importPlayerXml`.
+2. Le fichier choisi est envoyé par `fetch` à la route `app_lab_dnd_player_import`.
+3. `LabController` appelle `PlayerXmlImportParser`, qui retourne un JSON avec `player`, `warnings` et `raw`.
+4. `PlayersPanel` crée une nouvelle ligne joueur, y place les champs de base, et conserve la réponse complète sur la ligne.
+5. Le bouton compact `[data-player-details-open]` ouvre la modale de consultation de la fiche complète à la demande.
 
 État initial créé par `EncounterState`:
 
@@ -316,10 +326,11 @@ Transformation:
     initiative: 12,
     roll: 12,
     done: false,
+    importData: null,
 }
 ```
 
-Particularité: pour un joueur, `initiative` et `roll` valent actuellement la même valeur saisie.
+Particularité: pour un joueur, `initiative` et `roll` valent actuellement la même valeur saisie. Lorsqu'un joueur vient d'un import XML, `importData` conserve les warnings et le payload brut utile à la modale de fiche et à la future persistance.
 
 ### Monstres
 
@@ -535,11 +546,13 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `EncounterSnapshotDto`         | Racine persistable pour `localStorage` et futur import/export JSON.            |
 | `EncounterMonsterDto`          | Instance de monstre dans une rencontre, liée au catalogue par `slug`.          |
 | `EncounterPlayerDto`           | Participant joueur stocké dans la rencontre.                                   |
+| `PlayerImportDataDto`          | Payload d'import XML conservé pour consultation, traçabilité et persistance.   |
 | `TurnEntryDto`                 | Entrée de tour contenant l'identité de l'acteur et l'état joué/non joué.       |
 | `RulesStateDto`                | État des règles optionnelles actives.                                          |
 | `createEncounterSnapshotDto()` | Convertir une instance `EncounterState` en snapshot versionné.                 |
 | `createEncounterMonsterDto()`  | Convertir un monstre de rencontre actuel en DTO persistable.                   |
 | `createEncounterPlayerDto()`   | Convertir un joueur de rencontre actuel en DTO persistable.                    |
+| `createPlayerImportDataDto()`  | Normaliser les warnings et le payload brut de l'import XML.                    |
 | `createTurnEntryDto()`         | Convertir une entrée actuelle de `turnOrder` en entrée de tour minimale.       |
 | `createRulesStateDto()`        | Normaliser l'état des règles connues.                                          |
 | `restoreEncounterFromSnapshot()` | Restaurer une instance `EncounterState` depuis un snapshot persistable.      |

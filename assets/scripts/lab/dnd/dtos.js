@@ -130,32 +130,246 @@ export function createRuntimeMonsterFromDto(monster) {
  * @property {number} currentHitPoints
  * @property {number} initiative
  * @property {number} roll
+ * @property {number} initiativeModifier
+ * @property {PlayerIdentityDto} identity
+ * @property {PlayerAbilityScoresDto} abilityScores
+ * @property {PlayerCombatDto} combat
+ * @property {PlayerPresentationDto} presentation
+ * @property {PlayerProfileDto} profile
+ * @property {PlayerProficienciesDto} proficiencies
+ * @property {PlayerSpellbookDto} spellbook
+ * @property {PlayerEquipmentDto} equipment
+ * @property {PlayerStoryDto} story
+ * @property {PlayerSourceDto} source
+ * @property {PlayerImportDataDto|null} importData
  */
 export function createEncounterPlayerDto(player) {
+    const name = normalizeNullableText(
+        player.name ?? player.identity?.name ?? player.profile?.name,
+    ) ?? '';
+    const identity = createPlayerIdentityDto(player);
+    const abilityScores = createPlayerAbilityScoresDto(player);
+    const combat = createPlayerCombatDto(player);
+    const presentation = createPlayerPresentationDto(player);
+    const profile = createPlayerProfileDto(player);
+    const proficiencies = createPlayerProficienciesDto(player);
+    const spellbook = createPlayerSpellbookDto(player);
+    const equipment = createPlayerEquipmentDto(player);
+    const story = createPlayerStoryDto(player);
+    const source = createPlayerSourceDto(player);
+    const importData = createPlayerImportDataDto(player.importData ?? player.import ?? null);
+
     return {
         id: String(player.id),
         type: 'player',
-        name: String(player.name),
-        armorClass: normalizeNumber(player.armorClass),
-        baseHitPoints: normalizeNumber(player.baseHitPoints),
-        currentHitPoints: normalizeNumber(player.currentHitPoints),
-        initiative: normalizeNumber(player.initiative),
-        roll: normalizeNumber(player.roll),
+        name,
+        armorClass: combat.armorClass,
+        baseHitPoints: combat.baseHitPoints,
+        currentHitPoints: combat.currentHitPoints,
+        initiative: combat.initiative,
+        roll: combat.roll,
+        initiativeModifier: combat.initiativeModifier,
+        identity,
+        abilityScores,
+        combat,
+        presentation,
+        profile,
+        proficiencies,
+        spellbook,
+        equipment,
+        story,
+        source,
+        importData,
     };
 }
 
 export function createRuntimePlayerFromDto(player) {
+    const identity = createPlayerIdentityDto(player.identity ?? player);
+    const abilityScores = createPlayerAbilityScoresDto(player.abilityScores ?? player);
+    const combat = createPlayerCombatDto(player.combat ?? player);
+    const presentation = createPlayerPresentationDto(player.presentation ?? player);
+    const profile = createPlayerProfileDto(player.profile ?? player);
+    const proficiencies = createPlayerProficienciesDto(player.proficiencies ?? player);
+    const spellbook = createPlayerSpellbookDto(player.spellbook ?? player);
+    const equipment = createPlayerEquipmentDto(player.equipment ?? player);
+    const story = createPlayerStoryDto(player.story ?? player);
+    const source = createPlayerSourceDto(player.source ?? player);
+    const importData = createPlayerImportDataDto(player.importData ?? player.import ?? null);
+
     return {
         id: String(player.id),
         type: 'player',
-        name: String(player.name),
-        armorClass: normalizeNumber(player.armorClass),
-        baseHitPoints: normalizeNumber(player.baseHitPoints),
-        currentHitPoints: normalizeNumber(player.currentHitPoints),
-        initiative: normalizeNumber(player.initiative),
-        roll: normalizeNumber(player.roll),
+        name: String(player.name ?? identity.name ?? profile.name ?? ''),
+        armorClass: combat.armorClass,
+        baseHitPoints: combat.baseHitPoints,
+        currentHitPoints: combat.currentHitPoints,
+        initiative: combat.initiative,
+        roll: combat.roll,
+        initiativeModifier: combat.initiativeModifier,
+        identity,
+        abilityScores,
+        combat,
+        presentation,
+        profile,
+        proficiencies,
+        spellbook,
+        equipment,
+        story,
+        source,
+        importData,
+        race: identity.race,
+        className: identity.className,
+        classPath: identity.classPath,
+        background: identity.background,
+        level: identity.level,
+        alignment: identity.alignment,
+        age: identity.age,
+        sex: identity.sex,
+        height: profile.height,
+        weight: profile.weight,
+        eyes: presentation.eyes,
+        skin: presentation.skin,
+        hair: presentation.hair,
     };
 }
+
+/**
+ * Structured identity and game-sheet metadata for a player participant.
+ *
+ * @typedef {Object} PlayerIdentityDto
+ * @property {string|null} race
+ * @property {string|null} className
+ * @property {string|null} classPath
+ * @property {string|null} background
+ * @property {number|null} level
+ * @property {number|null} alignment
+ * @property {number|null} age
+ * @property {number|null} sex
+ * @property {string} name
+ */
+
+/**
+ * Ability scores are stored with long-form keys so the snapshot remains
+ * readable even when the source XML uses abbreviations.
+ *
+ * @typedef {Object} PlayerAbilityScoresDto
+ * @property {number|null} strength
+ * @property {number|null} dexterity
+ * @property {number|null} constitution
+ * @property {number|null} intelligence
+ * @property {number|null} wisdom
+ * @property {number|null} charisma
+ */
+
+/**
+ * Combat-facing data available on a player sheet.
+ *
+ * @typedef {Object} PlayerCombatDto
+ * @property {number} armorClass
+ * @property {number} baseHitPoints
+ * @property {number} currentHitPoints
+ * @property {number} initiative
+ * @property {number} roll
+ * @property {number} initiativeModifier
+ */
+
+/**
+ * Physical presentation fields from the source sheet.
+ *
+ * @typedef {Object} PlayerPresentationDto
+ * @property {string|null} height
+ * @property {string|null} weight
+ * @property {string|null} eyes
+ * @property {string|null} skin
+ * @property {string|null} hair
+ * @property {string|null} appearance
+ */
+
+/**
+ * Compact profile fields used for quick identification.
+ *
+ * @typedef {Object} PlayerProfileDto
+ * @property {string|null} name
+ * @property {string|null} race
+ * @property {string|null} className
+ * @property {string|null} classPath
+ * @property {string|null} background
+ * @property {number|null} level
+ * @property {number|null} alignment
+ * @property {number|null} age
+ * @property {number|null} sex
+ * @property {string|null} height
+ * @property {string|null} weight
+ */
+
+/**
+ * Proficiency metadata that can be filled from import sources.
+ *
+ * @typedef {Object} PlayerProficienciesDto
+ * @property {string[]} skills
+ * @property {string[]} tools
+ * @property {string[]} languages
+ */
+
+/**
+ * Spells known by the player.
+ *
+ * @typedef {Object} PlayerSpellDto
+ * @property {string} name
+ * @property {number|null} level
+ */
+
+/**
+ * Spellbook fields preserved by the DTO.
+ *
+ * @typedef {Object} PlayerSpellbookDto
+ * @property {PlayerSpellDto[]} known
+ */
+
+/**
+ * Equipment and currency tracked from the character sheet.
+ *
+ * @typedef {Object} PlayerEquipmentDto
+ * @property {string[]} weapons
+ * @property {string[]} armor
+ * @property {string[]} items
+ * @property {{gp: number, pp: number, ep: number, sp: number, cp: number}} currency
+ */
+
+/**
+ * Free-form roleplay material from the character sheet.
+ *
+ * @typedef {Object} PlayerStoryDto
+ * @property {string|null} traits
+ * @property {string|null} ideals
+ * @property {string|null} bonds
+ * @property {string|null} flaws
+ * @property {string|null} backstory
+ * @property {string|null} allies
+ * @property {string|null} features
+ * @property {string|null} treasure
+ */
+
+/**
+ * Provenance of a player snapshot.
+ *
+ * @typedef {Object} PlayerSourceDto
+ * @property {string} format
+ * @property {string|null} origin
+ * @property {string|null} fileName
+ * @property {string|null} importedAt
+ */
+
+/**
+ * Extra import payload preserved for imported player sheets.
+ *
+ * The core player fields already live on the player DTO itself. This payload
+ * keeps the extra controller response data that is not otherwise stored.
+ *
+ * @typedef {Object} PlayerImportDataDto
+ * @property {string[]} warnings
+ * @property {Object<string, unknown>} raw
+ */
 
 /**
  * Entry in the generated turn order.
@@ -275,6 +489,219 @@ function normalizePositiveInteger(value, fallback) {
     return Number.isInteger(number) && number > 0 ? number : fallback;
 }
 
+function createPlayerIdentityDto(player) {
+    const name = normalizeNullableText(
+        player.name ?? player.identity?.name ?? player.profile?.name,
+    ) ?? '';
+
+    return {
+        name,
+        race: normalizeNullableText(player.identity?.race ?? player.race),
+        className: normalizeNullableText(player.identity?.className ?? player.className),
+        classPath: normalizeNullableText(player.identity?.classPath ?? player.classPath),
+        background: normalizeNullableText(player.identity?.background ?? player.background),
+        level: normalizeNullableNumber(player.identity?.level ?? player.level),
+        alignment: normalizeNullableNumber(player.identity?.alignment ?? player.alignment),
+        age: normalizeNullableNumber(player.identity?.age ?? player.age),
+        sex: normalizeNullableNumber(player.identity?.sex ?? player.sex),
+    };
+}
+
+function createPlayerAbilityScoresDto(player) {
+    const source = player.abilityScores ?? player.ability_scores ?? player;
+
+    return {
+        strength: normalizeNullableNumber(source.strength ?? source.str ?? source.STR),
+        dexterity: normalizeNullableNumber(source.dexterity ?? source.dex ?? source.DEX),
+        constitution: normalizeNullableNumber(source.constitution ?? source.con ?? source.CON),
+        intelligence: normalizeNullableNumber(source.intelligence ?? source.int ?? source.INT),
+        wisdom: normalizeNullableNumber(source.wisdom ?? source.wis ?? source.WIS),
+        charisma: normalizeNullableNumber(source.charisma ?? source.cha ?? source.CHA),
+    };
+}
+
+function createPlayerCombatDto(player) {
+    const initiativeModifier = normalizeNullableNumber(
+        player.initiativeModifier
+            ?? player.combat?.initiativeModifier
+            ?? getAbilityModifier(player.abilityScores?.dexterity ?? player.dexterity ?? player.dex),
+    );
+
+    return {
+        armorClass: normalizeNumber(player.armorClass ?? player.combat?.armorClass),
+        baseHitPoints: normalizeNumber(player.baseHitPoints ?? player.combat?.baseHitPoints),
+        currentHitPoints: normalizeNumber(player.currentHitPoints ?? player.combat?.currentHitPoints),
+        initiative: normalizeNumber(player.initiative ?? player.combat?.initiative),
+        roll: normalizeNumber(player.roll ?? player.combat?.roll),
+        initiativeModifier: initiativeModifier ?? 0,
+    };
+}
+
+function createPlayerPresentationDto(player) {
+    const source = player.presentation ?? player;
+
+    return {
+        height: normalizeNullableText(source.height),
+        weight: normalizeNullableText(source.weight),
+        eyes: normalizeNullableText(source.eyes),
+        skin: normalizeNullableText(source.skin),
+        hair: normalizeNullableText(source.hair),
+        appearance: normalizeNullableText(source.appearance),
+    };
+}
+
+function createPlayerProfileDto(player) {
+    const source = player.profile ?? player;
+
+    return {
+        name: normalizeNullableText(source.name),
+        race: normalizeNullableText(source.race),
+        className: normalizeNullableText(source.className),
+        classPath: normalizeNullableText(source.classPath),
+        background: normalizeNullableText(source.background),
+        level: normalizeNullableNumber(source.level),
+        alignment: normalizeNullableNumber(source.alignment),
+        age: normalizeNullableNumber(source.age),
+        sex: normalizeNullableNumber(source.sex),
+        height: normalizeNullableText(source.height),
+        weight: normalizeNullableText(source.weight),
+    };
+}
+
+function createPlayerProficienciesDto(player) {
+    const source = player.proficiencies ?? player;
+
+    return {
+        skills: normalizeTextList(source.skills ?? source.skillsList ?? source.skillsProficiencies ?? source.skillsProf),
+        tools: normalizeTextList(source.tools ?? source.toolsList ?? source.toolsProficiencies),
+        languages: normalizeTextList(source.languages ?? source.languageList),
+    };
+}
+
+function createPlayerSpellbookDto(player) {
+    const source = player.spellbook ?? player.spells ?? player;
+
+    return {
+        known: normalizeSpellList(source.known ?? source.knownSpells ?? source.spellsKnown),
+    };
+}
+
+function createPlayerEquipmentDto(player) {
+    const source = player.equipment ?? player;
+
+    return {
+        weapons: normalizeTextList(source.weapons),
+        armor: normalizeTextList(source.armor),
+        items: normalizeTextList(source.items),
+        currency: {
+            gp: normalizeNumber(source.currency?.gp ?? source.gp),
+            pp: normalizeNumber(source.currency?.pp ?? source.pp),
+            ep: normalizeNumber(source.currency?.ep ?? source.ep),
+            sp: normalizeNumber(source.currency?.sp ?? source.sp),
+            cp: normalizeNumber(source.currency?.cp ?? source.cp),
+        },
+    };
+}
+
+function createPlayerStoryDto(player) {
+    const source = player.story ?? player;
+
+    return {
+        traits: normalizeNullableText(source.traits),
+        ideals: normalizeNullableText(source.ideals),
+        bonds: normalizeNullableText(source.bonds),
+        flaws: normalizeNullableText(source.flaws),
+        backstory: normalizeNullableText(source.backstory),
+        allies: normalizeNullableText(source.allies),
+        features: normalizeNullableText(source.features),
+        treasure: normalizeNullableText(source.treasure),
+    };
+}
+
+function createPlayerSourceDto(player) {
+    const source = player.source ?? player;
+
+    return {
+        format: normalizeNullableText(source.format) ?? 'manual',
+        origin: normalizeNullableText(source.origin),
+        fileName: normalizeNullableText(source.fileName),
+        importedAt: normalizeNullableText(source.importedAt),
+    };
+}
+
+function createPlayerImportDataDto(source) {
+    if (source === null || source === undefined || typeof source !== 'object') {
+        return null;
+    }
+
+    return {
+        warnings: normalizeTextList(source.warnings),
+        raw: cloneSerializableValue(source.raw ?? {}),
+    };
+}
+
+function normalizeTextList(value) {
+    if (value === null || value === undefined || value === '') {
+        return [];
+    }
+
+    if (Array.isArray(value)) {
+        return value
+            .map(item => normalizeNullableText(item))
+            .filter(item => item !== null);
+    }
+
+    if (typeof value === 'string') {
+        return value
+            .split(',')
+            .map(item => item.trim())
+            .filter(item => item !== '');
+    }
+
+    return [String(value)];
+}
+
+function normalizeSpellList(value) {
+    if (!Array.isArray(value)) {
+        return [];
+    }
+
+    return value
+        .map(spell => {
+            if (typeof spell === 'string') {
+                const name = spell.trim();
+
+                return name === '' ? null : { name, level: null };
+            }
+
+            if (!spell || typeof spell !== 'object') {
+                return null;
+            }
+
+            const name = normalizeNullableText(spell.name ?? spell.label);
+
+            if (!name) {
+                return null;
+            }
+
+            return {
+                name,
+                level: normalizeNullableNumber(spell.level),
+            };
+        })
+        .filter(spell => spell !== null);
+}
+
+function getAbilityModifier(score) {
+    const normalizedScore = normalizeNullableNumber(score);
+
+    if (normalizedScore === null) {
+        return null;
+    }
+
+    return Math.floor((normalizedScore - 10) / 2);
+}
+
 function cloneAbilities(abilities) {
     if (!abilities || typeof abilities !== 'object') {
         return {};
@@ -289,4 +716,18 @@ function cloneAbilities(abilities) {
             },
         ]),
     );
+}
+
+function cloneSerializableValue(value) {
+    if (Array.isArray(value)) {
+        return value.map(item => cloneSerializableValue(item));
+    }
+
+    if (value !== null && typeof value === 'object') {
+        return Object.fromEntries(
+            Object.entries(value).map(([key, item]) => [key, cloneSerializableValue(item)]),
+        );
+    }
+
+    return value;
 }

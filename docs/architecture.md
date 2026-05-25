@@ -72,6 +72,8 @@ tools/dnd/
 docs/lab/
 ```
 
+`LabController` sert de point d'entrée général pour les outils publics du lab et porte aussi les routes du tracker DnD.
+
 Le lab reste public, mais séparé du contenu professionnel par ses routes, templates, styles, scripts et documents dédiés.
 
 ### Contenus Et Traductions

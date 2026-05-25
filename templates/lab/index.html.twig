@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lab{% endblock %}
+{% block meta_description %}Outils et expérimentations du lab de benlemin.be.{% endblock %}
+
+{% block body %}
+    <main class="lab-page">
+        <section class="content-section">
+            <header class="dnd-page-header">
+                <h1>Lab</h1>
+                <p>Outils expérimentaux et prototypes publics.</p>
+            </header>
+
+            <article class="card">
+                <h2>DnD Initiative Tracker</h2>
+                <p>Préparer une rencontre, lancer l’initiative et suivre l’ordre du tour.</p>
+                <p>
+                    <a href="{{ path('app_lab_dnd_initiative') }}">Ouvrir le tracker DnD</a>
+                </p>
+            </article>
+        </section>
+    </main>
+{% endblock %}

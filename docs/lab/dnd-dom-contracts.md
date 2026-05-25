@@ -47,6 +47,8 @@ Contrats critiques :
 |-----------|------|
 | `.dnd-panel--monsters` | Scope utilisé pour effacer les erreurs du panneau. |
 | `#monsterCount` | Nombre de slots monstres à créer et champ validé avant génération. |
+| `#monsterSearch` | Filtre global par nom pour réduire les options des sélecteurs de monstres. Le champ existe encore mais reste masqué dans l'UI pour le moment. |
+| `#monsterTypeFilter` | Filtre global par type pour réduire les options des sélecteurs de monstres. |
 | `#createMonsters` | Bouton de création des slots monstres. |
 | `#rollInitiative` | Bouton de jet d'initiative des monstres. |
 | `#monsterValidationSummary` | Résumé accessible des erreurs du panneau. |
@@ -55,9 +57,12 @@ Contrats critiques :
 | `#monsterOptionTemplate` | Template d'option cloné pour le sélecteur de monstre. |
 | `.monster-item` | Racine d'un slot monstre. |
 | `.monster-select` | Sélecteur du monstre dans le bestiaire. |
+| `.monster-meta` | Conteneur d'affichage compact des informations du monstre sélectionné. |
 | `.monster-type` | Affichage du type du monstre. |
 | `.monster-size` | Affichage de la taille. |
 | `.monster-cr` | Affichage du facteur de puissance. |
+| `.monster-alignment` | Affichage de l'alignement du monstre sélectionné. |
+| `.monster-legendary` | Mention affichée pour un monstre légendaire. |
 | `.monster-armor-class` | Affichage de la CA. |
 | `.monster-hp input` | PV courants du monstre, validés avant génération de l'ordre. |
 | `.monster-hit-points-max` | PV max du monstre. |
@@ -174,4 +179,3 @@ Contrats critiques :
 php bin/console lint:twig templates/lab/dnd
 npm run test:js
 ```
-

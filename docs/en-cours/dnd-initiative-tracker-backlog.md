@@ -52,12 +52,41 @@ Vérification passée pendant la passe :
 
 ```bash
 npm run check:js
+make check
 ```
 
 État de reprise recommandé :
 
 - poursuivre avec `P15` : aides de sélection et affichage des monstres ;
 - garder le module audio disponible pour de futurs événements sonores, sans ajouter de toggle UI pour le moment.
+
+## Note De Reprise - 2026-05-25 - P15 Monstres
+
+Le premier périmètre prioritaire de `P15` a été livré.
+
+Travail livré :
+
+- ajout d'un filtre global de recherche par nom dans le panneau monstres, conservé côté code mais masqué dans l'UI pour le moment ;
+- ajout d'un filtre global par type ;
+- les filtres réduisent les options des sélecteurs sans retirer un monstre déjà sélectionné ;
+- le filtre de type est généré depuis le catalogue injecté dans `EncounterState` ;
+- l'affichage d'une ligne monstre montre désormais les informations compactes, alignées et homogènes, dont l'alignement et la mention légendaire quand les données existent ;
+- le jet d'initiative des monstres est rendu progressif : les scores apparaissent un par un avec une courte temporisation entre monstres ;
+- les monstres sont triés une fois tous les jets terminés ;
+- ajout et adaptation des tests Vitest pour les filtres, les informations affichées et le jet progressif ;
+- mise à jour des contrats DOM et de la cartographie JS.
+
+Vérification passée pendant la passe :
+
+```bash
+npm run check:js
+make check
+```
+
+État de reprise recommandé :
+
+- prochaine priorité fonctionnelle : `P32`, import XML de fiche personnage joueur ;
+- garder les filtres avancés, favoris ou presets de monstres pour une future extension si l'usage réel le demande.
 
 ## Note De Reprise - 2026-05-25 - Passe DTOs
 
@@ -277,7 +306,7 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | 11              | P12 | Réalisé           | ✅ **Fait**      | Accessibilité / Twig       | Accessibilité des formulaires dynamiques                 | Labels reliés, identifiants recalculés, noms accessibles des PV, boutons contextualisés et selects monstres labellisés.          | Maintenir ces attributs lors des prochains changements de formulaire.                                        |
 | 12              | P13 | Réalisé           | ✅ **Fait**      | Accessibilité / UX         | Drag-and-drop utilisable autrement qu'à la souris        | Drag souris gauche/droite, déplacement au clavier par flèches, focus conservé, aide clavier repliable et annonces `aria-live`.   | Les boutons de déplacement restent cliquables à la souris mais sont retirés de l'enchaînement `Tab`.         |
 | 13              | P31 | Réalisé           | ✅ **Fait**      | UX / Audio                 | Son au jet d'initiative des monstres                     | Un module audio réutilisable joue aléatoirement un des deux sons de dés lors du lancement d'initiative des monstres.             | Pas de toggle UI pour l'instant ; les erreurs audio sont non bloquantes.                                      |
-| 14              | P15 | Très haute        | 🟡 **Partiel**  | Fonctionnalité / UX        | Aides de sélection et affichage des monstres             | Améliorer la selectbox, ajouter 1 ou 2 filtres initiaux et enrichir l'affichage des informations du monstre sélectionné.         | Commencer par réduire les 428 options visibles ; recherche/filtres avancés, favoris ou presets plus tard.    |
+| 14              | P15 | Socle livré       | ✅ **Fait**      | Fonctionnalité / UX        | Aides de sélection et affichage des monstres             | Filtre par type, recherche par nom masquée pour le moment, affichage enrichi et jet progressif des initiatives sont en place.     | Filtres avancés, favoris ou presets restent possibles plus tard selon l'usage réel.                          |
 | 15              | P32 | Très haute        | 🔶 **À faire**  | Import / Joueurs           | Import XML de fiche personnage joueur                    | Importer un fichier XML issu d'un outil externe pour préremplir une fiche joueur aussi complètement que possible.                | Nouveau point ; commencer par analyser des exemples XML et mapper nom, CA, PV, initiative et données utiles. |
 | 16              | P25 | Haute             | 🔶 **À faire**  | UX                         | Différenciation visuelle des types d'acteurs             | Distinguer joueurs, alliés, ennemis, boss ou monstres légendaires avec des classes visuelles sobres.                             | À faire après stabilisation du rendu des cartes.                                                             |
 | 17              | P19 | Haute             | 🔶 **À faire**  | Fonctionnalité / Règles    | Gestion des conditions                                   | Ajouter/retrouver des conditions, les afficher visuellement et suivre leur durée en rounds.                                      | Dépend idéalement de commandes de round fiables, mais peut être cadré avant `P7`.                            |
@@ -307,9 +336,10 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | Participants  | Création de plusieurs monstres                                       | Fait                  | Création de slots puis sélection depuis le catalogue.                                   |
 | Participants  | Duplication rapide d'un monstre déjà choisi                          | Partiel               | Possible manuellement en choisissant le même monstre plusieurs fois, sans bouton dédié. |
 | Monstres      | Catalogue prédéfini                                                  | Fait                  | Bestiaire généré et embarqué dans `bestiary.js`.                                        |
-| Monstres      | Recherche ou filtre dans le catalogue                                | À faire prioritaire   | Ajouter 1 ou 2 filtres initiaux pour réduire les 428 monstres visibles.                 |
-| Monstres      | Affichage des informations du monstre sélectionné                    | Partiel               | Les informations existent, mais l'affichage doit être amélioré et rendu plus utile.     |
+| Monstres      | Recherche ou filtre dans le catalogue                                | Fait                  | Filtre par type visible ; recherche par nom conservée mais masquée pour le moment.       |
+| Monstres      | Affichage des informations du monstre sélectionné                    | Fait - en observation | Alignement et mention légendaire ajoutés aux informations existantes.                   |
 | Initiative    | Jet automatique pour les monstres                                    | Fait                  | d20 + modificateur issu des données monstre.                                            |
+| Initiative    | Affichage progressif des jets de monstres                            | Fait                  | Les initiatives apparaissent une par une avec une courte temporisation.                 |
 | Initiative    | Son au jet d'initiative des monstres                                 | Fait                  | Module audio réutilisable avec deux sons de dés sélectionnés aléatoirement.             |
 | Initiative    | Initiative joueurs                                                   | Fait                  | Saisie manuelle.                                                                        |
 | Initiative    | Tri automatique par initiative                                       | Fait                  | Tri décroissant à la génération de l'ordre.                                             |

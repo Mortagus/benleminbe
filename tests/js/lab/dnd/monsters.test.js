@@ -48,6 +48,8 @@ describe('monsters panel rendering', () => {
                     challengeRating: '1/4',
                     type: 'Humanoïde',
                     size: 'M',
+                    alignment: 'neutre bon',
+                    isLegendary: true,
                     armorClass: 10,
                     baseHitPoints: 9,
                     currentHitPoints: 7,
@@ -86,6 +88,9 @@ describe('monsters panel rendering', () => {
         expect(monsterItem.querySelector('.monster-type').textContent).toBe('Humanoïde');
         expect(monsterItem.querySelector('.monster-size').textContent).toBe('Taille: M');
         expect(monsterItem.querySelector('.monster-cr').textContent).toBe('FP: 1/4');
+        expect(monsterItem.querySelector('.monster-alignment').textContent).toBe('Alignement: neutre bon');
+        expect(monsterItem.querySelector('.monster-legendary').hidden).toBe(false);
+        expect(monsterItem.querySelector('.monster-legendary').textContent).toBe('Légendaire');
         expect(monsterItem.querySelector('.monster-armor-class').textContent).toBe('CA 10');
         expect(hitPointsInput.value).toBe('7');
         expect(hitPointsInput.max).toBe('9');
@@ -144,6 +149,61 @@ describe('monsters panel rendering', () => {
         expect(onEncounterChange).toHaveBeenCalledOnce();
     });
 
+    test('filters monster options by search and type while keeping selected monsters visible', async () => {
+        const { MonstersPanel } = await import('../../../../assets/scripts/lab/dnd/monsters.js');
+        const encounter = new EncounterState({
+            bestiary: [
+                createCatalogMonster({
+                    slug: 'acolyte',
+                    name: 'Acolyte',
+                    type: 'Humanoïde',
+                    challenge_rating: '1/4',
+                }),
+                createCatalogMonster({
+                    slug: 'aboleth',
+                    name: 'Aboleth',
+                    type: 'Aberration',
+                    challenge_rating: '10',
+                }),
+                createCatalogMonster({
+                    slug: 'bandit',
+                    name: 'Bandit',
+                    type: 'Humanoïde',
+                    challenge_rating: '1/8',
+                }),
+            ],
+        });
+        const documentDouble = createMonstersDocument();
+
+        encounter.createMonsterSlots(1);
+        encounter.selectMonster(0, 'aboleth');
+        globalThis.document = documentDouble;
+
+        const panel = new MonstersPanel(encounter);
+        panel.start();
+
+        documentDouble.elements.monsterSearchInput.value = 'aco';
+        documentDouble.elements.monsterTypeFilter.value = 'Humanoïde';
+        panel.refresh();
+
+        const select = documentDouble.elements.monsterList.children[0]
+            .querySelector('.monster-select');
+        const groupLabels = select.children.map(child => child.label ?? child.textContent);
+
+        expect(documentDouble.elements.monsterTypeFilter.children.map(option => option.textContent)).toEqual([
+            'Tous',
+            'Aberration',
+            'Humanoïde',
+        ]);
+        expect(groupLabels).toEqual([
+            'Choisir',
+            'Aberration',
+            'Humanoïde',
+        ]);
+        expect(select.children[1].children.map(option => option.value)).toEqual(['aboleth']);
+        expect(select.children[2].children.map(option => option.value)).toEqual(['acolyte']);
+    });
+
     test('keeps the encounter unchanged when the monster count is invalid', async () => {
         globalThis.HTMLElement = TestElement;
 
@@ -188,7 +248,7 @@ describe('monsters panel rendering', () => {
         });
         panel.start();
 
-        documentDouble.elements.rollInitiativeButton.dispatchEvent({ type: 'click' });
+        await panel.handleRollInitiative({ delayMs: 0 });
 
         expect(onMonsterInitiativeRoll).toHaveBeenCalledOnce();
         expect(encounter.monsters[0].initiative).not.toBeNull();
@@ -202,10 +262,42 @@ describe('monsters panel rendering', () => {
         expect(documentDouble.elements.rollInitiativeButton.classList.contains('dnd-button--audio-loading')).toBe(false);
         expect(documentDouble.elements.rollInitiativeButton.getAttribute('aria-busy')).toBe(null);
     });
+
+    test('rolls selected monster initiatives one by one before sorting', async () => {
+        const { MonstersPanel } = await import('../../../../assets/scripts/lab/dnd/monsters.js');
+        const encounter = new EncounterState({ bestiary: bestiarySample });
+        const documentDouble = createMonstersDocument();
+        const onEncounterChange = vi.fn();
+        const rolls = [5, 20];
+
+        encounter.createMonsterSlots(2);
+        encounter.selectMonster(0, 'acolyte');
+        encounter.selectMonster(1, 'aarakocra');
+        globalThis.document = documentDouble;
+
+        const panel = new MonstersPanel(encounter, {
+            onEncounterChange,
+        });
+        panel.start();
+
+        await panel.handleRollInitiative({
+            delayMs: 0,
+            roll: () => rolls.shift(),
+        });
+
+        expect(encounter.monsters.map(monster => monster.slug)).toEqual([
+            'aarakocra',
+            'acolyte',
+        ]);
+        expect(encounter.monsters.map(monster => monster.roll)).toEqual([20, 5]);
+        expect(onEncounterChange).toHaveBeenCalledOnce();
+    });
 });
 
 function createMonstersDocument() {
     const monsterCountInput = createInput('');
+    const monsterSearchInput = createInput('');
+    const monsterTypeFilter = new TestElement('select');
     const createMonstersButton = new TestElement('button');
     const rollInitiativeButton = new TestElement('button');
     const monsterPanel = new TestElement('section', ['dnd-panel--monsters']);
@@ -215,6 +307,8 @@ function createMonstersDocument() {
     const documentDouble = {
         ...createDocumentDouble({
             monsterCount: monsterCountInput,
+            monsterSearch: monsterSearchInput,
+            monsterTypeFilter,
             createMonsters: createMonstersButton,
             rollInitiative: rollInitiativeButton,
             monsterList,
@@ -227,6 +321,8 @@ function createMonstersDocument() {
 
     documentDouble.elements = {
         monsterCountInput,
+        monsterSearchInput,
+        monsterTypeFilter,
         createMonstersButton,
         rollInitiativeButton,
         monsterPanel,

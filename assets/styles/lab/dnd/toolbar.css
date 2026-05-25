@@ -28,6 +28,20 @@
     font: inherit;
 }
 
+.dnd-initiative-page .dnd-toolbar__field select {
+    width: 11rem;
+    padding: 0.5rem 0.7rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    color: var(--text);
+    font: inherit;
+}
+
+.dnd-initiative-page .dnd-toolbar__field--wide input {
+    width: min(18rem, 100%);
+}
+
 .dnd-initiative-page .dnd-toolbar__actions {
     display: flex;
     gap: 0.6rem;

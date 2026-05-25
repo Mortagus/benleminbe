@@ -118,12 +118,14 @@ Flux:
 Sélection d'un monstre dans une ligne:
 
 1. `renderMonsters()` crée les lignes depuis `#monsterItemTemplate`.
-2. `renderMonsterOptions()` remplit le `<select>` depuis le catalogue fourni par `encounter.bestiary`.
+2. `renderMonsterOptions()` remplit le `<select>` depuis le catalogue fourni par `encounter.bestiary`, filtré par `#monsterSearch` et `#monsterTypeFilter`. La recherche par nom existe côté DOM/JS mais reste masquée dans l'UI pour le moment.
 3. `bindMonsterItemEvents()` branche `change` sur `.monster-select`.
 4. Au changement, `handleMonsterSelectionChange()` appelle `encounter.selectMonster(index, selectedSlug)` et remplace le monstre vide par un monstre issu du catalogue de rencontre.
 5. Le bouton de lancement d'initiative est activé si `encounter.hasSelectedMonsters()` vaut vrai.
 6. `refresh()` rerend la liste.
 7. `callbacks.onEncounterChange?.()` rafraîchit l'affichage de l'ordre du tour existant.
+
+Les filtres de catalogue sont globaux au panneau monstres. Ils réduisent les options des sélecteurs sans retirer le monstre déjà sélectionné dans une ligne, même si ce monstre ne correspond plus aux filtres courants.
 
 Modification des PV d'un monstre:
 
@@ -142,13 +144,14 @@ Flux:
 3. `DndInitiativeTrackerApp` appelle `playSoundEffect('monsterInitiativeRoll')`.
 4. `sound-effects.js` choisit aléatoirement un des sons de dés, crée ou réutilise l'objet `Audio`, puis ignore silencieusement les erreurs de lecture.
 5. Le bouton de jet reçoit temporairement une classe de chargement audio qui affiche un curseur `progress`.
-6. `handleRollInitiative()` appelle immédiatement `encounter.rollMonsterInitiatives()`, qui parcourt `encounter.monsters`.
+6. `handleRollInitiative()` lance les initiatives une par une via `encounter.rollMonsterInitiative()`, avec une courte pause entre chaque monstre sélectionné.
 7. Chaque monstre sélectionné reçoit:
    - `roll`: résultat de `rollD20()`;
    - `initiative`: `roll + initiativeModifier`.
-8. Les monstres sont triés par `compareByInitiative(encounter, a, b)`.
-9. `refresh()` rerend le panneau des monstres avec les initiatives formatées.
-10. `callbacks.onEncounterChange?.()` appelle `turnOrderPanel.refresh()`.
+8. Le panneau est rerendu après chaque jet pour rendre l'apparition des scores progressive.
+9. Les monstres sont triés par `compareByInitiative(encounter, a, b)` une fois tous les jets terminés.
+10. `refresh()` rerend le panneau des monstres avec les initiatives formatées.
+11. `callbacks.onEncounterChange?.()` appelle `turnOrderPanel.refresh()`.
 
 Le format d'affichage vient de `initiative.js`:
 
@@ -454,13 +457,17 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `refresh()`                 | Rendre la liste de monstres depuis `encounter.monsters`.                       |
 | `validateForTurnOrder()`    | Valider le nombre de monstres et les PV des monstres rendus.                   |
 | `handleCreateMonsterSlots()` | Valider le nombre demandé, créer les slots et rafraîchir le panneau.          |
-| `handleRollInitiative()`    | Déclencher le feedback sonore, lancer les initiatives puis rafraîchir le panneau. |
+| `handleRollInitiative()`    | Déclencher le feedback sonore, lancer les initiatives progressivement puis rafraîchir le panneau. |
+| `rollSelectedMonsterInitiatives()` | Lancer les initiatives des monstres sélectionnés avec une temporisation entre chaque jet. |
 | `playMonsterInitiativeSound()` | Appeler le callback audio sans bloquer le jet d'initiative.                |
 | `setRollInitiativeAudioLoading()` | Appliquer l'état DOM temporaire du curseur de chargement audio.       |
 | `handleMonsterSelectionChange()` | Appliquer une sélection de monstre et rafraîchir l'état du panneau.     |
 | `handleMonsterHitPointsChange()` | Synchroniser les PV modifiés vers `EncounterState`.                     |
+| `getMonsterFilters()`       | Lire les filtres globaux du catalogue depuis le DOM.                          |
 | `renderMonsters()`          | Construire les `<li>` de monstres et brancher leurs événements.                |
 | `renderMonsterOptions()`    | Remplir le `<select>` avec le catalogue injecté, groupé par type.              |
+| `filterMonsterCatalog()`    | Appliquer recherche et type en conservant l'option déjà sélectionnée.          |
+| `renderMonsterTypeFilter()` | Remplir le filtre de type global depuis le catalogue.                         |
 | `getSortedMonsterGroups()`  | Trier les monstres par nom puis les groupes par type pour les options.         |
 | `bindMonsterItemEvents()`   | Relier une ligne de monstre aux callbacks de sélection et de PV.               |
 

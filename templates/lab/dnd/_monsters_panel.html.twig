@@ -13,6 +13,16 @@
             <input id="monsterCount" type="number" min="1" value="3">
         </div>
 
+        <div class="dnd-toolbar__field dnd-toolbar__field--wide" hidden>
+            <label for="monsterSearch">Recherche</label>
+            <input id="monsterSearch" type="search" placeholder="Nom du monstre">
+        </div>
+
+        <div class="dnd-toolbar__field">
+            <label for="monsterTypeFilter">Type</label>
+            <select id="monsterTypeFilter"></select>
+        </div>
+
         <div class="dnd-toolbar__actions">
             <button id="createMonsters" type="button">Créer</button>
             <button id="rollInitiative" type="button" disabled>Lancer l’initiative</button>
@@ -27,9 +37,13 @@
         <li class="monster-item">
             <div class="monster-main">
                 <select class="monster-select"></select>
-                <span class="monster-type"></span>
-                <span class="monster-size"></span>
-                <span class="monster-cr"></span>
+                <div class="monster-meta">
+                    <span class="monster-type"></span>
+                    <span class="monster-size"></span>
+                    <span class="monster-cr"></span>
+                    <span class="monster-alignment"></span>
+                    <span class="monster-legendary"></span>
+                </div>
             </div>
 
             <div class="monster-stats">

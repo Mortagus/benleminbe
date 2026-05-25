@@ -22,7 +22,7 @@
 .dnd-initiative-page .monster-main {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.35rem;
     min-width: 0;
 }
 
@@ -38,14 +38,27 @@
     font-weight: 700;
 }
 
-.dnd-initiative-page .monster-type {
+.dnd-initiative-page .monster-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.6rem;
+    align-items: center;
     min-width: 0;
+}
+
+.dnd-initiative-page .monster-meta span {
     max-width: none;
     overflow: hidden;
     color: var(--muted);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.dnd-initiative-page .monster-legendary {
+    width: fit-content;
+    font-weight: 700;
 }
 
 .dnd-initiative-page .monster-stats {

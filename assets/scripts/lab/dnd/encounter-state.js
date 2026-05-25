@@ -83,6 +83,26 @@ export class EncounterState {
         this.monsters.sort((a, b) => this.compareByInitiative(a, b));
     }
 
+    rollMonsterInitiative(index, roll = rollD20) {
+        const monster = this.monsters[index];
+
+        if (!monster || monster.slug === null) {
+            return;
+        }
+
+        const initiativeRoll = roll();
+
+        this.monsters[index] = {
+            ...monster,
+            roll: initiativeRoll,
+            initiative: initiativeRoll + monster.initiativeModifier,
+        };
+    }
+
+    sortMonstersByInitiative() {
+        this.monsters.sort((a, b) => this.compareByInitiative(a, b));
+    }
+
     setPlayers(players) {
         this.players = players;
     }

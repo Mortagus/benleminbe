@@ -15,12 +15,15 @@ import {
 
 const monsterItemTemplate = document.getElementById('monsterItemTemplate');
 const monsterOptionTemplate = document.getElementById('monsterOptionTemplate');
+const MONSTER_INITIATIVE_ROLL_DELAY_MS = 500;
 
 export class MonstersPanel {
     constructor(encounter, callbacks = {}) {
         this.encounter = encounter;
         this.callbacks = callbacks;
         this.monsterCountInput = document.getElementById('monsterCount');
+        this.monsterSearchInput = document.getElementById('monsterSearch');
+        this.monsterTypeFilter = document.getElementById('monsterTypeFilter');
         this.createMonstersButton = document.getElementById('createMonsters');
         this.rollInitiativeButton = document.getElementById('rollInitiative');
         this.monsterPanel = document.querySelector('.dnd-panel--monsters');
@@ -36,6 +39,16 @@ export class MonstersPanel {
         this.rollInitiativeButton.addEventListener('click', () => {
             this.handleRollInitiative();
         });
+
+        this.monsterSearchInput.addEventListener('input', () => {
+            this.refresh();
+        });
+
+        this.monsterTypeFilter.addEventListener('change', () => {
+            this.refresh();
+        });
+
+        renderMonsterTypeFilter(this.monsterTypeFilter, this.encounter.bestiary);
     }
 
     clearValidation() {
@@ -56,6 +69,7 @@ export class MonstersPanel {
             },
         }, {
             catalog: this.encounter.bestiary,
+            filters: this.getMonsterFilters(),
         });
     }
 
@@ -90,11 +104,32 @@ export class MonstersPanel {
         this.callbacks.onEncounterChange?.();
     }
 
-    handleRollInitiative() {
+    async handleRollInitiative(options = {}) {
         this.playMonsterInitiativeSound();
-        this.encounter.rollMonsterInitiatives();
+        this.rollInitiativeButton.disabled = true;
+
+        await this.rollSelectedMonsterInitiatives({
+            delayMs: options.delayMs ?? MONSTER_INITIATIVE_ROLL_DELAY_MS,
+            roll: options.roll,
+        });
+
+        this.encounter.sortMonstersByInitiative();
         this.refresh();
+        this.refreshRollInitiativeButtonState();
         this.callbacks.onEncounterChange?.();
+    }
+
+    async rollSelectedMonsterInitiatives(options) {
+        const selectedMonsterIndexes = this.getSelectedMonsterIndexes();
+
+        for (const [rollIndex, monsterIndex] of selectedMonsterIndexes.entries()) {
+            this.encounter.rollMonsterInitiative(monsterIndex, options.roll);
+            this.refresh();
+
+            if (rollIndex < selectedMonsterIndexes.length - 1) {
+                await wait(options.delayMs);
+            }
+        }
     }
 
     playMonsterInitiativeSound() {
@@ -138,6 +173,19 @@ export class MonstersPanel {
         this.rollInitiativeButton.disabled = !this.encounter.hasSelectedMonsters();
     }
 
+    getMonsterFilters() {
+        return {
+            search: this.monsterSearchInput.value,
+            type: this.monsterTypeFilter.value,
+        };
+    }
+
+    getSelectedMonsterIndexes() {
+        return this.encounter.monsters
+            .map((monster, index) => monster.slug !== null ? index : null)
+            .filter(index => index !== null);
+    }
+
     showMonsterValidationErrors(validationResult) {
         showValidationErrors(
             validationResult,
@@ -155,29 +203,35 @@ export class MonstersPanel {
 export function renderMonsters(monsterList, monsters, callbacks, options = {}) {
     const monsterItems = document.createDocumentFragment();
     const catalog = options.catalog ?? bestiary;
+    const filters = options.filters ?? {};
 
     monsters.forEach((monster, index) => {
-        monsterItems.appendChild(renderMonsterItem(monster, index, callbacks, catalog));
+        monsterItems.appendChild(renderMonsterItem(monster, index, callbacks, {
+            catalog,
+            filters,
+        }));
     });
 
     monsterList.replaceChildren(monsterItems);
 }
 
-function renderMonsterItem(monster, index, callbacks, catalog) {
+function renderMonsterItem(monster, index, callbacks, options) {
     const fragment = monsterItemTemplate.content.cloneNode(true);
     const monsterItem = fragment.querySelector('.monster-item');
 
-    populateMonsterItem(monsterItem, monster, index, catalog);
+    populateMonsterItem(monsterItem, monster, index, options);
     bindMonsterItemEvents(monsterItem, index, callbacks);
 
     return monsterItem;
 }
 
-function populateMonsterItem(monsterItem, monster, index, catalog) {
+function populateMonsterItem(monsterItem, monster, index, options) {
     const select = monsterItem.querySelector('.monster-select');
     const type = monsterItem.querySelector('.monster-type');
     const size = monsterItem.querySelector('.monster-size');
     const challengeRating = monsterItem.querySelector('.monster-cr');
+    const alignment = monsterItem.querySelector('.monster-alignment');
+    const legendary = monsterItem.querySelector('.monster-legendary');
     const armorClass = monsterItem.querySelector('.monster-armor-class');
     const hpInput = monsterItem.querySelector('.monster-hp input');
     const hpMax = monsterItem.querySelector('.monster-hit-points-max');
@@ -186,11 +240,15 @@ function populateMonsterItem(monsterItem, monster, index, catalog) {
 
     select.dataset.index = String(index);
     select.setAttribute('aria-label', `Choisir le monstre ${index + 1}`);
-    renderMonsterOptions(select, monster.slug, catalog);
+    renderMonsterOptions(select, monster.slug, options.catalog, options.filters);
 
     type.textContent = monster.type;
     size.textContent = 'Taille: ' + monster.size;
     challengeRating.textContent = 'FP: ' + monster.challengeRating;
+    alignment.textContent = monster.alignment ? `Alignement: ${monster.alignment}` : '';
+    alignment.hidden = monster.alignment === null;
+    legendary.textContent = 'Légendaire';
+    legendary.hidden = !monster.isLegendary;
     armorClass.textContent = `CA ${monster.armorClass}`;
 
     hpInput.max = String(monster.baseHitPoints);
@@ -250,10 +308,11 @@ function formatModifier(value) {
     return modifier > 0 ? `+${modifier}` : String(modifier);
 }
 
-function renderMonsterOptions(select, selectedSlug, catalog) {
+function renderMonsterOptions(select, selectedSlug, catalog, filters) {
     const options = [createMonsterPlaceholderOption()];
+    const visibleCatalog = filterMonsterCatalog(catalog, filters, selectedSlug);
 
-    getSortedMonsterGroups(catalog)
+    getSortedMonsterGroups(visibleCatalog)
         .forEach(([type, monsters]) => {
             const optgroup = document.createElement('optgroup');
             optgroup.label = type;
@@ -266,6 +325,46 @@ function renderMonsterOptions(select, selectedSlug, catalog) {
         });
 
     select.replaceChildren(...options);
+}
+
+function renderMonsterTypeFilter(select, catalog) {
+    const options = [createMonsterTypeFilterOption('', 'Tous')];
+    const types = Array.from(new Set(catalog.map(monster => monster.type)))
+        .sort((firstType, secondType) =>
+            firstType.localeCompare(secondType, 'fr', { sensitivity: 'base' })
+        );
+
+    types.forEach(type => {
+        options.push(createMonsterTypeFilterOption(type, type));
+    });
+
+    select.replaceChildren(...options);
+}
+
+function createMonsterTypeFilterOption(value, label) {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = label;
+
+    return option;
+}
+
+function filterMonsterCatalog(catalog, filters, selectedSlug) {
+    const search = (filters.search ?? '').trim().toLocaleLowerCase('fr');
+    const type = filters.type ?? '';
+
+    return catalog.filter(monster => {
+        if (monster.slug === selectedSlug) {
+            return true;
+        }
+
+        const matchesSearch = search === ''
+            || monster.name.toLocaleLowerCase('fr').includes(search);
+        const matchesType = type === ''
+            || monster.type === type;
+
+        return matchesSearch && matchesType;
+    });
 }
 
 function getSortedMonsterGroups(catalog) {
@@ -312,5 +411,15 @@ function bindMonsterItemEvents(monsterItem, index, callbacks) {
 
     hitPointsInput?.addEventListener('input', event => {
         callbacks.onMonsterHitPointsChange(index, event.target.value);
+    });
+}
+
+function wait(delayMs) {
+    if (delayMs <= 0) {
+        return Promise.resolve();
+    }
+
+    return new Promise(resolve => {
+        window.setTimeout(resolve, delayMs);
     });
 }

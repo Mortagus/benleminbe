@@ -166,9 +166,15 @@ export function createMonsterItemTemplate() {
 
     const main = new TestElement('div', ['monster-main']);
     main.appendChild(new TestElement('select', ['monster-select']));
-    main.appendChild(new TestElement('span', ['monster-type']));
-    main.appendChild(new TestElement('span', ['monster-size']));
-    main.appendChild(new TestElement('span', ['monster-cr']));
+
+    const meta = new TestElement('div', ['monster-meta']);
+    meta.appendChild(new TestElement('span', ['monster-type']));
+    meta.appendChild(new TestElement('span', ['monster-size']));
+    meta.appendChild(new TestElement('span', ['monster-cr']));
+    meta.appendChild(new TestElement('span', ['monster-alignment']));
+    meta.appendChild(new TestElement('span', ['monster-legendary']));
+    main.appendChild(meta);
+
     item.appendChild(main);
 
     const stats = new TestElement('div', ['monster-stats']);

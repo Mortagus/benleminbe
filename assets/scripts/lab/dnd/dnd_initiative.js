@@ -13,6 +13,8 @@ import { TurnOrderPanel } from './turn-order.js';
 
 import { RulesPanel } from './rules.js';
 
+import { playSoundEffect } from './sound-effects.js';
+
 import {
     focusFirstInvalidField,
     hasValidationErrors,
@@ -36,6 +38,7 @@ class DndInitiativeTrackerApp {
 
         this.monstersPanel = new MonstersPanel(this.encounter, {
             onEncounterChange: () => this.refreshDisplayedTurnOrder(),
+            onMonsterInitiativeRoll: () => playSoundEffect('monsterInitiativeRoll'),
         });
         this.monstersPanel.start();
 

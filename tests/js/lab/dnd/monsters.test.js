@@ -168,6 +168,40 @@ describe('monsters panel rendering', () => {
         expect(documentDouble.elements.monsterCountInput.wasFocused).toBe(true);
         expect(onEncounterChange).not.toHaveBeenCalled();
     });
+
+    test('plays monster initiative feedback without blocking the roll', async () => {
+        const { MonstersPanel } = await import('../../../../assets/scripts/lab/dnd/monsters.js');
+        const encounter = new EncounterState({ bestiary: bestiarySample });
+        const onEncounterChange = vi.fn();
+        const onMonsterInitiativeRoll = vi.fn(() => new Promise(resolve => {
+            onMonsterInitiativeRoll.resolve = resolve;
+        }));
+        const documentDouble = createMonstersDocument();
+
+        encounter.createMonsterSlots(1);
+        encounter.selectMonster(0, 'acolyte');
+        globalThis.document = documentDouble;
+
+        const panel = new MonstersPanel(encounter, {
+            onEncounterChange,
+            onMonsterInitiativeRoll,
+        });
+        panel.start();
+
+        documentDouble.elements.rollInitiativeButton.dispatchEvent({ type: 'click' });
+
+        expect(onMonsterInitiativeRoll).toHaveBeenCalledOnce();
+        expect(encounter.monsters[0].initiative).not.toBeNull();
+        expect(onEncounterChange).toHaveBeenCalledOnce();
+        expect(documentDouble.elements.rollInitiativeButton.classList.contains('dnd-button--audio-loading')).toBe(true);
+        expect(documentDouble.elements.rollInitiativeButton.getAttribute('aria-busy')).toBe('true');
+
+        onMonsterInitiativeRoll.resolve();
+        await Promise.resolve();
+
+        expect(documentDouble.elements.rollInitiativeButton.classList.contains('dnd-button--audio-loading')).toBe(false);
+        expect(documentDouble.elements.rollInitiativeButton.getAttribute('aria-busy')).toBe(null);
+    });
 });
 
 function createMonstersDocument() {

@@ -32,6 +32,33 @@ Nouvel ordre fonctionnel recommandé :
 
 La persistance `P8` et l'import/export JSON `P22` restent dans le backlog, mais repassent après ces priorités d'usage.
 
+## Note De Reprise - 2026-05-25 - P31 Audio
+
+Le point `P31` a été livré pour ajouter un feedback sonore au jet d'initiative des monstres.
+
+Travail livré :
+
+- ajout de `assets/scripts/lab/dnd/sound-effects.js` ;
+- ajout du registre `SOUND_EFFECTS` avec un seul identifiant public `monsterInitiativeRoll` ;
+- l'effet `monsterInitiativeRoll` choisit aléatoirement entre `dice_roll.mp3` et `dice_roll_2.mp3` ;
+- les objets `Audio` sont créés en lazy loading puis mis en cache par source ;
+- les erreurs de lecture audio sont absorbées pour ne jamais bloquer le jeu ;
+- `MonstersPanel` déclenche un callback `onMonsterInitiativeRoll` sans connaître le module audio ;
+- `DndInitiativeTrackerApp` branche ce callback sur `playSoundEffect('monsterInitiativeRoll')` ;
+- le bouton de jet d'initiative affiche temporairement un curseur `progress` pendant la promesse audio ;
+- ajout de tests Vitest pour le module audio et le callback du panneau monstres.
+
+Vérification passée pendant la passe :
+
+```bash
+npm run check:js
+```
+
+État de reprise recommandé :
+
+- poursuivre avec `P15` : aides de sélection et affichage des monstres ;
+- garder le module audio disponible pour de futurs événements sonores, sans ajouter de toggle UI pour le moment.
+
 ## Note De Reprise - 2026-05-25 - Passe DTOs
 
 La session a démarré le chantier DTOs avant la persistance `P8`.
@@ -249,7 +276,7 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | 10              | P11 | Réalisé           | ✅ **Fait**      | Twig                       | Réduction de duplication du template joueur              | Le markup joueur est factorisé dans `_player_item.html.twig` pour la ligne initiale et le template dynamique.                    | Limite les doubles modifications futures du formulaire joueur.                                               |
 | 11              | P12 | Réalisé           | ✅ **Fait**      | Accessibilité / Twig       | Accessibilité des formulaires dynamiques                 | Labels reliés, identifiants recalculés, noms accessibles des PV, boutons contextualisés et selects monstres labellisés.          | Maintenir ces attributs lors des prochains changements de formulaire.                                        |
 | 12              | P13 | Réalisé           | ✅ **Fait**      | Accessibilité / UX         | Drag-and-drop utilisable autrement qu'à la souris        | Drag souris gauche/droite, déplacement au clavier par flèches, focus conservé, aide clavier repliable et annonces `aria-live`.   | Les boutons de déplacement restent cliquables à la souris mais sont retirés de l'enchaînement `Tab`.         |
-| 13              | P31 | Très haute        | 🔶 **À faire**  | UX / Audio                 | Son au jet d'initiative des monstres                     | Jouer un son lors du lancement d'initiative des monstres et poser un module audio réutilisable pour d'autres événements futurs.  | Prévoir un code audio isolé ; respecter le déclenchement par interaction utilisateur.                        |
+| 13              | P31 | Réalisé           | ✅ **Fait**      | UX / Audio                 | Son au jet d'initiative des monstres                     | Un module audio réutilisable joue aléatoirement un des deux sons de dés lors du lancement d'initiative des monstres.             | Pas de toggle UI pour l'instant ; les erreurs audio sont non bloquantes.                                      |
 | 14              | P15 | Très haute        | 🟡 **Partiel**  | Fonctionnalité / UX        | Aides de sélection et affichage des monstres             | Améliorer la selectbox, ajouter 1 ou 2 filtres initiaux et enrichir l'affichage des informations du monstre sélectionné.         | Commencer par réduire les 428 options visibles ; recherche/filtres avancés, favoris ou presets plus tard.    |
 | 15              | P32 | Très haute        | 🔶 **À faire**  | Import / Joueurs           | Import XML de fiche personnage joueur                    | Importer un fichier XML issu d'un outil externe pour préremplir une fiche joueur aussi complètement que possible.                | Nouveau point ; commencer par analyser des exemples XML et mapper nom, CA, PV, initiative et données utiles. |
 | 16              | P25 | Haute             | 🔶 **À faire**  | UX                         | Différenciation visuelle des types d'acteurs             | Distinguer joueurs, alliés, ennemis, boss ou monstres légendaires avec des classes visuelles sobres.                             | À faire après stabilisation du rendu des cartes.                                                             |
@@ -283,7 +310,7 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | Monstres      | Recherche ou filtre dans le catalogue                                | À faire prioritaire   | Ajouter 1 ou 2 filtres initiaux pour réduire les 428 monstres visibles.                 |
 | Monstres      | Affichage des informations du monstre sélectionné                    | Partiel               | Les informations existent, mais l'affichage doit être amélioré et rendu plus utile.     |
 | Initiative    | Jet automatique pour les monstres                                    | Fait                  | d20 + modificateur issu des données monstre.                                            |
-| Initiative    | Son au jet d'initiative des monstres                                 | À faire prioritaire   | Ajouter un module audio réutilisable pour cet événement et de futurs retours sonores.   |
+| Initiative    | Son au jet d'initiative des monstres                                 | Fait                  | Module audio réutilisable avec deux sons de dés sélectionnés aléatoirement.             |
 | Initiative    | Initiative joueurs                                                   | Fait                  | Saisie manuelle.                                                                        |
 | Initiative    | Tri automatique par initiative                                       | Fait                  | Tri décroissant à la génération de l'ordre.                                             |
 | Initiative    | Gestion configurable des égalités                                    | Partiel               | Règle optionnelle par DEX disponible, désactivée par défaut ; DEX joueurs à confirmer.  |

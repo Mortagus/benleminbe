@@ -60,6 +60,10 @@
     opacity: 0.55;
 }
 
+.dnd-initiative-page .dnd-toolbar__actions button.dnd-button--audio-loading {
+    cursor: progress;
+}
+
 .dnd-initiative-page .dnd-toolbar__actions button:hover:not(:disabled),
 .dnd-initiative-page .dnd-secondary-button:hover {
     transform: translateY(-1px);

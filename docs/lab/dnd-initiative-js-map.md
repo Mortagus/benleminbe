@@ -14,6 +14,7 @@ Ce document décrit le code JavaScript actuel de l'outil `DnD Initiative Tracker
 | `assets/scripts/lab/dnd/rules.js`           | Panneau DOM des règles. Synchronise les checkboxes de règles avec l'état, ouvre/ferme la modale.                                                              |
 | `assets/scripts/lab/dnd/validation.js`      | Validation des entrées et affichage des erreurs. Les panneaux l'appellent avec des noeuds DOM, puis les règles travaillent sur des données normalisées.         |
 | `assets/scripts/lab/dnd/dtos.js`            | Contrats JSDoc des DTOs persistables prioritaires : snapshot, monstres, joueurs, tours et règles.                                                              |
+| `assets/scripts/lab/dnd/sound-effects.js`   | Effets sonores réutilisables. Gère le registre de sons, le choix de source, le cache lazy `Audio` et les erreurs de lecture non bloquantes.                    |
 | `assets/scripts/lab/dnd/initiative.js`      | Petites fonctions d'initiative: lancer un d20, formater l'initiative, choisir une classe CSS pour critique/échec.                                             |
 | `assets/scripts/lab/dnd/bestiary.js`        | Données générées du bestiaire. Fichier volumineux, explicitement marqué comme généré et à ne pas éditer manuellement.                                         |
 
@@ -137,13 +138,17 @@ Action utilisateur: clic sur `#rollInitiative`.
 Flux:
 
 1. `MonstersPanel` reçoit le clic.
-2. `handleRollInitiative()` appelle `encounter.rollMonsterInitiatives()`, qui parcourt `encounter.monsters`.
-3. Chaque monstre sélectionné reçoit:
+2. `handleRollInitiative()` déclenche le callback `onMonsterInitiativeRoll` sans bloquer le jet.
+3. `DndInitiativeTrackerApp` appelle `playSoundEffect('monsterInitiativeRoll')`.
+4. `sound-effects.js` choisit aléatoirement un des sons de dés, crée ou réutilise l'objet `Audio`, puis ignore silencieusement les erreurs de lecture.
+5. Le bouton de jet reçoit temporairement une classe de chargement audio qui affiche un curseur `progress`.
+6. `handleRollInitiative()` appelle immédiatement `encounter.rollMonsterInitiatives()`, qui parcourt `encounter.monsters`.
+7. Chaque monstre sélectionné reçoit:
    - `roll`: résultat de `rollD20()`;
    - `initiative`: `roll + initiativeModifier`.
-4. Les monstres sont triés par `compareByInitiative(encounter, a, b)`.
-5. `refresh()` rerend le panneau des monstres avec les initiatives formatées.
-6. `callbacks.onEncounterChange?.()` appelle `turnOrderPanel.refresh()`.
+8. Les monstres sont triés par `compareByInitiative(encounter, a, b)`.
+9. `refresh()` rerend le panneau des monstres avec les initiatives formatées.
+10. `callbacks.onEncounterChange?.()` appelle `turnOrderPanel.refresh()`.
 
 Le format d'affichage vient de `initiative.js`:
 
@@ -259,6 +264,7 @@ dnd_initiative.js
 ├── encounter-state.js
 │   ├── initiative.js
 │   └── bestiary.js
+├── sound-effects.js
 ├── monsters.js
 │   ├── bestiary.js
 │   ├── initiative.js
@@ -448,7 +454,9 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `refresh()`                 | Rendre la liste de monstres depuis `encounter.monsters`.                       |
 | `validateForTurnOrder()`    | Valider le nombre de monstres et les PV des monstres rendus.                   |
 | `handleCreateMonsterSlots()` | Valider le nombre demandé, créer les slots et rafraîchir le panneau.          |
-| `handleRollInitiative()`    | Lancer les initiatives des monstres puis rafraîchir le panneau.                |
+| `handleRollInitiative()`    | Déclencher le feedback sonore, lancer les initiatives puis rafraîchir le panneau. |
+| `playMonsterInitiativeSound()` | Appeler le callback audio sans bloquer le jet d'initiative.                |
+| `setRollInitiativeAudioLoading()` | Appliquer l'état DOM temporaire du curseur de chargement audio.       |
 | `handleMonsterSelectionChange()` | Appliquer une sélection de monstre et rafraîchir l'état du panneau.     |
 | `handleMonsterHitPointsChange()` | Synchroniser les PV modifiés vers `EncounterState`.                     |
 | `renderMonsters()`          | Construire les `<li>` de monstres et brancher leurs événements.                |
@@ -538,6 +546,14 @@ Règles de restauration validées:
 2. Un snapshot avec `turnOrder` vide reste vide; `buildRoundOrder()` n'est pas appelé automatiquement.
 3. Les monstres sont restaurés depuis les données sauvegardées, sans relecture du bestiaire.
 4. `persistence.js` sera créé uniquement au moment de brancher `localStorage`.
+
+### `sound-effects.js`
+
+| Élément                        | Responsabilité                                                                 |
+|--------------------------------|--------------------------------------------------------------------------------|
+| `SOUND_EFFECTS`                | Registre des effets sonores disponibles, dont `monsterInitiativeRoll`.          |
+| `playSoundEffect()`            | Jouer un effet sonore connu, avec source aléatoire, volume et erreur absorbée. |
+| `clearSoundEffectCache()`      | Vider le cache audio pour les tests.                                            |
 
 ## Endroits faciles à suivre
 

@@ -91,9 +91,35 @@ export class MonstersPanel {
     }
 
     handleRollInitiative() {
+        this.playMonsterInitiativeSound();
         this.encounter.rollMonsterInitiatives();
         this.refresh();
         this.callbacks.onEncounterChange?.();
+    }
+
+    playMonsterInitiativeSound() {
+        const soundFeedback = this.callbacks.onMonsterInitiativeRoll?.();
+
+        if (!soundFeedback) {
+            return;
+        }
+
+        this.setRollInitiativeAudioLoading(true);
+        Promise.resolve(soundFeedback)
+            .finally(() => {
+                this.setRollInitiativeAudioLoading(false);
+            });
+    }
+
+    setRollInitiativeAudioLoading(isLoading) {
+        if (isLoading) {
+            this.rollInitiativeButton.classList.add('dnd-button--audio-loading');
+            this.rollInitiativeButton.setAttribute('aria-busy', 'true');
+            return;
+        }
+
+        this.rollInitiativeButton.classList.remove('dnd-button--audio-loading');
+        this.rollInitiativeButton.removeAttribute('aria-busy');
     }
 
     handleMonsterSelectionChange(index, selectedSlug) {

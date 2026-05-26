@@ -93,13 +93,15 @@
 }
 
 .dnd-initiative-page .turn-order-item__move-button {
-    width: 1.85rem;
-    height: 1.85rem;
-
     background: transparent;
     border-color: transparent;
     color: var(--muted);
     opacity: 0.72;
+}
+
+.dnd-initiative-page .turn-order-item__controls > .turn-order-item__move-button--compact.dnd-icon-button {
+    width: 1em;
+    height: 1em;
 }
 
 .dnd-initiative-page .turn-order-item__move-button:hover:not([aria-disabled="true"]),
@@ -115,9 +117,9 @@
     cursor: not-allowed;
 }
 
-.dnd-initiative-page .turn-order-item__move-button .dnd-icon {
-    width: 1rem;
-    height: 1rem;
+.dnd-initiative-page .turn-order-item__controls > .turn-order-item__move-button--compact.dnd-icon-button .dnd-icon {
+    width: 1em;
+    height: 1em;
 }
 
 .dnd-initiative-page .turn-order-item__image-placeholder {

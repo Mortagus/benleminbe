@@ -6,6 +6,7 @@ Ce dossier contient les documents qui servent encore de fil de reprise, de backl
 
 - [Audit contenu et impact](content-impact-audit-recommendations.md) : recommandations à transformer en observations, tests ou ajustements de contenu.
 - [Backlog DnD Initiative Tracker](dnd-initiative-tracker-backlog.md) : prochaines évolutions du module lab DnD.
+- [P7 - Commandes explicites de combat](dnd-initiative-tracker-p7-commandes-explicites-combat.md) : cadrage UX des commandes de pilotage du combat.
 - [Zone privée - prochaines étapes](private-area-next-steps.md) : reprise après validation du socle privé.
 
 ## Regle De Sortie

@@ -6,14 +6,15 @@ Ce document décrit le code JavaScript actuel de l'outil `DnD Initiative Tracker
 
 | Fichier                                     | Rôle                                                                                                                                                          |
 |---------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `assets/scripts/lab/dnd/dnd_initiative.js`  | Point d'entrée de l'outil. Crée l'état de rencontre, initialise les panneaux et orchestre la génération de l'ordre du tour.                                   |
+| `assets/scripts/lab/dnd/dnd_initiative.js`  | Point d'entrée de l'outil. Crée l'état de rencontre, initialise les panneaux, orchestre la génération de l'ordre du tour et déclenche la persistance locale. |
 | `assets/scripts/lab/dnd/encounter-state.js` | Module d'état et de règles métier. Crée et modifie la rencontre, les monstres, les joueurs, les règles et l'ordre du tour.                                    |
 | `assets/scripts/lab/dnd/monsters.js`        | Panneau DOM des monstres. Crée les emplacements, rend la liste depuis `encounter.monsters`, utilise le catalogue de `EncounterState` et gère sélection/PV/initiative. |
-| `assets/scripts/lab/dnd/players.js`         | Panneau DOM des joueurs. Ajoute/supprime des joueurs, gère la modale d'import XML, conserve la réponse importée sur la ligne, ouvre la fiche détaillée à la demande et synchronise `encounter.players`. |
+| `assets/scripts/lab/dnd/players.js`         | Panneau DOM des joueurs. Ajoute/supprime des joueurs, gère la modale d'import XML, conserve la réponse importée sur la ligne, ouvre la fiche détaillée à la demande, synchronise `encounter.players` et réhydrate les lignes depuis un snapshot. |
 | `assets/scripts/lab/dnd/turn-order.js`      | Panneau DOM de l'ordre du tour. Rend la liste des tours, gère le bouton de génération, les tours joués, les déplacements, le drag and drop et l'aide clavier. |
 | `assets/scripts/lab/dnd/rules.js`           | Panneau DOM des règles. Synchronise les checkboxes de règles avec l'état, ouvre/ferme la modale.                                                              |
 | `assets/scripts/lab/dnd/validation.js`      | Validation des entrées et affichage des erreurs. Les panneaux l'appellent avec des noeuds DOM, puis les règles travaillent sur des données normalisées.         |
 | `assets/scripts/lab/dnd/dtos.js`            | Contrats JSDoc des DTOs persistables prioritaires : snapshot, monstres, joueurs riches, payload d’import XML, tours et règles.                               |
+| `assets/scripts/lab/dnd/persistence.js`     | Persistance locale du tracker. Lit et écrit `localStorage`, pilote le statut, le prompt de restauration et les modales d'erreur.                            |
 | `assets/scripts/lab/dnd/sound-effects.js`   | Effets sonores réutilisables. Gère le registre de sons, le choix de source, le cache lazy `Audio` et les erreurs de lecture non bloquantes.                    |
 | `assets/scripts/lab/dnd/initiative.js`      | Petites fonctions d'initiative: lancer un d20, formater l'initiative, choisir une classe CSS pour critique/échec.                                             |
 | `assets/scripts/lab/dnd/bestiary.js`        | Données générées du bestiaire. Fichier volumineux, explicitement marqué comme généré et à ne pas éditer manuellement.                                         |
@@ -25,6 +26,7 @@ Fichier de test lié:
 | Fichier                                    | Rôle                                                                                                                                            |
 |--------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
 | `tests/js/lab/dnd/encounter-state.test.js` | Tests Vitest centrés sur `encounter-state.js`: création de monstres, sélection, initiative, règles, ordre du tour, acteur actif et déplacement. |
+| `tests/js/lab/dnd/persistence.test.js`     | Tests Vitest centrés sur `persistence.js`: sauvegarde locale, restauration, validation des snapshots et erreurs de stockage.                   |
 
 ## Point d'entrée principal
 
@@ -52,6 +54,7 @@ Au chargement de la page:
 6. `DndInitiativeTrackerApp.start()` instancie `MonstersPanel` avec `encounter` et `{ onEncounterChange }`, puis appelle `start()`.
 7. `DndInitiativeTrackerApp.start()` instancie `PlayersPanel` avec `encounter` et `{ onPlayersChange }`, puis appelle `start()`.
 8. `DndInitiativeTrackerApp.start()` instancie `RulesPanel` avec `{ isRuleActive, setRuleActive }`, puis appelle `start()`.
+9. `DndInitiativeTrackerApp.start()` instancie `EncounterPersistence` avec l'état et les panneaux, puis appelle `start()`.
 
 Pendant cette initialisation:
 
@@ -59,6 +62,7 @@ Pendant cette initialisation:
 2. `MonstersPanel.start()` branche `#createMonsters` et `#rollInitiative`.
 3. `PlayersPanel.start()` branche `#addPlayer`, branche les joueurs déjà présents dans le DOM, puis appelle `sync()`.
 4. `RulesPanel.start()` lit les checkboxes `[data-rule-toggle]`, les aligne sur les règles par défaut, puis branche les changements et l'ouverture/fermeture de la modale.
+5. `EncounterPersistence.start()` lit `localStorage`, met à jour le statut de sauvegarde et, si un snapshot valide existe, ouvre le prompt de restauration.
 
 Flux import joueur:
 
@@ -67,6 +71,16 @@ Flux import joueur:
 3. `LabController` appelle `PlayerXmlImportParser`, qui retourne un JSON avec `player`, `warnings` et `raw`.
 4. `PlayersPanel` crée une nouvelle ligne joueur, y place les champs de base, et conserve la réponse complète sur la ligne.
 5. Le bouton compact `[data-player-details-open]` ouvre la modale de consultation de la fiche complète à la demande.
+
+Flux de restauration locale:
+
+1. `EncounterPersistence.start()` lit `localStorage` au chargement.
+2. Si un snapshot valide existe, le panneau affiche un prompt discret pour laisser le MJ choisir entre chargement et démarrage à vide.
+3. Si le MJ charge la sauvegarde, `restoreFromSnapshot()` injecte le snapshot dans `EncounterState`.
+4. `PlayersPanel.hydrateFromEncounter()` reconstruit les lignes joueurs depuis l'état restauré.
+5. `RulesPanel.sync()` réaligne les checkboxes sur les règles restaurées.
+6. `MonstersPanel.refresh()` et `TurnOrderPanel.refresh()` réaffichent le contenu courant.
+7. Le statut de dernière sauvegarde est mis à jour après la restauration.
 
 État initial créé par `EncounterState`:
 
@@ -105,6 +119,7 @@ Flux:
 8. `sync()` envoie ces joueurs dans l'état via `encounter.setPlayers(players)`.
 9. `sync()` appelle `callbacks.onPlayersChange?.()`, fourni par `DndInitiativeTrackerApp`.
 10. Ce callback appelle `DndInitiativeTrackerApp.refreshDisplayedTurnOrder()`, puis `turnOrderPanel.refresh()`.
+11. `refreshDisplayedTurnOrder()` persiste ensuite l'état courant.
 
 Point important: `turnOrderPanel.refresh()` rerend `encounter.turnOrder`, mais ne reconstruit pas l'ordre du tour. La reconstruction passe uniquement par `encounter.buildRoundOrder()` dans `generateTurnOrder()`.
 
@@ -124,6 +139,7 @@ Flux:
 8. Le bouton `#rollInitiative` est désactivé.
 9. `refresh()` rerend la liste des monstres.
 10. `callbacks.onEncounterChange?.()` appelle `turnOrderPanel.refresh()`.
+11. Le rafraîchissement courant déclenche ensuite la persistance locale.
 
 Sélection d'un monstre dans une ligne:
 
@@ -185,6 +201,7 @@ Flux:
 9. Sinon, il appelle `playersPanel.sync()` pour pousser les champs joueur dans `encounter.players`.
 10. Il appelle `encounter.buildRoundOrder()`.
 11. Il appelle `turnOrderPanel.refresh({ focusFirst: true })`.
+12. Il déclenche ensuite `persistence.saveEncounter()` pour écrire le snapshot courant.
 
 Dans `encounter.buildRoundOrder()`:
 
@@ -435,10 +452,10 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 
 | Méthode                       | Responsabilité                                                                                                                    |
 |-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| `start()`                     | Initialiser les panneaux dans l'ordre et connecter leurs callbacks.                                                               |
-| `refreshDisplayedTurnOrder()` | Rafraîchir l'ordre du tour affiché sans reconstruire `encounter.turnOrder`.                                                       |
-| `setRuleActive()`             | Modifier une règle dans l'état puis rafraîchir l'affichage courant.                                                               |
-| `generateTurnOrder()`         | Orchestrer la génération: nettoyer les validations, valider, synchroniser les joueurs, construire l'ordre, rafraîchir le panneau. |
+| `start()`                     | Initialiser les panneaux dans l'ordre, connecter leurs callbacks et brancher la persistance locale.                                |
+| `refreshDisplayedTurnOrder()` | Rafraîchir l'ordre du tour affiché sans reconstruire `encounter.turnOrder`, puis persister l'état courant.                          |
+| `setRuleActive()`             | Modifier une règle dans l'état, rafraîchir l'affichage courant et persister l'état courant.                                         |
+| `generateTurnOrder()`         | Orchestrer la génération: nettoyer les validations, valider, synchroniser les joueurs, construire l'ordre, rafraîchir le panneau et persister l'état. |
 
 ### `encounter-state.js`
 
@@ -489,6 +506,7 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `PlayersPanel`                 | Contrôleur DOM du panneau joueurs.                                                                          |
 | `start()`                      | Brancher les événements, synchroniser l'état initial et exposer l'API du panneau via l'instance.            |
 | `sync()`                       | Lire le DOM joueur, mettre à jour `EncounterState`, appeler le callback de changement.                      |
+| `hydrateFromEncounter()`       | Reconstruire les lignes joueurs depuis l'état restauré par `EncounterPersistence`.                           |
 | `syncPlayerFormsToEncounter()` | Frontière explicite entre les champs joueur DOM et `encounter.players`.                                     |
 | `handleAddPlayer()`            | Ajouter une ligne joueur puis synchroniser le panneau.                                                      |
 | `validateForTurnOrder()`       | Valider les lignes joueur avant génération de l'ordre du tour.                                              |
@@ -565,7 +583,25 @@ Règles de restauration validées:
 1. Les entrées de tour orphelines sont ignorées.
 2. Un snapshot avec `turnOrder` vide reste vide; `buildRoundOrder()` n'est pas appelé automatiquement.
 3. Les monstres sont restaurés depuis les données sauvegardées, sans relecture du bestiaire.
-4. `persistence.js` sera créé uniquement au moment de brancher `localStorage`.
+
+### `persistence.js`
+
+| Élément                            | Responsabilité                                                                 |
+|------------------------------------|--------------------------------------------------------------------------------|
+| `EncounterPersistence`             | Orchestrer la lecture et l'écriture du snapshot, le prompt de reprise et les modales d'erreur. |
+| `start()`                          | Lire `localStorage`, afficher le statut et ouvrir le prompt si une sauvegarde valide existe. |
+| `saveEncounter()`                  | Forcer la resynchronisation utile puis écrire le snapshot courant.            |
+| `restoreFromStoredSnapshot()`      | Recharger le snapshot présent dans `localStorage` après validation.           |
+| `restoreFromSnapshot()`            | Réinjecter un snapshot validé dans `EncounterState` puis rafraîchir les panneaux. |
+| `readStoredSnapshot()`             | Lire, parser et valider le contenu persistant.                                 |
+| `validateSnapshot()`               | Vérifier le type de snapshot et la compatibilité de version.                  |
+
+Règles de persistance validées:
+
+1. Une seule sauvegarde locale est utilisée.
+2. Le chargement n'est pas automatique: une confirmation est demandée si une sauvegarde valide existe.
+3. Les snapshots invalides, corrompus ou d'une version non prise en charge sont ignorés et signalés.
+4. Les erreurs `localStorage` sont affichées dans une modale copiable.
 
 ### `sound-effects.js`
 
@@ -580,7 +616,7 @@ Règles de restauration validées:
 1. `dnd_initiative.js` donne une bonne vue d'ensemble: un état unique, quatre panneaux initialisés, une classe coordinatrice et une méthode de génération.
 2. `encounter-state.js` isole bien une partie importante de la logique métier hors DOM.
 3. `EncounterState` et ses fonctions de compatibilité métier sont testables et déjà couverts par Vitest.
-4. Les panneaux retournent une petite API explicite: `refresh`, `clearValidation`, `validateForTurnOrder`, `sync`.
+4. Les panneaux retournent une petite API explicite: `refresh`, `clearValidation`, `validateForTurnOrder`, `sync`, et pour les joueurs `hydrateFromEncounter()`.
 5. Le flux de génération dans `generateTurnOrder()` est linéaire et compréhensible.
 6. Les templates DOM ont des ids/classes assez stables et les modules les utilisent directement.
 

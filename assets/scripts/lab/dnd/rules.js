@@ -13,15 +13,22 @@ export class RulesPanel {
     }
 
     start() {
+        this.sync();
         this.bindRuleToggles();
         this.bindRulesModal();
+    }
+
+    sync() {
+        this.ruleToggles.forEach(ruleToggle => {
+            const ruleId = ruleToggle.dataset.ruleToggle;
+
+            ruleToggle.checked = this.callbacks.isRuleActive(ruleId);
+        });
     }
 
     bindRuleToggles() {
         this.ruleToggles.forEach(ruleToggle => {
             const ruleId = ruleToggle.dataset.ruleToggle;
-
-            ruleToggle.checked = this.callbacks.isRuleActive(ruleId);
             ruleToggle.addEventListener('change', () => {
                 this.callbacks.setRuleActive(ruleId, ruleToggle.checked);
             });

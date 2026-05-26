@@ -22,3 +22,4 @@ Ces documents restent utiles pour comprendre les décisions passées, mais l'ét
 
 - [Plan de découpage des CSS par page](plans/css-entrypoint-split-plan.md)
 - [Plan d'action Lighthouse](plans/lighthouse-remediation-plan.md)
+- [P8 - Cadrage technique de la persistance locale](plans/dnd-initiative-tracker-p8-cadrage.md)

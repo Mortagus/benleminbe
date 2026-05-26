@@ -63,8 +63,43 @@ export class PlayersPanel {
         return this.playerList;
     }
 
-    sync() {
+    sync(options = {}) {
         this.syncPlayerFormsToEncounter();
+
+        if (options.notify !== false) {
+            this.callbacks.onPlayersChange?.();
+        }
+    }
+
+    hydrateFromEncounter() {
+        this.playerList.replaceChildren();
+
+        if (this.encounter.players.length === 0) {
+            this.playerList.appendChild(createPlayerItem(
+                () => this.sync(),
+                (playerItem, triggerButton) => {
+                    this.handleShowPlayerDetails(playerItem, triggerButton);
+                },
+            ));
+            refreshPlayerAccessibility(this.playerList);
+            return;
+        }
+
+        this.encounter.players.forEach(player => {
+            const playerItem = createPlayerItem(
+                () => this.sync(),
+                (playerItemElement, triggerButton) => {
+                    this.handleShowPlayerDetails(playerItemElement, triggerButton);
+                },
+            );
+
+            fillPlayerItemFromEncounterPlayer(playerItem, player);
+            playerItem.playerImportData = player.importData ?? null;
+            playerItem.playerDetails = createPlayerDetailsFromEncounterPlayer(player);
+            this.playerList.appendChild(playerItem);
+        });
+
+        refreshPlayerAccessibility(this.playerList);
     }
 
     handleAddPlayer() {
@@ -143,7 +178,6 @@ export class PlayersPanel {
     syncPlayerFormsToEncounter() {
         refreshPlayerAccessibility(this.playerList);
         this.encounter.setPlayers(getPlayerActors(this.playerList));
-        this.callbacks.onPlayersChange?.();
     }
 
     validateForTurnOrder() {
@@ -202,7 +236,7 @@ export class PlayersPanel {
             },
         );
         this.playerList.appendChild(playerItem);
-        fillPlayerItemFromImportedPlayer(playerItem, importedPlayer);
+        fillPlayerItemFromEncounterPlayer(playerItem, importedPlayer);
         playerItem.playerDetails = importResult;
         playerItem.playerImportData = importResult;
         this.sync();
@@ -370,12 +404,26 @@ function createPlayerActor(playerForm, index) {
     return playerActor;
 }
 
-function fillPlayerItemFromImportedPlayer(playerItem, player) {
+function fillPlayerItemFromEncounterPlayer(playerItem, player) {
     setPlayerInputValue(playerItem, 'name', player.name ?? player.identity?.name ?? '');
     setPlayerInputValue(playerItem, 'armor-class', normalizePlayerFieldValue(player.armorClass));
     setPlayerInputValue(playerItem, 'current-hit-points', normalizePlayerFieldValue(player.currentHitPoints));
     setPlayerInputValue(playerItem, 'base-hit-points', normalizePlayerFieldValue(player.baseHitPoints));
     setPlayerInputValue(playerItem, 'initiative', normalizePlayerFieldValue(player.initiative));
+}
+
+function createPlayerDetailsFromEncounterPlayer(player) {
+    const importData = player.importData ?? null;
+
+    if (!importData) {
+        return null;
+    }
+
+    return {
+        player,
+        warnings: importData.warnings ?? [],
+        raw: importData.raw ?? {},
+    };
 }
 
 function refreshPlayerAccessibility(playerList) {

@@ -202,6 +202,60 @@ describe('players panel data mapping', () => {
         });
         expect(onPlayersChange).toHaveBeenCalledTimes(2);
     });
+
+    test('hydrates restored players from the encounter snapshot', () => {
+        const encounter = new EncounterState();
+
+        globalThis.document = createPlayersDocument();
+
+        const panel = new PlayersPanel(encounter, {});
+        panel.start();
+
+        encounter.players = [
+            {
+                id: 'player-lyriel',
+                type: 'player',
+                name: 'Lyriel Selthir',
+                armorClass: 14,
+                currentHitPoints: 18,
+                baseHitPoints: 21,
+                initiative: 12,
+                roll: 10,
+                initiativeModifier: 2,
+                identity: {
+                    name: 'Lyriel Selthir',
+                },
+                importData: {
+                    warnings: ['Champ brut conservé.'],
+                    raw: {
+                        toolsProf: {
+                            1: ['flute', 'luth'],
+                        },
+                    },
+                },
+            },
+        ];
+
+        panel.hydrateFromEncounter();
+
+        const playerItem = panel.getListElement().querySelector('.player-item');
+
+        expect(panel.getListElement().querySelectorAll('.player-item')).toHaveLength(1);
+        expect(playerItem.querySelector('[data-player-field="name"]').value).toBe('Lyriel Selthir');
+        expect(playerItem.querySelector('[data-player-field="armor-class"]').value).toBe('14');
+        expect(playerItem.querySelector('[data-player-field="current-hit-points"]').value).toBe('18');
+        expect(playerItem.querySelector('[data-player-field="base-hit-points"]').value).toBe('21');
+        expect(playerItem.querySelector('[data-player-field="initiative"]').value).toBe('12');
+
+        const detailsButton = playerItem.querySelector('[data-player-details-open]');
+        expect(detailsButton.disabled).toBe(false);
+
+        detailsButton.dispatchEvent({ type: 'click' });
+
+        expect(globalThis.document.getElementById('playerDetailsModal').hidden).toBe(false);
+        expect(globalThis.document.getElementById('playerDetailsTableBody').children.some(row => row.children[0].textContent === 'player.id')).toBe(true);
+        expect(globalThis.document.getElementById('playerDetailsTableBody').children.some(row => row.children[0].textContent === 'warnings[0]')).toBe(true);
+    });
 });
 
 function createPlayerList(playerItems) {

@@ -1,0 +1,117 @@
+.dnd-initiative-page .dnd-persistence-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+
+    padding: 0.45rem 0.6rem;
+    margin-right: 0.35rem;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+}
+
+.dnd-initiative-page .dnd-persistence-status {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.2;
+}
+
+.dnd-initiative-page .dnd-secondary-button--compact {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.92rem;
+}
+
+.dnd-initiative-page .dnd-persistence-modal {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+}
+
+.dnd-initiative-page .dnd-persistence-modal[hidden] {
+    display: none;
+}
+
+.dnd-initiative-page .dnd-persistence-modal__backdrop {
+    position: absolute;
+    inset: 0;
+
+    background: rgb(0 0 0 / 48%);
+}
+
+.dnd-initiative-page .dnd-persistence-modal__content {
+    position: relative;
+    z-index: 1;
+
+    width: min(100%, 42rem);
+    max-height: min(34rem, calc(100vh - 2rem));
+    overflow: auto;
+
+    padding: 1.25rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    box-shadow: 0 18px 48px rgb(0 0 0 / 28%);
+}
+
+.dnd-initiative-page .dnd-persistence-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+
+    margin-bottom: 1rem;
+}
+
+.dnd-initiative-page .dnd-persistence-modal__header h2 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.dnd-initiative-page .dnd-persistence-modal__header p {
+    margin: 0.25rem 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.dnd-initiative-page .dnd-persistence-modal__body {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.dnd-initiative-page .dnd-persistence-modal__summary,
+.dnd-initiative-page .dnd-persistence-modal__hint {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.dnd-initiative-page .dnd-persistence-modal__message {
+    width: 100%;
+    min-height: 14rem;
+    padding: 0.8rem 0.9rem;
+    resize: vertical;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text);
+    font: inherit;
+    line-height: 1.45;
+}
+
+.dnd-initiative-page .dnd-persistence-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+@media (width <= 768px) {
+    .dnd-initiative-page .dnd-persistence-modal__header {
+        flex-direction: column;
+    }
+}

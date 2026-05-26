@@ -60,6 +60,7 @@ export class MonstersPanel {
     }
 
     refresh() {
+        this.refreshRollInitiativeButtonState();
         renderMonsters(this.monsterList, this.encounter.monsters, {
             onMonsterSelectionChange: (index, selectedSlug) => {
                 this.handleMonsterSelectionChange(index, selectedSlug);

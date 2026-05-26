@@ -1,6 +1,6 @@
 # Backlog unifié - DnD Initiative Tracker
 
-Date de mise à jour : 2026-05-25
+Date de mise à jour : 2026-05-26
 
 Ce document remplace l'ancien backlog d'audit et la roadmap avancée. Il conserve les tâches déjà réalisées, aligne les fonctionnalités de la roadmap avec l'état réel du projet et liste les évolutions restantes.
 
@@ -9,6 +9,34 @@ Documents descriptifs associés :
 - [dnd-initiative-audit.md](../lab/dnd-initiative-audit.md)
 - [dnd-bestiary-pipeline.md](../lab/dnd-bestiary-pipeline.md)
 - [dnd-dom-contracts.md](../lab/dnd-dom-contracts.md)
+
+## Note De Reprise - 2026-05-26 - P8 Livré
+
+La sauvegarde locale `P8` est maintenant en place.
+
+Travail livré :
+
+- ajout de `assets/scripts/lab/dnd/persistence.js` ;
+- autosave après les mutations retenues et après la génération de l'ordre du tour ;
+- prompt de restauration manuelle à partir du snapshot local ;
+- statut de dernière sauvegarde dans le panneau ordre du tour ;
+- modale d'erreur copiable pour les snapshots invalides et les erreurs `localStorage` ;
+- réhydratation des joueurs restaurés depuis le snapshot ;
+- synchronisation des règles et du rendu après restauration ;
+- tests Vitest pour la sauvegarde, la restauration et les cas d'échec de stockage ;
+- mise à jour des contrats JS et de la cartographie.
+
+Vérification passée pendant la passe :
+
+```bash
+make check
+```
+
+État de reprise recommandé :
+
+- poursuivre avec `P15` ;
+- garder `P8` comme base historique de la persistance locale ;
+- préparer `P22` au-dessus de cette base, sans ajouter de seconde persistance locale.
 
 ## Note De Reprise - 2026-05-25 - Repriorisation Fonctionnelle
 
@@ -89,6 +117,16 @@ make check
 - `P8` redevient la prochaine priorité fonctionnelle ;
 - garder les filtres avancés, favoris ou presets de monstres pour une future extension si l'usage réel le demande.
 
+## Note De Reprise - 2026-05-25 - P8 Persistance
+
+Cette étape a servi de cadrage initial avant la livraison de `P8`.
+
+À l'époque, la cible était :
+
+- brancher la sauvegarde locale `P8` sur le `EncounterSnapshotDto` enrichi, en incluant les joueurs importés et leur `importData` ;
+- créer `persistence.js` au moment de relier `localStorage` ;
+- conserver le flux d'import XML comme source de données à persister, sans alourdir la ligne joueur.
+
 ## Note De Reprise - 2026-05-25 - P32 Import XML Joueur
 
 Le socle de `P32` est livré et le flux import joueur existe déjà dans l'outil.
@@ -107,7 +145,7 @@ Travail livré :
 Reste à faire plus tard si nécessaire :
 
 - affiner le mapping de certains champs XML vers des sections lisibles ;
-- décider du futur emplacement de persistance pour `importData` si le stockage se déplace hors du DOM ;
+- faire évoluer le mapping de `importData` si le format de snapshot ou d’export JSON change ;
 - retrouver ou reconstituer la page source complète de la fiche si elle redevient utile pour comparaison.
 
 Vérification passée pendant la passe :
@@ -342,7 +380,7 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | 18              | P20 | Haute             | 🔶 **À faire**     | Fonctionnalité             | Marqueurs binaires de combat                             | Suivre concentration, réaction utilisée, inspiration, avantage et désavantage via toggles visuels.                               | À commencer sans automatisme de règles ; peut partager l'UI des conditions.                                                    |
 | 19              | P10 | Haute             | 🔶 **À faire**     | Fonctionnalité / UX        | Modification directe des PV pendant le combat            | Modifier les PV depuis l'ordre du tour et accepter des saisies rapides de dégâts/soins comme `-7` ou `+5`.                       | Préparer sans imposer immédiatement les statuts inconscient/mort.                                                              |
 | 20              | P7  | Haute             | 🔶 **À faire**     | Fonctionnalité / UX        | Commandes explicites de pilotage du combat               | Ajouter acteur suivant, nouveau round, réinitialisation des tours joués et remise à zéro de la rencontre.                        | S'appuie sur le modèle de rencontre et permettra de fiabiliser conditions, journal et durées.                                  |
-| 21              | P8  | Haute différée    | 🔶 **À faire**     | Persistance                | Sauvegarde locale de rencontre                           | Persister et restaurer monstres, joueurs, PV, règles, ordre du tour, round et acteur actif via `localStorage`.                   | Les DTOs sont préparés ; créer `persistence.js` uniquement au moment de brancher `localStorage`.                               |
+| 21              | P8  | Réalisé           | ✅ **Fait**         | Persistance                | Sauvegarde locale de rencontre                           | Persister et restaurer monstres, joueurs, PV, règles, ordre du tour, round et acteur actif via `localStorage`.                   | `persistence.js` est en place ; le prompt de reprise, le statut et les modales d'erreur sont branchés.                         |
 | 22              | P22 | Haute différée    | 🔶 **À faire**     | Persistance / Échange      | Import/export JSON d'une rencontre                       | Exporter et importer un état de rencontre lisible : joueurs, monstres, PV, initiatives, règles et ordre courant.                 | Plus simple après P8 ; utile pour archiver, partager et tester des scénarios reproductibles.                                   |
 | 23              | P14 | Moyenne           | 🔶 **À faire**     | UX                         | Retours d'état utiles au Maître du Jeu                   | Afficher des messages courts : aucun monstre sélectionné, initiatives non lancées, joueur incomplet, acteur marqué joué.         | Peut être livré par petites touches sans attendre les grosses fonctionnalités.                                                 |
 | 24              | P21 | Moyenne           | 🔶 **À faire**     | Fonctionnalité / Suivi     | Journal de combat                                        | Journaliser début de round, changements de PV, acteur joué, conditions ajoutées ou retirées.                                     | Dépend du modèle, des commandes de combat et idéalement des PV en direct.                                                      |
@@ -389,7 +427,7 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | Affichage     | Initiales des participants                                           | Fait                  | Initiale calculée depuis le nom de l'acteur.                                            |
 | Affichage     | Portraits                                                            | À faire               | Seules les initiales existent.                                                          |
 | Affichage     | Couleurs par type d'acteur                                           | À faire prioritaire   | Prochaine priorité après les aides monstres et l'import XML.                            |
-| Persistance   | Sauvegarde locale                                                    | À faire               | Aucun `localStorage` pour la rencontre.                                                 |
+| Persistance   | Sauvegarde locale                                                    | Fait                  | `localStorage` branché avec autosave, restauration manuelle, statut et modales.       |
 | Persistance   | Import/export JSON                                                   | À faire               | Aucun format d'échange.                                                                 |
 | Préparation   | Templates de rencontre                                               | À faire               | Aucun preset de rencontre sauvegardable.                                                |
 | Suivi         | Journal de combat                                                    | À faire               | Aucun historique des rounds ou changements de PV.                                       |

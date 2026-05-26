@@ -13,6 +13,8 @@ import { TurnOrderPanel } from './turn-order.js';
 
 import { RulesPanel } from './rules.js';
 
+import { EncounterPersistence } from './persistence.js';
+
 import { playSoundEffect } from './sound-effects.js';
 
 import {
@@ -28,6 +30,7 @@ class DndInitiativeTrackerApp {
         this.playersPanel = null;
         this.rulesPanel = null;
         this.turnOrderPanel = null;
+        this.persistence = null;
         this.playerImportUrl = document.getElementById('playerImportModal')?.dataset.playerImportUrl
             ?? '/lab/dnd-initiative/import-player';
     }
@@ -55,16 +58,26 @@ class DndInitiativeTrackerApp {
             setRuleActive: (ruleId, active) => this.setRuleActive(ruleId, active),
         });
         this.rulesPanel.start();
+
+        this.persistence = new EncounterPersistence(this.encounter, {
+            monstersPanel: this.monstersPanel,
+            playersPanel: this.playersPanel,
+            rulesPanel: this.rulesPanel,
+            turnOrderPanel: this.turnOrderPanel,
+        });
+        this.persistence.start();
     }
 
     refreshDisplayedTurnOrder() {
         // Refreshes the current rendering only; buildRoundOrder() runs from generateTurnOrder().
         this.turnOrderPanel.refresh();
+        this.persistence?.saveEncounter();
     }
 
     setRuleActive(ruleId, active) {
         this.encounter.setRuleActive(ruleId, active);
         this.turnOrderPanel.refresh();
+        this.persistence?.saveEncounter();
     }
 
     async importPlayerXml(file) {
@@ -117,10 +130,11 @@ class DndInitiativeTrackerApp {
             return;
         }
 
-        this.playersPanel.sync();
+        this.playersPanel.sync({ notify: false });
         this.encounter.buildRoundOrder();
 
         this.turnOrderPanel.refresh({ focusFirst: true });
+        this.persistence?.saveEncounter();
     }
 }
 

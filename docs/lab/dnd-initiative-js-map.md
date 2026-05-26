@@ -4,29 +4,29 @@ Ce document décrit le code JavaScript actuel de l'outil `DnD Initiative Tracker
 
 ## Fichiers JavaScript concernés
 
-| Fichier                                     | Rôle                                                                                                                                                          |
-|---------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `assets/scripts/lab/dnd/dnd_initiative.js`  | Point d'entrée de l'outil. Crée l'état de rencontre, initialise les panneaux, orchestre la génération de l'ordre du tour et déclenche la persistance locale. |
-| `assets/scripts/lab/dnd/encounter-state.js` | Module d'état et de règles métier. Crée et modifie la rencontre, les monstres, les joueurs, les règles et l'ordre du tour.                                    |
-| `assets/scripts/lab/dnd/monsters.js`        | Panneau DOM des monstres. Crée les emplacements, rend la liste depuis `encounter.monsters`, utilise le catalogue de `EncounterState` et gère sélection/PV/initiative. |
-| `assets/scripts/lab/dnd/players.js`         | Panneau DOM des joueurs. Ajoute/supprime des joueurs, gère la modale d'import XML, conserve la réponse importée sur la ligne, ouvre la fiche détaillée à la demande, synchronise `encounter.players`, préserve le modificateur d'initiative importé et réhydrate les lignes depuis un snapshot. |
-| `assets/scripts/lab/dnd/turn-order.js`      | Panneau DOM de l'ordre du tour. Rend la liste des tours, gère le bouton de génération, les tours joués, les déplacements, le drag and drop et l'aide clavier. |
-| `assets/scripts/lab/dnd/rules.js`           | Panneau DOM des règles. Synchronise les checkboxes de règles avec l'état, ouvre/ferme la modale.                                                              |
-| `assets/scripts/lab/dnd/validation.js`      | Validation des entrées et affichage des erreurs. Les panneaux l'appellent avec des noeuds DOM, puis les règles travaillent sur des données normalisées.         |
-| `assets/scripts/lab/dnd/dtos.js`            | Contrats JSDoc des DTOs persistables prioritaires : snapshot, monstres, joueurs riches, payload d’import XML, tours et règles.                               |
-| `assets/scripts/lab/dnd/persistence.js`     | Persistance locale du tracker. Lit et écrit `localStorage`, pilote le statut, le prompt de restauration et les modales d'erreur.                            |
-| `assets/scripts/lab/dnd/sound-effects.js`   | Effets sonores réutilisables. Gère le registre de sons, le choix de source, le cache lazy `Audio` et les erreurs de lecture non bloquantes.                    |
-| `assets/scripts/lab/dnd/initiative.js`      | Petites fonctions d'initiative: lancer un d20, formater l'initiative, choisir une classe CSS pour critique/échec.                                             |
-| `assets/scripts/lab/dnd/bestiary.js`        | Données générées du bestiaire. Fichier volumineux, explicitement marqué comme généré et à ne pas éditer manuellement.                                         |
-| `src/Public/Controller/LabController.php`   | Contrôleur public du lab. Rend la page d'index et porte aussi les routes du tracker DnD et de son import XML.                                                |
-| `src/Public/Service/Dnd/PlayerXmlImportParser.php` | Service PHP qui lit le XML importé et le convertit en structure exploitable.                                                                           |
+| Fichier                                            | Rôle                                                                                                                                                                                                                                                                                                                      |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `assets/scripts/lab/dnd/dnd_initiative.js`         | Point d'entrée de l'outil. Crée l'état de rencontre, initialise les panneaux, orchestre la génération de l'ordre du tour et déclenche la persistance locale.                                                                                                                                                              |
+| `assets/scripts/lab/dnd/encounter-state.js`        | Module d'état et de règles métier. Crée et modifie la rencontre, les monstres, les joueurs, les règles et l'ordre du tour.                                                                                                                                                                                                |
+| `assets/scripts/lab/dnd/monsters.js`               | Panneau DOM des monstres. Crée les emplacements, rend la liste depuis `encounter.monsters`, utilise le catalogue de `EncounterState` et gère sélection/PV/initiative.                                                                                                                                                     |
+| `assets/scripts/lab/dnd/players.js`                | Panneau DOM des joueurs. Ajoute/supprime des joueurs, gère la modale d'import XML, conserve la réponse importée sur la ligne, ouvre la fiche détaillée à la demande, synchronise `encounter.players`, préserve le modificateur d'initiative importé, persiste le champ `side` et réhydrate les lignes depuis un snapshot. |
+| `assets/scripts/lab/dnd/turn-order.js`             | Panneau DOM de l'ordre du tour. Rend la liste des tours, gère le bouton de génération, les tours joués, les déplacements, le drag and drop, l'aide clavier, les accents de camp et le badge boss.                                                                                                                         |
+| `assets/scripts/lab/dnd/rules.js`                  | Panneau DOM des règles. Synchronise les checkboxes de règles avec l'état, ouvre/ferme la modale.                                                                                                                                                                                                                          |
+| `assets/scripts/lab/dnd/validation.js`             | Validation des entrées et affichage des erreurs. Les panneaux l'appellent avec des noeuds DOM, puis les règles travaillent sur des données normalisées.                                                                                                                                                                   |
+| `assets/scripts/lab/dnd/dtos.js`                   | Contrats JSDoc des DTOs persistables prioritaires : snapshot, monstres, joueurs riches, payload d’import XML, tours et règles.                                                                                                                                                                                            |
+| `assets/scripts/lab/dnd/persistence.js`            | Persistance locale du tracker. Lit et écrit `localStorage`, pilote le statut, le prompt de restauration et les modales d'erreur.                                                                                                                                                                                          |
+| `assets/scripts/lab/dnd/sound-effects.js`          | Effets sonores réutilisables. Gère le registre de sons, le choix de source, le cache lazy `Audio` et les erreurs de lecture non bloquantes.                                                                                                                                                                               |
+| `assets/scripts/lab/dnd/initiative.js`             | Petites fonctions d'initiative: lancer un d20, formater l'initiative, choisir une classe CSS pour critique/échec.                                                                                                                                                                                                         |
+| `assets/scripts/lab/dnd/bestiary.js`               | Données générées du bestiaire. Fichier volumineux, explicitement marqué comme généré et à ne pas éditer manuellement.                                                                                                                                                                                                     |
+| `src/Public/Controller/LabController.php`          | Contrôleur public du lab. Rend la page d'index et porte aussi les routes du tracker DnD et de son import XML.                                                                                                                                                                                                             |
+| `src/Public/Service/Dnd/PlayerXmlImportParser.php` | Service PHP qui lit le XML importé et le convertit en structure exploitable.                                                                                                                                                                                                                                              |
 
 Fichier de test lié:
 
 | Fichier                                    | Rôle                                                                                                                                            |
-|--------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `tests/js/lab/dnd/encounter-state.test.js` | Tests Vitest centrés sur `encounter-state.js`: création de monstres, sélection, initiative, règles, ordre du tour, acteur actif et déplacement. |
-| `tests/js/lab/dnd/persistence.test.js`     | Tests Vitest centrés sur `persistence.js`: sauvegarde locale, restauration, validation des snapshots et erreurs de stockage.                   |
+| `tests/js/lab/dnd/persistence.test.js`     | Tests Vitest centrés sur `persistence.js`: sauvegarde locale, restauration, validation des snapshots et erreurs de stockage.                    |
 
 ## Point d'entrée principal
 
@@ -69,7 +69,7 @@ Flux import joueur:
 1. `PlayersPanel` ouvre la modale d'import XML via `#importPlayerXml`.
 2. Le fichier choisi est envoyé par `fetch` à la route `app_lab_dnd_player_import`.
 3. `LabController` appelle `PlayerXmlImportParser`, qui retourne un JSON avec `player`, `warnings` et `raw`.
-4. `PlayersPanel` crée une nouvelle ligne joueur, y place les champs de base, et conserve la réponse complète sur la ligne.
+4. `PlayersPanel` crée une nouvelle ligne joueur, y place les champs de base et le camp du participant, puis conserve la réponse complète sur la ligne.
 5. Le bouton compact `[data-player-details-open]` ouvre la modale de consultation de la fiche complète à la demande.
 
 Flux de restauration locale:
@@ -172,8 +172,8 @@ Flux:
 5. Le bouton de jet reçoit temporairement une classe de chargement audio qui affiche un curseur `progress`.
 6. `handleRollInitiative()` lance les initiatives une par une via `encounter.rollMonsterInitiative()`, avec une courte pause entre chaque monstre sélectionné.
 7. Chaque monstre sélectionné reçoit:
-   - `roll`: résultat de `rollD20()`;
-   - `initiative`: `roll + initiativeModifier`.
+    - `roll`: résultat de `rollD20()`;
+    - `initiative`: `roll + initiativeModifier`.
 8. Le panneau est rerendu après chaque jet pour rendre l'apparition des scores progressive.
 9. Les monstres sont triés par `compareByInitiative(encounter, a, b)` une fois tous les jets terminés.
 10. `refresh()` rerend le panneau des monstres avec les initiatives formatées.
@@ -206,8 +206,8 @@ Flux:
 Dans `encounter.buildRoundOrder()`:
 
 1. Les acteurs sont construits depuis:
-   - `getMonsterActors(encounter)` pour les monstres sélectionnés et avec initiative;
-   - `encounter.players` pour les joueurs.
+    - `getMonsterActors(encounter)` pour les monstres sélectionnés et avec initiative;
+    - `encounter.players` pour les joueurs.
 2. Les acteurs sont filtrés par `shouldSkipTurn()` selon la règle `skip-low-initiative`.
 3. Les acteurs sont dupliqués par `getTurnCount()` si la règle `extra-turn-on-twenty` s'applique.
 4. Chaque entrée reçoit `done: false`, `actorId`, et parfois un `id` suffixé `-turn-1`, `-turn-2`.
@@ -451,106 +451,108 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 
 ### `dnd_initiative.js`
 
-| Méthode                       | Responsabilité                                                                                                                    |
-|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| `start()`                     | Initialiser les panneaux dans l'ordre, connecter leurs callbacks et brancher la persistance locale.                                |
-| `refreshDisplayedTurnOrder()` | Rafraîchir l'ordre du tour affiché sans reconstruire `encounter.turnOrder`, puis persister l'état courant.                          |
-| `setRuleActive()`             | Modifier une règle dans l'état, rafraîchir l'affichage courant et persister l'état courant.                                         |
+| Méthode                       | Responsabilité                                                                                                                                        |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `start()`                     | Initialiser les panneaux dans l'ordre, connecter leurs callbacks et brancher la persistance locale.                                                   |
+| `refreshDisplayedTurnOrder()` | Rafraîchir l'ordre du tour affiché sans reconstruire `encounter.turnOrder`, puis persister l'état courant.                                            |
+| `setRuleActive()`             | Modifier une règle dans l'état, rafraîchir l'affichage courant et persister l'état courant.                                                           |
 | `generateTurnOrder()`         | Orchestrer la génération: nettoyer les validations, valider, synchroniser les joueurs, construire l'ordre, rafraîchir le panneau et persister l'état. |
 
 ### `encounter-state.js`
 
-| Élément                              | Responsabilité                                                                         |
-|--------------------------------------|----------------------------------------------------------------------------------------|
-| `EncounterState`                     | Porter l'état mutable de rencontre et les méthodes métier associées.                  |
-| `createEncounterState()`             | Créer une instance de `EncounterState`; wrapper conservé pour compatibilité.           |
-| `createMonsterSlots()`               | Wrapper vers `encounter.createMonsterSlots()`.                                        |
-| `selectMonster()`                    | Wrapper vers `encounter.selectMonster()`.                                             |
-| `updateMonsterHitPoints()`           | Wrapper vers `encounter.updateMonsterHitPoints()`.                                    |
-| `hasSelectedMonsters()`              | Wrapper vers `encounter.hasSelectedMonsters()`.                                       |
-| `rollMonsterInitiatives()`           | Wrapper vers `encounter.rollMonsterInitiatives()`.                                    |
-| `setPlayers()`                       | Wrapper vers `encounter.setPlayers()`.                                                |
-| `buildRoundOrder()`                  | Wrapper vers `encounter.buildRoundOrder()`.                                           |
-| `toggleTurnDone()`                   | Wrapper vers `encounter.toggleTurnDone()`.                                            |
-| `moveTurn()`                         | Wrapper vers `encounter.moveTurn()`.                                                  |
-| `isRuleActive()` / `setRuleActive()` | Wrappers vers les méthodes de règles de `EncounterState`.                             |
-| `compareByInitiative()`              | Méthode de tri par initiative, puis éventuellement par modificateur.                   |
-| `refreshActiveTurn()`                | Méthode qui définit le premier tour non joué comme tour actif.                        |
+| Élément                              | Responsabilité                                                               |
+| ------------------------------------ | ---------------------------------------------------------------------------- |
+| `EncounterState`                     | Porter l'état mutable de rencontre et les méthodes métier associées.         |
+| `createEncounterState()`             | Créer une instance de `EncounterState`; wrapper conservé pour compatibilité. |
+| `createMonsterSlots()`               | Wrapper vers `encounter.createMonsterSlots()`.                               |
+| `selectMonster()`                    | Wrapper vers `encounter.selectMonster()`.                                    |
+| `updateMonsterHitPoints()`           | Wrapper vers `encounter.updateMonsterHitPoints()`.                           |
+| `hasSelectedMonsters()`              | Wrapper vers `encounter.hasSelectedMonsters()`.                              |
+| `rollMonsterInitiatives()`           | Wrapper vers `encounter.rollMonsterInitiatives()`.                           |
+| `setPlayers()`                       | Wrapper vers `encounter.setPlayers()`.                                       |
+| `buildRoundOrder()`                  | Wrapper vers `encounter.buildRoundOrder()`.                                  |
+| `toggleTurnDone()`                   | Wrapper vers `encounter.toggleTurnDone()`.                                   |
+| `moveTurn()`                         | Wrapper vers `encounter.moveTurn()`.                                         |
+| `isRuleActive()` / `setRuleActive()` | Wrappers vers les méthodes de règles de `EncounterState`.                    |
+| `compareByInitiative()`              | Méthode de tri par initiative, puis éventuellement par modificateur.         |
+| `refreshActiveTurn()`                | Méthode qui définit le premier tour non joué comme tour actif.               |
 
 ### `monsters.js`
 
-| Élément                     | Responsabilité                                                                 |
-|-----------------------------|--------------------------------------------------------------------------------|
-| `MonstersPanel`             | Contrôleur DOM du panneau monstres.                                             |
-| `start()`                   | Brancher les actions de création de slots et de jet d'initiative.              |
-| `refresh()`                 | Rendre la liste de monstres depuis `encounter.monsters`.                       |
-| `validateForTurnOrder()`    | Valider le nombre de monstres et les PV des monstres rendus.                   |
-| `handleCreateMonsterSlots()` | Valider le nombre demandé, créer les slots et rafraîchir le panneau.          |
-| `handleRollInitiative()`    | Déclencher le feedback sonore, lancer les initiatives progressivement puis rafraîchir le panneau. |
-| `rollSelectedMonsterInitiatives()` | Lancer les initiatives des monstres sélectionnés avec une temporisation entre chaque jet. |
-| `playMonsterInitiativeSound()` | Appeler le callback audio sans bloquer le jet d'initiative.                |
-| `setRollInitiativeAudioLoading()` | Appliquer l'état DOM temporaire du curseur de chargement audio.       |
-| `handleMonsterSelectionChange()` | Appliquer une sélection de monstre et rafraîchir l'état du panneau.     |
-| `handleMonsterHitPointsChange()` | Synchroniser les PV modifiés vers `EncounterState`.                     |
-| `getMonsterFilters()`       | Lire les filtres globaux du catalogue depuis le DOM.                          |
-| `renderMonsters()`          | Construire les `<li>` de monstres et brancher leurs événements.                |
-| `renderMonsterOptions()`    | Remplir le `<select>` avec le catalogue injecté, groupé par type.              |
-| `filterMonsterCatalog()`    | Appliquer recherche et type en conservant l'option déjà sélectionnée.          |
-| `renderMonsterTypeFilter()` | Remplir le filtre de type global depuis le catalogue.                         |
-| `getSortedMonsterGroups()`  | Trier les monstres par nom puis les groupes par type pour les options.         |
-| `bindMonsterItemEvents()`   | Relier une ligne de monstre aux callbacks de sélection et de PV.               |
+| Élément                            | Responsabilité                                                                                    |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `MonstersPanel`                    | Contrôleur DOM du panneau monstres.                                                               |
+| `start()`                          | Brancher les actions de création de slots et de jet d'initiative.                                 |
+| `refresh()`                        | Rendre la liste de monstres depuis `encounter.monsters`.                                          |
+| `validateForTurnOrder()`           | Valider le nombre de monstres et les PV des monstres rendus.                                      |
+| `handleCreateMonsterSlots()`       | Valider le nombre demandé, créer les slots et rafraîchir le panneau.                              |
+| `handleRollInitiative()`           | Déclencher le feedback sonore, lancer les initiatives progressivement puis rafraîchir le panneau. |
+| `rollSelectedMonsterInitiatives()` | Lancer les initiatives des monstres sélectionnés avec une temporisation entre chaque jet.         |
+| `playMonsterInitiativeSound()`     | Appeler le callback audio sans bloquer le jet d'initiative.                                       |
+| `setRollInitiativeAudioLoading()`  | Appliquer l'état DOM temporaire du curseur de chargement audio.                                   |
+| `handleMonsterSelectionChange()`   | Appliquer une sélection de monstre et rafraîchir l'état du panneau.                               |
+| `handleMonsterHitPointsChange()`   | Synchroniser les PV modifiés vers `EncounterState`.                                               |
+| `getMonsterFilters()`              | Lire les filtres globaux du catalogue depuis le DOM.                                              |
+| `renderMonsters()`                 | Construire les `<li>` de monstres et brancher leurs événements.                                   |
+| `renderMonsterOptions()`           | Remplir le `<select>` avec le catalogue injecté, groupé par type.                                 |
+| `filterMonsterCatalog()`           | Appliquer recherche et type en conservant l'option déjà sélectionnée.                             |
+| `renderMonsterTypeFilter()`        | Remplir le filtre de type global depuis le catalogue.                                             |
+| `getSortedMonsterGroups()`         | Trier les monstres par nom puis les groupes par type pour les options.                            |
+| `bindMonsterItemEvents()`          | Relier une ligne de monstre aux callbacks de sélection et de PV.                                  |
 
 ### `players.js`
 
-| Élément                        | Responsabilité                                                                                              |
-|--------------------------------|-------------------------------------------------------------------------------------------------------------|
-| `PlayersPanel`                 | Contrôleur DOM du panneau joueurs.                                                                          |
-| `start()`                      | Brancher les événements, synchroniser l'état initial et exposer l'API du panneau via l'instance.            |
-| `sync()`                       | Lire le DOM joueur, mettre à jour `EncounterState`, appeler le callback de changement.                      |
-| `hydrateFromEncounter()`       | Reconstruire les lignes joueurs depuis l'état restauré par `EncounterPersistence`.                           |
-| `syncPlayerFormsToEncounter()` | Frontière explicite entre les champs joueur DOM et `encounter.players`.                                     |
-| `handleAddPlayer()`            | Ajouter une ligne joueur puis synchroniser le panneau.                                                      |
-| `validateForTurnOrder()`       | Valider les lignes joueur avant génération de l'ordre du tour.                                              |
-| `createPlayerItem()`           | Cloner le template joueur et brancher ses événements.                                                       |
-| `bindExistingPlayerItems()`    | Brancher les joueurs présents au chargement.                                                                |
-| `getPlayerActors()`            | Transformer les lignes DOM en acteurs joueur.                                                               |
-| `readPlayerForm()`             | Lire les valeurs d'une ligne joueur depuis les champs `data-player-field`.                                  |
-| `createPlayerActor()`          | Convertir une ligne formulaire normalisée en acteur consommé par `EncounterState`, en préservant le modificateur d'initiative importé quand il existe. |
-| `refreshPlayerAccessibility()` | Recalculer ids, labels et aria-labels selon l'ordre des joueurs.                                            |
+| Élément                        | Responsabilité                                                                                                                                                               |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PlayersPanel`                 | Contrôleur DOM du panneau joueurs.                                                                                                                                           |
+| `start()`                      | Brancher les événements, synchroniser l'état initial et exposer l'API du panneau via l'instance.                                                                             |
+| `sync()`                       | Lire le DOM joueur, mettre à jour `EncounterState`, appeler le callback de changement.                                                                                       |
+| `hydrateFromEncounter()`       | Reconstruire les lignes joueurs depuis l'état restauré par `EncounterPersistence`.                                                                                           |
+| `syncPlayerFormsToEncounter()` | Frontière explicite entre les champs joueur DOM et `encounter.players`.                                                                                                      |
+| `handleAddPlayer()`            | Ajouter une ligne joueur puis synchroniser le panneau.                                                                                                                       |
+| `validateForTurnOrder()`       | Valider les lignes joueur avant génération de l'ordre du tour.                                                                                                               |
+| `createPlayerItem()`           | Cloner le template joueur et brancher ses événements.                                                                                                                        |
+| `bindExistingPlayerItems()`    | Brancher les joueurs présents au chargement.                                                                                                                                 |
+| `getPlayerActors()`            | Transformer les lignes DOM en acteurs joueur.                                                                                                                                |
+| `readPlayerForm()`             | Lire les valeurs d'une ligne joueur depuis les champs `data-player-field`.                                                                                                   |
+| `createPlayerActor()`          | Convertir une ligne formulaire normalisée en acteur consommé par `EncounterState`, en préservant le modificateur d'initiative importé et le champ `side` quand ils existent. |
+| `refreshPlayerAccessibility()` | Recalculer ids, labels et aria-labels selon l'ordre des joueurs.                                                                                                             |
 
 ### `turn-order.js`
 
-| Élément                      | Responsabilité                                                                     |
-|------------------------------|------------------------------------------------------------------------------------|
-| `TurnOrderPanel`             | Contrôleur DOM du panneau d'ordre du tour.                                         |
-| `start()`                    | Brancher le bouton de génération et l'aide clavier.                                |
-| `refresh()`                  | Rerendre l'ordre du tour et gérer le focus post-rendu.                             |
-| `showEncounterValidationErrors()` | Afficher les erreurs globales de génération.                                 |
-| `renderRoundOrder()`         | Vider puis rerendre la liste, en déléguant chaque entrée à `renderTurnOrderItem()`. |
-| `renderTurnOrderItem()`      | Créer une entrée, la remplir et brancher ses contrôles.                            |
-| `bindMoveButton()`           | Brancher un bouton de déplacement et son annonce accessible.                       |
-| `moveActorWithKeyboard()`    | Déplacer un acteur via flèches clavier.                                            |
-| `getDropPlacement()`         | Déterminer avant/après pour le drag and drop.                                      |
-| `announceTurnOrderChange()`  | Écrire dans la live region.                                                        |
+| Élément                           | Responsabilité                                                                      |
+| --------------------------------- | ----------------------------------------------------------------------------------- |
+| `TurnOrderPanel`                  | Contrôleur DOM du panneau d'ordre du tour.                                          |
+| `start()`                         | Brancher le bouton de génération et l'aide clavier.                                 |
+| `refresh()`                       | Rerendre l'ordre du tour et gérer le focus post-rendu.                              |
+| `showEncounterValidationErrors()` | Afficher les erreurs globales de génération.                                        |
+| `renderRoundOrder()`              | Vider puis rerendre la liste, en déléguant chaque entrée à `renderTurnOrderItem()`. |
+| `renderTurnOrderItem()`           | Créer une entrée, la remplir et brancher ses contrôles.                             |
+| `bindMoveButton()`                | Brancher un bouton de déplacement et son annonce accessible.                        |
+| `moveActorWithKeyboard()`         | Déplacer un acteur via flèches clavier.                                             |
+| `getDropPlacement()`              | Déterminer avant/après pour le drag and drop.                                       |
+| `announceTurnOrderChange()`       | Écrire dans la live region.                                                         |
+| `getActorSideLabel()`             | Traduire le camp `party`, `ally`, `hostile` ou `neutral` en badge lisible.          |
+| `getActorDescription()`           | Décrire une carte en incluant le camp et le statut boss pour l'accessibilité.       |
 
 ### `rules.js`
 
-| Élément                                  | Responsabilité                                                                  |
-|------------------------------------------|---------------------------------------------------------------------------------|
-| `RulesPanel`                             | Contrôleur DOM des checkboxes de règles et de la modale.                        |
-| `start()`                                | Brancher les checkboxes et la modale de règles.                                 |
-| `openRulesModal()` / `closeRulesModal()` | Gérer l'état DOM et le focus de la modale.                                      |
+| Élément                                  | Responsabilité                                           |
+| ---------------------------------------- | -------------------------------------------------------- |
+| `RulesPanel`                             | Contrôleur DOM des checkboxes de règles et de la modale. |
+| `start()`                                | Brancher les checkboxes et la modale de règles.          |
+| `openRulesModal()` / `closeRulesModal()` | Gérer l'état DOM et le focus de la modale.               |
 
 ### `validation.js`
 
 | Fonction                          | Responsabilité                                                |
-|-----------------------------------|---------------------------------------------------------------|
+| --------------------------------- | ------------------------------------------------------------- |
 | `validateMonsterCountInput()`     | Valider le nombre de monstres.                                |
 | `validateMonsterHitPointsInput()` | Valider les PV actuels d'un monstre.                          |
 | `validatePlayerItem()`            | Valider les champs d'un joueur commencé.                      |
 | `validateEncounterActors()`       | Empêcher la génération sans acteur.                           |
-| `validateIntegerValue()`          | Valider une valeur entière normalisée sans lecture DOM.        |
-| `validateCurrentHitPointsLimit()` | Valider que les PV actuels ne dépassent pas les PV max.        |
+| `validateIntegerValue()`          | Valider une valeur entière normalisée sans lecture DOM.       |
+| `validateCurrentHitPointsLimit()` | Valider que les PV actuels ne dépassent pas les PV max.       |
 | `mergeValidationResults()`        | Fusionner plusieurs résultats.                                |
 | `hasValidationErrors()`           | Détecter au moins un résultat invalide.                       |
 | `focusFirstInvalidField()`        | Donner le focus au premier champ invalide.                    |
@@ -559,25 +561,25 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 
 ### `dtos.js`
 
-| Élément                        | Responsabilité                                                                 |
-|--------------------------------|--------------------------------------------------------------------------------|
-| `ENCOUNTER_SNAPSHOT_VERSION`   | Version initiale du futur format persistable de rencontre.                     |
-| `EncounterSnapshotDto`         | Racine persistable pour `localStorage` et futur import/export JSON.            |
-| `EncounterMonsterDto`          | Instance de monstre dans une rencontre, liée au catalogue par `slug`.          |
-| `EncounterPlayerDto`           | Participant joueur stocké dans la rencontre.                                   |
-| `PlayerImportDataDto`          | Payload d'import XML conservé pour consultation, traçabilité et persistance.   |
-| `TurnEntryDto`                 | Entrée de tour contenant l'identité de l'acteur et l'état joué/non joué.       |
-| `RulesStateDto`                | État des règles optionnelles actives.                                          |
-| `createEncounterSnapshotDto()` | Convertir une instance `EncounterState` en snapshot versionné.                 |
-| `createEncounterMonsterDto()`  | Convertir un monstre de rencontre actuel en DTO persistable.                   |
-| `createEncounterPlayerDto()`   | Convertir un joueur de rencontre actuel en DTO persistable.                    |
-| `createPlayerImportDataDto()`  | Normaliser les warnings et le payload brut de l'import XML.                    |
-| `createTurnEntryDto()`         | Convertir une entrée actuelle de `turnOrder` en entrée de tour minimale.       |
-| `createRulesStateDto()`        | Normaliser l'état des règles connues.                                          |
-| `restoreEncounterFromSnapshot()` | Restaurer une instance `EncounterState` depuis un snapshot persistable.      |
-| `createRuntimeMonsterFromDto()` | Convertir un monstre persistable vers la forme runtime actuelle.              |
-| `createRuntimePlayerFromDto()` | Convertir un joueur persistable vers la forme runtime actuelle.                |
-| `createRuntimeTurnOrderFromDto()` | Hydrater les entrées de tour minimales depuis les participants restaurés.   |
+| Élément                           | Responsabilité                                                               |
+| --------------------------------- | ---------------------------------------------------------------------------- |
+| `ENCOUNTER_SNAPSHOT_VERSION`      | Version initiale du futur format persistable de rencontre.                   |
+| `EncounterSnapshotDto`            | Racine persistable pour `localStorage` et futur import/export JSON.          |
+| `EncounterMonsterDto`             | Instance de monstre dans une rencontre, liée au catalogue par `slug`.        |
+| `EncounterPlayerDto`              | Participant joueur stocké dans la rencontre.                                 |
+| `PlayerImportDataDto`             | Payload d'import XML conservé pour consultation, traçabilité et persistance. |
+| `TurnEntryDto`                    | Entrée de tour contenant l'identité de l'acteur et l'état joué/non joué.     |
+| `RulesStateDto`                   | État des règles optionnelles actives.                                        |
+| `createEncounterSnapshotDto()`    | Convertir une instance `EncounterState` en snapshot versionné.               |
+| `createEncounterMonsterDto()`     | Convertir un monstre de rencontre actuel en DTO persistable.                 |
+| `createEncounterPlayerDto()`      | Convertir un joueur de rencontre actuel en DTO persistable.                  |
+| `createPlayerImportDataDto()`     | Normaliser les warnings et le payload brut de l'import XML.                  |
+| `createTurnEntryDto()`            | Convertir une entrée actuelle de `turnOrder` en entrée de tour minimale.     |
+| `createRulesStateDto()`           | Normaliser l'état des règles connues.                                        |
+| `restoreEncounterFromSnapshot()`  | Restaurer une instance `EncounterState` depuis un snapshot persistable.      |
+| `createRuntimeMonsterFromDto()`   | Convertir un monstre persistable vers la forme runtime actuelle.             |
+| `createRuntimePlayerFromDto()`    | Convertir un joueur persistable vers la forme runtime actuelle.              |
+| `createRuntimeTurnOrderFromDto()` | Hydrater les entrées de tour minimales depuis les participants restaurés.    |
 
 Règles de restauration validées:
 
@@ -587,15 +589,15 @@ Règles de restauration validées:
 
 ### `persistence.js`
 
-| Élément                            | Responsabilité                                                                 |
-|------------------------------------|--------------------------------------------------------------------------------|
-| `EncounterPersistence`             | Orchestrer la lecture et l'écriture du snapshot, le prompt de reprise et les modales d'erreur. |
-| `start()`                          | Lire `localStorage`, afficher le statut et ouvrir le prompt si une sauvegarde valide existe. |
-| `saveEncounter()`                  | Forcer la resynchronisation utile puis écrire le snapshot courant.            |
-| `restoreFromStoredSnapshot()`      | Recharger le snapshot présent dans `localStorage` après validation.           |
-| `restoreFromSnapshot()`            | Réinjecter un snapshot validé dans `EncounterState` puis rafraîchir les panneaux. |
-| `readStoredSnapshot()`             | Lire, parser et valider le contenu persistant.                                 |
-| `validateSnapshot()`               | Vérifier le type de snapshot et la compatibilité de version.                  |
+| Élément                       | Responsabilité                                                                                 |
+| ----------------------------- | ---------------------------------------------------------------------------------------------- |
+| `EncounterPersistence`        | Orchestrer la lecture et l'écriture du snapshot, le prompt de reprise et les modales d'erreur. |
+| `start()`                     | Lire `localStorage`, afficher le statut et ouvrir le prompt si une sauvegarde valide existe.   |
+| `saveEncounter()`             | Forcer la resynchronisation utile puis écrire le snapshot courant.                             |
+| `restoreFromStoredSnapshot()` | Recharger le snapshot présent dans `localStorage` après validation.                            |
+| `restoreFromSnapshot()`       | Réinjecter un snapshot validé dans `EncounterState` puis rafraîchir les panneaux.              |
+| `readStoredSnapshot()`        | Lire, parser et valider le contenu persistant.                                                 |
+| `validateSnapshot()`          | Vérifier le type de snapshot et la compatibilité de version.                                   |
 
 Règles de persistance validées:
 
@@ -606,11 +608,11 @@ Règles de persistance validées:
 
 ### `sound-effects.js`
 
-| Élément                        | Responsabilité                                                                 |
-|--------------------------------|--------------------------------------------------------------------------------|
-| `SOUND_EFFECTS`                | Registre des effets sonores disponibles, dont `monsterInitiativeRoll`.          |
-| `playSoundEffect()`            | Jouer un effet sonore connu, avec source aléatoire, volume et erreur absorbée. |
-| `clearSoundEffectCache()`      | Vider le cache audio pour les tests.                                            |
+| Élément                   | Responsabilité                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| `SOUND_EFFECTS`           | Registre des effets sonores disponibles, dont `monsterInitiativeRoll`.         |
+| `playSoundEffect()`       | Jouer un effet sonore connu, avec source aléatoire, volume et erreur absorbée. |
+| `clearSoundEffectCache()` | Vider le cache audio pour les tests.                                           |
 
 ## Endroits faciles à suivre
 
@@ -630,31 +632,31 @@ Règles de persistance validées:
 5. Le mot `refresh()` existe dans plusieurs modules avec des effets différents.
 6. L'état `encounter` est central et mutable. `DndInitiativeTrackerApp` et tous les panneaux DOM utilisent maintenant ses méthodes directement.
 7. `draggedTurnId` est une variable globale de module dans `turn-order.js`, séparée de `encounter`.
-8. Les joueurs sont d'abord des champs DOM, puis deviennent des acteurs dans `encounter.players`; cette frontière est maintenant isolée, mais reste un bon candidat pour la future passe DTO.
+8. Les joueurs sont d'abord des champs DOM, puis deviennent des acteurs dans `encounter.players`; cette frontière est maintenant isolée, avec un champ `side` persistant, mais reste un bon candidat pour la future passe DTO.
 9. Certaines règles s'appliquent seulement lors de `buildRoundOrder()`, alors que leur changement déclenche seulement `refresh()`. C'est probablement voulu ou acceptable, mais la lecture peut laisser croire à un recalcul immédiat.
 
 ## Diagnostic de maintenabilité JS
 
-| Sujet                              | Fichier / fonction                                                                               | Constat                                                                                                     | Impact sur la compréhension                                                                       | Suggestion légère                                                                                                                                                             |
-|------------------------------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Fichier long                       | `turn-order.js`                                                                                  | Le fichier regroupe initialisation, rendu, clic, clavier, drag and drop, focus et annonces.                 | Le lecteur doit encore garder plusieurs comportements en tête dans un seul fichier.               | Garder les fonctions groupées par rôle; extraire un sous-contrôleur seulement si un futur changement le justifie.                                                             |
-| Rendu d'une entrée                 | `turn-order.js` / `renderTurnOrderItem()`                                                        | La création, le remplissage, les contrôles et les interactions d'une entrée sont séparés.                   | Le flux est plus lisible, mais reste dans le même fichier pour éviter une abstraction prématurée. | Conserver cette séparation locale avant d'envisager un `TurnOrderRenderer`.                                                                                                  |
-| Fichier long                       | `validation.js`                                                                                  | Le fichier regroupe les façades DOM de validation, les règles pures, la lecture des champs et le feedback DOM. | La lecture est plus guidée, mais le fichier reste un point de passage central pour les panneaux.  | Garder ce regroupement tant que les règles restent peu nombreuses; extraire seulement si de nouveaux formulaires complexifient le module.                                      |
-| Responsabilités mélangées          | `validation.js` / `showValidationErrors()`, `clearValidationState()`, `focusFirstInvalidField()` | Le module rend encore les erreurs dans le DOM, mais les règles `validateIntegerValue()` et `validateCurrentHitPointsLimit()` sont testables séparément. | Les futures règles peuvent être ajoutées sans dépendre directement du DOM.                         | Continuer à isoler les nouvelles règles en fonctions pures, sans déplacer tout le feedback DOM dans un nouveau module pour l'instant.                                          |
-| Responsabilités mélangées          | `monsters.js` / `populateMonsterItem()`                                                          | La fonction remplit tous les champs DOM d'une ligne monstre, mais reste linéaire et limitée au rendu.       | Le rendu d'un monstre demande une lecture complète de la fonction, sans logique métier cachée.     | Laisser tel quel tant que les futures fonctions de recherche, filtres, portraits ou états de combat ne l'alourdissent pas.                                                    |
-| Nom générique                      | Plusieurs fichiers / `refresh()`                                                                 | `refresh()` existe dans `monsters.js`, `turn-order.js`, et comme callback.                                  | Le lecteur doit vérifier le scope pour savoir ce qui est rafraîchi.                               | Renommer progressivement dans les objets retournés ou ajouter commentaires d'intention. Exemple: `refreshTurnOrderPanel`, `renderMonsterPanel`.                               |
-| Dépendances implicites             | `monsters.js`, `turn-order.js`                                                                   | Les templates sont lus au niveau module avec `document.getElementById(...)`.                                | Le module suppose que le DOM existe déjà au moment de l'import.                                   | Documenter le contrat DOM en commentaire court. Déplacer dans `initialize...` seulement si un test ou un besoin concret le justifie.                                          |
-| Ordre d'exécution                  | `dnd_initiative.js`                                                                              | `turnOrderPanel` est créé avant `monstersPanel` et `playersPanel`, car leurs callbacks rafraîchissent son rendu. | Ce choix est porté par `DndInitiativeTrackerApp.start()`, ce qui rend l'enchaînement plus visible. | Garder cet ordre explicite pendant la conversion progressive des panneaux en classes.                                                                                         |
-| Ordre d'exécution                  | `rules.js` + `encounter-state.js`                                                                | Changer une règle appelle `refresh()` mais pas `buildRoundOrder()`.                                         | Un lecteur peut croire que l'ordre existant est recalculé.                                        | Documenter explicitement: les règles sont appliquées à la prochaine génération, ou décider plus tard avec test si le recalcul immédiat est souhaité.                          |
-| Duplication raisonnable            | `players.js` et `validation.js` / `hasStartedPlayer()`, `getPlayerInput()`                       | Deux helpers similaires existent dans deux modules.                                                         | Petite duplication, mais elle évite pour l'instant un couplage artificiel.                        | Laisser tel quel ou extraire seulement si une troisième duplication apparaît.                                                                                                 |
-| Frontière DOM -> état              | `players.js` / `getPlayerActors()`                                                               | La transformation passe par `readPlayerForm()` puis `createPlayerActor()`.                                  | La frontière est plus visible, mais la forme finale reste une structure libre; le modificateur d'initiative importé est conservé pour les acteurs issus d'un import. | Utiliser cette zone comme point de départ pour la future passe DTO joueur.                                                                                                    |
-| Logique métier mélangée au DOM     | `validation.js` / `validateEncounterActors()`                                                    | La règle "au moins un acteur" est évaluée depuis le DOM, pas depuis `encounter`.                            | La source de vérité varie selon le moment du flux.                                                | Documenter cette exception: avant génération, le DOM est validé pour éviter un état non synchronisé.                                                                          |
-| Événements DOM                     | `turn-order.js` / `bindTurnOrderItemEvents()`                                                    | Les écouteurs d'une entrée sont regroupés par type: toggle, clavier, drag and drop.                         | Le lecteur doit toujours comprendre que `replaceChildren()` supprime les anciens items et listeners. | Garder ces trois groupes locaux tant qu'ils restent courts.                                                                                                                  |
-| État global difficile à suivre     | `dnd_initiative.js` / `encounter`                                                                | L'état est mutable et partagé par tous les panneaux.                                                        | Les mutations passent par plusieurs callbacks, surtout entre panneaux.                            | Ajouter au document ou au code un résumé "source de vérité: `encounter`; source temporaire joueurs: DOM".                                                                     |
-| État global de module              | `turn-order.js` / `draggedTurnId`                                                                | Le drag and drop utilise une variable de module hors `encounter`.                                           | C'est simple, mais séparé du reste de l'état.                                                     | Le garder local au module sauf si le drag and drop devient plus complexe.                                                                                                     |
-| Tests existants                    | `tests/js/lab/dnd/encounter-state.test.js`                                                       | Les fonctions métier principales sont bien couvertes.                                                       | Bonne protection avant clarification de noms ou petites extractions métier.                       | Garder ces tests comme base avant toute modification de `encounter-state.js`.                                                                                                 |
-| Tests DOM existants                | `monsters.js`, `players.js`, `turn-order.js`, `rules.js`, `validation.js`                        | Des tests ciblés couvrent déjà le rendu, les callbacks, la validation et quelques interactions DOM.          | Les conversions internes peuvent être faites progressivement avec une base de non-régression.     | Garder ces tests verts et ajouter un test ciblé quand une conversion modifie une interaction non couverte.                                                                    |
-| Fichier généré                     | `bestiary.js`                                                                                    | 17 126 lignes de données générées.                                                                          | Il pollue les recherches et ne doit pas être lu comme du code applicatif.                         | Le laisser hors refactor; s'appuyer sur le pipeline de génération documenté ailleurs.                                                                                         |
+| Sujet                          | Fichier / fonction                                                                               | Constat                                                                                                                                                 | Impact sur la compréhension                                                                                                                                          | Suggestion légère                                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Fichier long                   | `turn-order.js`                                                                                  | Le fichier regroupe initialisation, rendu, clic, clavier, drag and drop, focus et annonces.                                                             | Le lecteur doit encore garder plusieurs comportements en tête dans un seul fichier.                                                                                  | Garder les fonctions groupées par rôle; extraire un sous-contrôleur seulement si un futur changement le justifie.                                    |
+| Rendu d'une entrée             | `turn-order.js` / `renderTurnOrderItem()`                                                        | La création, le remplissage, les contrôles et les interactions d'une entrée sont séparés.                                                               | Le flux est plus lisible, mais reste dans le même fichier pour éviter une abstraction prématurée.                                                                    | Conserver cette séparation locale avant d'envisager un `TurnOrderRenderer`.                                                                          |
+| Fichier long                   | `validation.js`                                                                                  | Le fichier regroupe les façades DOM de validation, les règles pures, la lecture des champs et le feedback DOM.                                          | La lecture est plus guidée, mais le fichier reste un point de passage central pour les panneaux.                                                                     | Garder ce regroupement tant que les règles restent peu nombreuses; extraire seulement si de nouveaux formulaires complexifient le module.            |
+| Responsabilités mélangées      | `validation.js` / `showValidationErrors()`, `clearValidationState()`, `focusFirstInvalidField()` | Le module rend encore les erreurs dans le DOM, mais les règles `validateIntegerValue()` et `validateCurrentHitPointsLimit()` sont testables séparément. | Les futures règles peuvent être ajoutées sans dépendre directement du DOM.                                                                                           | Continuer à isoler les nouvelles règles en fonctions pures, sans déplacer tout le feedback DOM dans un nouveau module pour l'instant.                |
+| Responsabilités mélangées      | `monsters.js` / `populateMonsterItem()`                                                          | La fonction remplit tous les champs DOM d'une ligne monstre, mais reste linéaire et limitée au rendu.                                                   | Le rendu d'un monstre demande une lecture complète de la fonction, sans logique métier cachée.                                                                       | Laisser tel quel tant que les futures fonctions de recherche, filtres, portraits ou états de combat ne l'alourdissent pas.                           |
+| Nom générique                  | Plusieurs fichiers / `refresh()`                                                                 | `refresh()` existe dans `monsters.js`, `turn-order.js`, et comme callback.                                                                              | Le lecteur doit vérifier le scope pour savoir ce qui est rafraîchi.                                                                                                  | Renommer progressivement dans les objets retournés ou ajouter commentaires d'intention. Exemple: `refreshTurnOrderPanel`, `renderMonsterPanel`.      |
+| Dépendances implicites         | `monsters.js`, `turn-order.js`                                                                   | Les templates sont lus au niveau module avec `document.getElementById(...)`.                                                                            | Le module suppose que le DOM existe déjà au moment de l'import.                                                                                                      | Documenter le contrat DOM en commentaire court. Déplacer dans `initialize...` seulement si un test ou un besoin concret le justifie.                 |
+| Ordre d'exécution              | `dnd_initiative.js`                                                                              | `turnOrderPanel` est créé avant `monstersPanel` et `playersPanel`, car leurs callbacks rafraîchissent son rendu.                                        | Ce choix est porté par `DndInitiativeTrackerApp.start()`, ce qui rend l'enchaînement plus visible.                                                                   | Garder cet ordre explicite pendant la conversion progressive des panneaux en classes.                                                                |
+| Ordre d'exécution              | `rules.js` + `encounter-state.js`                                                                | Changer une règle appelle `refresh()` mais pas `buildRoundOrder()`.                                                                                     | Un lecteur peut croire que l'ordre existant est recalculé.                                                                                                           | Documenter explicitement: les règles sont appliquées à la prochaine génération, ou décider plus tard avec test si le recalcul immédiat est souhaité. |
+| Duplication raisonnable        | `players.js` et `validation.js` / `hasStartedPlayer()`, `getPlayerInput()`                       | Deux helpers similaires existent dans deux modules.                                                                                                     | Petite duplication, mais elle évite pour l'instant un couplage artificiel.                                                                                           | Laisser tel quel ou extraire seulement si une troisième duplication apparaît.                                                                        |
+| Frontière DOM -> état          | `players.js` / `getPlayerActors()`                                                               | La transformation passe par `readPlayerForm()` puis `createPlayerActor()`.                                                                              | La frontière est plus visible, mais la forme finale reste une structure libre; le modificateur d'initiative importé est conservé pour les acteurs issus d'un import. | Utiliser cette zone comme point de départ pour la future passe DTO joueur.                                                                           |
+| Logique métier mélangée au DOM | `validation.js` / `validateEncounterActors()`                                                    | La règle "au moins un acteur" est évaluée depuis le DOM, pas depuis `encounter`.                                                                        | La source de vérité varie selon le moment du flux.                                                                                                                   | Documenter cette exception: avant génération, le DOM est validé pour éviter un état non synchronisé.                                                 |
+| Événements DOM                 | `turn-order.js` / `bindTurnOrderItemEvents()`                                                    | Les écouteurs d'une entrée sont regroupés par type: toggle, clavier, drag and drop.                                                                     | Le lecteur doit toujours comprendre que `replaceChildren()` supprime les anciens items et listeners.                                                                 | Garder ces trois groupes locaux tant qu'ils restent courts.                                                                                          |
+| État global difficile à suivre | `dnd_initiative.js` / `encounter`                                                                | L'état est mutable et partagé par tous les panneaux.                                                                                                    | Les mutations passent par plusieurs callbacks, surtout entre panneaux.                                                                                               | Ajouter au document ou au code un résumé "source de vérité: `encounter`; source temporaire joueurs: DOM".                                            |
+| État global de module          | `turn-order.js` / `draggedTurnId`                                                                | Le drag and drop utilise une variable de module hors `encounter`.                                                                                       | C'est simple, mais séparé du reste de l'état.                                                                                                                        | Le garder local au module sauf si le drag and drop devient plus complexe.                                                                            |
+| Tests existants                | `tests/js/lab/dnd/encounter-state.test.js`                                                       | Les fonctions métier principales sont bien couvertes.                                                                                                   | Bonne protection avant clarification de noms ou petites extractions métier.                                                                                          | Garder ces tests comme base avant toute modification de `encounter-state.js`.                                                                        |
+| Tests DOM existants            | `monsters.js`, `players.js`, `turn-order.js`, `rules.js`, `validation.js`                        | Des tests ciblés couvrent déjà le rendu, les callbacks, la validation et quelques interactions DOM.                                                     | Les conversions internes peuvent être faites progressivement avec une base de non-régression.                                                                        | Garder ces tests verts et ajouter un test ciblé quand une conversion modifie une interaction non couverte.                                           |
+| Fichier généré                 | `bestiary.js`                                                                                    | 17 126 lignes de données générées.                                                                                                                      | Il pollue les recherches et ne doit pas être lu comme du code applicatif.                                                                                            | Le laisser hors refactor; s'appuyer sur le pipeline de génération documenté ailleurs.                                                                |
 
 ## Plan de clarification progressif
 
@@ -663,9 +665,9 @@ Règles de persistance validées:
 - Objectif : expliquer en 2 ou 3 lignes le rôle et les limites de chaque fichier JS.
 - Fichiers concernés : `dnd_initiative.js`, `encounter-state.js`, `monsters.js`, `players.js`, `turn-order.js`, `rules.js`, `validation.js`, `initiative.js`.
 - Type :
-  - documentation
+    - documentation
 - Risque :
-  - faible
+    - faible
 - Bénéfice : le lecteur sait tout de suite si le fichier contient de l'orchestration, du DOM, de l'état ou des helpers.
 - À ne pas faire : transformer ces commentaires en documentation longue ou en pseudo-architecture.
 
@@ -674,10 +676,10 @@ Règles de persistance validées:
 - Objectif : rendre évident que `dnd_initiative.js` crée l'état, initialise les panneaux puis laisse les événements piloter l'outil.
 - Fichiers concernés : `dnd_initiative.js`.
 - Type :
-  - documentation
-  - clarification de flux
+    - documentation
+    - clarification de flux
 - Risque :
-  - faible
+    - faible
 - Bénéfice : le point d'entrée devient une table des matières lisible du tracker.
 - À ne pas faire : déplacer les initialisations ou changer l'ordre d'exécution.
 
@@ -686,10 +688,10 @@ Règles de persistance validées:
 - Objectif : rendre plus explicite ce que font `onEncounterChange` et `onPlayersChange`.
 - Fichiers concernés : `dnd_initiative.js`, `monsters.js`, `players.js`.
 - Type :
-  - renommage
-  - clarification de flux
+    - renommage
+    - clarification de flux
 - Risque :
-  - faible
+    - faible
 - Bénéfice : éviter de croire qu'un changement de joueurs ou monstres reconstruit automatiquement l'ordre du tour.
 - À ne pas faire : changer le comportement pour reconstruire l'ordre automatiquement.
 
@@ -698,9 +700,9 @@ Règles de persistance validées:
 - Objectif : enlever les accroches de lecture inutiles.
 - Fichiers concernés : `monsters.js`, éventuellement `turn-order.js`.
 - Type :
-  - renommage
+    - renommage
 - Risque :
-  - faible
+    - faible
 - Bénéfice : lecture plus fluide sans refactor.
 - À ne pas faire : lancer une grande passe de renommage globale.
 
@@ -714,9 +716,9 @@ Exemples candidats:
 - Objectif : garder les comportements fragiles verrouillés avant extraction ou regroupement.
 - Fichiers concernés : tests autour de `players.js`, `turn-order.js`, `validation.js`, `monsters.js` et `rules.js`.
 - Type :
-  - test
+    - test
 - Risque :
-  - faible
+    - faible
 - Bénéfice : sécuriser les modifications de lisibilité sur les événements DOM.
 - À ne pas faire : chercher une couverture exhaustive ou tester tous les détails CSS.
 
@@ -732,9 +734,9 @@ Tests prioritaires à conserver ou compléter:
 - Objectif : améliorer la lecture verticale sans déplacer de code entre fichiers.
 - Fichiers concernés : `turn-order.js`, `validation.js`, `monsters.js`.
 - Type :
-  - clarification de flux
+    - clarification de flux
 - Risque :
-  - faible
+    - faible
 - Bénéfice : un lecteur voit plus vite les couches: initialisation, rendu, événements, helpers.
 - À ne pas faire : créer de nouveaux modules juste pour classer les fonctions.
 
@@ -743,10 +745,10 @@ Tests prioritaires à conserver ou compléter:
 - Objectif : rendre explicite que les champs joueur restent la source immédiate jusqu'à `sync()`.
 - Fichiers concernés : `players.js`, `dnd_initiative.js`, éventuellement tests.
 - Type :
-  - documentation
-  - test
+    - documentation
+    - test
 - Risque :
-  - faible
+    - faible
 - Bénéfice : moins de confusion autour de `playersPanel.sync()` avant `buildRoundOrder()`.
 - État : réalisé en séparant lecture des champs, formulaire joueur normalisé et création de l'acteur envoyé à `EncounterState`.
 - À ne pas faire : introduire un store ou une synchronisation bidirectionnelle complexe.
@@ -756,11 +758,11 @@ Tests prioritaires à conserver ou compléter:
 - Objectif : documenter ou tester que les règles sont appliquées à la génération de l'ordre.
 - Fichiers concernés : `rules.js`, `dnd_initiative.js`, `encounter-state.js`, tests existants.
 - Type :
-  - documentation
-  - test
-  - clarification de flux
+    - documentation
+    - test
+    - clarification de flux
 - Risque :
-  - moyen
+    - moyen
 - Bénéfice : éviter une mauvaise interprétation du `refresh()` après changement de règle.
 - À ne pas faire : modifier immédiatement le comportement pour recalculer l'ordre existant sans décision fonctionnelle explicite.
 
@@ -769,9 +771,9 @@ Tests prioritaires à conserver ou compléter:
 - Objectif : conserver la séparation entre création, remplissage et interactions d'une entrée.
 - Fichiers concernés : `turn-order.js`.
 - Type :
-  - clarification de flux
+    - clarification de flux
 - Risque :
-  - faible
+    - faible
 - Bénéfice : séparer "parcourir l'ordre", "remplir une ligne" et "brancher les interactions".
 - À ne pas faire : éclater le fichier en plusieurs modules ou introduire une classe de composant.
 
@@ -780,9 +782,9 @@ Tests prioritaires à conserver ou compléter:
 - Objectif : garder `populateMonsterItem()` lisible sans extraction prématurée.
 - Fichiers concernés : `monsters.js`.
 - Type :
-  - clarification de flux
+    - clarification de flux
 - Risque :
-  - faible
+    - faible
 - Bénéfice : conserver un rendu DOM linéaire tant qu'il ne porte pas de nouvelle responsabilité fonctionnelle.
 - À ne pas faire : découper le remplissage par principe alors que la fonction reste compréhensible.
 
@@ -791,10 +793,10 @@ Tests prioritaires à conserver ou compléter:
 - Objectif : rendre `validation.js` plus navigable sans changer son API publique.
 - Fichiers concernés : `validation.js`.
 - Type :
-  - clarification de flux
-  - extraction légère
+    - clarification de flux
+    - extraction légère
 - Risque :
-  - moyen
+    - moyen
 - Bénéfice : distinguer les validateurs des fonctions qui modifient l'interface.
 - À ne pas faire : créer une architecture de validation abstraite ou déplacer toutes les validations hors DOM d'un coup.
 
@@ -803,9 +805,9 @@ Tests prioritaires à conserver ou compléter:
 - Objectif : traiter `bestiary.js` comme une donnée générée, pas comme du code à clarifier manuellement.
 - Fichiers concernés : `bestiary.js`, outils de génération seulement si besoin futur.
 - Type :
-  - documentation
+    - documentation
 - Risque :
-  - faible
+    - faible
 - Bénéfice : éviter de perdre du temps dans 17 126 lignes générées.
 - À ne pas faire : éditer `bestiary.js` manuellement ou le formater pour la lisibilité humaine.
 

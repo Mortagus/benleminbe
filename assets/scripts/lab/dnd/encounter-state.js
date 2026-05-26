@@ -277,6 +277,7 @@ function createEmptyMonster(index) {
     return {
         id: `monster-${index + 1}`,
         slug: null,
+        side: 'hostile',
         name: `Monstre ${index + 1}`,
         className: null,
         challengeRating: null,
@@ -300,6 +301,7 @@ function createMonsterFromBestiaryEntry(monster, index) {
     return {
         id: `${monster.slug}-${index + 1}`,
         slug: monster.slug,
+        side: 'hostile',
         name: `${monster.name} ${index + 1}`,
         className: monster.name,
         challengeRating: monster.challenge_rating,
@@ -323,6 +325,7 @@ function getMonsterActors(encounter) {
         .map(monster => ({
             id: monster.id,
             type: 'monster',
+            side: monster.side ?? 'hostile',
             name: monster.name,
             armorClass: monster.armorClass,
             currentHitPoints: monster.currentHitPoints,
@@ -330,6 +333,7 @@ function getMonsterActors(encounter) {
             initiative: monster.initiative,
             roll: monster.roll,
             initiativeModifier: monster.initiativeModifier,
+            isLegendary: monster.isLegendary === true,
             done: false,
         }));
 }

@@ -77,8 +77,8 @@ export const bestiary = [
         alignment,
         is_legendary,
         abilities,
-        initiative_modifier
-    }
+        initiative_modifier,
+    },
 ];
 ```
 

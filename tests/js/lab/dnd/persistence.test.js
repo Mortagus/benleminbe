@@ -24,6 +24,7 @@ describe('DnD encounter persistence', () => {
                 id: 'player-1',
                 type: 'player',
                 name: 'Lia',
+                side: 'party',
                 armorClass: 15,
                 baseHitPoints: 20,
                 currentHitPoints: 18,
@@ -86,6 +87,7 @@ describe('DnD encounter persistence', () => {
                 id: 'player-1',
                 type: 'player',
                 name: 'Lia',
+                side: 'ally',
                 armorClass: 15,
                 baseHitPoints: 20,
                 currentHitPoints: 18,
@@ -144,6 +146,7 @@ describe('DnD encounter persistence', () => {
         expect(encounter.players[0]).toMatchObject({
             id: 'player-1',
             name: 'Lia',
+            side: 'ally',
         });
         expect(playersHydrate).toHaveBeenCalledOnce();
         expect(rulesSync).toHaveBeenCalledOnce();
@@ -185,6 +188,7 @@ describe('DnD encounter persistence', () => {
                 id: 'player-1',
                 type: 'player',
                 name: 'Lia',
+                side: 'party',
                 armorClass: 15,
                 baseHitPoints: 20,
                 currentHitPoints: 18,

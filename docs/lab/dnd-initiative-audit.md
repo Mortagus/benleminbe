@@ -32,7 +32,7 @@ Fonctionnalités actuellement présentes :
 
 ### Intégration Symfony
 
- - Contrôleur : [src/Public/Controller/LabController.php](/var/www/projects/benleminbe/src/Public/Controller/LabController.php:1)
+- Contrôleur : [src/Public/Controller/LabController.php](/var/www/projects/benleminbe/src/Public/Controller/LabController.php:1)
 - Route publique : `/lab/dnd-initiative`
 - Nom de route : `app_lab_dnd_initiative`
 - Route d'import XML : `/lab/dnd-initiative/import-player`
@@ -44,10 +44,10 @@ Fonctionnalités actuellement présentes :
 ### Templates Twig
 
 - Page principale : [templates/lab/dnd/initiative_tracker.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/initiative_tracker.html.twig:1)
-- Panneau monstres : [templates/lab/dnd/_monsters_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_monsters_panel.html.twig:1)
-- Panneau joueurs : [templates/lab/dnd/_players_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_players_panel.html.twig:1)
-- Panneau ordre du tour : [templates/lab/dnd/_turn_order_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_turn_order_panel.html.twig:1)
-- Popup de règles : [templates/lab/dnd/_rules_panels.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_rules_panels.html.twig:1)
+- Panneau monstres : [templates/lab/dnd/\_monsters_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_monsters_panel.html.twig:1)
+- Panneau joueurs : [templates/lab/dnd/\_players_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_players_panel.html.twig:1)
+- Panneau ordre du tour : [templates/lab/dnd/\_turn_order_panel.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_turn_order_panel.html.twig:1)
+- Popup de règles : [templates/lab/dnd/\_rules_panels.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/_rules_panels.html.twig:1)
 
 La page principale assemble trois panneaux : monstres, joueurs et ordre du tour. Les templates utilisent des balises `<template>` pour cloner dynamiquement les lignes de formulaire et les cartes d'ordre du tour côté navigateur.
 

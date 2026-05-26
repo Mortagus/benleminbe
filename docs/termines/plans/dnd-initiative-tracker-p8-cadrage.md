@@ -185,7 +185,7 @@ Une fois la mémoire du tracker chargée depuis le snapshot, il faut procéder a
 ### 5. Compatibilité Des Snapshots
 
 - un snapshot d’une version inconnue : affichage d'un message d'erreur discret pour prévenir le user.
-- un snapshot incomplet ou partiellement restaurable : on applique ce qu'on peut et ce qui n'est pas rempli est juste ignoré. 
+- un snapshot incomplet ou partiellement restaurable : on applique ce qu'on peut et ce qui n'est pas rempli est juste ignoré.
 - un snapshot corrompu : on ignore le snapshot et on prévient le MJ.
 - une future migration de version : on ignore le snapshot et on prévient le MJ.
 

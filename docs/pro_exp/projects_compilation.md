@@ -54,20 +54,25 @@ My work focused on the technical implementation of the system, including databas
 ## Technologies Used
 
 Languages
+
 - Perl
 - SQL
 - Bash
 
 Database
+
 - MySQL
 
 Data Sources
+
 - Public biological databases
 
 Environment
+
 - Linux
 
 Tools
+
 - NetBeans
 - PhpMyAdmin
 
@@ -126,10 +131,11 @@ see -> `experiences/sogesa.md`
 
 Sogesa is a consulting company specialized in the management and operation of agricultural land on behalf of landowners.
 
-Many landowners do not have the expertise or resources required to manage agricultural land themselves. 
+Many landowners do not have the expertise or resources required to manage agricultural land themselves.
 Sogesa acts as an intermediary between landowners and the various actors involved in agricultural production.
 
-Agronomists employed by Sogesa are responsible for 
+Agronomists employed by Sogesa are responsible for
+
 - analyzing the soil
 - deciding which crops should be planted
 - coordinating field preparation
@@ -137,7 +143,7 @@ Agronomists employed by Sogesa are responsible for
 - organizing harvesting
 - managing the sale of agricultural products.
 
-At the time I joined the company, very few digital tools existed to support these activities. 
+At the time I joined the company, very few digital tools existed to support these activities.
 The goal of the project was to progressively build an internal software system allowing agronomists to manage their work and later extend the platform to support the company's operational management.
 
 ## Users
@@ -174,7 +180,7 @@ The system supported the management of multiple crop years simultaneously and al
 
 I was the main developer responsible for building the first version of the system.
 
-During the first year of the project, I was the only developer working on the application. 
+During the first year of the project, I was the only developer working on the application.
 Later, a second junior developer joined the project and we continued developing the system together for several years.
 
 My work involved understanding the agronomists’ workflows, designing the database structure and progressively implementing the application features required to support their daily activities.
@@ -216,6 +222,7 @@ An external technical code audit was performed during the project in order to re
 ## Technologies Used
 
 Languages
+
 - PHP 5.3
 - SQL
 - JavaScript
@@ -223,14 +230,17 @@ Languages
 - CSS
 
 Frameworks / Libraries
+
 - Symfony 2 (introduced later for the administrative part of the application)
 - jQuery
 - Bootstrap
 
 Database
+
 - MySQL
 
 Tools
+
 - Doctrine ORM
 - Admin bundle for Symfony (for the management interface)
 - SVN first and Git later
@@ -238,6 +248,7 @@ Tools
 - Netbeans IDE
 
 Infrastructure
+
 - External hosting provider
 
 ## Deployment
@@ -277,6 +288,7 @@ January 2015 – September 2015
 see → `experiences/02_exp_f2c.md`
 
 ## Organization
+
 Financial Communication Consult (F2C)
 
 ## Project Context
@@ -351,22 +363,27 @@ Development priorities and planning were mainly coordinated by the lead develope
 ## Technologies Used
 
 ### Main Languages
+
 - PHP
 - SQL
 
 ### Data Storage
+
 - MySQL (storage of financial data)
 - MongoDB (archival storage of generated documents)
 
 ### Document Generation
+
 - PDFLib (generation of KIID PDF documents)
 
 ### Frontend
+
 - HTML
 - CSS
 - JavaScript
 
 ### Infrastructure
+
 - Linux servers
 - Cron jobs for automated processes
 
@@ -465,10 +482,12 @@ It was also my first experience working on a platform responsible for producing 
 # Easy4Pro
 
 ## Period
+
 July 2016 - September 2016
 see `experiences/03_exp_adneom.md`
 
 ## Organization
+
 Flash Global (mission through Adneom)
 
 ## Project Context
@@ -528,23 +547,28 @@ The team size was roughly under ten developers.
 ## Technologies Used
 
 ### Main Languages
+
 - PHP
 - JavaScript
 - SQL
 
 ### Framework
+
 - Zend Framework
 
 ### Frontend
+
 - HTML
 - CSS
-- JavaScript  
+- JavaScript
 - Possibly Backbone.js (memory uncertain)
 
 ### Database
+
 - MySQL
 
 ### Version Control
+
 - Git (GitFlow workflow)
 
 ---
@@ -591,9 +615,11 @@ It was also my first professional experience working abroad during the week (Lux
 # Logic-Immo Image Delivery Platform
 
 ## Period
+
 November 2016 – June 2017
 
 ## Organization
+
 Logic-Immo (mission through Adneom)
 
 ## Project Context
@@ -664,24 +690,30 @@ We interacted with the internal Logic-Immo technical leadership when necessary, 
 ## Technologies Used
 
 ### Main Languages
+
 - PHP
 - SQL
 
 ### Framework
+
 - Symfony
 
 ### Backend Architecture
+
 - REST API
 
 ### Infrastructure
+
 - AWS (image storage)
 - CDN for global image delivery
 - Docker (first exposure)
 
 ### Database
+
 - relational database used for image mapping
 
 ### Version Control
+
 - Git
 
 ---
@@ -732,16 +764,18 @@ It also gave me experience working on performance-related challenges in a media-
 # Projects at Isobar
 
 ## Period
+
 July 2017 – February 2018
 
 ## Organization
+
 Isobar
 
 ## Context
 
 Isobar is a digital agency specialized in developing digital platforms, marketing websites and campaign-related web services for corporate clients.
 
-During my time at Isobar, I worked on multiple short-term client projects involving different brands and technology stacks. 
+During my time at Isobar, I worked on multiple short-term client projects involving different brands and technology stacks.
 The agency context required frequent context switching and rapid delivery under tight deadlines.
 
 ---
@@ -815,11 +849,13 @@ Initially, the team consisted of:
 During this period I worked with a variety of technologies, including:
 
 ### Main Languages
+
 - PHP
 - JavaScript
 - SQL
 
 ### Frameworks / CMS
+
 - Symfony
 - Drupal
 - Zend
@@ -827,12 +863,14 @@ During this period I worked with a variety of technologies, including:
 - WordPress
 
 ### Frontend
+
 - HTML
 - CSS
 - JavaScript
 - jQuery
 
 ### Databases
+
 - MySQL
 
 ---
@@ -868,9 +906,11 @@ It also highlighted the challenges of working under tight delivery deadlines and
 # Delcampe Marketplace Platform
 
 ## Period
+
 April 2018 – March 2019
 
 ## Organization
+
 Delcampe (mission through Blubird)
 see `experiences\05_exp_blubird.md`
 
@@ -1073,9 +1113,11 @@ It allowed me to:
 # Keytrade Bank – Web Platforms Maintenance
 
 ## Period
+
 April 2019 – July 2019
 
 ## Organization
+
 Keytrade Bank (mission through Blubird)
 
 ## Project Context
@@ -1144,18 +1186,23 @@ Developers were not authorized to perform production merges themselves.
 ## Technologies Used
 
 ### Backend
+
 - PHP 5.6 (custom security-certified build)
 
 ### Database
+
 - MySQL
 
 ### Version Control
+
 - SVN
 
 ### DevOps
+
 - Jenkins (legacy version used for deployments)
 
 ### Project Management
+
 - Jira
 
 ---
@@ -1227,7 +1274,7 @@ The experience also highlighted the gap that can exist between modern developmen
 
 The project involved deploying **DPI**, an editorial platform developed by Contraste Digital on top of Drupal 7.
 
-DPI was originally created for the Belgian media group **Rossel** (publisher of *Le Soir*) and progressively evolved into a complex platform supporting multiple digital news websites.
+DPI was originally created for the Belgian media group **Rossel** (publisher of _Le Soir_) and progressively evolved into a complex platform supporting multiple digital news websites.
 
 The platform provides several core capabilities required for online media operations:
 
@@ -1532,13 +1579,13 @@ The authentication integration required adapting Drupal’s authentication syste
 
 ## Context
 
-Rossel is one of the largest media groups in Belgium, operating multiple newspapers and digital media platforms including *Le Soir*.
+Rossel is one of the largest media groups in Belgium, operating multiple newspapers and digital media platforms including _Le Soir_.
 
 The **MoveIT project** aimed at redesigning the user management and authentication system across the Rossel ecosystem.
 
 The objective was to build a **new scalable Single Sign-On (SSO) platform** capable of supporting all Rossel media brands.
 
-The new system was designed to progressively replace existing authentication mechanisms, starting with *Le Soir* and later expanding to other newspapers of the group.
+The new system was designed to progressively replace existing authentication mechanisms, starting with _Le Soir_ and later expanding to other newspapers of the group.
 
 ---
 
@@ -1669,6 +1716,7 @@ The platform is designed to support decision-making at the level of individual s
 The system integrates data from three operational systems used by Delhaize stores:
 
 ### Store Office
+
 Database containing product reference information used across the Delhaize ecosystem.
 
 Access to the data is limited and does not currently provide a straightforward export mechanism.
@@ -1676,6 +1724,7 @@ Access to the data is limited and does not currently provide a straightforward e
 ---
 
 ### BabbleWay
+
 System containing purchase information from product suppliers.
 
 Data exports are available in structured formats such as CSV or Excel.
@@ -1683,6 +1732,7 @@ Data exports are available in structured formats such as CSV or Excel.
 ---
 
 ### StoreLine
+
 Point-of-sale system containing sales transactions recorded at store checkouts.
 
 Exports are also available in CSV or Excel format.
@@ -1733,10 +1783,12 @@ The system follows a **modular web architecture**.
 Several automated testing tools are used:
 
 Backend:
+
 - PHPUnit
 - PHPStan
 
 Frontend:
+
 - Vitest.
 
 These tools help maintain code quality and ensure reliability during development.
@@ -1786,7 +1838,7 @@ Following recent discussions with the client, access to the required data source
 
 **Role:** Programming Coach / Technical Mentor  
 **Platform:** Superprof.be  
-**Duration:** 10/2021 – Present  
+**Duration:** 10/2021 – Present
 
 ---
 

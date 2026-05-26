@@ -317,11 +317,11 @@ Fichiers :
 Constat :
 
 - les deux pages detail ont des patterns proches :
-  - hero ;
-  - meta ;
-  - table des matieres ;
-  - sections ;
-  - navigation precedente/suivante.
+    - hero ;
+    - meta ;
+    - table des matieres ;
+    - sections ;
+    - navigation precedente/suivante.
 
 Bonne evolution recente :
 

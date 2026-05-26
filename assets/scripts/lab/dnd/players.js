@@ -7,6 +7,7 @@ import {
     showValidationErrors,
     validatePlayerItem,
 } from './validation.js';
+import { normalizePlayerSide } from './dtos.js';
 
 export class PlayersPanel {
     constructor(encounter, callbacks = {}) {
@@ -355,8 +356,12 @@ function bindPlayerItemEvents(playerItem, onPlayerListChange, onPlayerDetailsReq
         onPlayerDetailsRequest?.(playerItem, detailsButton);
     });
 
-    playerItem.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', () => {
+    getPlayerFormControls(playerItem).forEach(control => {
+        control.addEventListener('input', () => {
+            onPlayerListChange();
+        });
+
+        control.addEventListener('change', () => {
             onPlayerListChange();
         });
     });
@@ -376,6 +381,7 @@ function getStartedPlayerForms(playerList) {
 function readPlayerForm(playerItem) {
     return {
         name: readPlayerField(playerItem, 'name'),
+        side: readPlayerField(playerItem, 'side'),
         armorClass: readPlayerField(playerItem, 'armor-class'),
         currentHitPoints: readPlayerField(playerItem, 'current-hit-points'),
         baseHitPoints: readPlayerField(playerItem, 'base-hit-points'),
@@ -392,6 +398,7 @@ function createPlayerActor(playerItem, playerForm, index) {
         id: `player-${playerNumber}`,
         type: 'player',
         name: playerForm.name || `Joueur ${playerNumber}`,
+        side: normalizePlayerSide(playerForm.side),
         armorClass: Number(playerForm.armorClass || 0),
         currentHitPoints: Number(playerForm.currentHitPoints || 0),
         baseHitPoints: Number(playerForm.baseHitPoints || 0),
@@ -426,6 +433,7 @@ function getPlayerInitiativeModifier(playerItem) {
 
 function fillPlayerItemFromEncounterPlayer(playerItem, player) {
     setPlayerInputValue(playerItem, 'name', player.name ?? player.identity?.name ?? '');
+    setPlayerInputValue(playerItem, 'side', normalizePlayerSide(player.side));
     setPlayerInputValue(playerItem, 'armor-class', normalizePlayerFieldValue(player.armorClass));
     setPlayerInputValue(playerItem, 'current-hit-points', normalizePlayerFieldValue(player.currentHitPoints));
     setPlayerInputValue(playerItem, 'base-hit-points', normalizePlayerFieldValue(player.baseHitPoints));
@@ -453,6 +461,7 @@ function refreshPlayerAccessibility(playerList) {
         const playerNumber = index + 1;
 
         assignFieldLabel(playerItem, 'name', `player-${playerNumber}-name`, `Nom du joueur ${playerNumber}`);
+        assignFieldLabel(playerItem, 'side', `player-${playerNumber}-side`, `Camp du participant ${playerNumber}`);
         assignFieldLabel(playerItem, 'armor-class', `player-${playerNumber}-armor-class`, `CA du joueur ${playerNumber}`);
         assignFieldLabel(playerItem, 'initiative', `player-${playerNumber}-initiative`, `Initiative du joueur ${playerNumber}`);
         assignInputAriaLabel(playerItem, 'current-hit-points', `PV actuels du joueur ${playerNumber}`);
@@ -526,6 +535,13 @@ function setPlayerInputValue(playerItem, fieldName, value) {
 
 function normalizePlayerFieldValue(value) {
     return value === null || value === undefined ? '' : String(value);
+}
+
+function getPlayerFormControls(playerItem) {
+    return [
+        ...playerItem.querySelectorAll('input'),
+        ...playerItem.querySelectorAll('select'),
+    ];
 }
 
 function normalizeNullablePlayerNumber(value) {
@@ -633,6 +649,7 @@ function collectFlattenedEntries(value, prefix, rows) {
 
 function hasStartedPlayer(playerItem) {
     return Array.from(playerItem.querySelectorAll('input'))
+        .filter(input => input.dataset.playerField !== 'side')
         .some(input => input.value.trim() !== '' || input.validity?.badInput);
 }
 

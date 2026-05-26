@@ -74,11 +74,11 @@ Option recommandee :
 Critere de validation :
 
 - Lighthouse ne signale plus `color-contrast` sur les pages suivantes :
-  - `/fr`
-  - `/fr/projects/delcampe`
-  - `/fr/experiences`
-  - `/fr/skills`
-  - `/fr/contact`
+    - `/fr`
+    - `/fr/projects/delcampe`
+    - `/fr/experiences`
+    - `/fr/skills`
+    - `/fr/contact`
 
 Commandes de verification :
 

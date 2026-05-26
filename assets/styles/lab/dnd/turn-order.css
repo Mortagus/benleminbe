@@ -10,30 +10,60 @@
 }
 
 .dnd-initiative-page .turn-order-item {
-    flex: 0 0 8.5rem;
+    --turn-order-scale: 0.97;
+    --turn-order-accent: color-mix(in srgb, var(--accent) 72%, var(--border));
+
+    flex: 0 0 calc(8.5rem * var(--turn-order-scale));
 
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 
-    min-height: 11rem;
-    padding: 0.85rem;
+    min-height: calc(11rem * var(--turn-order-scale));
+    padding: calc(0.85rem * var(--turn-order-scale));
 
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--card) 92%, var(--turn-order-accent));
+    border: 1px solid color-mix(in srgb, var(--turn-order-accent) 35%, var(--border));
+    border-left-width: 0.35rem;
     border-radius: 0.85rem;
     box-shadow: 0 2px 6px var(--shadow);
 
     cursor: pointer;
+    overflow: hidden;
 }
 
 .dnd-initiative-page .turn-order-item--active {
-    border-color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--turn-order-accent));
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
+.dnd-initiative-page .turn-order-item--side-party {
+    --turn-order-accent: var(--accent);
+}
+
+.dnd-initiative-page .turn-order-item--side-ally {
+    --turn-order-accent: var(--accent);
+}
+
+.dnd-initiative-page .turn-order-item--side-hostile {
+    --turn-order-accent: #dc2626;
+}
+
+.dnd-initiative-page .turn-order-item--side-neutral {
+    --turn-order-accent: #15803d;
+}
+
+.dnd-initiative-page .turn-order-item--legendary {
+    --turn-order-scale: 1.16;
+    --turn-order-accent: #ef4444;
+    border-left-width: 0.52rem;
+    box-shadow: 0 10px 22px color-mix(in srgb, #ef4444 14%, var(--shadow));
+}
+
 .dnd-initiative-page .turn-order-item--done {
-    opacity: 0.45;
+    background: color-mix(in srgb, var(--card) 84%, var(--bg-soft));
+    border-color: color-mix(in srgb, var(--turn-order-accent) 28%, var(--border));
+    box-shadow: 0 1px 4px var(--shadow);
 }
 
 .dnd-initiative-page .turn-order-item--dragging {
@@ -54,6 +84,12 @@
     display: flex;
     justify-content: flex-end;
     gap: 0.25rem;
+}
+
+.dnd-initiative-page .turn-order-item__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
 }
 
 .dnd-initiative-page .turn-order-item__move-button {
@@ -91,7 +127,7 @@
     aspect-ratio: 1 / 1;
 
     background: var(--bg-soft);
-    border: 1px dashed var(--border);
+    border: 1px dashed color-mix(in srgb, var(--turn-order-accent) 34%, var(--border));
     border-radius: 0.75rem;
 
     color: var(--muted);
@@ -116,9 +152,52 @@
 .dnd-initiative-page .turn-order-item__badge {
     margin-top: auto;
 
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    width: fit-content;
+    padding: 0.18rem 0.48rem;
+
     color: var(--accent);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--border));
+    border-radius: 999px;
+}
+
+.dnd-initiative-page .turn-order-item__badge[hidden],
+.dnd-initiative-page .turn-order-item__legendary-badge[hidden] {
+    display: none !important;
+}
+
+.dnd-initiative-page .turn-order-item__legendary-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    width: fit-content;
+    padding: 0.18rem 0.48rem;
+
+    color: color-mix(in srgb, #dc2626 78%, var(--text));
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+
+    background: color-mix(in srgb, #dc2626 14%, var(--card));
+    border: 1px solid color-mix(in srgb, #dc2626 42%, var(--border));
+    border-radius: 999px;
+}
+
+.dnd-initiative-page .turn-order-item--legendary .turn-order-item__legendary-badge::before {
+    content: '\2620';
+    font-size: 0.78rem;
+    line-height: 1;
 }
 
 .dnd-initiative-page .turn-order-live-region {

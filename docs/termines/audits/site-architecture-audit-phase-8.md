@@ -79,10 +79,10 @@ Tickets proposes :
 
 - Ajouter `methods: ['GET']` a la route DnD.
 - Decider une convention minimale PHP :
-  - `declare(strict_types=1)` dans `src/` ;
-  - booleens/null en minuscules ;
-  - classes applicatives `final` par defaut ;
-  - style d'accolades uniforme.
+    - `declare(strict_types=1)` dans `src/` ;
+    - booleens/null en minuscules ;
+    - classes applicatives `final` par defaut ;
+    - style d'accolades uniforme.
 - Appliquer cette convention progressivement, fichier par fichier.
 
 Impact :

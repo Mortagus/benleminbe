@@ -432,11 +432,11 @@ Constat :
 
 - le backlog est globalement coherent avec l'etat actuel ;
 - l'ancien audit contient des observations aujourd'hui corrigees ou obsoletes :
-  - chemin de template ancien ;
-  - styles DnD presentes comme charges globalement ;
-  - usage de `innerHTML` ;
-  - extraction joueur par index ;
-  - regles maison presentees comme bugs plutot que comme choix configurables.
+    - chemin de template ancien ;
+    - styles DnD presentes comme charges globalement ;
+    - usage de `innerHTML` ;
+    - extraction joueur par index ;
+    - regles maison presentees comme bugs plutot que comme choix configurables.
 
 Recommandation :
 

@@ -146,6 +146,11 @@ export function createTurnOrderTemplate() {
     controls.appendChild(createMoveButton('next'));
 
     item.appendChild(controls);
+    const badges = new TestElement('div', ['turn-order-item__badges']);
+    const legendaryBadge = new TestElement('span', ['turn-order-item__legendary-badge']);
+    legendaryBadge.hidden = true;
+    badges.appendChild(legendaryBadge);
+    item.appendChild(badges);
     item.appendChild(new TestElement('div', ['turn-order-item__image-placeholder']));
     item.appendChild(new TestElement('div', ['turn-order-item__name']));
 
@@ -215,6 +220,7 @@ export function createPlayerItemTemplate() {
     const content = new TestElement('fragment');
     const item = createPlayerItem({
         name: createInput(),
+        side: createSelect('party'),
         'armor-class': createInput(),
         'current-hit-points': createInput(),
         'base-hit-points': createInput(),
@@ -245,13 +251,24 @@ export function createPlayerItem(fields) {
 
     item.querySelectorAll = selector => {
         if (selector === 'input') {
-            return inputs;
+            return inputs.filter(input => input.tagName === 'input');
+        }
+
+        if (selector === 'select') {
+            return inputs.filter(input => input.tagName === 'select');
         }
 
         return findMatchingDescendants(item, selector);
     };
 
     return item;
+}
+
+function createSelect(value = '') {
+    const select = new TestElement('select');
+    select.value = value;
+
+    return select;
 }
 
 function createMoveButton(direction) {

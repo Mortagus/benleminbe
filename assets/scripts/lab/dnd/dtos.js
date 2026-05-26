@@ -2,7 +2,9 @@
 // This file contains the persistable structures and pure conversion helpers.
 // Browser storage wiring should live in persistence.js once localStorage is implemented.
 
-export const ENCOUNTER_SNAPSHOT_VERSION = 1;
+export const ENCOUNTER_SNAPSHOT_VERSION = 2;
+export const LEGACY_ENCOUNTER_SNAPSHOT_VERSION = 1;
+export const PLAYER_SIDE_VALUES = ['party', 'ally', 'hostile', 'neutral'];
 
 /**
  * Persistable encounter snapshot for localStorage and future JSON export.
@@ -131,6 +133,7 @@ export function createRuntimeMonsterFromDto(monster) {
  * @property {number} initiative
  * @property {number} roll
  * @property {number} initiativeModifier
+ * @property {'party'|'ally'|'hostile'|'neutral'} side
  * @property {PlayerIdentityDto} identity
  * @property {PlayerAbilityScoresDto} abilityScores
  * @property {PlayerCombatDto} combat
@@ -169,6 +172,7 @@ export function createEncounterPlayerDto(player) {
         initiative: combat.initiative,
         roll: combat.roll,
         initiativeModifier: combat.initiativeModifier,
+        side: normalizePlayerSide(player.side ?? player.role ?? player.combat?.side),
         identity,
         abilityScores,
         combat,
@@ -206,6 +210,7 @@ export function createRuntimePlayerFromDto(player) {
         initiative: combat.initiative,
         roll: combat.roll,
         initiativeModifier: combat.initiativeModifier,
+        side: normalizePlayerSide(player.side ?? player.combat?.side),
         identity,
         abilityScores,
         combat,
@@ -445,6 +450,7 @@ function createMonsterTurnActor(monster) {
     return {
         id: monster.id,
         type: 'monster',
+        side: monster.side ?? 'hostile',
         name: monster.name,
         armorClass: monster.armorClass,
         currentHitPoints: monster.currentHitPoints,
@@ -452,6 +458,7 @@ function createMonsterTurnActor(monster) {
         initiative: monster.initiative,
         roll: monster.roll,
         initiativeModifier: monster.initiativeModifier,
+        isLegendary: monster.isLegendary === true,
     };
 }
 
@@ -487,6 +494,14 @@ function normalizePositiveInteger(value, fallback) {
     const number = Number(value);
 
     return Number.isInteger(number) && number > 0 ? number : fallback;
+}
+
+export function normalizePlayerSide(value) {
+    const normalizedSide = String(value ?? '').trim();
+
+    return PLAYER_SIDE_VALUES.includes(normalizedSide)
+        ? normalizedSide
+        : 'party';
 }
 
 function createPlayerIdentityDto(player) {

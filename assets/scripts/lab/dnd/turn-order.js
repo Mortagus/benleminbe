@@ -134,20 +134,37 @@ function renderTurnOrderItem(roundOrder, actor, index, firstActiveIndex, callbac
 }
 
 function populateTurnOrderItem(li, actor, options) {
+    const actorSide = getActorSide(actor);
     const actorDescription = getActorDescription(actor, options.position, options.total);
+
+    li.dataset.actorType = actor.type ?? '';
+    li.dataset.actorSide = actorSide;
 
     if (options.isActive) {
         li.classList.add('turn-order-item--active');
     }
 
+    li.classList.add(`turn-order-item--side-${actorSide}`);
+
     if (actor.done) {
         li.classList.add('turn-order-item--done');
+    }
+
+    if (actor.isLegendary) {
+        li.classList.add('turn-order-item--legendary');
     }
 
     li.tabIndex = 0;
     li.dataset.actorId = actor.id;
     li.setAttribute('aria-label', actorDescription);
     li.title = 'Entrée/Espace : joué. Flèches : déplacer.';
+
+    const legendaryBadge = li.querySelector('.turn-order-item__legendary-badge');
+    if (legendaryBadge) {
+        legendaryBadge.hidden = !actor.isLegendary;
+        legendaryBadge.textContent = actor.isLegendary ? 'Boss' : '';
+        legendaryBadge.title = actor.isLegendary ? 'Boss légendaire' : '';
+    }
 
     li.querySelector('.turn-order-item__image-placeholder').textContent = getActorInitial(actor);
     li.querySelector('.turn-order-item__name').textContent = actor.name;
@@ -259,6 +276,25 @@ function getActorInitial(actor) {
     return actor.name.trim().charAt(0).toUpperCase() || '?';
 }
 
+function getActorSide(actor) {
+    if (['party', 'ally', 'hostile', 'neutral'].includes(actor.side)) {
+        return actor.side;
+    }
+
+    return actor.type === 'monster' ? 'hostile' : 'party';
+}
+
+function getActorSideLabel(side) {
+    const labels = {
+        party: 'PJ',
+        ally: 'Allié',
+        hostile: 'Hostile',
+        neutral: 'Neutre',
+    };
+
+    return labels[side] ?? 'PJ';
+}
+
 function bindMoveButton(button, roundOrder, actor, index, direction, callbacks) {
     if (!button) {
         return;
@@ -335,8 +371,14 @@ function getMoveAnnouncement(actor, target, direction) {
 
 function getActorDescription(actor, position, total) {
     const turnStatus = actor.done ? 'joué' : 'à jouer';
+    const actorSide = getActorSide(actor);
+    const actorRoles = [getActorSideLabel(actorSide)];
 
-    return `${actor.name}, position ${position} sur ${total}, initiative ${actor.initiative}, CA ${actor.armorClass}, PV ${actor.currentHitPoints} sur ${actor.baseHitPoints}, ${turnStatus}. Entrée ou espace pour basculer joué. Flèches gauche et droite pour déplacer.`;
+    if (actor.isLegendary) {
+        actorRoles.push('boss légendaire');
+    }
+
+    return `${actorRoles.join(', ')}. ${actor.name}, position ${position} sur ${total}, initiative ${actor.initiative}, CA ${actor.armorClass}, PV ${actor.currentHitPoints} sur ${actor.baseHitPoints}, ${turnStatus}. Entrée ou espace pour basculer joué. Flèches gauche et droite pour déplacer.`;
 }
 
 function focusTurnItem(turnOrderList, turnId) {

@@ -21,21 +21,21 @@ Les rapports JSON correspondants sont disponibles dans le meme dossier.
 
 ## Pages Auditees
 
-| Page | URL production |
-| --- | --- |
-| Accueil FR | `https://benlemin.be/fr` |
-| Projets FR | `https://benlemin.be/fr/projects` |
+| Page           | URL production                       |
+| -------------- | ------------------------------------ |
+| Accueil FR     | `https://benlemin.be/fr`             |
+| Projets FR     | `https://benlemin.be/fr/projects`    |
 | Experiences FR | `https://benlemin.be/fr/experiences` |
-| Contact FR | `https://benlemin.be/fr/contact` |
+| Contact FR     | `https://benlemin.be/fr/contact`     |
 
 ## Scores
 
-| Page | Performance | Accessibilite | Bonnes pratiques | SEO | FCP | LCP | TBT | CLS | Speed Index |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Accueil FR | 100 | 100 | 100 | 100 | 1.0 s | 1.0 s | 0 ms | 0 | 1.0 s |
-| Projets FR | 100 | 100 | 100 | 100 | 1.0 s | 1.0 s | 0 ms | 0 | 1.0 s |
-| Experiences FR | 100 | 100 | 100 | 100 | 0.9 s | 0.9 s | 0 ms | 0 | 0.9 s |
-| Contact FR | 100 | 100 | 100 | 100 | 1.0 s | 1.0 s | 0 ms | 0 | 1.0 s |
+| Page           | Performance | Accessibilite | Bonnes pratiques | SEO |   FCP |   LCP |  TBT | CLS | Speed Index |
+| -------------- | ----------: | ------------: | ---------------: | --: | ----: | ----: | ---: | --: | ----------: |
+| Accueil FR     |         100 |           100 |              100 | 100 | 1.0 s | 1.0 s | 0 ms |   0 |       1.0 s |
+| Projets FR     |         100 |           100 |              100 | 100 | 1.0 s | 1.0 s | 0 ms |   0 |       1.0 s |
+| Experiences FR |         100 |           100 |              100 | 100 | 0.9 s | 0.9 s | 0 ms |   0 |       0.9 s |
+| Contact FR     |         100 |           100 |              100 | 100 | 1.0 s | 1.0 s | 0 ms |   0 |       1.0 s |
 
 ## Verification Des En-Tetes HTTP
 
@@ -123,12 +123,12 @@ Rapports generes :
 - `var/audits/lighthouse/prod-experiences-fr-after-cache.report.html`
 - `var/audits/lighthouse/prod-contact-fr-after-cache.report.html`
 
-| Page | Performance | Accessibilite | Bonnes pratiques | SEO | FCP | LCP | TBT | CLS | Speed Index | Cache TTL |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| Accueil FR | 100 | 100 | 100 | 100 | 0.9 s | 0.9 s | 50 ms | 0 | 0.9 s | 0 ressource signalee |
-| Projets FR | 100 | 100 | 100 | 100 | 0.9 s | 0.9 s | 0 ms | 0 | 0.9 s | 0 ressource signalee |
-| Experiences FR | 100 | 100 | 100 | 100 | 0.9 s | 0.9 s | 0 ms | 0 | 0.9 s | 0 ressource signalee |
-| Contact FR | 100 | 100 | 100 | 100 | 0.9 s | 0.9 s | 0 ms | 0 | 0.9 s | 0 ressource signalee |
+| Page           | Performance | Accessibilite | Bonnes pratiques | SEO |   FCP |   LCP |   TBT | CLS | Speed Index | Cache TTL            |
+| -------------- | ----------: | ------------: | ---------------: | --: | ----: | ----: | ----: | --: | ----------: | -------------------- |
+| Accueil FR     |         100 |           100 |              100 | 100 | 0.9 s | 0.9 s | 50 ms |   0 |       0.9 s | 0 ressource signalee |
+| Projets FR     |         100 |           100 |              100 | 100 | 0.9 s | 0.9 s |  0 ms |   0 |       0.9 s | 0 ressource signalee |
+| Experiences FR |         100 |           100 |              100 | 100 | 0.9 s | 0.9 s |  0 ms |   0 |       0.9 s | 0 ressource signalee |
+| Contact FR     |         100 |           100 |              100 | 100 | 0.9 s | 0.9 s |  0 ms |   0 |       0.9 s | 0 ressource signalee |
 
 Points de controle :
 

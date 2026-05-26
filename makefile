@@ -39,6 +39,8 @@ check:
 	php bin/console lint:twig templates
 	@echo "==> Symfony container"
 	php bin/console lint:container
+	@echo "==> Markdown format"
+	npm run lint:md
 	@echo "==> CSS lint"
 	npx stylelint "assets/styles/**/*.css"
 	@echo "==> JavaScript lint"

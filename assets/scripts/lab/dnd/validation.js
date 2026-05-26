@@ -297,6 +297,7 @@ function getPlayerFields(playerItem) {
 
 function hasStartedPlayer(playerItem) {
     return Array.from(playerItem.querySelectorAll('input'))
+        .filter(input => input.dataset.playerField !== 'side')
         .some(input => input.value.trim() !== '' || input.validity?.badInput);
 }
 

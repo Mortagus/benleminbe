@@ -8,7 +8,6 @@ These soft skills have been built through more than 15 years of experience worki
 
 The skills listed below complement technical expertise and reflect the ability to work effectively within real-world software development environments.
 
-
 ---
 
 # 1. Analytical Thinking
@@ -37,7 +36,6 @@ This includes:
 - proposing pragmatic improvements
 - balancing technical quality with project constraints
 
-
 ---
 
 # 2. Adaptability
@@ -61,7 +59,6 @@ Ability to adapt to different types of organizations:
 - digital agencies
 - product teams
 - long-term platform maintenance teams.
-
 
 ---
 
@@ -90,7 +87,6 @@ Regular collaboration with:
 
 This requires the ability to align technical work with business requirements.
 
-
 ---
 
 # 4. Communication
@@ -108,7 +104,6 @@ Examples include:
 ## Clear Problem Explanation
 
 Ability to describe complex technical problems in a structured and understandable way, facilitating collaboration and faster resolution.
-
 
 ---
 
@@ -135,7 +130,6 @@ Ability to balance:
 
 This mindset is essential when working on evolving production platforms. :contentReference[oaicite:2]{index=2}
 
-
 ---
 
 # 6. Ownership & Responsibility
@@ -153,7 +147,6 @@ Typical responsibilities include:
 ## Long-Term System Thinking
 
 Focus on improving maintainability and reducing technical complexity over time.
-
 
 ---
 
@@ -181,7 +174,6 @@ This activity involves:
 
 This experience reinforces the ability to communicate technical ideas clearly.
 
-
 ---
 
 # 8. Learning & Continuous Improvement
@@ -199,7 +191,6 @@ Examples include:
 ## Self-Reflection
 
 Ability to evaluate past technical decisions and improve approaches in future projects.
-
 
 ---
 
@@ -220,7 +211,6 @@ Working style based on:
 ## Reliability in Professional Contexts
 
 Consistent delivery of work within team environments and client projects.
-
 
 ---
 

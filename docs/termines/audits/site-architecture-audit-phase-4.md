@@ -73,11 +73,11 @@ Responsabilites actuelles :
 
 - charger le CSS global via `styles/app.css` ;
 - activer les comportements globaux :
-  - menu mobile ;
-  - changement de theme ;
-  - tracking du telechargement CV ;
-  - sommaire des pages longues ;
-  - indicateur de progression de lecture.
+    - menu mobile ;
+    - changement de theme ;
+    - tracking du telechargement CV ;
+    - sommaire des pages longues ;
+    - indicateur de progression de lecture.
 
 Constat :
 
@@ -278,12 +278,12 @@ Le module DnD est le morceau JavaScript le plus dense du site.
 ### Forces
 
 - les responsabilites sont deja decoupees par fichier :
-  - joueurs ;
-  - monstres ;
-  - initiative ;
-  - ordre de tour ;
-  - regles ;
-  - validation ;
+    - joueurs ;
+    - monstres ;
+    - initiative ;
+    - ordre de tour ;
+    - regles ;
+    - validation ;
 - le point d'entree `dnd_initiative.js` joue un role d'orchestrateur ;
 - le module est separe du JavaScript public global ;
 - le code reste comprehensible malgre la densite fonctionnelle.

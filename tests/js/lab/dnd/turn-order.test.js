@@ -72,6 +72,44 @@ describe('turn order rendering', () => {
         expect(onToggleTurnDone).toHaveBeenNthCalledWith(2, 'player-1');
     });
 
+    test('renders side classes and legendary markers', async () => {
+        const { renderRoundOrder } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const turnOrderList = new TestElement('ol');
+        const turnOrderPlaceholder = new TestElement('div');
+
+        renderRoundOrder(
+            turnOrderList,
+            turnOrderPlaceholder,
+            [
+                createTurn({
+                    id: 'ally-1',
+                    name: 'Lia',
+                    side: 'ally',
+                    initiative: 14,
+                }),
+                createTurn({
+                    id: 'boss-1',
+                    type: 'monster',
+                    name: 'Dragon',
+                    side: 'hostile',
+                    isLegendary: true,
+                    initiative: 20,
+                }),
+            ],
+            {},
+        );
+
+        const allyItem = turnOrderList.children[0];
+        const bossItem = turnOrderList.children[1];
+
+        expect(allyItem.classList.contains('turn-order-item--side-ally')).toBe(true);
+        expect(allyItem.querySelector('.turn-order-item__legendary-badge').hidden).toBe(true);
+        expect(bossItem.classList.contains('turn-order-item--legendary')).toBe(true);
+        expect(bossItem.classList.contains('turn-order-item--side-hostile')).toBe(true);
+        expect(bossItem.querySelector('.turn-order-item__legendary-badge').hidden).toBe(false);
+        expect(bossItem.querySelector('.turn-order-item__legendary-badge').textContent).toBe('Boss');
+    });
+
     test('moves turns through the rendered next button', async () => {
         const { renderRoundOrder } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
         const turnOrderList = new TestElement('ol');

@@ -1,6 +1,7 @@
 import {
     createEncounterSnapshotDto,
     ENCOUNTER_SNAPSHOT_VERSION,
+    LEGACY_ENCOUNTER_SNAPSHOT_VERSION,
     restoreEncounterFromSnapshot,
 } from './dtos.js';
 
@@ -328,7 +329,7 @@ export class EncounterPersistence {
             };
         }
 
-        if (snapshot.version !== ENCOUNTER_SNAPSHOT_VERSION) {
+        if (![LEGACY_ENCOUNTER_SNAPSHOT_VERSION, ENCOUNTER_SNAPSHOT_VERSION].includes(snapshot.version)) {
             const versionMessage = snapshot.version > ENCOUNTER_SNAPSHOT_VERSION
                 ? 'La sauvegarde locale a été créée avec une version plus récente du tracker.'
                 : 'La sauvegarde locale a été créée avec une version non prise en charge du tracker.';

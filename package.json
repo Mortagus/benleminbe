@@ -9,6 +9,7 @@
     },
     "scripts": {
         "format:css": "prettier --write \"assets/styles/**/*.css\"",
+        "lint:md": "prettier --check \"README.md\" \"AGENTS.md\" \"docs/**/*.md\"",
         "lint:js": "eslint \"assets/**/*.js\" \"tests/js/**/*.js\" \"vitest.config.mjs\"",
         "check:js": "npm run lint:js && npm run test:js",
         "lint:css": "stylelint \"assets/styles/**/*.css\" --fix",

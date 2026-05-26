@@ -20,6 +20,7 @@ describe('players panel data mapping', () => {
         const playerList = createPlayerList([
             createPlayerItem({
                 name: createInput('Lia'),
+                side: createSideSelect('ally'),
                 'armor-class': createInput('15'),
                 'current-hit-points': createInput('18'),
                 'base-hit-points': createInput('20'),
@@ -27,6 +28,7 @@ describe('players panel data mapping', () => {
             }),
             createPlayerItem({
                 name: createInput(''),
+                side: createSideSelect('party'),
                 'armor-class': createInput(''),
                 'current-hit-points': createInput(''),
                 'base-hit-points': createInput(''),
@@ -34,6 +36,7 @@ describe('players panel data mapping', () => {
             }),
             createPlayerItem({
                 name: createInput('Borin'),
+                side: createSideSelect('neutral'),
                 'armor-class': createInput('17'),
                 'current-hit-points': createInput('22'),
                 'base-hit-points': createInput('24'),
@@ -46,6 +49,7 @@ describe('players panel data mapping', () => {
                 id: 'player-1',
                 type: 'player',
                 name: 'Lia',
+                side: 'ally',
                 armorClass: 15,
                 currentHitPoints: 18,
                 baseHitPoints: 20,
@@ -58,6 +62,7 @@ describe('players panel data mapping', () => {
                 id: 'player-2',
                 type: 'player',
                 name: 'Borin',
+                side: 'neutral',
                 armorClass: 17,
                 currentHitPoints: 22,
                 baseHitPoints: 24,
@@ -97,6 +102,7 @@ describe('players panel data mapping', () => {
                 id: 'player-1',
                 type: 'player',
                 name: 'Lyriel Selthir',
+                side: 'party',
                 armorClass: 15,
                 currentHitPoints: 18,
                 baseHitPoints: 18,
@@ -240,6 +246,7 @@ describe('players panel data mapping', () => {
         const onPlayersChange = vi.fn();
         const playerItem = createPanelPlayerItem({
             name: createInput('Lia'),
+            side: createSideSelect('party'),
             'armor-class': createInput('15'),
             'current-hit-points': createInput('18'),
             'base-hit-points': createInput('20'),
@@ -255,19 +262,23 @@ describe('players panel data mapping', () => {
 
         expect(encounter.players[0]).toMatchObject({
             name: 'Lia',
+            side: 'party',
             initiative: 12,
             roll: 12,
         });
 
         playerItem.inputs.initiative.value = '16';
         playerItem.inputs.initiative.dispatchEvent({ type: 'input' });
+        playerItem.inputs.side.value = 'ally';
+        playerItem.inputs.side.dispatchEvent({ type: 'change' });
 
         expect(encounter.players[0]).toMatchObject({
             name: 'Lia',
+            side: 'ally',
             initiative: 16,
             roll: 16,
         });
-        expect(onPlayersChange).toHaveBeenCalledTimes(2);
+        expect(onPlayersChange).toHaveBeenCalledTimes(3);
     });
 
     test('hydrates restored players from the encounter snapshot', () => {
@@ -283,6 +294,7 @@ describe('players panel data mapping', () => {
                 id: 'player-lyriel',
                 type: 'player',
                 name: 'Lyriel Selthir',
+                side: 'ally',
                 armorClass: 14,
                 currentHitPoints: 18,
                 baseHitPoints: 21,
@@ -313,6 +325,7 @@ describe('players panel data mapping', () => {
         expect(playerItem.querySelector('[data-player-field="current-hit-points"]').value).toBe('18');
         expect(playerItem.querySelector('[data-player-field="base-hit-points"]').value).toBe('21');
         expect(playerItem.querySelector('[data-player-field="initiative"]').value).toBe('12');
+        expect(playerItem.querySelector('[data-player-field="side"]').value).toBe('ally');
 
         const detailsButton = playerItem.querySelector('[data-player-details-open]');
         expect(detailsButton.disabled).toBe(false);
@@ -388,11 +401,27 @@ function createPlayersDocument(playerItems = [], overrides = {}) {
 }
 
 function createPanelPlayerItem(inputs) {
-    const item = createPlayerItem(inputs);
+    const sideInput = inputs.side ?? createSideSelect('party');
+
+    if (sideInput.value === '') {
+        sideInput.value = 'party';
+    }
+
+    const item = createPlayerItem({
+        side: sideInput,
+        ...inputs,
+    });
     item.appendChild(new TestElement('button', ['player-remove-button']));
 
     return {
         item,
         inputs,
     };
+}
+
+function createSideSelect(value = 'party') {
+    const side = new TestElement('select');
+    side.value = value;
+
+    return side;
 }

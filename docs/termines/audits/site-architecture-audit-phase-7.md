@@ -392,12 +392,12 @@ Recommandations :
 ### Etape 3 - Premier Module Prive
 
 - Creer un module vertical complet :
-  - controller ;
-  - service ;
-  - template ;
-  - styles/scripts si necessaire ;
-  - stockage ;
-  - validations.
+    - controller ;
+    - service ;
+    - template ;
+    - styles/scripts si necessaire ;
+    - stockage ;
+    - validations.
 - Eviter les abstractions tant que le deuxieme module n'existe pas.
 
 ### Etape 4 - Stabilisation Apres Deux Modules

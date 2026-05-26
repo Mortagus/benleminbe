@@ -138,15 +138,15 @@ Structure actuelle :
 - `ProjectProvider` contient la liste des projets, leur ordre et leur experience associee ;
 - `translations/projects.*.yaml` contient les cartes de listing et les fiches detail completes ;
 - `templates/projects/detailed_project.html.twig` rend un schema YAML riche :
-  - meta ;
-  - sections ;
-  - paragraphs ;
-  - list ;
-  - labeled_list ;
-  - groups ;
-  - subsections ;
-  - flow ;
-  - highlight.
+    - meta ;
+    - sections ;
+    - paragraphs ;
+    - list ;
+    - labeled_list ;
+    - groups ;
+    - subsections ;
+    - flow ;
+    - highlight.
 
 Controle effectue :
 
@@ -337,14 +337,14 @@ Recommandation legere :
 
 - Documenter le schema attendu pour `projects.yaml`.
 - Documenter le contrat `ProjectProvider::PROJECTS` :
-  - ordre ;
-  - slug ;
-  - experience associee.
+    - ordre ;
+    - slug ;
+    - experience associee.
 - Documenter le contrat `ExperienceProvider::EXPERIENCES` :
-  - slug ;
-  - translation_key ;
-  - technologies ;
-  - periode courte.
+    - slug ;
+    - translation_key ;
+    - technologies ;
+    - periode courte.
 - Garder les metadonnees projet flexibles.
 
 ### Priorite 3 - Automatiser Si Le Volume Augmente

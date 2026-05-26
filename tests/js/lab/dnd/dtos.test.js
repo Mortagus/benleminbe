@@ -21,6 +21,7 @@ describe('DND DTO helpers', () => {
                 id: 'player-1',
                 type: 'player',
                 name: 'Lia',
+                side: 'ally',
                 armorClass: 15,
                 currentHitPoints: 18,
                 baseHitPoints: 20,
@@ -127,6 +128,7 @@ describe('DND DTO helpers', () => {
                     id: 'player-1',
                     type: 'player',
                     name: 'Lia',
+                    side: 'ally',
                     armorClass: 15,
                     baseHitPoints: 20,
                     currentHitPoints: 18,
@@ -273,6 +275,7 @@ describe('DND DTO helpers', () => {
                     id: 'player-1',
                     type: 'player',
                     name: 'Lia',
+                    side: 'ally',
                     armorClass: 15,
                     baseHitPoints: 20,
                     currentHitPoints: 18,
@@ -313,6 +316,7 @@ describe('DND DTO helpers', () => {
         expect(encounter.players[0]).toMatchObject({
             id: 'player-1',
             name: 'Lia',
+            side: 'ally',
             identity: {
                 race: null,
                 className: null,

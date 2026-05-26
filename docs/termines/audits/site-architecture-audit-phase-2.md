@@ -369,10 +369,10 @@ Lecture possible :
 Recommandation :
 
 - formaliser cette convention :
-  - contenu professionnel : routes localisees ;
-  - endpoints techniques : routes non localisees ;
-  - labs/outils publics : a decider selon besoin UX ;
-  - partie privee future : prefixe dedie, probablement non localise au depart sauf besoin.
+    - contenu professionnel : routes localisees ;
+    - endpoints techniques : routes non localisees ;
+    - labs/outils publics : a decider selon besoin UX ;
+    - partie privee future : prefixe dedie, probablement non localise au depart sauf besoin.
 
 ## Cohérence De Style PHP
 
@@ -393,10 +393,10 @@ Impact :
 Recommandation :
 
 - choisir une convention PHP minimale :
-  - `declare(strict_types=1)` partout dans `src/` ;
-  - booleens/null en minuscules ;
-  - classes applicatives `final` par defaut ;
-  - style d'accolades uniforme.
+    - `declare(strict_types=1)` partout dans `src/` ;
+    - booleens/null en minuscules ;
+    - classes applicatives `final` par defaut ;
+    - style d'accolades uniforme.
 
 Priorite : basse a moyenne, selon envie de maintenir une base tres reguliere.
 

@@ -20,7 +20,7 @@ Les rapports JSON correspondants sont disponibles dans le meme dossier.
 ## Pages Auditees
 
 | Page                     | URL locale                                    |
-|--------------------------|-----------------------------------------------|
+| ------------------------ | --------------------------------------------- |
 | Accueil FR               | `https://127.0.0.1:8000/fr`                   |
 | Projets FR               | `https://127.0.0.1:8000/fr/projects`          |
 | Fiche projet Delcampe FR | `https://127.0.0.1:8000/fr/projects/delcampe` |
@@ -31,7 +31,7 @@ Les rapports JSON correspondants sont disponibles dans le meme dossier.
 ## Scores
 
 | Page                     | Performance | Accessibilite | Bonnes pratiques | SEO |   FCP |   LCP |  TBT | CLS | Speed Index |
-|--------------------------|------------:|--------------:|-----------------:|----:|------:|------:|-----:|----:|------------:|
+| ------------------------ | ----------: | ------------: | ---------------: | --: | ----: | ----: | ---: | --: | ----------: |
 | Accueil FR               |          99 |            95 |              100 |  63 | 1.2 s | 2.0 s | 0 ms |   0 |       1.2 s |
 | Projets FR               |         100 |           100 |              100 |  63 | 1.1 s | 1.8 s | 0 ms |   0 |       1.1 s |
 | Fiche projet Delcampe FR |          99 |            95 |              100 |  63 | 1.2 s | 2.0 s | 0 ms |   0 |       1.4 s |
@@ -217,14 +217,14 @@ Rapports generes :
 - `var/audits/lighthouse/skills-fr-after-a11y.report.html`
 - `var/audits/lighthouse/contact-fr-after-a11y.report.html`
 
-| Page | Performance | Accessibilite | Bonnes pratiques | SEO | FCP | LCP | TBT | CLS | Speed Index |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Accueil FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
-| Projets FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
-| Fiche projet Delcampe FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
-| Experiences FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
-| Competences FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
-| Contact FR | 100 | 100 | 100 | 63 | 1.1 s | 1.8 s | 0 ms | 0 | 1.1 s |
+| Page                     | Performance | Accessibilite | Bonnes pratiques | SEO |   FCP |   LCP |  TBT | CLS | Speed Index |
+| ------------------------ | ----------: | ------------: | ---------------: | --: | ----: | ----: | ---: | --: | ----------: |
+| Accueil FR               |          99 |           100 |              100 |  63 | 1.2 s | 2.0 s | 0 ms |   0 |       1.2 s |
+| Projets FR               |          99 |           100 |              100 |  63 | 1.2 s | 2.0 s | 0 ms |   0 |       1.2 s |
+| Fiche projet Delcampe FR |          99 |           100 |              100 |  63 | 1.2 s | 2.0 s | 0 ms |   0 |       1.2 s |
+| Experiences FR           |          99 |           100 |              100 |  63 | 1.2 s | 2.0 s | 0 ms |   0 |       1.2 s |
+| Competences FR           |          99 |           100 |              100 |  63 | 1.2 s | 2.0 s | 0 ms |   0 |       1.2 s |
+| Contact FR               |         100 |           100 |              100 |  63 | 1.1 s | 1.8 s | 0 ms |   0 |       1.1 s |
 
 Points de controle :
 
@@ -252,14 +252,14 @@ Rapports generes :
 - `var/audits/lighthouse/skills-fr-after-css-split.report.html`
 - `var/audits/lighthouse/contact-fr-after-css-split.report.html`
 
-| Page | Performance | Accessibilite | Bonnes pratiques | SEO | FCP | LCP | TBT | CLS | Speed Index |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Accueil FR | 100 | 100 | 100 | 63 | 1.1 s | 1.1 s | 70 ms | 0 | 1.1 s |
-| Projets FR | 100 | 100 | 100 | 63 | 1.0 s | 1.7 s | 60 ms | 0 | 1.0 s |
-| Fiche projet Delcampe FR | 99 | 100 | 100 | 63 | 1.2 s | 2.0 s | 0 ms | 0 | 1.2 s |
-| Experiences FR | 100 | 100 | 100 | 63 | 1.1 s | 1.8 s | 0 ms | 0 | 1.1 s |
-| Competences FR | 100 | 100 | 100 | 63 | 1.1 s | 1.7 s | 30 ms | 0 | 1.1 s |
-| Contact FR | 100 | 100 | 100 | 63 | 0.9 s | 0.9 s | 50 ms | 0 | 0.9 s |
+| Page                     | Performance | Accessibilite | Bonnes pratiques | SEO |   FCP |   LCP |   TBT | CLS | Speed Index |
+| ------------------------ | ----------: | ------------: | ---------------: | --: | ----: | ----: | ----: | --: | ----------: |
+| Accueil FR               |         100 |           100 |              100 |  63 | 1.1 s | 1.1 s | 70 ms |   0 |       1.1 s |
+| Projets FR               |         100 |           100 |              100 |  63 | 1.0 s | 1.7 s | 60 ms |   0 |       1.0 s |
+| Fiche projet Delcampe FR |          99 |           100 |              100 |  63 | 1.2 s | 2.0 s |  0 ms |   0 |       1.2 s |
+| Experiences FR           |         100 |           100 |              100 |  63 | 1.1 s | 1.8 s |  0 ms |   0 |       1.1 s |
+| Competences FR           |         100 |           100 |              100 |  63 | 1.1 s | 1.7 s | 30 ms |   0 |       1.1 s |
+| Contact FR               |         100 |           100 |              100 |  63 | 0.9 s | 0.9 s | 50 ms |   0 |       0.9 s |
 
 Controle reseau :
 

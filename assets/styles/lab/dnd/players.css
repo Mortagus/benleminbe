@@ -16,7 +16,7 @@
 
 .dnd-initiative-page .player-item {
     display: grid;
-    grid-template-columns: minmax(8.5rem, 1.45fr) 3.75rem minmax(8rem, 1fr) 3.75rem auto;
+    grid-template-columns: minmax(3.25rem, 0.55fr) minmax(8.5rem, 1.45fr) 3.75rem minmax(8rem, 1fr) 3.75rem auto;
     gap: 0.55rem;
     align-items: end;
 
@@ -39,7 +39,8 @@
     font-weight: 700;
 }
 
-.dnd-initiative-page .player-field input {
+.dnd-initiative-page .player-field input,
+.dnd-initiative-page .player-field select {
     width: 100%;
     padding: 0.42rem 0.5rem;
     background: var(--bg-soft);
@@ -47,6 +48,19 @@
     border-radius: 0.5rem;
     color: var(--text);
     font: inherit;
+}
+
+.dnd-initiative-page .player-field select {
+    appearance: none;
+}
+
+.dnd-initiative-page .player-field--side select {
+    width: 3.25rem;
+    padding-inline: 0.25rem;
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0;
 }
 
 .dnd-initiative-page .player-field input[type="number"] {

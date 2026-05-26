@@ -40,16 +40,20 @@ The work focused on building a database structure and implementing scripts capab
 ## Technologies Used
 
 Languages:
+
 - Perl
 
 Database:
+
 - MySQL
 
 Environment:
+
 - Linux
 - Windows
 
 Tools:
+
 - NetBeans
 - PhpMyAdmin
 
@@ -106,26 +110,32 @@ The system was progressively developed and improved over several years, based on
 ## Technologies Used
 
 Backend:
+
 - PHP
 
 Frontend:
+
 - HTML
 - CSS
 - JavaScript
 - jQuery
 
 Frameworks:
+
 - Symfony 2
 - Bootstrap
 
 Database:
+
 - MySQL
 
 Environment:
+
 - Windows
 - XAMPP
 
 Tools:
+
 - NetBeans
 - PhpMyAdmin
 - Tortoise SVN first, Git later
@@ -180,19 +190,24 @@ The systems handled the automated generation of downloadable documents and the m
 ## Technologies Used
 
 Backend:
+
 - PHP
 
 Libraries:
+
 - PDFLib
 
 Database:
+
 - MySQL
 - MongoDB
 
 Environment:
+
 - Linux
 
 Tools:
+
 - Eclipse
 - PhpMyAdmin
 - Git
@@ -249,19 +264,24 @@ The missions were carried out in collaboration with internal development teams a
 ## Technologies Used
 
 Languages
+
 - PHP 5.6 / 7
 
 Frameworks
+
 - Symfony 2
 - Symfony 3
 
 Databases
+
 - MariaDB
 
 Search Engine
+
 - Solr
 
 Frontend
+
 - HTML
 - CSS
 - JavaScript
@@ -270,11 +290,13 @@ Frontend
 ## Development Environment
 
 Tools
+
 - Git
 - Gitflow
 - Atlassian Suite (Jira / Confluence)
 
 Infrastructure
+
 - Docker (used for development/testing environments)
 
 ## Client Missions
@@ -284,6 +306,7 @@ Infrastructure
 Logistics and supply chain management platform.
 
 Main activities:
+
 - backend development on existing PHP applications
 - maintenance and implementation of new features
 
@@ -299,6 +322,7 @@ PHP, Symfony, MariaDB
 Media company operating several news platforms and digital services.
 
 Main activities:
+
 - backend development on Symfony applications
 - maintenance and evolution of existing systems
 - collaboration with development teams on platform improvements
@@ -358,10 +382,12 @@ Projects were often delivered under tight deadlines in a fast-paced agency envir
 ## Technologies Used
 
 Languages
+
 - PHP
 - JavaScript
 
 Frameworks / CMS
+
 - Laravel
 - Drupal
 - WordPress
@@ -369,16 +395,19 @@ Frameworks / CMS
 - Zend
 
 Frontend
+
 - HTML
 - CSS
 - jQuery
 
 Databases
+
 - MySQL
 
 ## Development Environment
 
 Tools
+
 - Git
 - Atlassian Suite (Jira / Confluence)
 
@@ -400,9 +429,11 @@ Digital marketing platforms and web applications
 # Blubird
 
 ## Period
+
 April 2018 – July 2019
 
 ## Role
+
 Backend PHP Developer / Consultant
 
 ## Company Overview
@@ -429,15 +460,18 @@ The missions were carried out in collaboration with internal development teams a
 ## Technologies Used
 
 Backend:
+
 - PHP (5.3 / 7)
 - Symfony 3
 - REST / SOAP APIs
 
 Databases:
+
 - MySQL
 - SQL Server
 
 Tools & Environment:
+
 - Docker
 - Jenkins
 - GitLab
@@ -453,6 +487,7 @@ Tools & Environment:
 Online banking platforms including public, private and internal applications.
 
 Main activities:
+
 - maintenance and technical improvements on existing PHP platforms
 - backend development on several banking-related applications
 
@@ -471,6 +506,7 @@ SVN, Jenkins, Jira, Confluence
 Online marketplace platform dedicated to collectors and auctions.
 
 Main activities:
+
 - backend development in an existing Symfony application
 - maintenance and feature development
 - integration with APIs and services
@@ -528,37 +564,45 @@ The work involved understanding existing systems, implementing new features, mai
 ## Technologies Used
 
 Languages
+
 - PHP
 - JavaScript
 - Go
 
 Frameworks / CMS
+
 - Drupal 7, 8, 10
 - Gin
 
 Frontend
+
 - HTML
 - CSS
 - jQuery
 
 Databases
+
 - MySQL
 - MariaDB
 
 ## Development Environment
 
 Tools
+
 - Git
 - Atlassian Suite (Jira / Confluence)
 - Azure DevOps
 
 Infrastructure
+
 - Docker
 
 Architecture
+
 - Microservices
 
 Methodology
+
 - Agile development processes (depending on the client project)
 
 ## Client Missions
@@ -580,6 +624,7 @@ Detailed descriptions of major projects are available in the `projects/` directo
 Media company operating several digital platforms.
 
 Main activities:
+
 - backend development on existing PHP/Symfony applications
 - participation in the redesign of authentication services
 - contribution to microservice-based architecture

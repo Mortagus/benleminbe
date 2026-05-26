@@ -99,7 +99,7 @@ assets/pages/legal.js
 Contenu attendu :
 
 ```js
-import '../styles/pages/home.css';
+import "../styles/pages/home.css";
 ```
 
 Pourquoi des entrypoints JS ?
@@ -171,19 +171,19 @@ Pattern recommande :
 
 Mapping recommande :
 
-| Template | Entrypoint |
-| --- | --- |
-| `home/index.html.twig` | `page_home` |
-| `pages/about.html.twig` | `page_about` |
-| `pages/contact.html.twig` | `page_contact` |
-| `pages/card.html.twig` | `page_card` |
-| `pages/skills.html.twig` | `page_skills` |
-| `pages/legal_notice.html.twig` | `page_legal` |
-| `pages/privacy_policy.html.twig` | `page_legal` |
-| `pages/terms_and_conditions.html.twig` | `page_legal` |
-| `projects/index.html.twig` | `page_projects` |
-| `projects/detailed_project.html.twig` | `page_project_detail` |
-| `experiences/index.html.twig` | `page_experiences` |
+| Template                                    | Entrypoint               |
+| ------------------------------------------- | ------------------------ |
+| `home/index.html.twig`                      | `page_home`              |
+| `pages/about.html.twig`                     | `page_about`             |
+| `pages/contact.html.twig`                   | `page_contact`           |
+| `pages/card.html.twig`                      | `page_card`              |
+| `pages/skills.html.twig`                    | `page_skills`            |
+| `pages/legal_notice.html.twig`              | `page_legal`             |
+| `pages/privacy_policy.html.twig`            | `page_legal`             |
+| `pages/terms_and_conditions.html.twig`      | `page_legal`             |
+| `projects/index.html.twig`                  | `page_projects`          |
+| `projects/detailed_project.html.twig`       | `page_project_detail`    |
+| `experiences/index.html.twig`               | `page_experiences`       |
 | `experiences/detailed_experience.html.twig` | `page_experience_detail` |
 
 Cas particulier :

@@ -9,7 +9,7 @@ Ce document décrit le code JavaScript actuel de l'outil `DnD Initiative Tracker
 | `assets/scripts/lab/dnd/dnd_initiative.js`  | Point d'entrée de l'outil. Crée l'état de rencontre, initialise les panneaux, orchestre la génération de l'ordre du tour et déclenche la persistance locale. |
 | `assets/scripts/lab/dnd/encounter-state.js` | Module d'état et de règles métier. Crée et modifie la rencontre, les monstres, les joueurs, les règles et l'ordre du tour.                                    |
 | `assets/scripts/lab/dnd/monsters.js`        | Panneau DOM des monstres. Crée les emplacements, rend la liste depuis `encounter.monsters`, utilise le catalogue de `EncounterState` et gère sélection/PV/initiative. |
-| `assets/scripts/lab/dnd/players.js`         | Panneau DOM des joueurs. Ajoute/supprime des joueurs, gère la modale d'import XML, conserve la réponse importée sur la ligne, ouvre la fiche détaillée à la demande, synchronise `encounter.players` et réhydrate les lignes depuis un snapshot. |
+| `assets/scripts/lab/dnd/players.js`         | Panneau DOM des joueurs. Ajoute/supprime des joueurs, gère la modale d'import XML, conserve la réponse importée sur la ligne, ouvre la fiche détaillée à la demande, synchronise `encounter.players`, préserve le modificateur d'initiative importé et réhydrate les lignes depuis un snapshot. |
 | `assets/scripts/lab/dnd/turn-order.js`      | Panneau DOM de l'ordre du tour. Rend la liste des tours, gère le bouton de génération, les tours joués, les déplacements, le drag and drop et l'aide clavier. |
 | `assets/scripts/lab/dnd/rules.js`           | Panneau DOM des règles. Synchronise les checkboxes de règles avec l'état, ouvre/ferme la modale.                                                              |
 | `assets/scripts/lab/dnd/validation.js`      | Validation des entrées et affichage des erreurs. Les panneaux l'appellent avec des noeuds DOM, puis les règles travaillent sur des données normalisées.         |
@@ -329,7 +329,7 @@ Transformation:
 1. `getPlayerActors(playerList)` lit les `.player-item`.
 2. `getStartedPlayerForms()` ignore les lignes totalement vides.
 3. `readPlayerForm()` extrait les valeurs via les attributs `data-player-field`.
-4. `createPlayerActor()` convertit ces valeurs en acteur stocké dans `encounter.players`.
+4. `createPlayerActor()` convertit ces valeurs en acteur stocké dans `encounter.players`, puis réutilise le modificateur d'initiative de l'import XML quand il existe.
 5. Les acteurs sans nom après fallback sont ignorés.
 
 ```js
@@ -342,12 +342,13 @@ Transformation:
     baseHitPoints: 20,
     initiative: 12,
     roll: 12,
+    initiativeModifier: 0,
     done: false,
     importData: null,
 }
 ```
 
-Particularité: pour un joueur, `initiative` et `roll` valent actuellement la même valeur saisie. Lorsqu'un joueur vient d'un import XML, `importData` conserve les warnings et le payload brut utile à la modale de fiche et à la future persistance.
+Particularité: pour un joueur, `initiative` et `roll` valent actuellement la même valeur saisie. Lorsqu'un joueur vient d'un import XML, `importData` conserve les warnings et le payload brut utile à la modale de fiche et à la future persistance, et le modificateur d'initiative est repris pour le départage des égalités.
 
 ### Monstres
 
@@ -514,7 +515,7 @@ En cas de tour bonus, `id` devient par exemple `player-critical-turn-1`, tandis 
 | `bindExistingPlayerItems()`    | Brancher les joueurs présents au chargement.                                                                |
 | `getPlayerActors()`            | Transformer les lignes DOM en acteurs joueur.                                                               |
 | `readPlayerForm()`             | Lire les valeurs d'une ligne joueur depuis les champs `data-player-field`.                                  |
-| `createPlayerActor()`          | Convertir une ligne formulaire normalisée en acteur consommé par `EncounterState`.                          |
+| `createPlayerActor()`          | Convertir une ligne formulaire normalisée en acteur consommé par `EncounterState`, en préservant le modificateur d'initiative importé quand il existe. |
 | `refreshPlayerAccessibility()` | Recalculer ids, labels et aria-labels selon l'ordre des joueurs.                                            |
 
 ### `turn-order.js`
@@ -646,7 +647,7 @@ Règles de persistance validées:
 | Ordre d'exécution                  | `dnd_initiative.js`                                                                              | `turnOrderPanel` est créé avant `monstersPanel` et `playersPanel`, car leurs callbacks rafraîchissent son rendu. | Ce choix est porté par `DndInitiativeTrackerApp.start()`, ce qui rend l'enchaînement plus visible. | Garder cet ordre explicite pendant la conversion progressive des panneaux en classes.                                                                                         |
 | Ordre d'exécution                  | `rules.js` + `encounter-state.js`                                                                | Changer une règle appelle `refresh()` mais pas `buildRoundOrder()`.                                         | Un lecteur peut croire que l'ordre existant est recalculé.                                        | Documenter explicitement: les règles sont appliquées à la prochaine génération, ou décider plus tard avec test si le recalcul immédiat est souhaité.                          |
 | Duplication raisonnable            | `players.js` et `validation.js` / `hasStartedPlayer()`, `getPlayerInput()`                       | Deux helpers similaires existent dans deux modules.                                                         | Petite duplication, mais elle évite pour l'instant un couplage artificiel.                        | Laisser tel quel ou extraire seulement si une troisième duplication apparaît.                                                                                                 |
-| Frontière DOM -> état              | `players.js` / `getPlayerActors()`                                                               | La transformation passe par `readPlayerForm()` puis `createPlayerActor()`.                                  | La frontière est plus visible, mais la forme finale reste une structure libre.                    | Utiliser cette zone comme point de départ pour la future passe DTO joueur.                                                                                                    |
+| Frontière DOM -> état              | `players.js` / `getPlayerActors()`                                                               | La transformation passe par `readPlayerForm()` puis `createPlayerActor()`.                                  | La frontière est plus visible, mais la forme finale reste une structure libre; le modificateur d'initiative importé est conservé pour les acteurs issus d'un import. | Utiliser cette zone comme point de départ pour la future passe DTO joueur.                                                                                                    |
 | Logique métier mélangée au DOM     | `validation.js` / `validateEncounterActors()`                                                    | La règle "au moins un acteur" est évaluée depuis le DOM, pas depuis `encounter`.                            | La source de vérité varie selon le moment du flux.                                                | Documenter cette exception: avant génération, le DOM est validé pour éviter un état non synchronisé.                                                                          |
 | Événements DOM                     | `turn-order.js` / `bindTurnOrderItemEvents()`                                                    | Les écouteurs d'une entrée sont regroupés par type: toggle, clavier, drag and drop.                         | Le lecteur doit toujours comprendre que `replaceChildren()` supprime les anciens items et listeners. | Garder ces trois groupes locaux tant qu'ils restent courts.                                                                                                                  |
 | État global difficile à suivre     | `dnd_initiative.js` / `encounter`                                                                | L'état est mutable et partagé par tous les panneaux.                                                        | Les mutations passent par plusieurs callbacks, surtout entre panneaux.                            | Ajouter au document ou au code un résumé "source de vérité: `encounter`; source temporaire joueurs: DOM".                                                                     |

@@ -338,7 +338,7 @@ export function bindExistingPlayerItems(playerList, onPlayerListChange, onPlayer
 // The future DTO pass should start from this mapping instead of reading DOM fields elsewhere.
 export function getPlayerActors(playerList) {
     return getStartedPlayerForms(playerList)
-        .map((playerForm, index) => createPlayerActor(playerForm, index))
+        .map((playerEntry, index) => createPlayerActor(playerEntry.playerItem, playerEntry.playerForm, index))
         .filter(actor => actor.name.trim() !== '');
 }
 
@@ -367,7 +367,10 @@ function getStartedPlayerForms(playerList) {
 
     return Array.from(playerItems)
         .filter(playerItem => hasStartedPlayer(playerItem))
-        .map(readPlayerForm);
+        .map(playerItem => ({
+            playerItem,
+            playerForm: readPlayerForm(playerItem),
+        }));
 }
 
 function readPlayerForm(playerItem) {
@@ -381,7 +384,7 @@ function readPlayerForm(playerItem) {
     };
 }
 
-function createPlayerActor(playerForm, index) {
+function createPlayerActor(playerItem, playerForm, index) {
     const playerNumber = index + 1;
     const initiative = normalizeNullablePlayerNumber(playerForm.initiative);
 
@@ -394,6 +397,7 @@ function createPlayerActor(playerForm, index) {
         baseHitPoints: Number(playerForm.baseHitPoints || 0),
         initiative,
         roll: initiative,
+        initiativeModifier: getPlayerInitiativeModifier(playerItem),
         done: false,
     };
 
@@ -402,6 +406,22 @@ function createPlayerActor(playerForm, index) {
     }
 
     return playerActor;
+}
+
+function getPlayerInitiativeModifier(playerItem) {
+    const importedPlayer = playerItem.playerDetails?.player
+        ?? playerItem.playerImportData?.player
+        ?? null;
+
+    if (typeof importedPlayer?.initiativeModifier === 'number') {
+        return importedPlayer.initiativeModifier;
+    }
+
+    const dexterity = importedPlayer?.abilityScores?.dexterity
+        ?? importedPlayer?.dexterity
+        ?? importedPlayer?.dex;
+
+    return getAbilityModifier(dexterity);
 }
 
 function fillPlayerItemFromEncounterPlayer(playerItem, player) {
@@ -522,6 +542,16 @@ function normalizeNullablePlayerNumber(value) {
     const number = Number(normalized);
 
     return Number.isFinite(number) ? number : null;
+}
+
+function getAbilityModifier(score) {
+    const normalizedScore = normalizeNullablePlayerNumber(score);
+
+    if (normalizedScore === null) {
+        return 0;
+    }
+
+    return Math.floor((normalizedScore - 10) / 2);
 }
 
 function openPlayerDetailsModal(playerDetailsModal, modalContent) {

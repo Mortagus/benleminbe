@@ -157,6 +157,23 @@ describe('encounter state', () => {
         ]);
     });
 
+    test('breaks tied player initiatives by initiative modifier when the rule is active', () => {
+        const encounter = createTestEncounter();
+
+        setRuleActive(encounter, 'break-initiative-ties-with-dexterity', true);
+        setPlayers(encounter, [
+            createPlayer({ id: 'player-1', name: 'Lia', initiative: 12, roll: 12, initiativeModifier: 4 }),
+            createPlayer({ id: 'player-2', name: 'Borin', initiative: 12, roll: 12, initiativeModifier: 1 }),
+        ]);
+
+        buildRoundOrder(encounter);
+
+        expect(encounter.turnOrder.map(actor => actor.id)).toEqual([
+            'player-1',
+            'player-2',
+        ]);
+    });
+
     test('uses zero as the current player dexterity tie breaker', () => {
         const encounter = createTestEncounter();
         const rolls = [13];
@@ -282,6 +299,7 @@ function createPlayer(overrides = {}) {
         baseHitPoints: 20,
         initiative: 10,
         roll: 10,
+        initiativeModifier: 0,
         ...overrides,
     };
 }

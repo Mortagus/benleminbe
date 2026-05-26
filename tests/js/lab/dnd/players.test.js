@@ -51,6 +51,7 @@ describe('players panel data mapping', () => {
                 baseHitPoints: 20,
                 initiative: 12,
                 roll: 12,
+                initiativeModifier: 0,
                 done: false,
             },
             {
@@ -62,9 +63,75 @@ describe('players panel data mapping', () => {
                 baseHitPoints: 24,
                 initiative: 8,
                 roll: 8,
+                initiativeModifier: 0,
                 done: false,
             },
         ]);
+    });
+
+    test('keeps the imported player initiative modifier when mapping rows to actors', () => {
+        const playerItem = createPanelPlayerItem({
+            name: createInput('Lyriel Selthir'),
+            'armor-class': createInput('15'),
+            'current-hit-points': createInput('18'),
+            'base-hit-points': createInput('18'),
+            initiative: createInput('12'),
+        });
+
+        playerItem.item.playerDetails = {
+            player: {
+                initiativeModifier: 4,
+                abilityScores: {
+                    dexterity: 16,
+                },
+            },
+            warnings: ['Champ brut conservé.'],
+            raw: {},
+        };
+        playerItem.item.playerImportData = playerItem.item.playerDetails;
+
+        const playerList = createPlayerList([playerItem.item]);
+
+        expect(getPlayerActors(playerList)).toEqual([
+            {
+                id: 'player-1',
+                type: 'player',
+                name: 'Lyriel Selthir',
+                armorClass: 15,
+                currentHitPoints: 18,
+                baseHitPoints: 18,
+                initiative: 12,
+                roll: 12,
+                initiativeModifier: 4,
+                done: false,
+                importData: playerItem.item.playerImportData,
+            },
+        ]);
+    });
+
+    test('derives the imported player initiative modifier from dexterity when needed', () => {
+        const playerItem = createPanelPlayerItem({
+            name: createInput('Lyriel Selthir'),
+            'armor-class': createInput('15'),
+            'current-hit-points': createInput('18'),
+            'base-hit-points': createInput('18'),
+            initiative: createInput('12'),
+        });
+
+        playerItem.item.playerDetails = {
+            player: {
+                abilityScores: {
+                    dexterity: 16,
+                },
+            },
+            warnings: ['Champ brut conservé.'],
+            raw: {},
+        };
+        playerItem.item.playerImportData = playerItem.item.playerDetails;
+
+        const playerList = createPlayerList([playerItem.item]);
+
+        expect(getPlayerActors(playerList)[0].initiativeModifier).toBe(3);
     });
 
     test('starts the panel and synchronizes the initial player list', () => {

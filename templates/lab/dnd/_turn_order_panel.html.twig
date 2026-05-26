@@ -6,30 +6,6 @@
         </div>
 
         <div class="dnd-panel__actions">
-            <div class="dnd-persistence-controls">
-                <p
-                    id="encounterPersistenceStatus"
-                    class="dnd-persistence-status"
-                    aria-live="polite"
-                >
-                    Aucune sauvegarde locale.
-                </p>
-
-                <button
-                    id="restoreEncounterSnapshot"
-                    type="button"
-                    class="dnd-secondary-button dnd-secondary-button--compact"
-                    aria-haspopup="dialog"
-                    aria-controls="encounterRestoreModal"
-                    aria-expanded="false"
-                    aria-label="Restaurer la dernière sauvegarde"
-                    title="Restaurer la dernière sauvegarde"
-                    disabled
-                >
-                    Restaurer
-                </button>
-            </div>
-
             {% include 'lab/dnd/_rules_panels.html.twig' %}
 
             <button id="generateTurnOrder" type="button" class="dnd-secondary-button">
@@ -86,8 +62,12 @@
                     <p>Une sauvegarde compatible est disponible dans ce navigateur.</p>
                 </div>
 
-                <button type="button" class="dnd-secondary-button" data-persistence-close>
-                    Commencer à vide
+                <button
+                    id="resetEncounterSnapshot"
+                    type="button"
+                    class="dnd-secondary-button"
+                >
+                    Réinitialiser
                 </button>
             </header>
 
@@ -109,7 +89,6 @@
             </footer>
         </section>
     </div>
-
     <div
         id="encounterPersistenceErrorModal"
         class="dnd-persistence-modal"

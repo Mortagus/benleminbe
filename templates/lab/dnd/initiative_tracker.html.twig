@@ -23,6 +23,30 @@
                 {% include 'lab/dnd/_turn_order_panel.html.twig' %}
 
             </div>
+
+            <div class="dnd-persistence-controls dnd-persistence-controls--footer">
+                <p
+                    id="encounterPersistenceStatus"
+                    class="dnd-persistence-status"
+                    aria-live="polite"
+                >
+                    Aucune sauvegarde locale.
+                </p>
+
+                <button
+                    id="restoreEncounterSnapshot"
+                    type="button"
+                    class="dnd-secondary-button dnd-secondary-button--compact"
+                    aria-haspopup="dialog"
+                    aria-controls="encounterRestoreModal"
+                    aria-expanded="false"
+                    aria-label="Restaurer la dernière sauvegarde"
+                    title="Restaurer la dernière sauvegarde"
+                    disabled
+                >
+                    Restaurer
+                </button>
+            </div>
         </section>
     </main>
 {% endblock %}

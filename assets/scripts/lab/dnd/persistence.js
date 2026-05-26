@@ -20,6 +20,7 @@ export class EncounterPersistence {
 
         this.statusElement = document.getElementById('encounterPersistenceStatus');
         this.restoreButton = document.getElementById('restoreEncounterSnapshot');
+        this.resetButton = document.getElementById('resetEncounterSnapshot');
         this.restoreModal = document.getElementById('encounterRestoreModal');
         this.restoreModalContent = this.restoreModal?.querySelector('.dnd-persistence-modal__content');
         this.restoreSummary = document.getElementById('encounterRestoreSummary');
@@ -157,6 +158,10 @@ export class EncounterPersistence {
             this.restoreFromSnapshot(result.snapshot);
         });
 
+        this.resetButton?.addEventListener('click', () => {
+            this.resetStoredSnapshot();
+        });
+
         this.restoreCloseButtons.forEach(closeButton => {
             closeButton.addEventListener('click', () => {
                 this.closeRestorePrompt();
@@ -199,14 +204,38 @@ export class EncounterPersistence {
         this.enableRestoreButton();
     }
 
-    closeRestorePrompt() {
+    closeRestorePrompt({ focusRestoreButton = true } = {}) {
         if (this.restoreModal) {
             this.restoreModal.hidden = true;
         }
 
         this.isModalOpen = false;
         this.restoreButton?.setAttribute('aria-expanded', 'false');
-        this.restoreButton?.focus();
+
+        if (focusRestoreButton) {
+            this.restoreButton?.focus();
+        }
+    }
+
+    resetStoredSnapshot() {
+        const storage = this.getStorage();
+
+        if (!storage) {
+            this.openErrorModal(this.createUnavailableStorageMessage('Impossible de réinitialiser la sauvegarde locale.'));
+            return;
+        }
+
+        try {
+            storage.removeItem(DND_INITIATIVE_TRACKER_STORAGE_KEY);
+        } catch (error) {
+            this.openErrorModal(this.createResetErrorMessage(error));
+            return;
+        }
+
+        this.setCurrentSnapshot(null);
+        this.updateStatusMessage(EMPTY_STATUS_MESSAGE);
+        this.disableRestoreButton();
+        this.closeRestorePrompt({ focusRestoreButton: false });
     }
 
     openErrorModal(message) {
@@ -394,6 +423,14 @@ export class EncounterPersistence {
     createSaveErrorMessage(error) {
         return [
             '[DnD Initiative Tracker] Impossible de sauvegarder la rencontre.',
+            `Cle: ${DND_INITIATIVE_TRACKER_STORAGE_KEY}`,
+            `Raison: ${error instanceof Error ? error.message : String(error)}`,
+        ].join('\n');
+    }
+
+    createResetErrorMessage(error) {
+        return [
+            '[DnD Initiative Tracker] Impossible de réinitialiser la sauvegarde locale.',
             `Cle: ${DND_INITIATIVE_TRACKER_STORAGE_KEY}`,
             `Raison: ${error instanceof Error ? error.message : String(error)}`,
         ].join('\n');

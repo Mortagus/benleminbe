@@ -155,6 +155,34 @@ describe('DnD encounter persistence', () => {
         expect(globalThis.document.getElementById('encounterRestoreModal').hidden).toBe(true);
     });
 
+    test('resets the stored snapshot and returns the tracker to the blank state', () => {
+        const encounter = new EncounterState();
+        const snapshot = createEncounterSnapshotDto(new EncounterState(), {
+            savedAt: '2026-05-25T09:00:00.000Z',
+        });
+        const storage = createLocalStorageMock({
+            [DND_INITIATIVE_TRACKER_STORAGE_KEY]: JSON.stringify(snapshot),
+        });
+
+        globalThis.document = createPersistenceDocument();
+        globalThis.localStorage = storage;
+
+        const persistence = new EncounterPersistence(encounter);
+        persistence.start();
+
+        expect(globalThis.document.getElementById('encounterRestoreModal').hidden).toBe(false);
+
+        globalThis.document.getElementById('resetEncounterSnapshot').dispatchEvent({
+            type: 'click',
+        });
+
+        expect(storage.getItem(DND_INITIATIVE_TRACKER_STORAGE_KEY)).toBeNull();
+        expect(globalThis.document.getElementById('encounterRestoreModal').hidden).toBe(true);
+        expect(globalThis.document.getElementById('encounterPersistenceStatus').textContent)
+            .toBe('Aucune sauvegarde locale.');
+        expect(globalThis.document.getElementById('restoreEncounterSnapshot').disabled).toBe(true);
+    });
+
     test('rejects a snapshot with an unsupported version', () => {
         const storage = createLocalStorageMock({
             [DND_INITIATIVE_TRACKER_STORAGE_KEY]: JSON.stringify({
@@ -227,11 +255,11 @@ function createPersistenceDocument() {
     const status = new TestElement('p');
     const restoreButton = new TestElement('button');
     restoreButton.disabled = true;
+    const resetButton = new TestElement('button');
     const restoreModal = new TestElement('div');
     const restoreContent = new TestElement('section');
     const restoreSummary = new TestElement('p');
     const restoreLoadButton = new TestElement('button');
-    const restoreCloseButton = new TestElement('button');
     const restoreBackdrop = new TestElement('div');
     const errorModal = new TestElement('div');
     const errorContent = new TestElement('section');
@@ -244,7 +272,7 @@ function createPersistenceDocument() {
         ? restoreContent
         : null;
     restoreModal.querySelectorAll = selector => selector === '[data-persistence-close]'
-        ? [restoreBackdrop, restoreCloseButton]
+        ? [restoreBackdrop]
         : [];
 
     errorModal.hidden = true;
@@ -263,6 +291,7 @@ function createPersistenceDocument() {
         getElementById: id => ({
             encounterPersistenceStatus: status,
             restoreEncounterSnapshot: restoreButton,
+            resetEncounterSnapshot: resetButton,
             encounterRestoreModal: restoreModal,
             encounterRestoreSummary: restoreSummary,
             encounterRestoreLoad: restoreLoadButton,

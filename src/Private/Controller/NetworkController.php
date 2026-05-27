@@ -562,7 +562,7 @@ final class NetworkController extends AbstractController
 
         $headerLine = (string) array_shift($lines);
         $delimiter = substr_count($headerLine, ';') > substr_count($headerLine, ',') ? ';' : ',';
-        $headers = str_getcsv($this->stripBom($headerLine), $delimiter);
+        $headers = str_getcsv($this->stripBom($headerLine), $delimiter, '"', "\\");
         if ($headers === []) {
             return [];
         }
@@ -574,7 +574,7 @@ final class NetworkController extends AbstractController
                 continue;
             }
 
-            $values = str_getcsv($line, $delimiter);
+            $values = str_getcsv($line, $delimiter, '"', "\\");
             if ($values === []) {
                 continue;
             }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Private;
 
+use App\Entity\Network\Contact;
+use App\Entity\Network\ImportLog;
 use Symfony\Component\DomCrawler\Crawler;
 
 final class NetworkWebTest extends NetworkWebTestCase
@@ -144,6 +146,50 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertSelectorTextContains('.private-list-stack', 'Created and verified');
     }
 
+    public function testImportFlowCreatesContactsAndLogsImport(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+
+        self::assertSame('0', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+        self::assertSame('0', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_import_logs'));
+
+        $crawler = $client->request('GET', '/private/network/import');
+        self::assertResponseIsSuccessful();
+
+        $client->submit($this->fillImportForm($crawler, [
+            'source_label' => 'CSV smoke test',
+            'format' => 'csv',
+            'content' => <<<CSV
+display_name,organization,email,priority,relationship_status,notes,tags
+Import QA,QA Lab,import-qa@example.com,haute,a_relancer,Imported via smoke test,"qa,import"
+CSV,
+        ]));
+
+        self::assertResponseRedirects('/private/network/contacts');
+        $client->followRedirect();
+        self::assertSelectorTextContains('h1', 'Contacts');
+        self::assertSelectorTextContains('.private-list-stack, .private-table, body', 'Import QA');
+
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_import_logs'));
+        self::assertSame('CSV smoke test', (string) $connection->fetchOne('SELECT source_label FROM network_import_logs ORDER BY imported_at DESC LIMIT 1'));
+
+        $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([
+            'email' => 'import-qa@example.com',
+        ]);
+        self::assertInstanceOf(Contact::class, $contact);
+        self::assertSame('Import QA', $contact->getDisplayName());
+
+        $importLog = self::getContainer()->get('doctrine')->getRepository(ImportLog::class)->findOneBy([
+            'sourceLabel' => 'CSV smoke test',
+        ]);
+        self::assertInstanceOf(ImportLog::class, $importLog);
+        self::assertSame(1, $importLog->getTotal());
+        self::assertSame(1, $importLog->getCreated());
+        self::assertSame(0, $importLog->getUpdated());
+    }
+
     /**
      * @param array<string, mixed> $values
      */
@@ -166,6 +212,14 @@ final class NetworkWebTest extends NetworkWebTestCase
     private function fillInteractionForm(Crawler $crawler, array $values)
     {
         return $crawler->selectButton("Enregistrer l'interaction")->form($values);
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     */
+    private function fillImportForm(Crawler $crawler, array $values)
+    {
+        return $crawler->selectButton('Importer')->form($values);
     }
 
     private function extractContactId(string $location): string

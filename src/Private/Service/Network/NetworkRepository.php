@@ -640,7 +640,7 @@ final class NetworkRepository
      */
     private function sortContacts(array $contacts): array
     {
-        usort($contacts, static function (array $left, array $right): int {
+        usort($contacts, function (array $left, array $right): int {
             $priorityDiff = $this->priorityWeight($right['priority']) <=> $this->priorityWeight($left['priority']);
             if ($priorityDiff !== 0) {
                 return $priorityDiff;

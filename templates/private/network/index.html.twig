@@ -1,0 +1,194 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Contacts et réseau{% endblock %}
+
+{% block body %}
+    <section class="private-panel">
+        <header class="private-panel__header private-panel__header--with-action">
+            <div>
+                <p class="private-eyebrow">Outil privé</p>
+                <h1>Contacts et réseau</h1>
+            </div>
+
+            <a class="private-link-button" href="{{ path('app_private_logout') }}">Déconnexion</a>
+        </header>
+
+        {% include 'private/network/_nav.html.twig' with { current_page: 'dashboard' } %}
+
+        <div class="private-grid private-grid--stats">
+            <article class="private-stat-card">
+                <p class="private-stat-card__label">Plateformes</p>
+                <strong>{{ stats.platforms_total }}</strong>
+                <span>{{ stats.platforms_configured }} profil(s) renseigné(s)</span>
+            </article>
+            <article class="private-stat-card">
+                <p class="private-stat-card__label">Contacts</p>
+                <strong>{{ stats.contacts_total }}</strong>
+                <span>{{ stats.contacts_high_priority }} priorité haute</span>
+            </article>
+            <article class="private-stat-card">
+                <p class="private-stat-card__label">Relances</p>
+                <strong>{{ stats.contacts_to_followup }}</strong>
+                <span>à surveiller de près</span>
+            </article>
+        </div>
+
+        <div class="private-actions">
+            <a class="private-link-button" href="{{ path('app_private_network_contact_new') }}">Ajouter un contact</a>
+            <a class="private-link-button" href="{{ path('app_private_network_platform_new') }}">Ajouter une plateforme</a>
+            <a class="private-link-button" href="{{ path('app_private_network_import') }}">Importer</a>
+        </div>
+
+        <div class="private-grid private-grid--two-columns">
+            <section class="private-section-card">
+                <header class="private-section-card__header">
+                    <h2>Plateformes à suivre</h2>
+                    <a href="{{ path('app_private_network_platforms') }}">Voir tout</a>
+                </header>
+
+                {% if platforms is not empty %}
+                    <div class="private-table-wrap">
+                        <table class="private-table">
+                            <thead>
+                                <tr>
+                                    <th>Plateforme</th>
+                                    <th>Statut</th>
+                                    <th>Lien</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for platform in platforms %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ platform.name }}</strong>
+                                            <div class="private-muted">{{ platform.category }}</div>
+                                        </td>
+                                        <td><span class="private-badge">{{ platform.status_label }}</span></td>
+                                        <td>
+                                            {% if platform.profile_url %}
+                                                <a href="{{ platform.profile_url }}" target="_blank" rel="noopener noreferrer">Ouvrir</a>
+                                            {% else %}
+                                                <span class="private-muted">À renseigner</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="private-empty">Aucune plateforme enregistrée pour le moment.</p>
+                {% endif %}
+            </section>
+
+            <section class="private-section-card">
+                <header class="private-section-card__header">
+                    <h2>Contacts prioritaires</h2>
+                    <a href="{{ path('app_private_network_contacts') }}">Voir tout</a>
+                </header>
+
+                {% if contacts is not empty %}
+                    <div class="private-list-stack">
+                        {% for contact in contacts %}
+                            <article class="private-list-item">
+                                <div>
+                                    <strong>{{ contact.display_name }}</strong>
+                                    <div class="private-muted">
+                                        {{ contact.organization ?: 'Sans entreprise renseignée' }}
+                                        {% if contact.role %}
+                                            · {{ contact.role }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="private-list-item__meta">
+                                    <span class="private-badge private-badge--secondary">{{ contact.priority_label }}</span>
+                                    <span class="private-badge">{{ contact.relationship_status_label }}</span>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="private-empty">Aucun contact encore enregistré.</p>
+                {% endif %}
+            </section>
+        </div>
+
+        <div class="private-grid private-grid--two-columns">
+            <section class="private-section-card">
+                <header class="private-section-card__header">
+                    <h2>Entreprises suivies</h2>
+                </header>
+
+                {% if organizations is not empty %}
+                    <div class="private-list-stack">
+                        {% for organization in organizations %}
+                            <article class="private-list-item">
+                                <div>
+                                    <strong>{{ organization.organization }}</strong>
+                                    <div class="private-muted">{{ organization.count }} contact(s)</div>
+                                </div>
+                                <span class="private-muted">
+                                    {% if organization.last_contact_at %}
+                                        Dernier contact : {{ organization.last_contact_at|date('d/m/Y') }}
+                                    {% else %}
+                                        Pas encore de contact
+                                    {% endif %}
+                                </span>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="private-empty">Aucune entreprise encore regroupée.</p>
+                {% endif %}
+            </section>
+
+            <section class="private-section-card">
+                <header class="private-section-card__header">
+                    <h2>Activité récente</h2>
+                </header>
+
+                {% if recent_interactions is not empty %}
+                    <div class="private-list-stack">
+                        {% for interaction in recent_interactions %}
+                            <article class="private-list-item">
+                                <div>
+                                    <strong>{{ interaction.summary ?: 'Interaction sans résumé' }}</strong>
+                                    <div class="private-muted">{{ interaction.channel ?: 'Canal non précisé' }}</div>
+                                </div>
+                                <span class="private-muted">{{ interaction.date|date('d/m/Y') }}</span>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="private-empty">Aucune interaction enregistrée pour le moment.</p>
+                {% endif %}
+            </section>
+        </div>
+
+        <section class="private-section-card">
+            <header class="private-section-card__header">
+                <h2>Imports récents</h2>
+                <a href="{{ path('app_private_network_import') }}">Nouvel import</a>
+            </header>
+
+            {% if recent_imports is not empty %}
+                <div class="private-list-stack">
+                    {% for importRecord in recent_imports %}
+                        <article class="private-list-item">
+                            <div>
+                                <strong>{{ importRecord.source_label }}</strong>
+                                <div class="private-muted">{{ importRecord.total }} ligne(s) traitée(s)</div>
+                            </div>
+                            <div class="private-list-item__meta">
+                                <span class="private-badge">{{ importRecord.created }} créées</span>
+                                <span class="private-badge private-badge--secondary">{{ importRecord.updated }} mises à jour</span>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="private-empty">Aucun import enregistré pour le moment.</p>
+            {% endif %}
+        </section>
+    </section>
+{% endblock %}

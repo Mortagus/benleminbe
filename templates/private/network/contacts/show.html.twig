@@ -1,0 +1,195 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}{{ contact.display_name }}{% endblock %}
+
+{% block body %}
+    <section class="private-panel">
+        <header class="private-panel__header private-panel__header--with-action">
+            <div>
+                <p class="private-eyebrow">Contact</p>
+                <h1>{{ contact.display_name }}</h1>
+            </div>
+
+            <div class="private-actions">
+                <a class="private-link-button" href="{{ path('app_private_network_contact_edit', { id: contact.id }) }}">Modifier</a>
+                <a class="private-link-button" href="{{ path('app_private_network_contacts') }}">Retour</a>
+            </div>
+        </header>
+
+        {% include 'private/network/_nav.html.twig' with { current_page: 'contacts' } %}
+
+        <div class="private-grid private-grid--two-columns">
+            <section class="private-section-card">
+                <h2>Résumé</h2>
+
+                <dl class="private-definition-list">
+                    <div>
+                        <dt>Priorité</dt>
+                        <dd><span class="private-badge private-badge--secondary">{{ contact.priority_label }}</span></dd>
+                    </div>
+                    <div>
+                        <dt>Relation</dt>
+                        <dd><span class="private-badge">{{ contact.relationship_status_label }}</span></dd>
+                    </div>
+                    <div>
+                        <dt>Entreprise</dt>
+                        <dd>{{ contact.organization ?: 'Sans entreprise renseignée' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Rôle</dt>
+                        <dd>{{ contact.role ?: 'Non renseigné' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Canal principal</dt>
+                        <dd>{{ contact.main_channel ?: 'Non renseigné' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Email</dt>
+                        <dd>{{ contact.email ?: 'Non renseigné' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Téléphone</dt>
+                        <dd>{{ contact.phone ?: 'Non renseigné' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Profil</dt>
+                        <dd>
+                            {% if contact.profile_url %}
+                                <a href="{{ contact.profile_url }}" target="_blank" rel="noopener noreferrer">{{ contact.profile_url }}</a>
+                            {% else %}
+                                <span class="private-muted">À renseigner</span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Dernier contact</dt>
+                        <dd>
+                            {% if contact.last_contact_at %}
+                                {{ contact.last_contact_at|date('d/m/Y') }}
+                            {% else %}
+                                <span class="private-muted">Jamais</span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Prochaine action</dt>
+                        <dd>
+                            {% if contact.next_action %}
+                                {{ contact.next_action }}
+                                {% if contact.next_action_at %}
+                                    <div class="private-muted">{{ contact.next_action_at|date('d/m/Y') }}</div>
+                                {% endif %}
+                            {% else %}
+                                <span class="private-muted">Aucune</span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Source</dt>
+                        <dd>{{ contact.source ?: 'Non renseignée' }}</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section class="private-section-card">
+                <h2>Notes et tags</h2>
+
+                <div class="private-copy">
+                    {% if contact.notes %}
+                        <p>{{ contact.notes }}</p>
+                    {% else %}
+                        <p class="private-empty">Aucune note enregistrée.</p>
+                    {% endif %}
+                </div>
+
+                {% if contact.tags is not empty %}
+                    <div class="private-tags">
+                        {% for tag in contact.tags %}
+                            <span class="private-badge private-badge--secondary">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+
+        <div class="private-grid private-grid--two-columns">
+            <section class="private-section-card">
+                <header class="private-section-card__header">
+                    <h2>Ajouter une interaction</h2>
+                </header>
+
+                <form class="private-form" method="post" action="{{ interactionAction }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-interaction-' ~ contact.id) }}">
+
+                    <div class="private-form__grid">
+                        <label class="private-form__field">
+                            <span>Date</span>
+                            <input type="date" name="date" value="{{ 'now'|date('Y-m-d') }}">
+                        </label>
+
+                        <label class="private-form__field">
+                            <span>Canal</span>
+                            <input type="text" name="channel" placeholder="Email, LinkedIn, téléphone...">
+                        </label>
+
+                        <label class="private-form__field private-form__field--wide">
+                            <span>Résumé</span>
+                            <textarea name="summary" rows="3" required></textarea>
+                        </label>
+
+                        <label class="private-form__field private-form__field--wide">
+                            <span>Résultat</span>
+                            <textarea name="result" rows="3"></textarea>
+                        </label>
+
+                        <label class="private-form__field private-form__field--wide">
+                            <span>Prochaine action</span>
+                            <textarea name="next_action" rows="3"></textarea>
+                        </label>
+
+                        <label class="private-form__field">
+                            <span>Date de relance</span>
+                            <input type="date" name="next_action_at">
+                        </label>
+                    </div>
+
+                    <div class="private-actions">
+                        <button class="private-link-button" type="submit">Enregistrer l'interaction</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="private-section-card">
+                <header class="private-section-card__header">
+                    <h2>Historique</h2>
+                </header>
+
+                {% if interactions is not empty %}
+                    <div class="private-list-stack">
+                        {% for interaction in interactions %}
+                            <article class="private-list-item">
+                                <div>
+                                    <strong>{{ interaction.summary ?: 'Interaction sans résumé' }}</strong>
+                                    <div class="private-muted">
+                                        {{ interaction.channel ?: 'Canal non précisé' }}
+                                        {% if interaction.result %}
+                                            · {{ interaction.result }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="private-list-item__meta">
+                                    <span class="private-badge">{{ interaction.date|date('d/m/Y') }}</span>
+                                    {% if interaction.next_action %}
+                                        <span class="private-badge private-badge--secondary">{{ interaction.next_action }}</span>
+                                    {% endif %}
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="private-empty">Aucune interaction enregistrée pour ce contact.</p>
+                {% endif %}
+            </section>
+        </div>
+    </section>
+{% endblock %}

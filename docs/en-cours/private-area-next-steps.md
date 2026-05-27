@@ -6,6 +6,9 @@ Ce document sert de note de reprise apres le lot 5.
 
 Le lot 5 a pose la fondation de la zone privee : Symfony Security, login/logout, layout prive, dashboard minimal, entrypoint assets prive, protection robots/noindex et gestion recommandee de `PRIVATE_ADMIN_PASSWORD_HASH`.
 
+Le premier module metier retenu pour la suite est l'outil prive "Contacts et reseau", accessible depuis le dashboard via `/private/network`.
+La phase 0 de ce projet est documentee dans [Premier Outil Prive - Contacts Et Reseau - Analyse Du Besoin](premier-outil-prive-contacts-reseau-analyse-besoin.md).
+
 ## Validation Production - 2026-05-21
 
 La mise en production du socle prive a ete validee le 2026-05-21 sur l'hebergement Infomaniak.

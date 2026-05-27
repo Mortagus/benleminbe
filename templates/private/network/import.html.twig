@@ -1,0 +1,65 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Import de contacts{% endblock %}
+
+{% block body %}
+    <section class="private-panel">
+        <header class="private-panel__header private-panel__header--with-action">
+            <div>
+                <p class="private-eyebrow">Outil privé</p>
+                <h1>Import</h1>
+            </div>
+
+            <a class="private-link-button" href="{{ path('app_private_network_index') }}">Retour au dashboard</a>
+        </header>
+
+        {% include 'private/network/_nav.html.twig' with { current_page: 'import' } %}
+
+        {% if errors is not empty %}
+            <div class="private-alert-list">
+                {% for error in errors %}
+                    <div class="private-alert">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="private-copy private-copy--intro">
+            <p>Importer un fichier CSV ou JSON, ou coller un contenu structuré, pour alimenter rapidement la base de contacts.</p>
+            <p>Les champs utiles sont détectés automatiquement quand c'est possible. Les doublons sont fusionnés sur l'email, l'URL de profil ou le nom + entreprise.</p>
+        </div>
+
+        <form class="private-form" method="post" action="{{ path('app_private_network_import') }}" enctype="multipart/form-data">
+            <input type="hidden" name="_token" value="{{ csrf_token('private-network-import') }}">
+
+            <div class="private-form__grid">
+                <label class="private-form__field private-form__field--wide">
+                    <span>Source</span>
+                    <input type="text" name="source_label" value="{{ values.source_label }}" placeholder="LinkedIn export, feuille CSV, email, téléphone...">
+                </label>
+
+                <label class="private-form__field">
+                    <span>Format</span>
+                    <select name="format">
+                        <option value="auto" {{ values.format == 'auto' ? 'selected' : '' }}>Auto</option>
+                        <option value="csv" {{ values.format == 'csv' ? 'selected' : '' }}>CSV</option>
+                        <option value="json" {{ values.format == 'json' ? 'selected' : '' }}>JSON</option>
+                    </select>
+                </label>
+
+                <label class="private-form__field private-form__field--wide">
+                    <span>Fichier</span>
+                    <input type="file" name="file" accept=".csv,.json,.txt">
+                </label>
+
+                <label class="private-form__field private-form__field--wide">
+                    <span>Contenu à coller</span>
+                    <textarea name="content" rows="10" placeholder="Colle ici un CSV ou un JSON si tu n'utilises pas de fichier.">{{ values.content }}</textarea>
+                </label>
+            </div>
+
+            <div class="private-actions">
+                <button class="private-link-button" type="submit">Importer</button>
+            </div>
+        </form>
+    </section>
+{% endblock %}

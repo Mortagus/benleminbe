@@ -13,6 +13,16 @@
             <a class="private-link-button" href="{{ path('app_private_logout') }}">Déconnexion</a>
         </header>
 
-        <p class="private-muted">Fondation prête pour les futurs outils privés.</p>
+        <div class="private-panel__body">
+            <p class="private-muted">
+                Point d'entrée unique pour le premier outil privé de suivi des contacts, relances et opportunités.
+            </p>
+
+            <div class="private-actions">
+                <a class="private-link-button" href="{{ path('app_private_network_index') }}">
+                    Ouvrir l'outil contacts et réseau
+                </a>
+            </div>
+        </div>
     </section>
 {% endblock %}

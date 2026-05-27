@@ -1,0 +1,75 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Plateformes{% endblock %}
+
+{% block body %}
+    <section class="private-panel">
+        <header class="private-panel__header private-panel__header--with-action">
+            <div>
+                <p class="private-eyebrow">Outil privé</p>
+                <h1>Plateformes</h1>
+            </div>
+
+            <div class="private-actions">
+                <a class="private-link-button" href="{{ path('app_private_network_platform_new') }}">Ajouter une plateforme</a>
+                <a class="private-link-button" href="{{ path('app_private_network_index') }}">Retour au dashboard</a>
+            </div>
+        </header>
+
+        {% include 'private/network/_nav.html.twig' with { current_page: 'platforms' } %}
+
+        <form class="private-toolbar" method="get" action="{{ path('app_private_network_platforms') }}">
+            <input class="private-input" type="search" name="q" value="{{ currentQuery }}" placeholder="Rechercher une plateforme" />
+            <button class="private-link-button" type="submit">Filtrer</button>
+        </form>
+
+        {% if platforms is not empty %}
+            <div class="private-table-wrap">
+                <table class="private-table">
+                    <thead>
+                        <tr>
+                            <th>Plateforme</th>
+                            <th>Catégorie</th>
+                            <th>Statut</th>
+                            <th>Lien</th>
+                            <th>Dernière vérification</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for platform in platforms %}
+                            <tr>
+                                <td>
+                                    <strong>{{ platform.name }}</strong>
+                                    <div class="private-muted">{{ platform.note ?: 'Aucune note' }}</div>
+                                </td>
+                                <td>{{ platform.category }}</td>
+                                <td><span class="private-badge">{{ platform.status_label }}</span></td>
+                                <td>
+                                    {% if platform.profile_url %}
+                                        <a href="{{ platform.profile_url }}" target="_blank" rel="noopener noreferrer">Ouvrir</a>
+                                    {% else %}
+                                        <span class="private-muted">À renseigner</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if platform.last_reviewed_at %}
+                                        {{ platform.last_reviewed_at|date('d/m/Y') }}
+                                    {% else %}
+                                        <span class="private-muted">Jamais</span>
+                                    {% endif %}
+                                </td>
+                                <td class="private-actions private-actions--inline">
+                                    <a href="{{ path('app_private_network_platform_show', { slug: platform.slug }) }}">Voir</a>
+                                    <a href="{{ path('app_private_network_platform_edit', { slug: platform.slug }) }}">Modifier</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="private-empty">Aucune plateforme enregistrée.</p>
+        {% endif %}
+    </section>
+{% endblock %}

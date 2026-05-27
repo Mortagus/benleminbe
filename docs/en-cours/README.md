@@ -10,6 +10,7 @@ Ce dossier contient les documents qui servent encore de fil de reprise, de backl
 - [Zone privée - prochaines étapes](private-area-next-steps.md) : reprise après validation du socle privé.
 - [PageSpeed Protocol](pagespeed-protocol.md) : protocole de suivi PageSpeed et baseline initiale.
 - [Premier outil privé - analyse du besoin](premier-outil-prive-contacts-reseau-analyse-besoin.md) : phase 0 du projet prive, centrée sur l'objectif et les besoins à couvrir.
+- [Premier outil privé - spécification MVP](premier-outil-prive-contacts-reseau-spec-mvp.md) : premier jet concret du périmètre fonctionnel et des écrans minimaux.
 - [Premier outil privé - contacts et réseau](premier-outil-prive-contacts-reseau.md) : premier socle privé en démarrage pour le suivi du réseau et des contacts.
 
 ## Regle De Sortie

@@ -11,6 +11,14 @@
     {% block importmap %}{{ importmap('private') }}{% endblock %}
 </head>
 <body class="private-shell">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="private-flash private-flash--{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
     <main class="private-main">
         {% block body %}{% endblock %}
     </main>

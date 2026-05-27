@@ -1,0 +1,72 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}{{ platform.name }}{% endblock %}
+
+{% block body %}
+    <section class="private-panel">
+        <header class="private-panel__header private-panel__header--with-action">
+            <div>
+                <p class="private-eyebrow">Plateforme</p>
+                <h1>{{ platform.name }}</h1>
+            </div>
+
+            <div class="private-actions">
+                <a class="private-link-button" href="{{ path('app_private_network_platform_edit', { slug: platform.slug }) }}">Modifier</a>
+                <a class="private-link-button" href="{{ path('app_private_network_platforms') }}">Retour</a>
+            </div>
+        </header>
+
+        {% include 'private/network/_nav.html.twig' with { current_page: 'platforms' } %}
+
+        <div class="private-grid private-grid--two-columns">
+            <div class="private-section-card">
+                <h2>Résumé</h2>
+
+                <dl class="private-definition-list">
+                    <div>
+                        <dt>Statut</dt>
+                        <dd><span class="private-badge">{{ platform.status_label }}</span></dd>
+                    </div>
+                    <div>
+                        <dt>Catégorie</dt>
+                        <dd>{{ platform.category }}</dd>
+                    </div>
+                    <div>
+                        <dt>Lien</dt>
+                        <dd>
+                            {% if platform.profile_url %}
+                                <a href="{{ platform.profile_url }}" target="_blank" rel="noopener noreferrer">{{ platform.profile_url }}</a>
+                            {% else %}
+                                <span class="private-muted">À renseigner</span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Active</dt>
+                        <dd>{{ platform.active ? 'Oui' : 'Non' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Dernière vérification</dt>
+                        <dd>
+                            {% if platform.last_reviewed_at %}
+                                {{ platform.last_reviewed_at|date('d/m/Y') }}
+                            {% else %}
+                                <span class="private-muted">Jamais</span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+
+            <div class="private-section-card">
+                <h2>Notes</h2>
+
+                {% if platform.note %}
+                    <p class="private-copy">{{ platform.note }}</p>
+                {% else %}
+                    <p class="private-empty">Aucune note enregistrée pour cette plateforme.</p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

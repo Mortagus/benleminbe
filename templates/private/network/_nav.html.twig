@@ -1,0 +1,26 @@
+<nav class="private-network-nav" aria-label="Navigation de l'outil réseau">
+    <a
+        class="private-network-nav__link {{ current_page == 'dashboard' ? 'is-active' : '' }}"
+        href="{{ path('app_private_network_index') }}"
+    >
+        Tableau de bord
+    </a>
+    <a
+        class="private-network-nav__link {{ current_page == 'platforms' ? 'is-active' : '' }}"
+        href="{{ path('app_private_network_platforms') }}"
+    >
+        Plateformes
+    </a>
+    <a
+        class="private-network-nav__link {{ current_page == 'contacts' ? 'is-active' : '' }}"
+        href="{{ path('app_private_network_contacts') }}"
+    >
+        Contacts
+    </a>
+    <a
+        class="private-network-nav__link {{ current_page == 'import' ? 'is-active' : '' }}"
+        href="{{ path('app_private_network_import') }}"
+    >
+        Import
+    </a>
+</nav>

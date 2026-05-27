@@ -1,4 +1,4 @@
-.PHONY: deploy track_logs reload_assets cc serv check install-hooks gpt_css pagespeed_audit private-admin-secret private-prod-check private-prod-auth-check
+.PHONY: deploy track_logs reload_assets cc serv check test_php install-hooks gpt_css pagespeed_audit private-admin-secret private-prod-check private-prod-auth-check
 
 PRIVATE_SECRET_ENV ?= prod
 PRIVATE_BASE_URL ?= https://benlemin.be
@@ -56,6 +56,11 @@ check:
 	@echo "==> JavaScript tests"
 	npm run test:js
 	@echo "All checks passed."
+
+test_php:
+	php bin/console doctrine:database:create --env=test --if-not-exists
+	php bin/console doctrine:migrations:migrate --env=test --no-interaction
+	./vendor/bin/phpunit --configuration phpunit.xml.dist
 
 install-hooks:
 	git config core.hooksPath .githooks

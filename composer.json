@@ -35,6 +35,11 @@
             "App\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Benjamin Lemin",
@@ -60,6 +65,10 @@
         "js:test": "npm run test:js"
     },
     "require-dev": {
-        "symfony/maker-bundle": "^1.67"
+        "symfony/maker-bundle": "^1.67",
+        "phpunit/phpunit": "^11.5",
+        "symfony/browser-kit": "^8.0",
+        "symfony/css-selector": "^8.0",
+        "symfony/dom-crawler": "^8.0"
     }
 }

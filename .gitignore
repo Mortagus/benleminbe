@@ -82,3 +82,8 @@ Thumbs.db
 # Production-only generated files
 /config/secrets/
 /src/var/
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###

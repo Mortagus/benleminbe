@@ -34,13 +34,14 @@ make check
 
 État de reprise recommandé :
 
-- poursuivre avec `P15` ;
+- poursuivre avec `P7` : [Commandes explicites de combat](dnd-initiative-tracker-p7-commandes-explicites-combat.md) ;
 - garder `P8` comme base historique de la persistance locale ;
-- préparer `P22` au-dessus de cette base, sans ajouter de seconde persistance locale.
+- considérer `P10`, `P19`, `P20` et `P34` comme les prochains chantiers de combat ;
+- remettre `P22` en attente, tant que l'export JSON n'est pas explicitement demandé.
 
 ## Note De Reprise - 2026-05-25 - Repriorisation Fonctionnelle
 
-Après la mise en place de l'import XML joueur, la sauvegarde locale `P8` redevient la prochaine priorité: elle a maintenant du contenu métier réel à persister.
+Après la mise en place de l'import XML joueur, la sauvegarde locale `P8` a été livrée et sert de base pour les suites de combat déjà restantes.
 
 Nouveaux points ajoutés :
 
@@ -49,17 +50,14 @@ Nouveaux points ajoutés :
 
 Nouvel ordre fonctionnel recommandé :
 
-1. `P8` : sauvegarde locale de rencontre.
-2. `P31` : socle audio et son au lancement d'initiative des monstres.
-3. `P15` : amélioration de la sélection des monstres, filtres initiaux et affichage des informations du monstre sélectionné.
-4. `P25` : différenciation visuelle des types d'acteurs.
-5. `P7` : commandes explicites de pilotage du combat.
-6. `P10` : modification directe des PV pendant le combat.
-7. `P19` : conditions.
-8. `P20` : marqueurs binaires de combat.
-9. `P22` : import/export JSON d'une rencontre.
+1. `P7` : commandes explicites de pilotage du combat.
+2. `P10` : modification directe des PV pendant le combat.
+3. `P19` : conditions.
+4. `P20` : marqueurs binaires de combat.
+5. `P34` : jet de constitution des monstres.
+6. `P22` : import/export JSON d'une rencontre.
 
-La persistance `P8` reprend sa place de priorité haute, maintenant que l'import XML joueur fournit des données substantielles à sauver.
+Les points `P8`, `P31`, `P15` et `P25` sont maintenant considérés comme implémentés et passent en observation terrain plutôt qu'en priorité de reprise.
 
 ## Note De Reprise - 2026-05-25 - P31 Audio
 
@@ -86,7 +84,7 @@ make check
 
 État de reprise recommandé :
 
-- poursuivre avec `P15` : aides de sélection et affichage des monstres ;
+- poursuivre avec `P7` ;
 - garder le module audio disponible pour de futurs événements sonores, sans ajouter de toggle UI pour le moment.
 
 ## Note De Reprise - 2026-05-25 - P15 Monstres
@@ -114,7 +112,7 @@ make check
 
 État de reprise recommandé :
 
-- `P8` redevient la prochaine priorité fonctionnelle ;
+- `P7` est la prochaine priorité fonctionnelle ;
 - garder les filtres avancés, favoris ou presets de monstres pour une future extension si l'usage réel le demande.
 
 ## Note De Reprise - 2026-05-25 - P8 Persistance
@@ -334,7 +332,7 @@ Objectif de reprise recommande :
 - stabiliser l'outil pour un usage reel pendant une session de jeu ;
 - conserver l'approche front-end JavaScript vanilla actuelle ;
 - commencer par la sauvegarde locale de rencontre (`P8`) avant les fonctions de combat plus avancees ;
-- preparer ensuite les commandes explicites de round/tour (`P7`), puis les PV modifiables pendant le combat (`P10`), les conditions (`P19`), les marqueurs binaires de combat (`P20`) et l'import/export JSON (`P22`).
+- preparer ensuite les commandes explicites de round/tour (`P7`), puis les PV modifiables pendant le combat (`P10`), les conditions (`P19`) et les marqueurs binaires de combat (`P20`).
 
 Premiere action recommandee :
 
@@ -382,11 +380,11 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | 20              | P10 | Haute             | À faire               | Fonctionnalité / UX        | Modification directe des PV pendant le combat            | Modifier les PV depuis l'ordre du tour et accepter des saisies rapides de dégâts/soins comme `-7` ou `+5`.                                                                        | Préparer sans imposer immédiatement les statuts inconscient/mort.                                                              |
 | 21              | P19 | Haute             | À faire               | Fonctionnalité / Règles    | Gestion des conditions                                   | Ajouter/retrouver des conditions, les afficher visuellement et suivre leur durée en rounds.                                                                                       | Dépend idéalement de commandes de round fiables, mais peut être cadré après `P7`.                                              |
 | 22              | P20 | Haute             | À faire               | Fonctionnalité             | Marqueurs binaires de combat                             | Suivre concentration, réaction utilisée, inspiration, avantage et désavantage via toggles visuels.                                                                                | À commencer sans automatisme de règles ; peut partager l'UI des conditions.                                                    |
-| 23              | P22 | Haute différée    | À faire               | Persistance / Échange      | Import/export JSON d'une rencontre                       | Exporter et importer un état de rencontre lisible : joueurs, monstres, PV, initiatives, règles et ordre courant.                                                                  | Plus simple après P8 ; utile pour archiver, partager et tester des scénarios reproductibles.                                   |
+| 23              | P34 | Moyenne           | À faire               | Fonctionnalité / MJ        | Jet de constitution des monstres                         | Permettre au MJ de lancer rapidement un jet de Constitution ou un jet de sauvegarde de Constitution pour un monstre, comme mini-outil d'assistance en combat.                     | Utilitaire de combat à prévoir après les bases du tracker; utile pour les effets ponctuels et les vérifications rapides.       |
 | 24              | P14 | Moyenne           | À faire               | UX                         | Retours d'état utiles au Maître du Jeu                   | Afficher des messages courts : aucun monstre sélectionné, initiatives non lancées, joueur incomplet, acteur marqué joué.                                                          | Peut être livré par petites touches sans attendre les grosses fonctionnalités.                                                 |
 | 25              | P21 | Moyenne           | À faire               | Fonctionnalité / Suivi     | Journal de combat                                        | Journaliser début de round, changements de PV, acteur joué, conditions ajoutées ou retirées.                                                                                      | Dépend du modèle, des commandes de combat et idéalement des PV en direct.                                                      |
-| 26              | P34 | Moyenne           | À faire               | Fonctionnalité / MJ        | Jet de constitution des monstres                         | Permettre au MJ de lancer rapidement un jet de Constitution ou un jet de sauvegarde de Constitution pour un monstre, comme mini-outil d'assistance en combat.                     | Utilitaire de combat à prévoir après les bases du tracker; utile pour les effets ponctuels et les vérifications rapides.       |
-| 27              | P23 | Moyenne           | À faire               | Préparation / Productivité | Templates de rencontre                                   | Sauvegarder des setups réutilisables : groupe de monstres, PV initiaux, règles actives et notes de préparation.                                                                   | Dépend de P8 ou P22.                                                                                                           |
+| 26              | P23 | Moyenne           | À faire               | Préparation / Productivité | Templates de rencontre                                   | Sauvegarder des setups réutilisables : groupe de monstres, PV initiaux, règles actives et notes de préparation.                                                                   | Dépend de P8 ou P22.                                                                                                           |
+| 27              | P22 | Plus tard         | Plus tard             | Persistance / Échange      | Import/export JSON d'une rencontre                       | Exporter et importer un état de rencontre lisible : joueurs, monstres, PV, initiatives, règles et ordre courant.                                                                  | À reconsidérer après stabilisation des commandes de combat et de la persistance locale.                                        |
 | 28              | P26 | Basse             | À faire               | UX                         | Portraits optionnels                                     | Remplacer ou compléter les initiales par des portraits optionnels avec initiales en fallback systématique.                                                                        | Attention à ne pas alourdir la préparation d'un combat.                                                                        |
 | 29              | P17 | Basse             | À faire               | CSS / UX                   | Affichage desktop et tablette sur grands combats         | Optimiser les combats volumineux pour un écran 24 pouces 16:9, puis vérifier les écrans plus petits et tablettes.                                                                 | Mobile hors périmètre immédiat ; à valider avec les nouveaux contrôles de combat et les PV en direct.                          |
 | 30              | P27 | Plus tard         | Plus tard             | Fonctionnalité             | Notes par participant                                    | Stocker des notes temporaires pour un joueur, monstre ou effet en cours.                                                                                                          | À reconsidérer après les besoins réels de suivi de combat.                                                                     |

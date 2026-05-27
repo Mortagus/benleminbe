@@ -1,8 +1,16 @@
-.PHONY: deploy track_logs reload_assets cc serv check install-hooks gpt_css private-admin-secret private-prod-check private-prod-auth-check
+.PHONY: deploy track_logs reload_assets cc serv check install-hooks gpt_css pagespeed_audit private-admin-secret private-prod-check private-prod-auth-check
 
 PRIVATE_SECRET_ENV ?= prod
 PRIVATE_BASE_URL ?= https://benlemin.be
 PRIVATE_ADMIN_USERNAME ?= private_admin
+PAGESPEED_BASE_URL ?= https://benlemin.be
+PAGESPEED_LOCALE ?= fr-FR
+PAGESPEED_STRATEGY ?= both
+PAGESPEED_OUTPUT_DIR ?= var/audits/pagespeed/$(shell date +%F)
+PAGESPEED_API_KEY ?=
+PAGESPEED_RETRY_COUNT ?= 2
+PAGESPEED_RETRY_DELAY_MS ?= 1500
+PAGESPEED_TIMEOUT_SECONDS ?= 120
 
 deploy:
 	git pull --rebase
@@ -56,6 +64,9 @@ install-hooks:
 
 gpt_css:
 	php tools/build_gpt_css.php var/gpt/consolidated-css-context.css assets/styles
+
+pagespeed_audit:
+	PAGESPEED_API_KEY="$(PAGESPEED_API_KEY)" php tools/pagespeed/collect_pagespeed.php --base-url="$(PAGESPEED_BASE_URL)" --locale="$(PAGESPEED_LOCALE)" --strategy="$(PAGESPEED_STRATEGY)" --output-dir="$(PAGESPEED_OUTPUT_DIR)" --retry-count="$(PAGESPEED_RETRY_COUNT)" --retry-delay-ms="$(PAGESPEED_RETRY_DELAY_MS)" --timeout-seconds="$(PAGESPEED_TIMEOUT_SECONDS)"
 
 private-admin-secret:
 	@bash -euo pipefail -c '\

@@ -1,0 +1,58 @@
+.private-surface,
+.private-stat-card,
+.private-section-card,
+.private-login-panel {
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--card) 96%, transparent);
+    box-shadow: 0 10px 30px var(--shadow);
+    padding: 1.15rem;
+}
+
+.private-surface--flat {
+    border-color: color-mix(in srgb, var(--border) 70%, transparent);
+    background: transparent;
+    box-shadow: none;
+}
+
+.private-surface__header,
+.private-section-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.private-surface__header h2,
+.private-section-card__header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.private-surface__header a,
+.private-section-card__header a {
+    color: inherit;
+    font-weight: 700;
+}
+
+.private-stat-card {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.private-stat-card strong {
+    font-size: 1.75rem;
+}
+
+.private-stat-card__label {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+}
+
+.private-section-card {
+    display: grid;
+    gap: 1rem;
+    align-self: start;
+}

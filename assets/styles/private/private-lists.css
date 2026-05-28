@@ -1,0 +1,26 @@
+.private-list-stack {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+}
+
+.private-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+    border-radius: 0.85rem;
+    padding: 0.95rem 1rem;
+    background: color-mix(in srgb, var(--card) 94%, transparent);
+    align-self: start;
+}
+
+.private-list-item__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: flex-start;
+    justify-content: flex-end;
+    align-self: flex-start;
+}

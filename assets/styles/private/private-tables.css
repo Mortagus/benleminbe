@@ -1,0 +1,45 @@
+.private-table-wrap {
+    overflow-x: auto;
+}
+
+.private-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.private-table th,
+.private-table td {
+    border-top: 1px solid var(--border);
+    padding: 0.9rem 0.75rem;
+    vertical-align: top;
+    text-align: left;
+}
+
+.private-table thead th {
+    border-top: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.private-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--card) 88%, transparent);
+}
+
+.private-badge--secondary {
+    border-color: var(--border);
+}
+
+.private-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}

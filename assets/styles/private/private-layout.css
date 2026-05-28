@@ -1,0 +1,204 @@
+.private-shell {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgb(125 185 222 / 16%), transparent 34%),
+        radial-gradient(circle at top right, rgb(230 199 156 / 18%), transparent 28%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+    color: var(--text);
+}
+
+.private-flash {
+    width: min(100% - 2rem, 70rem);
+    margin: 1rem auto 0;
+    border: 1px solid var(--border);
+    border-radius: 0.875rem;
+    padding: 0.85rem 1rem;
+    background: color-mix(in srgb, var(--card) 95%, transparent);
+    box-shadow: 0 10px 28px var(--shadow);
+}
+
+.private-flash--success {
+    border-color: rgb(31 122 61 / 45%);
+}
+
+.private-flash--error {
+    border-color: rgb(180 35 24 / 50%);
+}
+
+.private-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid color-mix(in srgb, currentcolor 12%, transparent);
+    background: color-mix(in srgb, var(--bg) 84%, transparent);
+    backdrop-filter: blur(18px);
+}
+
+.private-shell--auth .private-header {
+    display: none;
+}
+
+.private-header__inner {
+    display: grid;
+    gap: 0.85rem;
+    width: min(1120px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 0.9rem 0 1rem;
+}
+
+.private-header__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.private-header__brand {
+    color: inherit;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.private-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.private-header__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.private-header__link {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 0.45rem 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease,
+        transform 160ms ease;
+}
+
+.private-header__link:hover,
+.private-header__link:focus-visible {
+    color: var(--text);
+    background: color-mix(in srgb, currentcolor 8%, transparent);
+}
+
+.private-header__link.is-active {
+    border-color: var(--border);
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 8px 20px var(--shadow);
+}
+
+.private-main {
+    width: min(1120px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+}
+
+.private-page {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.private-page-shell--auth {
+    max-width: 30rem;
+    margin-inline: auto;
+    padding-top: 2.5rem;
+}
+
+.private-page__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: start;
+}
+
+.private-page__header--stacked {
+    grid-template-columns: 1fr;
+}
+
+.private-page__title {
+    display: grid;
+    gap: 0.35rem;
+    max-width: 68ch;
+}
+
+.private-page__title h1 {
+    margin: 0;
+    font-size: clamp(1.85rem, 3vw, 2.5rem);
+    letter-spacing: -0.04em;
+}
+
+.private-page__lead {
+    margin: 0;
+    max-width: 64ch;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.private-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+
+.private-page__sections {
+    display: grid;
+    gap: 1rem;
+}
+
+.private-eyebrow {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.private-muted {
+    margin: 0;
+    color: var(--muted);
+}
+
+.private-copy {
+    display: grid;
+    gap: 0.75rem;
+    line-height: 1.65;
+}
+
+.private-copy--intro {
+    max-width: 68ch;
+}
+
+.private-empty {
+    margin: 0;
+    color: var(--muted);
+}
+
+.private-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.private-grid--stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.private-grid--two-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+}

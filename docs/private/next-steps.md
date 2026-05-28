@@ -7,7 +7,7 @@ Ce document sert de note de reprise apres le lot 5.
 Le lot 5 a pose la fondation de la zone privee : Symfony Security, login/logout, layout prive, dashboard minimal, entrypoint assets prive, protection robots/noindex et gestion recommandee de `PRIVATE_ADMIN_PASSWORD_HASH`.
 
 Le premier module metier retenu pour la suite est l'outil prive "Contacts et reseau", accessible depuis le dashboard via `/private/network`.
-La phase 0 de ce projet est documentee dans [Premier Outil Prive - Contacts Et Reseau - Analyse Du Besoin](premier-outil-prive-contacts-reseau-analyse-besoin.md).
+La phase 0 de ce projet est documentee dans [Premier Outil Prive - Contacts Et Reseau - Analyse Du Besoin](network/analyse-besoin.md).
 
 ## Validation Production - 2026-05-21
 
@@ -172,7 +172,7 @@ make private-prod-auth-check PRIVATE_BASE_URL=https://example.com PRIVATE_ADMIN_
 
 Actions :
 
-- conserver `docs/private-security-recommendations.md` comme reference pour le secret admin ;
+- conserver [Security Recommendations](security-recommendations.md) comme reference pour le secret admin ;
 - documenter la procedure de rotation du mot de passe ;
 - documenter quoi faire en cas de perte de la cle Symfony Secrets ;
 - noter les prerequis de production : variable `SYMFONY_DECRYPTION_SECRET` ou fichier prive deploye hors Git.

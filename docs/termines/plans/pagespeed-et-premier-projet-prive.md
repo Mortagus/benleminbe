@@ -5,7 +5,7 @@ Date de cloture : 2026-05-27
 Ce document mixte a ete separe en deux documents actifs distincts :
 
 - [PageSpeed Protocol](../../en-cours/pagespeed-protocol.md)
-- [Premier Outil Prive - Contacts Et Reseau](../../en-cours/premier-outil-prive-contacts-reseau.md)
+- [Premier Outil Prive - Contacts Et Reseau](../../private/network/overview.md)
 
 ## Conclusion Conservée
 

@@ -8,7 +8,7 @@ La documentation est organisée par statut et par domaine pour éviter de mélan
 
 - [Architecture du site](architecture.md) : vue stable des grandes parties du projet.
 - [Workflow de contenu](content-workflow.md) : sources de vérité pour les contenus publiés.
-- [Sécurité de la zone privée](private-security-recommendations.md) : gestion du secret admin privé.
+- [Zone privee](private/README.md) : documentation stable de la zone privee et de son premier module.
 
 ## Organisation
 
@@ -17,7 +17,7 @@ docs/
 ├── README.md
 ├── architecture.md
 ├── content-workflow.md
-├── private-security-recommendations.md
+├── private/
 ├── en-cours/
 ├── termines/
 │   ├── audits/
@@ -37,6 +37,8 @@ docs/
 `lab/` documente les outils expérimentaux intégrés au site, notamment le DnD Initiative Tracker. Les documents de ce dossier décrivent l'état technique, les contrats et les pipelines encore pertinents.
 
 `pro_exp/` contient le corpus éditorial professionnel. Il sert de matière de travail pour le parcours, les projets, les compétences et les soft skills, mais l'application ne le lit pas au runtime.
+
+`private/` regroupe la documentation stable de la zone privee, y compris le premier outil `Contacts et reseau` et les recommandations de securite associees.
 
 ## Regles De Rangement
 

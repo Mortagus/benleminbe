@@ -3,105 +3,123 @@
 {% block title %}Contacts{% endblock %}
 
 {% block body %}
-    <section class="private-panel">
-        <header class="private-panel__header private-panel__header--with-action">
-            <div>
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
                 <p class="private-eyebrow">Outil privé</p>
                 <h1>Contacts</h1>
+                <p class="private-page__lead">
+                    Carnet centralisé des contacts à suivre, avec priorités, relation et prochaine action.
+                </p>
             </div>
 
-            <div class="private-actions">
+            <div class="private-page__actions">
                 <a class="private-link-button" href="{{ path('app_private_network_contact_new') }}">Ajouter un contact</a>
-                <a class="private-link-button" href="{{ path('app_private_network_index') }}">Retour au dashboard</a>
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_index') }}">Retour au réseau</a>
             </div>
         </header>
 
-        {% include 'private/network/_nav.html.twig' with { current_page: 'contacts' } %}
+        <section class="private-surface">
+            <header class="private-surface__header">
+                <div>
+                    <h2>Filtres</h2>
+                    <p class="private-muted">Recherche libre et filtres essentiels pour retrouver un contact rapidement.</p>
+                </div>
+            </header>
 
-        <form class="private-toolbar private-toolbar--stacked" method="get" action="{{ path('app_private_network_contacts') }}">
-            <input class="private-input" type="search" name="q" value="{{ currentQuery }}" placeholder="Rechercher un contact" />
+            <form class="private-toolbar private-toolbar--stacked" method="get" action="{{ path('app_private_network_contacts') }}">
+                <input class="private-input" type="search" name="q" value="{{ currentQuery }}" placeholder="Rechercher un contact" />
 
-            <div class="private-toolbar__filters">
-                <label>
-                    <span>Priorité</span>
-                    <select name="priority">
-                        <option value="">Toutes</option>
-                        {% for value, label in priorityOptions %}
-                            <option value="{{ value }}" {{ currentPriority == value ? 'selected' : '' }}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <label>
-                    <span>Relation</span>
-                    <select name="relationship_status">
-                        <option value="">Toutes</option>
-                        {% for value, label in relationOptions %}
-                            <option value="{{ value }}" {{ currentRelationStatus == value ? 'selected' : '' }}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-                <button class="private-link-button" type="submit">Filtrer</button>
-            </div>
-        </form>
+                <div class="private-toolbar__filters">
+                    <label>
+                        <span>Priorité</span>
+                        <select name="priority">
+                            <option value="">Toutes</option>
+                            {% for value, label in priorityOptions %}
+                                <option value="{{ value }}" {{ currentPriority == value ? 'selected' : '' }}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label>
+                        <span>Relation</span>
+                        <select name="relationship_status">
+                            <option value="">Toutes</option>
+                            {% for value, label in relationOptions %}
+                                <option value="{{ value }}" {{ currentRelationStatus == value ? 'selected' : '' }}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <button class="private-link-button" type="submit">Filtrer</button>
+                </div>
+            </form>
+        </section>
 
         {% if contacts is not empty %}
-            <div class="private-table-wrap">
-                <table class="private-table">
-                    <thead>
-                        <tr>
-                            <th>Contact</th>
-                            <th>Entreprise</th>
-                            <th>Priorité</th>
-                            <th>Relation</th>
-                            <th>Dernier contact</th>
-                            <th>Prochaine action</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for contact in contacts %}
+            <section class="private-surface">
+                <header class="private-surface__header">
+                    <h2>Liste des contacts</h2>
+                </header>
+
+                <div class="private-table-wrap">
+                    <table class="private-table private-table--responsive">
+                        <thead>
                             <tr>
-                                <td>
-                                    <strong>{{ contact.display_name }}</strong>
-                                    <div class="private-muted">
-                                        {% if contact.role %}
-                                            {{ contact.role }}
-                                        {% else %}
-                                            Aucun rôle renseigné
-                                        {% endif %}
-                                    </div>
-                                </td>
-                                <td>{{ contact.organization ?: 'Sans entreprise renseignée' }}</td>
-                                <td><span class="private-badge private-badge--secondary">{{ contact.priority_label }}</span></td>
-                                <td><span class="private-badge">{{ contact.relationship_status_label }}</span></td>
-                                <td>
-                                    {% if contact.last_contact_at %}
-                                        {{ contact.last_contact_at|date('d/m/Y') }}
-                                    {% else %}
-                                        <span class="private-muted">Jamais</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if contact.next_action %}
-                                        {{ contact.next_action }}
-                                        {% if contact.next_action_at %}
-                                            <div class="private-muted">{{ contact.next_action_at|date('d/m/Y') }}</div>
-                                        {% endif %}
-                                    {% else %}
-                                        <span class="private-muted">Aucune</span>
-                                    {% endif %}
-                                </td>
-                                <td class="private-actions private-actions--inline">
-                                    <a href="{{ path('app_private_network_contact_show', { id: contact.id }) }}">Voir</a>
-                                    <a href="{{ path('app_private_network_contact_edit', { id: contact.id }) }}">Modifier</a>
-                                </td>
+                                <th>Contact</th>
+                                <th>Entreprise</th>
+                                <th>Priorité</th>
+                                <th>Relation</th>
+                                <th>Dernier contact</th>
+                                <th>Prochaine action</th>
+                                <th></th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {% for contact in contacts %}
+                                <tr>
+                                    <td class="private-table__cell private-table__cell--main" data-label="Contact">
+                                        <strong>{{ contact.display_name }}</strong>
+                                        <div class="private-muted">
+                                            {% if contact.role %}
+                                                {{ contact.role }}
+                                            {% else %}
+                                                Aucun rôle renseigné
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="private-table__cell private-table__cell--hide-mobile" data-label="Entreprise">{{ contact.organization ?: 'Sans entreprise renseignée' }}</td>
+                                    <td class="private-table__cell private-table__cell--badge" data-label="Priorité"><span class="private-badge private-badge--secondary">{{ contact.priority_label }}</span></td>
+                                    <td class="private-table__cell private-table__cell--badge" data-label="Relation"><span class="private-badge">{{ contact.relationship_status_label }}</span></td>
+                                    <td class="private-table__cell private-table__cell--hide-mobile" data-label="Dernier contact">
+                                        {% if contact.last_contact_at %}
+                                            {{ contact.last_contact_at|date('d/m/Y') }}
+                                        {% else %}
+                                            <span class="private-muted">Jamais</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="private-table__cell private-table__cell--hide-mobile" data-label="Prochaine action">
+                                        {% if contact.next_action %}
+                                            {{ contact.next_action }}
+                                            {% if contact.next_action_at %}
+                                                <div class="private-muted">{{ contact.next_action_at|date('d/m/Y') }}</div>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="private-muted">Aucune</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="private-table__cell private-table__cell--actions private-actions private-actions--inline" data-label="Actions">
+                                        <a href="{{ path('app_private_network_contact_show', { id: contact.id }) }}">Voir</a>
+                                        <a href="{{ path('app_private_network_contact_edit', { id: contact.id }) }}">Modifier</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         {% else %}
-            <p class="private-empty">Aucun contact enregistré.</p>
+            <section class="private-surface">
+                <p class="private-empty">Aucun contact enregistré.</p>
+            </section>
         {% endif %}
     </section>
 {% endblock %}

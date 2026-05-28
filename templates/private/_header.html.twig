@@ -1,0 +1,51 @@
+{% set currentRoute = app.request.attributes.get('_route') %}
+
+<header class="private-header">
+    <div class="private-header__inner">
+        <div class="private-header__top">
+            <a class="private-header__brand" href="{{ path('app_private_dashboard') }}">
+                benlemin.be privé
+            </a>
+
+            <div class="private-header__actions">
+                {% include 'components/_theme_switcher.html.twig' %}
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_logout') }}">
+                    Déconnexion
+                </a>
+            </div>
+        </div>
+
+        <nav class="private-header__nav" aria-label="Navigation privée">
+            <a
+                class="private-header__link {{ currentRoute == 'app_private_dashboard' ? 'is-active' : '' }}"
+                href="{{ path('app_private_dashboard') }}"
+            >
+                Accueil
+            </a>
+            <a
+                class="private-header__link {{ currentRoute == 'app_private_network_index' ? 'is-active' : '' }}"
+                href="{{ path('app_private_network_index') }}"
+            >
+                Réseau
+            </a>
+            <a
+                class="private-header__link {{ currentRoute starts with 'app_private_network_contact' ? 'is-active' : '' }}"
+                href="{{ path('app_private_network_contacts') }}"
+            >
+                Contacts
+            </a>
+            <a
+                class="private-header__link {{ currentRoute starts with 'app_private_network_platform' ? 'is-active' : '' }}"
+                href="{{ path('app_private_network_platforms') }}"
+            >
+                Plateformes
+            </a>
+            <a
+                class="private-header__link {{ currentRoute == 'app_private_network_import' ? 'is-active' : '' }}"
+                href="{{ path('app_private_network_import') }}"
+            >
+                Import
+            </a>
+        </nav>
+    </div>
+</header>

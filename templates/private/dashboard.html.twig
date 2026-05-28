@@ -3,26 +3,39 @@
 {% block title %}Tableau de bord privé{% endblock %}
 
 {% block body %}
-    <section class="private-panel">
-        <header class="private-panel__header private-panel__header--with-action">
-            <div>
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
                 <p class="private-eyebrow">Espace privé</p>
                 <h1>Tableau de bord</h1>
+                <p class="private-page__lead">
+                    Point d'entrée unique pour le premier outil privé de suivi des contacts, relances et opportunités.
+                </p>
             </div>
 
-            <a class="private-link-button" href="{{ path('app_private_logout') }}">Déconnexion</a>
-        </header>
-
-        <div class="private-panel__body">
-            <p class="private-muted">
-                Point d'entrée unique pour le premier outil privé de suivi des contacts, relances et opportunités.
-            </p>
-
-            <div class="private-actions">
+            <div class="private-page__actions">
                 <a class="private-link-button" href="{{ path('app_private_network_index') }}">
                     Ouvrir l'outil contacts et réseau
                 </a>
             </div>
+        </header>
+
+        <div class="private-grid private-grid--stats">
+            <article class="private-stat-card">
+                <p class="private-stat-card__label">Module actif</p>
+                <strong>1</strong>
+                <span>outil privé principal</span>
+            </article>
+            <article class="private-stat-card">
+                <p class="private-stat-card__label">Accès rapide</p>
+                <strong>4</strong>
+                <span>sections du réseau</span>
+            </article>
+            <article class="private-stat-card">
+                <p class="private-stat-card__label">Thème</p>
+                <strong>Libre</strong>
+                <span>sélection dans le header</span>
+            </article>
         </div>
     </section>
 {% endblock %}

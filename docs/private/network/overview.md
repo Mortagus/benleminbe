@@ -6,7 +6,7 @@ Ce document decrit le premier outil prive envisage pour `benlemin.be`.
 
 Le sujet reste volontairement separe du protocole PageSpeed.
 
-L'analyse du besoin et de l'objectif est decrite dans [Premier Outil Prive - Contacts Et Reseau - Analyse Du Besoin](premier-outil-prive-contacts-reseau-analyse-besoin.md).
+L'analyse du besoin et de l'objectif est decrite dans [Analyse Du Besoin](analyse-besoin.md).
 
 ## Objectif
 
@@ -64,6 +64,25 @@ Le premier MVP peut rester simple :
 
 ## Etat Actuel
 
-Ce projet passe maintenant du stade de perspective au stade de premier socle prive concret.
+Ce projet est maintenant un premier socle prive concret, branche sur Doctrine et MariaDB 10.11.16.
 
-La premiere brique retenue est une route dediee `/private/network`, accessible depuis le dashboard prive. Le but reste de garder l'outil simple au debut, avec une progression par petites etapes plutot qu'un CRM complet d'emblee.
+Etat fonctionnel actuel :
+
+- dashboard prive `/private/network` en place ;
+- pages de listing et de fiche pour les plateformes et les contacts ;
+- creation et edition des plateformes ;
+- creation et edition des contacts ;
+- ajout d'interactions sur les fiches contact ;
+- import CSV / JSON via l'interface privee ;
+- persistance relationnelle active avec tables, migration et seed initial des plateformes ;
+- tests fonctionnels PHPUnit / WebTestCase en place pour les parcours principaux, dont l'import.
+
+Etat d'organisation :
+
+- `Organization` reste un champ du contact ;
+- `Platform` et le profil de plateforme restent fusionnes ;
+- `ImportLog` sert de journal minimal ;
+- `tags` restent en JSON ;
+- les statuts sont formalises en enums.
+
+La prochaine priorite est la mise en page de l'outil prive. La fonctionnalite est suffisante pour servir de base, mais l'interface reste trop brute et doit etre habillee avec une meilleure hierarchy visuelle, une grille plus lisible et un traitement plus soigne des formulaires, des tableaux et des cartes.

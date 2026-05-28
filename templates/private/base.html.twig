@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app.request.locale|default('fr') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
 
     {% block importmap %}{{ importmap('private') }}{% endblock %}
 </head>
-<body class="private-shell">
+<body class="private-shell{% block body_class %}{% endblock %}">
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             <div class="private-flash private-flash--{{ label }}">
@@ -19,8 +19,14 @@
         {% endfor %}
     {% endfor %}
 
+    {% block private_header %}
+        {% include 'private/_header.html.twig' %}
+    {% endblock %}
+
     <main class="private-main">
-        {% block body %}{% endblock %}
+        <div class="private-page-shell{% block page_class %}{% endblock %}">
+            {% block body %}{% endblock %}
+        </div>
     </main>
 </body>
 </html>

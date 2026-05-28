@@ -2,10 +2,20 @@
 
 {% block title %}Connexion privée{% endblock %}
 
+{% block body_class %} private-shell--auth{% endblock %}
+
+{% block private_header %}{% endblock %}
+
+{% block page_class %} private-page-shell--auth{% endblock %}
+
 {% block body %}
-    <section class="private-panel private-login">
-        <header class="private-panel__header">
-            <h1>Connexion privée</h1>
+    <section class="private-login-panel">
+        <header class="private-page__header private-page__header--stacked">
+            <div class="private-page__title">
+                <p class="private-eyebrow">Zone protégée</p>
+                <h1>Connexion privée</h1>
+                <p class="private-page__lead">Accès réservé à l'espace d'administration personnel.</p>
+            </div>
         </header>
 
         {% if error %}
@@ -13,8 +23,8 @@
         {% endif %}
 
         <form class="private-form" method="post" action="{{ path('app_private_login') }}">
-            <div class="private-form__field">
-                <label for="username">Utilisateur</label>
+            <label class="private-form__field">
+                <span>Utilisateur</span>
                 <input
                     id="username"
                     type="text"
@@ -24,10 +34,10 @@
                     required
                     autofocus
                 >
-            </div>
+            </label>
 
-            <div class="private-form__field">
-                <label for="password">Mot de passe</label>
+            <label class="private-form__field">
+                <span>Mot de passe</span>
                 <input
                     id="password"
                     type="password"
@@ -35,7 +45,7 @@
                     autocomplete="current-password"
                     required
                 >
-            </div>
+            </label>
 
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 

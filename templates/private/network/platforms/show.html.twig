@@ -3,24 +3,27 @@
 {% block title %}{{ platform.name }}{% endblock %}
 
 {% block body %}
-    <section class="private-panel">
-        <header class="private-panel__header private-panel__header--with-action">
-            <div>
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
                 <p class="private-eyebrow">Plateforme</p>
                 <h1>{{ platform.name }}</h1>
+                <p class="private-page__lead">
+                    Fiche de suivi d'un profil de plateforme, avec statut, lien direct et note opérationnelle.
+                </p>
             </div>
 
-            <div class="private-actions">
+            <div class="private-page__actions">
                 <a class="private-link-button" href="{{ path('app_private_network_platform_edit', { slug: platform.slug }) }}">Modifier</a>
-                <a class="private-link-button" href="{{ path('app_private_network_platforms') }}">Retour</a>
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_platforms') }}">Retour</a>
             </div>
         </header>
 
-        {% include 'private/network/_nav.html.twig' with { current_page: 'platforms' } %}
-
         <div class="private-grid private-grid--two-columns">
-            <div class="private-section-card">
-                <h2>Résumé</h2>
+            <section class="private-surface">
+                <header class="private-surface__header">
+                    <h2>Résumé</h2>
+                </header>
 
                 <dl class="private-definition-list">
                     <div>
@@ -32,10 +35,44 @@
                         <dd>{{ platform.category }}</dd>
                     </div>
                     <div>
-                        <dt>Lien</dt>
+                        <dt>
+                            <a
+                                class="private-copy-link__anchor"
+                                href="{{ platform.profile_url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Ouvrir le lien
+                            </a>
+                        </dt>
                         <dd>
                             {% if platform.profile_url %}
-                                <a href="{{ platform.profile_url }}" target="_blank" rel="noopener noreferrer">{{ platform.profile_url }}</a>
+                                <div class="private-copy-link">
+
+                                    <button
+                                        class="private-copy-link__button"
+                                        type="button"
+                                        data-copy-to-clipboard
+                                        data-copy-value="{{ platform.profile_url }}"
+                                        data-copy-label="Copier le lien de la plateforme"
+                                        data-copy-success-label="Lien copié"
+                                        aria-label="Copier le lien de la plateforme"
+                                        title="Copier le lien de la plateforme"
+                                    >
+                                        <span class="private-copy-link__icon" data-copy-icon="copy" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" focusable="false">
+                                                <rect x="9" y="9" width="10" height="10" rx="2"></rect>
+                                                <path d="M7 15H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                        </span>
+                                        <span class="private-copy-link__icon" data-copy-icon="success" aria-hidden="true" hidden>
+                                            <svg viewBox="0 0 24 24" focusable="false">
+                                                <path d="M20 6 9 17l-5-5"></path>
+                                                <circle cx="12" cy="12" r="9"></circle>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
                             {% else %}
                                 <span class="private-muted">À renseigner</span>
                             {% endif %}
@@ -56,17 +93,19 @@
                         </dd>
                     </div>
                 </dl>
-            </div>
+            </section>
 
-            <div class="private-section-card">
-                <h2>Notes</h2>
+            <section class="private-surface">
+                <header class="private-surface__header">
+                    <h2>Notes</h2>
+                </header>
 
                 {% if platform.note %}
                     <p class="private-copy">{{ platform.note }}</p>
                 {% else %}
                     <p class="private-empty">Aucune note enregistrée pour cette plateforme.</p>
                 {% endif %}
-            </div>
+            </section>
         </div>
     </section>
 {% endblock %}

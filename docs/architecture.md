@@ -53,7 +53,7 @@ assets/styles/private/
 config/packages/security.yaml
 ```
 
-Les règles de gestion du secret admin sont documentées dans [private-security-recommendations.md](private-security-recommendations.md).
+Les règles de gestion du secret admin sont documentées dans [private-security-recommendations.md](private/security-recommendations.md).
 
 ### Lab
 
@@ -133,6 +133,6 @@ make private-prod-auth-check
 
 - [Index documentation](README.md)
 - [Workflow de contenu](content-workflow.md)
-- [Sécurité de la zone privée](private-security-recommendations.md)
+- [Sécurité de la zone privée](private/security-recommendations.md)
 - [Documents en cours](en-cours/)
 - [Travaux terminés](termines/)

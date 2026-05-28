@@ -3,24 +3,27 @@
 {% block title %}{{ contact.display_name }}{% endblock %}
 
 {% block body %}
-    <section class="private-panel">
-        <header class="private-panel__header private-panel__header--with-action">
-            <div>
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
                 <p class="private-eyebrow">Contact</p>
                 <h1>{{ contact.display_name }}</h1>
+                <p class="private-page__lead">
+                    Fiche de suivi complète avec résumé, notes, tags, interaction courante et historique.
+                </p>
             </div>
 
-            <div class="private-actions">
+            <div class="private-page__actions">
                 <a class="private-link-button" href="{{ path('app_private_network_contact_edit', { id: contact.id }) }}">Modifier</a>
-                <a class="private-link-button" href="{{ path('app_private_network_contacts') }}">Retour</a>
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contacts') }}">Retour</a>
             </div>
         </header>
 
-        {% include 'private/network/_nav.html.twig' with { current_page: 'contacts' } %}
-
         <div class="private-grid private-grid--two-columns">
-            <section class="private-section-card">
-                <h2>Résumé</h2>
+            <section class="private-surface">
+                <header class="private-surface__header">
+                    <h2>Résumé</h2>
+                </header>
 
                 <dl class="private-definition-list">
                     <div>
@@ -91,8 +94,10 @@
                 </dl>
             </section>
 
-            <section class="private-section-card">
-                <h2>Notes et tags</h2>
+            <section class="private-surface">
+                <header class="private-surface__header">
+                    <h2>Notes et tags</h2>
+                </header>
 
                 <div class="private-copy">
                     {% if contact.notes %}
@@ -113,8 +118,8 @@
         </div>
 
         <div class="private-grid private-grid--two-columns">
-            <section class="private-section-card">
-                <header class="private-section-card__header">
+            <section class="private-surface">
+                <header class="private-surface__header">
                     <h2>Ajouter une interaction</h2>
                 </header>
 
@@ -159,8 +164,8 @@
                 </form>
             </section>
 
-            <section class="private-section-card">
-                <header class="private-section-card__header">
+            <section class="private-surface">
+                <header class="private-surface__header">
                     <h2>Historique</h2>
                 </header>
 

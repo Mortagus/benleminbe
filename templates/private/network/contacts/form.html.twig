@@ -5,17 +5,20 @@
 {% block title %}{{ isEdit ? 'Modifier un contact' : 'Ajouter un contact' }}{% endblock %}
 
 {% block body %}
-    <section class="private-panel">
-        <header class="private-panel__header private-panel__header--with-action">
-            <div>
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
                 <p class="private-eyebrow">Contact</p>
                 <h1>{{ isEdit ? 'Modifier un contact' : 'Ajouter un contact' }}</h1>
+                <p class="private-page__lead">
+                    Formulaire de saisie et d'édition pour la fiche contact et son suivi relationnel.
+                </p>
             </div>
 
-            <a class="private-link-button" href="{{ cancelUrl }}">Annuler</a>
+            <div class="private-page__actions">
+                <a class="private-link-button private-link-button--secondary" href="{{ cancelUrl }}">Annuler</a>
+            </div>
         </header>
-
-        {% include 'private/network/_nav.html.twig' with { current_page: 'contacts' } %}
 
         {% if errors is not empty %}
             <div class="private-alert-list">
@@ -25,107 +28,113 @@
             </div>
         {% endif %}
 
-        <form class="private-form" method="post" action="{{ formAction }}">
-            <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact') }}">
+        <section class="private-surface">
+            <header class="private-surface__header">
+                <h2>{{ isEdit ? 'Modifier le contact' : 'Créer le contact' }}</h2>
+            </header>
 
-            <div class="private-form__grid">
-                <label class="private-form__field private-form__field--wide">
-                    <span>Nom affiché</span>
-                    <input type="text" name="display_name" value="{{ values.display_name }}" placeholder="Prénom Nom ou nom complet">
-                </label>
+            <form class="private-form" method="post" action="{{ formAction }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact') }}">
 
-                <label class="private-form__field">
-                    <span>Prénom</span>
-                    <input type="text" name="first_name" value="{{ values.first_name }}">
-                </label>
+                <div class="private-form__grid">
+                    <label class="private-form__field private-form__field--wide">
+                        <span>Nom affiché</span>
+                        <input type="text" name="display_name" value="{{ values.display_name }}" placeholder="Prénom Nom ou nom complet">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Nom</span>
-                    <input type="text" name="last_name" value="{{ values.last_name }}">
-                </label>
+                    <label class="private-form__field">
+                        <span>Prénom</span>
+                        <input type="text" name="first_name" value="{{ values.first_name }}">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Entreprise</span>
-                    <input type="text" name="organization" value="{{ values.organization }}">
-                </label>
+                    <label class="private-form__field">
+                        <span>Nom</span>
+                        <input type="text" name="last_name" value="{{ values.last_name }}">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Rôle</span>
-                    <input type="text" name="role" value="{{ values.role }}">
-                </label>
+                    <label class="private-form__field">
+                        <span>Entreprise</span>
+                        <input type="text" name="organization" value="{{ values.organization }}">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Canal principal</span>
-                    <input type="text" name="main_channel" value="{{ values.main_channel }}" placeholder="LinkedIn, email, téléphone...">
-                </label>
+                    <label class="private-form__field">
+                        <span>Rôle</span>
+                        <input type="text" name="role" value="{{ values.role }}">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Email</span>
-                    <input type="email" name="email" value="{{ values.email }}">
-                </label>
+                    <label class="private-form__field">
+                        <span>Canal principal</span>
+                        <input type="text" name="main_channel" value="{{ values.main_channel }}" placeholder="LinkedIn, email, téléphone...">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Téléphone</span>
-                    <input type="text" name="phone" value="{{ values.phone }}">
-                </label>
+                    <label class="private-form__field">
+                        <span>Email</span>
+                        <input type="email" name="email" value="{{ values.email }}">
+                    </label>
 
-                <label class="private-form__field private-form__field--wide">
-                    <span>URL utile</span>
-                    <input type="url" name="profile_url" value="{{ values.profile_url }}" placeholder="https://...">
-                </label>
+                    <label class="private-form__field">
+                        <span>Téléphone</span>
+                        <input type="text" name="phone" value="{{ values.phone }}">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Source</span>
-                    <input type="text" name="source" value="{{ values.source }}" placeholder="LinkedIn, import CSV, téléphone...">
-                </label>
+                    <label class="private-form__field private-form__field--wide">
+                        <span>URL utile</span>
+                        <input type="url" name="profile_url" value="{{ values.profile_url }}" placeholder="https://...">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Priorité</span>
-                    <select name="priority">
-                        {% for value, label in priorityOptions %}
-                            <option value="{{ value }}" {{ values.priority == value ? 'selected' : '' }}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
+                    <label class="private-form__field">
+                        <span>Source</span>
+                        <input type="text" name="source" value="{{ values.source }}" placeholder="LinkedIn, import CSV, téléphone...">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Statut relationnel</span>
-                    <select name="relationship_status">
-                        {% for value, label in relationOptions %}
-                            <option value="{{ value }}" {{ values.relationship_status == value ? 'selected' : '' }}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
+                    <label class="private-form__field">
+                        <span>Priorité</span>
+                        <select name="priority">
+                            {% for value, label in priorityOptions %}
+                                <option value="{{ value }}" {{ values.priority == value ? 'selected' : '' }}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Dernier contact</span>
-                    <input type="date" name="last_contact_at" value="{{ values.last_contact_at }}">
-                </label>
+                    <label class="private-form__field">
+                        <span>Statut relationnel</span>
+                        <select name="relationship_status">
+                            {% for value, label in relationOptions %}
+                                <option value="{{ value }}" {{ values.relationship_status == value ? 'selected' : '' }}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Prochaine action</span>
-                    <input type="date" name="next_action_at" value="{{ values.next_action_at }}">
-                </label>
+                    <label class="private-form__field">
+                        <span>Dernier contact</span>
+                        <input type="date" name="last_contact_at" value="{{ values.last_contact_at }}">
+                    </label>
 
-                <label class="private-form__field private-form__field--wide">
-                    <span>Action à venir</span>
-                    <textarea name="next_action" rows="3">{{ values.next_action }}</textarea>
-                </label>
+                    <label class="private-form__field">
+                        <span>Prochaine action</span>
+                        <input type="date" name="next_action_at" value="{{ values.next_action_at }}">
+                    </label>
 
-                <label class="private-form__field private-form__field--wide">
-                    <span>Tags</span>
-                    <input type="text" name="tags" value="{{ values.tags }}" placeholder="recrutement, esn, coaching...">
-                </label>
+                    <label class="private-form__field private-form__field--wide">
+                        <span>Action à venir</span>
+                        <textarea name="next_action" rows="3">{{ values.next_action }}</textarea>
+                    </label>
 
-                <label class="private-form__field private-form__field--wide">
-                    <span>Notes</span>
-                    <textarea name="notes" rows="4">{{ values.notes }}</textarea>
-                </label>
-            </div>
+                    <label class="private-form__field private-form__field--wide">
+                        <span>Tags</span>
+                        <input type="text" name="tags" value="{{ values.tags }}" placeholder="recrutement, esn, coaching...">
+                    </label>
 
-            <div class="private-actions">
-                <button class="private-link-button" type="submit">{{ isEdit ? 'Enregistrer' : 'Créer' }}</button>
-            </div>
-        </form>
+                    <label class="private-form__field private-form__field--wide">
+                        <span>Notes</span>
+                        <textarea name="notes" rows="4">{{ values.notes }}</textarea>
+                    </label>
+                </div>
+
+                <div class="private-actions">
+                    <button class="private-link-button" type="submit">{{ isEdit ? 'Enregistrer' : 'Créer' }}</button>
+                </div>
+            </form>
+        </section>
     </section>
 {% endblock %}

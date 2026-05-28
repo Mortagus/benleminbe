@@ -5,17 +5,20 @@
 {% block title %}{{ isEdit ? 'Modifier une plateforme' : 'Ajouter une plateforme' }}{% endblock %}
 
 {% block body %}
-    <section class="private-panel">
-        <header class="private-panel__header private-panel__header--with-action">
-            <div>
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
                 <p class="private-eyebrow">Plateforme</p>
                 <h1>{{ isEdit ? 'Modifier une plateforme' : 'Ajouter une plateforme' }}</h1>
+                <p class="private-page__lead">
+                    Formulaire de suivi d’un profil de plateforme, avec statut, vérification et note.
+                </p>
             </div>
 
-            <a class="private-link-button" href="{{ cancelUrl }}">Annuler</a>
+            <div class="private-page__actions">
+                <a class="private-link-button private-link-button--secondary" href="{{ cancelUrl }}">Annuler</a>
+            </div>
         </header>
-
-        {% include 'private/network/_nav.html.twig' with { current_page: 'platforms' } %}
 
         {% if errors is not empty %}
             <div class="private-alert-list">
@@ -25,53 +28,59 @@
             </div>
         {% endif %}
 
-        <form class="private-form" method="post" action="{{ formAction }}">
-            <input type="hidden" name="_token" value="{{ csrf_token('private-network-platform') }}">
+        <section class="private-surface">
+            <header class="private-surface__header">
+                <h2>{{ isEdit ? 'Modifier la plateforme' : 'Créer la plateforme' }}</h2>
+            </header>
 
-            <div class="private-form__grid">
-                <label class="private-form__field">
-                    <span>Nom</span>
-                    <input type="text" name="name" value="{{ values.name }}" required>
-                </label>
+            <form class="private-form" method="post" action="{{ formAction }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('private-network-platform') }}">
 
-                <label class="private-form__field">
-                    <span>Catégorie</span>
-                    <input type="text" name="category" value="{{ values.category }}" placeholder="reseau, freelance, coaching...">
-                </label>
+                <div class="private-form__grid">
+                    <label class="private-form__field">
+                        <span>Nom</span>
+                        <input type="text" name="name" value="{{ values.name }}" required>
+                    </label>
 
-                <label class="private-form__field private-form__field--wide">
-                    <span>URL du profil</span>
-                    <input type="url" name="profile_url" value="{{ values.profile_url }}" placeholder="https://...">
-                </label>
+                    <label class="private-form__field">
+                        <span>Catégorie</span>
+                        <input type="text" name="category" value="{{ values.category }}" placeholder="reseau, freelance, coaching...">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Statut</span>
-                    <select name="status">
-                        {% for value, label in statusOptions %}
-                            <option value="{{ value }}" {{ values.status == value ? 'selected' : '' }}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
+                    <label class="private-form__field private-form__field--wide">
+                        <span>URL du profil</span>
+                        <input type="url" name="profile_url" value="{{ values.profile_url }}" placeholder="https://...">
+                    </label>
 
-                <label class="private-form__field">
-                    <span>Dernière vérification</span>
-                    <input type="date" name="last_reviewed_at" value="{{ values.last_reviewed_at }}">
-                </label>
+                    <label class="private-form__field">
+                        <span>Statut</span>
+                        <select name="status">
+                            {% for value, label in statusOptions %}
+                                <option value="{{ value }}" {{ values.status == value ? 'selected' : '' }}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
 
-                <label class="private-form__field private-form__field--wide">
-                    <span>Note</span>
-                    <textarea name="note" rows="4">{{ values.note }}</textarea>
-                </label>
+                    <label class="private-form__field">
+                        <span>Dernière vérification</span>
+                        <input type="date" name="last_reviewed_at" value="{{ values.last_reviewed_at }}">
+                    </label>
 
-                <label class="private-form__field private-form__field--checkbox">
-                    <input type="checkbox" name="active" value="1" {{ values.active ? 'checked' : '' }}>
-                    <span>Plateforme active</span>
-                </label>
-            </div>
+                    <label class="private-form__field private-form__field--wide">
+                        <span>Note</span>
+                        <textarea name="note" rows="4">{{ values.note }}</textarea>
+                    </label>
 
-            <div class="private-actions">
-                <button class="private-link-button" type="submit">{{ isEdit ? 'Enregistrer' : 'Créer' }}</button>
-            </div>
-        </form>
+                    <label class="private-form__field private-form__field--checkbox">
+                        <input type="checkbox" name="active" value="1" {{ values.active ? 'checked' : '' }}>
+                        <span>Plateforme active</span>
+                    </label>
+                </div>
+
+                <div class="private-actions">
+                    <button class="private-link-button" type="submit">{{ isEdit ? 'Enregistrer' : 'Créer' }}</button>
+                </div>
+            </form>
+        </section>
     </section>
 {% endblock %}

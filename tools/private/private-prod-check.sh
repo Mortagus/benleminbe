@@ -91,18 +91,18 @@ if [ "$status" != "200" ]; then
     exit 1
 fi
 
-if ! grep -q '/assets/styles/private/private.css' "$body_file"; then
-    printf '%s\n' 'Private asset entrypoint does not reference the private CSS entrypoint.' >&2
-    exit 1
-fi
+if ! php -r '
+$bodyFile = $argv[1];
+$expected = array_slice($argv, 2);
+$data = json_decode(file_get_contents($bodyFile), true, 512, JSON_THROW_ON_ERROR);
 
-if ! grep -q '/assets/scripts/private/copy-to-clipboard.js' "$body_file"; then
-    printf '%s\n' 'Private asset entrypoint does not reference the clipboard helper.' >&2
-    exit 1
-fi
-
-if ! grep -q '/assets/scripts/theme-switcher.js' "$body_file"; then
-    printf '%s\n' 'Private asset entrypoint does not reference the theme switcher.' >&2
+foreach ($expected as $value) {
+    if (!in_array($value, $data, true)) {
+        fwrite(STDERR, sprintf("Private asset entrypoint does not reference %s.\n", $value));
+        exit(1);
+    }
+}
+' "$body_file" '/assets/styles/private/private.css' '/assets/scripts/private/copy-to-clipboard.js' '/assets/scripts/theme-switcher.js'; then
     exit 1
 fi
 

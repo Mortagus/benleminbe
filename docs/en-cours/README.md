@@ -8,6 +8,7 @@ Ce dossier contient les documents qui servent encore de fil de reprise, de backl
 - [Backlog DnD Initiative Tracker](dnd-initiative-tracker-backlog.md) : prochaines évolutions du module lab DnD.
 - [P7 - Commandes explicites de combat](dnd-initiative-tracker-p7-commandes-explicites-combat.md) : cadrage UX des commandes de pilotage du combat.
 - [PageSpeed Protocol](pagespeed-protocol.md) : protocole de suivi PageSpeed et baseline initiale.
+- [Suivi du chantier privé du 2026-05-28](private-network-morning-2026-05-28.md) : récapitulatif du travail du matin sur la zone privée et prochaine étape.
 
 ## Regle De Sortie
 

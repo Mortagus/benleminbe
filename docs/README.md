@@ -7,6 +7,7 @@ La documentation est organisée par statut et par domaine pour éviter de mélan
 ## Points D'Entree
 
 - [Architecture du site](architecture.md) : vue stable des grandes parties du projet.
+- [Makefile et deploiement](makefile.md) : cibles, procedure de deploiement et smoke tests de production.
 - [Workflow de contenu](content-workflow.md) : sources de vérité pour les contenus publiés.
 - [Zone privee](private/README.md) : documentation stable de la zone privee et de son premier module.
 
@@ -16,6 +17,7 @@ La documentation est organisée par statut et par domaine pour éviter de mélan
 docs/
 ├── README.md
 ├── architecture.md
+├── makefile.md
 ├── content-workflow.md
 ├── private/
 ├── en-cours/

@@ -25,6 +25,9 @@ security:
                 check_path: app_private_login
                 default_target_path: app_private_dashboard
                 enable_csrf: true
+            login_throttling:
+                max_attempts: 3
+                interval: '30 minutes'
             logout:
                 path: app_private_logout
                 target: app_private_login

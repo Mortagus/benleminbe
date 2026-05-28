@@ -27,7 +27,8 @@
         "symfony/security-csrf": "^8.0",
         "doctrine/doctrine-bundle": "^3.0",
         "doctrine/doctrine-migrations-bundle": "^3.4",
-        "doctrine/orm": "^3.5"
+        "doctrine/orm": "^3.5",
+        "symfony/rate-limiter": "^8.0"
     },
     "license": "MIT",
     "autoload": {

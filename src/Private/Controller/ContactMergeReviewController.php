@@ -56,6 +56,33 @@ final class ContactMergeReviewController extends AbstractController
         return $this->redirectToRoute('app_private_network_contact_merge_reviews_index');
     }
 
+    #[Route('/purge-pending', name: 'purge_pending', methods: ['POST'])]
+    public function purgePending(Request $request): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('private-network-contact-merge-reviews-purge-pending', $request->request->getString('_token'))) {
+            $this->addFlash('error', 'Le formulaire de purge a expiré. Réessaie.');
+
+            return $this->redirectToRoute('app_private_network_contact_merge_reviews_index');
+        }
+
+        $summary = $this->contactMergeReviewService->purgePendingReviews();
+        if ($summary['deleted'] > 0) {
+            $this->addFlash(
+                'success',
+                sprintf(
+                    '%d doublon%s en attente supprimé%s.',
+                    $summary['deleted'],
+                    $summary['deleted'] > 1 ? 's' : '',
+                    $summary['deleted'] > 1 ? 's' : '',
+                ),
+            );
+        } else {
+            $this->addFlash('info', 'Aucun doublon en attente à supprimer.');
+        }
+
+        return $this->redirectToRoute('app_private_network_contact_merge_reviews_index');
+    }
+
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(string $id): Response
     {

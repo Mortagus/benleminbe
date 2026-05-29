@@ -1035,8 +1035,12 @@ final class NetworkRepository
         $candidateEmail = mb_strtolower($this->normalizeString($candidate['email'] ?? ''));
         $candidatePhone = $this->normalizePhoneKey($candidate['phone'] ?? null);
         $candidateProfileUrl = mb_strtolower($this->normalizeString($candidate['profile_url'] ?? ''));
-        $candidateName = mb_strtolower($this->normalizeString($candidate['display_name'] ?? ''));
-        $candidateOrganization = mb_strtolower($this->normalizeString($candidate['organization'] ?? ''));
+        $candidateNameKeys = $this->buildContactNameKeys(
+            $candidate['display_name'] ?? '',
+            $candidate['first_name'] ?? '',
+            $candidate['last_name'] ?? '',
+            $candidate['organization'] ?? '',
+        );
 
         foreach ($contacts as $index => $contact) {
             if (!$contact instanceof Contact) {
@@ -1046,8 +1050,12 @@ final class NetworkRepository
             $contactEmail = mb_strtolower($this->normalizeString($contact->getEmail() ?? ''));
             $contactPhone = $this->normalizePhoneKey($contact->getPhone());
             $contactProfileUrl = mb_strtolower($this->normalizeString($contact->getProfileUrl() ?? ''));
-            $contactName = mb_strtolower($this->normalizeString($contact->getDisplayName()));
-            $contactOrganization = mb_strtolower($this->normalizeString($contact->getOrganization() ?? ''));
+            $contactNameKeys = $this->buildContactNameKeys(
+                $contact->getDisplayName(),
+                $contact->getFirstName() ?? '',
+                $contact->getLastName() ?? '',
+                $contact->getOrganization() ?? '',
+            );
 
             if ($candidateEmail !== '' && $contactEmail !== '' && $candidateEmail === $contactEmail) {
                 return $index;
@@ -1061,13 +1069,7 @@ final class NetworkRepository
                 return $index;
             }
 
-            if (
-                $candidateName !== '' &&
-                $contactName !== '' &&
-                $candidateName === $contactName &&
-                $candidateOrganization !== '' &&
-                $candidateOrganization === $contactOrganization
-            ) {
+            if ($candidateNameKeys !== [] && array_intersect($candidateNameKeys, $contactNameKeys) !== []) {
                 return $index;
             }
         }
@@ -1210,7 +1212,72 @@ final class NetworkRepository
             $keys[] = 'profile:' . $profileUrl;
         }
 
+        foreach ($this->buildContactNameKeys(
+            $contact->getDisplayName(),
+            $contact->getFirstName() ?? '',
+            $contact->getLastName() ?? '',
+            $contact->getOrganization() ?? '',
+        ) as $key) {
+            $keys[] = 'name:' . $key;
+        }
+
         return array_values(array_unique($keys));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function buildContactNameKeys(mixed $displayName, mixed $firstName, mixed $lastName, mixed $organization): array
+    {
+        $keys = [];
+        $normalizedDisplayName = $this->normalizeComparableText($displayName);
+        $normalizedFirstName = $this->normalizeComparableText($firstName);
+        $normalizedLastName = $this->normalizeComparableText($lastName);
+        $normalizedOrganization = $this->normalizeComparableText($organization);
+
+        if ($normalizedDisplayName !== '' && $normalizedOrganization !== '') {
+            $keys[] = 'display-org:' . $normalizedDisplayName . '|' . $normalizedOrganization;
+        }
+
+        if ($normalizedFirstName !== '' && $normalizedLastName !== '' && $normalizedOrganization !== '') {
+            $keys[] = 'name-org:' . $normalizedFirstName . '|' . $normalizedLastName . '|' . $normalizedOrganization;
+        }
+
+        $initialLastKey = $this->buildInitialLastOrganizationKey($normalizedFirstName, $normalizedLastName, $normalizedOrganization);
+        if ($initialLastKey !== null) {
+            $keys[] = 'initial-org:' . $initialLastKey;
+        }
+
+        return array_values(array_unique($keys));
+    }
+
+    private function normalizeComparableText(mixed $value): string
+    {
+        $value = $this->normalizeString($value);
+        if ($value === '') {
+            return '';
+        }
+
+        $value = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $value) ?: $value;
+        $value = mb_strtolower($value);
+        $value = preg_replace('/[^a-z0-9]+/i', ' ', $value) ?? $value;
+        $value = preg_replace('/\s+/', ' ', $value) ?? $value;
+
+        return trim($value);
+    }
+
+    private function buildInitialLastOrganizationKey(string $firstName, string $lastName, string $organization): ?string
+    {
+        if ($firstName === '' || $lastName === '' || $organization === '') {
+            return null;
+        }
+
+        $initial = mb_substr($firstName, 0, 1);
+        if ($initial === '') {
+            return null;
+        }
+
+        return $initial . '|' . $lastName . '|' . $organization;
     }
 
     /**

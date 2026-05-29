@@ -157,6 +157,22 @@ final class ContactMergeReviewService
     }
 
     /**
+     * @return array{deleted: int}
+     */
+    public function purgePendingReviews(): array
+    {
+        $deleted = $this->entityManager->createQuery(
+            'DELETE FROM App\\Entity\\Network\\ContactMergeReview review WHERE review.status = :status',
+        )
+            ->setParameter('status', ContactMergeReviewStatus::Pending)
+            ->execute();
+
+        return [
+            'deleted' => (int) $deleted,
+        ];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function getReview(string $id): array

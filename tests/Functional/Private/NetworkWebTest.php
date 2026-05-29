@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Private;
 
 use App\Entity\Network\Contact;
+use App\Entity\Network\ContactMergeReview;
 use App\Entity\Network\ImportLog;
 use App\Enum\Network\ContactImportSource;
+use App\Enum\Network\ContactMergeReviewStatus;
 use App\Enum\Network\ContactPriority;
 use App\Enum\Network\ContactRelationshipStatus;
 use App\Private\Service\Network\NetworkRepository;
@@ -320,6 +322,54 @@ VCF,
         self::assertSame('À vérifier', (string) $connection->fetchOne('SELECT result FROM network_interactions LIMIT 1'));
     }
 
+    public function testAutoMergeContactsActionUnderstandsNameAndOrganizationVariants(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+
+        $primary = new Contact('contact-merge-name-primary', 'Jean Dupont');
+        $primary->setFirstName('Jean');
+        $primary->setLastName('Dupont');
+        $primary->setOrganization('Lab One');
+        $primary->setRole('Lead');
+        $primary->setSource('phone');
+        $primary->setNotes('Fiche plus complète');
+        $primary->setPriority(ContactPriority::High);
+        $primary->setRelationshipStatus(ContactRelationshipStatus::Priority);
+
+        $duplicate = new Contact('contact-merge-name-duplicate', 'J. Dupont');
+        $duplicate->setFirstName('J.');
+        $duplicate->setLastName('Dupont');
+        $duplicate->setOrganization('Lab One');
+        $duplicate->setSource('linkedin');
+        $duplicate->setPriority(ContactPriority::Low);
+        $duplicate->setRelationshipStatus(ContactRelationshipStatus::FollowUp);
+
+        $entityManager->persist($primary);
+        $entityManager->persist($duplicate);
+        $entityManager->flush();
+
+        $crawler = $client->request('GET', '/private/network/contacts');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('form[action="/private/network/contacts/merge-duplicates"]');
+
+        $client->submit($crawler->filter('form[action="/private/network/contacts/merge-duplicates"]')->form());
+
+        self::assertResponseRedirects('/private/network/contacts?page=1');
+        $client->followRedirect();
+        self::assertResponseIsSuccessful();
+
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+        self::assertSame('phone | linkedin', (string) $connection->fetchOne('SELECT source FROM network_contacts LIMIT 1'));
+
+        $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([]);
+        self::assertInstanceOf(Contact::class, $contact);
+        self::assertSame('Jean Dupont', $contact->getDisplayName());
+        self::assertSame('Lab One', $contact->getOrganization());
+        self::assertStringContainsString('Fiche plus complète', $contact->getNotes() ?? '');
+    }
+
     public function testManualMergeReviewFlowGeneratesCandidatesAndResolvesOnePair(): void
     {
         $client = $this->createAuthenticatedClient();
@@ -414,6 +464,73 @@ VCF,
         self::assertContains('gamma', $contact->getTags());
         self::assertSame($contact->getId(), (string) $connection->fetchOne('SELECT contact_id FROM network_interactions LIMIT 1'));
         self::assertSame('Interaction à déplacer', (string) $connection->fetchOne('SELECT summary FROM network_interactions LIMIT 1'));
+    }
+
+    public function testPendingMergeReviewsCanBePurgedWithoutTouchingResolvedReviews(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+
+        $resolvedLeft = new Contact('contact-merge-resolved-left', 'Jean Dupont');
+        $resolvedLeft->setOrganization('Lab One');
+        $resolvedLeft->setSource('phone');
+
+        $resolvedRight = new Contact('contact-merge-resolved-right', 'Jean Dupont');
+        $resolvedRight->setOrganization('Lab One');
+        $resolvedRight->setSource('linkedin');
+
+        $pendingLeft = new Contact('contact-merge-pending-left', 'Marie Dupont');
+        $pendingLeft->setOrganization('Lab Two');
+        $pendingLeft->setRole('Manager');
+
+        $pendingRight = new Contact('contact-merge-pending-right', 'Marc Dupont');
+        $pendingRight->setOrganization('Lab Two');
+        $pendingRight->setRole('Manager');
+
+        $entityManager->persist($resolvedLeft);
+        $entityManager->persist($resolvedRight);
+        $entityManager->persist($pendingLeft);
+        $entityManager->persist($pendingRight);
+        $entityManager->flush();
+
+        $resolvedReview = new ContactMergeReview(
+            'contact-merge-review-resolved',
+            'resolved-fingerprint',
+            $resolvedLeft,
+            $resolvedRight,
+        );
+        $resolvedReview
+            ->setStatus(ContactMergeReviewStatus::Resolved)
+            ->setResolvedContact($resolvedLeft)
+            ->setReviewedAt(new \DateTimeImmutable('2026-05-29 10:00:00'))
+            ->setResolvedAt(new \DateTimeImmutable('2026-05-29 10:00:00'));
+
+        $pendingReview = new ContactMergeReview(
+            'contact-merge-review-pending',
+            'pending-fingerprint',
+            $pendingLeft,
+            $pendingRight,
+        );
+
+        $entityManager->persist($resolvedReview);
+        $entityManager->persist($pendingReview);
+        $entityManager->flush();
+
+        $crawler = $client->request('GET', '/private/network/contact-merge-reviews');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('form[action="/private/network/contact-merge-reviews/purge-pending"]');
+        self::assertSelectorTextContains('body', 'En attente');
+        self::assertSelectorTextContains('body', 'Résolus');
+
+        $client->submit($crawler->filter('form[action="/private/network/contact-merge-reviews/purge-pending"]')->form());
+
+        self::assertResponseRedirects('/private/network/contact-merge-reviews');
+        $client->followRedirect();
+        self::assertResponseIsSuccessful();
+
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contact_merge_reviews'));
+        self::assertSame('resolved', (string) $connection->fetchOne('SELECT status FROM network_contact_merge_reviews LIMIT 1'));
     }
 
     /**

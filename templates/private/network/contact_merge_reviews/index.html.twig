@@ -18,6 +18,10 @@
                     <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-refresh') }}">
                     <button class="private-link-button" type="submit">Détecter les doublons</button>
                 </form>
+                <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_purge_pending') }}" onsubmit="return confirm('Supprimer tous les doublons en attente ? Cette action ne touche pas les doublons résolus ou ignorés.');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-purge-pending') }}">
+                    <button class="private-link-button private-link-button--secondary" type="submit">Supprimer les en attente</button>
+                </form>
                 <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contacts') }}">Retour aux contacts</a>
             </div>
         </header>

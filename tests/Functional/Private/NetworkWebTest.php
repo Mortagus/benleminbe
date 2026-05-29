@@ -7,6 +7,8 @@ namespace App\Tests\Functional\Private;
 use App\Entity\Network\Contact;
 use App\Entity\Network\ImportLog;
 use App\Enum\Network\ContactImportSource;
+use App\Enum\Network\ContactPriority;
+use App\Enum\Network\ContactRelationshipStatus;
 use App\Private\Service\Network\NetworkRepository;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -251,6 +253,71 @@ VCF,
         self::assertResponseIsSuccessful();
         self::assertStringContainsString('Aucun contact enregistré.', $client->getResponse()->getContent());
         self::assertSame('0', (string) self::getContainer()->get('doctrine')->getConnection()->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+    }
+
+    public function testAutoMergeContactsActionMergesDuplicatesAndKeepsInteractions(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+
+        $primary = new Contact('contact-merge-primary', 'Jean Dupont');
+        $primary->setOrganization('Lab One');
+        $primary->setNotes('Premier doublon');
+        $primary->setPhone('+32470000001');
+        $primary->setSource('phone');
+        $primary->setPriority(ContactPriority::Medium);
+        $primary->setRelationshipStatus(ContactRelationshipStatus::FollowUp);
+
+        $duplicate = new Contact('contact-merge-duplicate', 'J. Dupont');
+        $duplicate->setRole('Lead');
+        $duplicate->setEmail('jean.dupont@example.com');
+        $duplicate->setNotes('Second doublon');
+        $duplicate->setPhone('+32470000001');
+        $duplicate->setSource('linkedin');
+        $duplicate->setPriority(ContactPriority::Medium);
+        $duplicate->setRelationshipStatus(ContactRelationshipStatus::FollowUp);
+
+        $entityManager->persist($primary);
+        $entityManager->persist($duplicate);
+        $entityManager->flush();
+
+        $repository->addInteraction($duplicate->getId(), [
+            'date' => '2026-05-28',
+            'channel' => 'email',
+            'summary' => 'Interaction à conserver',
+            'result' => 'À vérifier',
+        ]);
+
+        $crawler = $client->request('GET', '/private/network/contacts');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('form[action="/private/network/contacts/merge-duplicates"]');
+
+        $client->submit($crawler->filter('form[action="/private/network/contacts/merge-duplicates"]')->form());
+
+        self::assertResponseRedirects('/private/network/contacts?page=1');
+        $client->followRedirect();
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Contacts', $client->getResponse()->getContent());
+
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_interactions'));
+
+        $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([]);
+        self::assertInstanceOf(Contact::class, $contact);
+        self::assertSame('+32470000001', $contact->getPhone());
+        self::assertSame('Lab One', $contact->getOrganization());
+        self::assertSame('Lead', $contact->getRole());
+        self::assertSame('jean.dupont@example.com', $contact->getEmail());
+        self::assertStringContainsString('phone', $contact->getSource() ?? '');
+        self::assertStringContainsString('linkedin', $contact->getSource() ?? '');
+        self::assertStringContainsString('Premier doublon', $contact->getNotes() ?? '');
+        self::assertStringContainsString('Second doublon', $contact->getNotes() ?? '');
+        self::assertStringContainsString('Fusion automatique du doublon', $contact->getNotes() ?? '');
+        self::assertSame($contact->getId(), (string) $connection->fetchOne('SELECT contact_id FROM network_interactions LIMIT 1'));
+        self::assertSame('Interaction à conserver', (string) $connection->fetchOne('SELECT summary FROM network_interactions LIMIT 1'));
+        self::assertSame('À vérifier', (string) $connection->fetchOne('SELECT result FROM network_interactions LIMIT 1'));
     }
 
     /**

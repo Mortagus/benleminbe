@@ -156,6 +156,36 @@ final class NetworkController extends AbstractController
         ]);
     }
 
+    #[Route('/contacts/merge-duplicates', name: 'contacts_merge_duplicates', methods: ['POST'])]
+    public function contactsMergeDuplicates(Request $request): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('private-network-contacts-merge-duplicates', $request->request->getString('_token'))) {
+            $this->addFlash('error', 'Le formulaire de fusion a expiré. Réessaie.');
+
+            return $this->redirectToRoute('app_private_network_contacts', $this->extractContactsFilters($request));
+        }
+
+        $summary = $this->networkRepository->autoMergeContacts();
+
+        if ($summary['merged_contacts'] === 0) {
+            $this->addFlash('info', 'Aucun doublon détecté.');
+        } else {
+            $this->addFlash(
+                'success',
+                sprintf(
+                    '%d contact%s fusionné%s dans %d groupe%s de doublons.',
+                    $summary['merged_contacts'],
+                    $summary['merged_contacts'] > 1 ? 's' : '',
+                    $summary['merged_contacts'] > 1 ? 's' : '',
+                    $summary['merged_groups'],
+                    $summary['merged_groups'] > 1 ? 's' : '',
+                ),
+            );
+        }
+
+        return $this->redirectToRoute('app_private_network_contacts', $this->extractContactsFilters($request));
+    }
+
     #[Route('/contacts/new', name: 'contact_new', methods: ['GET', 'POST'])]
     public function contactNew(Request $request): Response
     {
@@ -578,5 +608,18 @@ final class NetworkController extends AbstractController
             'source_label' => $request->request->getString('source_label', $source->value),
             'content' => $request->request->getString('content'),
         ];
+    }
+
+    /**
+     * @return array<string, scalar>
+     */
+    private function extractContactsFilters(Request $request): array
+    {
+        return array_filter([
+            'q' => $request->request->getString('q'),
+            'priority' => $request->request->getString('priority'),
+            'relationship_status' => $request->request->getString('relationship_status'),
+            'page' => 1,
+        ], static fn (mixed $value): bool => $value !== '' && $value !== null);
     }
 }

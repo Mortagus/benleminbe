@@ -287,6 +287,73 @@ final class NetworkRepository
     }
 
     /**
+     * @return array{merged_contacts: int, merged_groups: int, moved_interactions: int}
+     */
+    public function autoMergeContacts(): array
+    {
+        $this->ensureSeeded();
+
+        $contacts = $this->loadContacts();
+        $clusters = $this->buildAutoMergeClusters($contacts);
+        $mergedContacts = 0;
+        $mergedGroups = 0;
+        $movedInteractions = 0;
+
+        if ($clusters === []) {
+            return [
+                'merged_contacts' => 0,
+                'merged_groups' => 0,
+                'moved_interactions' => 0,
+            ];
+        }
+
+        $this->entityManager->wrapInTransaction(function (EntityManagerInterface $entityManager) use (
+            $contacts,
+            $clusters,
+            &$mergedContacts,
+            &$mergedGroups,
+            &$movedInteractions,
+        ): void {
+            foreach ($clusters as $cluster) {
+                if (count($cluster) < 2) {
+                    continue;
+                }
+
+                $canonicalIndex = $this->selectCanonicalContactIndex($contacts, $cluster);
+                $canonical = $contacts[$canonicalIndex] ?? null;
+                if (!$canonical instanceof Contact) {
+                    continue;
+                }
+
+                $mergedGroups++;
+
+                foreach ($cluster as $index) {
+                    if ($index === $canonicalIndex) {
+                        continue;
+                    }
+
+                    $duplicate = $contacts[$index] ?? null;
+                    if (!$duplicate instanceof Contact) {
+                        continue;
+                    }
+
+                    $movedInteractions += $this->mergeContactInto($canonical, $duplicate);
+                    $entityManager->remove($duplicate);
+                    $mergedContacts++;
+                }
+
+                $entityManager->persist($canonical);
+            }
+        });
+
+        return [
+            'merged_contacts' => $mergedContacts,
+            'merged_groups' => $mergedGroups,
+            'moved_interactions' => $movedInteractions,
+        ];
+    }
+
+    /**
      * @param array<string, mixed> $payload
      *
      * @return array<string, mixed>
@@ -966,6 +1033,7 @@ final class NetworkRepository
     private function findMatchingContactIndex(array $contacts, array $candidate): ?int
     {
         $candidateEmail = mb_strtolower($this->normalizeString($candidate['email'] ?? ''));
+        $candidatePhone = $this->normalizePhoneKey($candidate['phone'] ?? null);
         $candidateProfileUrl = mb_strtolower($this->normalizeString($candidate['profile_url'] ?? ''));
         $candidateName = mb_strtolower($this->normalizeString($candidate['display_name'] ?? ''));
         $candidateOrganization = mb_strtolower($this->normalizeString($candidate['organization'] ?? ''));
@@ -976,11 +1044,16 @@ final class NetworkRepository
             }
 
             $contactEmail = mb_strtolower($this->normalizeString($contact->getEmail() ?? ''));
+            $contactPhone = $this->normalizePhoneKey($contact->getPhone());
             $contactProfileUrl = mb_strtolower($this->normalizeString($contact->getProfileUrl() ?? ''));
             $contactName = mb_strtolower($this->normalizeString($contact->getDisplayName()));
             $contactOrganization = mb_strtolower($this->normalizeString($contact->getOrganization() ?? ''));
 
             if ($candidateEmail !== '' && $contactEmail !== '' && $candidateEmail === $contactEmail) {
+                return $index;
+            }
+
+            if ($candidatePhone !== '' && $contactPhone !== '' && $candidatePhone === $contactPhone) {
                 return $index;
             }
 
@@ -1000,6 +1073,368 @@ final class NetworkRepository
         }
 
         return null;
+    }
+
+    /**
+     * @param list<Contact> $contacts
+     *
+     * @return list<list<int>>
+     */
+    private function buildAutoMergeClusters(array $contacts): array
+    {
+        $parents = array_keys($contacts);
+        $keyToIndex = [];
+
+        foreach ($contacts as $index => $contact) {
+            if (!$contact instanceof Contact) {
+                continue;
+            }
+
+            foreach ($this->buildContactMergeKeys($contact) as $key) {
+                if ($key === '') {
+                    continue;
+                }
+
+                if (array_key_exists($key, $keyToIndex)) {
+                    $this->unionContactMergeRoots($parents, $index, $keyToIndex[$key]);
+
+                    continue;
+                }
+
+                $keyToIndex[$key] = $index;
+            }
+        }
+
+        $clusters = [];
+
+        foreach ($contacts as $index => $contact) {
+            if (!$contact instanceof Contact) {
+                continue;
+            }
+
+            $root = $this->findContactMergeRoot($parents, $index);
+            $clusters[$root][] = $index;
+        }
+
+        return array_values(array_filter(
+            $clusters,
+            static fn (array $cluster): bool => count($cluster) > 1,
+        ));
+    }
+
+    /**
+     * @param list<Contact> $contacts
+     * @param list<int> $cluster
+     */
+    private function selectCanonicalContactIndex(array $contacts, array $cluster): int
+    {
+        $bestIndex = $cluster[0];
+        $bestScore = $this->scoreContactForMerge($contacts[$bestIndex]);
+        $bestCreatedAt = $contacts[$bestIndex]->getCreatedAt()->getTimestamp();
+
+        foreach (array_slice($cluster, 1) as $index) {
+            $contact = $contacts[$index] ?? null;
+            if (!$contact instanceof Contact) {
+                continue;
+            }
+
+            $score = $this->scoreContactForMerge($contact);
+            $createdAt = $contact->getCreatedAt()->getTimestamp();
+
+            if ($score > $bestScore || ($score === $bestScore && $createdAt < $bestCreatedAt)) {
+                $bestIndex = $index;
+                $bestScore = $score;
+                $bestCreatedAt = $createdAt;
+            }
+        }
+
+        return $bestIndex;
+    }
+
+    private function mergeContactInto(Contact $target, Contact $source): int
+    {
+        $movedInteractions = 0;
+
+        $sourceInteractions = $source->getInteractions()->toArray();
+        foreach ($sourceInteractions as $interaction) {
+            if (!$interaction instanceof Interaction) {
+                continue;
+            }
+
+            $source->removeInteraction($interaction);
+            $target->addInteraction($interaction);
+            $movedInteractions++;
+        }
+
+        $target->setDisplayName($this->preferContactValue($target->getDisplayName(), $source->getDisplayName()) ?? $target->getDisplayName());
+        $target->setFirstName($this->preferContactValue($target->getFirstName(), $source->getFirstName()));
+        $target->setLastName($this->preferContactValue($target->getLastName(), $source->getLastName()));
+        $target->setOrganization($this->preferContactValue($target->getOrganization(), $source->getOrganization()));
+        $target->setRole($this->preferContactValue($target->getRole(), $source->getRole()));
+        $target->setMainChannel($this->preferContactValue($target->getMainChannel(), $source->getMainChannel()));
+        $target->setEmail($this->preferContactValue($target->getEmail(), $source->getEmail()));
+        $target->setPhone($this->preferContactValue($target->getPhone(), $source->getPhone()));
+        $target->setProfileUrl($this->preferContactValue($target->getProfileUrl(), $source->getProfileUrl()));
+        $target->setSource($this->mergeSourceValues($target->getSource(), $source->getSource()));
+        $target->setPriority($this->mergeContactPriority($target->getPriority(), $source->getPriority()));
+        $target->setRelationshipStatus($this->mergeContactRelationshipStatus($target->getRelationshipStatus(), $source->getRelationshipStatus()));
+        $target->setLastContactAt($this->mergeLatestDate($target->getLastContactAt(), $source->getLastContactAt()));
+        $target->setNextActionAt($this->mergeEarliestDate($target->getNextActionAt(), $source->getNextActionAt()));
+        $target->setNextAction($this->preferContactValue($target->getNextAction(), $source->getNextAction()));
+        $target->setNotes($this->mergeNotes($target->getNotes(), $source));
+        $target->setTags(array_values(array_unique(array_merge($target->getTags(), $source->getTags()))));
+        $target->setUpdatedAt(new DateTimeImmutable());
+
+        return $movedInteractions;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function buildContactMergeKeys(Contact $contact): array
+    {
+        $keys = [];
+
+        $phone = $this->normalizePhoneKey($contact->getPhone());
+        if ($phone !== '') {
+            $keys[] = 'phone:' . $phone;
+        }
+
+        $email = mb_strtolower($this->normalizeString($contact->getEmail() ?? ''));
+        if ($email !== '') {
+            $keys[] = 'email:' . $email;
+        }
+
+        $profileUrl = $this->normalizeProfileUrlKey($contact->getProfileUrl());
+        if ($profileUrl !== '') {
+            $keys[] = 'profile:' . $profileUrl;
+        }
+
+        return array_values(array_unique($keys));
+    }
+
+    /**
+     * @param array<int, int> $parents
+     */
+    private function findContactMergeRoot(array &$parents, int $index): int
+    {
+        if ($parents[$index] !== $index) {
+            $parents[$index] = $this->findContactMergeRoot($parents, $parents[$index]);
+        }
+
+        return $parents[$index];
+    }
+
+    /**
+     * @param array<int, int> $parents
+     */
+    private function unionContactMergeRoots(array &$parents, int $leftIndex, int $rightIndex): void
+    {
+        $leftRoot = $this->findContactMergeRoot($parents, $leftIndex);
+        $rightRoot = $this->findContactMergeRoot($parents, $rightIndex);
+
+        if ($leftRoot !== $rightRoot) {
+            $parents[$rightRoot] = $leftRoot;
+        }
+    }
+
+    private function scoreContactForMerge(Contact $contact): int
+    {
+        $score = 0;
+        foreach ([
+            $contact->getDisplayName(),
+            $contact->getFirstName(),
+            $contact->getLastName(),
+            $contact->getOrganization(),
+            $contact->getRole(),
+            $contact->getMainChannel(),
+            $contact->getEmail(),
+            $contact->getPhone(),
+            $contact->getProfileUrl(),
+            $contact->getSource(),
+            $contact->getNextAction(),
+            $contact->getNotes(),
+        ] as $value) {
+            if ($this->normalizeString((string) $value) !== '') {
+                $score++;
+            }
+        }
+
+        $score += count($contact->getTags());
+
+        if ($contact->getLastContactAt() !== null) {
+            $score++;
+        }
+
+        if ($contact->getNextActionAt() !== null) {
+            $score++;
+        }
+
+        return $score;
+    }
+
+    private function preferContactValue(?string $current, ?string $incoming): ?string
+    {
+        $current = $this->normalizeString((string) $current);
+        if ($current !== '') {
+            return $current;
+        }
+
+        $incoming = $this->normalizeString((string) $incoming);
+
+        return $incoming !== '' ? $incoming : null;
+    }
+
+    private function mergeSourceValues(?string $current, ?string $incoming): ?string
+    {
+        $labels = [];
+
+        foreach ([$current, $incoming] as $value) {
+            $value = $this->normalizeString((string) $value);
+            if ($value === '') {
+                continue;
+            }
+
+            foreach (preg_split('/\s*\|\s*/', $value) ?: [] as $label) {
+                $label = $this->normalizeString($label);
+                if ($label !== '') {
+                    $labels[] = $label;
+                }
+            }
+        }
+
+        $labels = array_values(array_unique($labels));
+
+        return $labels === [] ? null : implode(' | ', $labels);
+    }
+
+    private function mergeContactPriority(ContactPriority $current, ContactPriority $incoming): ContactPriority
+    {
+        return $this->priorityWeight($incoming->value) > $this->priorityWeight($current->value) ? $incoming : $current;
+    }
+
+    private function mergeContactRelationshipStatus(ContactRelationshipStatus $current, ContactRelationshipStatus $incoming): ContactRelationshipStatus
+    {
+        return $this->relationshipWeight($incoming) > $this->relationshipWeight($current) ? $incoming : $current;
+    }
+
+    private function relationshipWeight(ContactRelationshipStatus $status): int
+    {
+        return match ($status) {
+            ContactRelationshipStatus::Priority => 5,
+            ContactRelationshipStatus::FollowUp => 4,
+            ContactRelationshipStatus::InProgress => 3,
+            ContactRelationshipStatus::Waiting => 2,
+            ContactRelationshipStatus::Cold => 1,
+        };
+    }
+
+    private function mergeLatestDate(?DateTimeImmutable $current, ?DateTimeImmutable $incoming): ?DateTimeImmutable
+    {
+        if ($current === null) {
+            return $incoming;
+        }
+
+        if ($incoming === null) {
+            return $current;
+        }
+
+        return $incoming > $current ? $incoming : $current;
+    }
+
+    private function mergeEarliestDate(?DateTimeImmutable $current, ?DateTimeImmutable $incoming): ?DateTimeImmutable
+    {
+        if ($current === null) {
+            return $incoming;
+        }
+
+        if ($incoming === null) {
+            return $current;
+        }
+
+        return $incoming < $current ? $incoming : $current;
+    }
+
+    private function mergeNotes(?string $currentNotes, Contact $source): ?string
+    {
+        $blocks = [];
+        $currentNotes = $this->normalizeString((string) $currentNotes);
+        if ($currentNotes !== '') {
+            $blocks[] = $currentNotes;
+        }
+
+        $snapshot = $this->buildMergeSnapshot($source);
+        if ($snapshot !== '') {
+            $blocks[] = $snapshot;
+        }
+
+        return $blocks === [] ? null : implode("\n\n", $blocks);
+    }
+
+    private function buildMergeSnapshot(Contact $source): string
+    {
+        $lines = [
+            sprintf('Fusion automatique du doublon %s', $source->getId()),
+        ];
+
+        $fields = [
+            'Nom affiché' => $source->getDisplayName(),
+            'Prénom' => $source->getFirstName(),
+            'Nom' => $source->getLastName(),
+            'Entreprise' => $source->getOrganization(),
+            'Rôle' => $source->getRole(),
+            'Canal principal' => $source->getMainChannel(),
+            'Email' => $source->getEmail(),
+            'Téléphone' => $source->getPhone(),
+            'Profil' => $source->getProfileUrl(),
+            'Source' => $source->getSource(),
+            'Priorité' => $source->getPriorityLabel(),
+            'Relation' => $source->getRelationshipStatusLabel(),
+            'Dernier contact' => $this->formatDate($source->getLastContactAt()),
+            'Prochaine action' => $source->getNextAction(),
+            'Prochaine action le' => $this->formatDate($source->getNextActionAt()),
+        ];
+
+        foreach ($fields as $label => $value) {
+            $value = $this->normalizeString((string) $value);
+            if ($value !== '') {
+                $lines[] = sprintf('- %s: %s', $label, $value);
+            }
+        }
+
+        if ($source->getTags() !== []) {
+            $lines[] = sprintf('- Tags: %s', implode(', ', $source->getTags()));
+        }
+
+        $sourceNotes = $this->normalizeString((string) $source->getNotes());
+        if ($sourceNotes !== '') {
+            $lines[] = '- Notes d origine:';
+            $lines[] = $sourceNotes;
+        }
+
+        return implode("\n", $lines);
+    }
+
+    private function normalizePhoneKey(mixed $phone): string
+    {
+        $phone = $this->normalizeString((string) $phone);
+        if ($phone === '') {
+            return '';
+        }
+
+        $phone = preg_replace('/[^0-9+]/', '', $phone) ?? $phone;
+        if (str_starts_with($phone, '00')) {
+            $phone = '+' . substr($phone, 2);
+        }
+
+        return mb_strtolower($phone);
+    }
+
+    private function normalizeProfileUrlKey(mixed $profileUrl): string
+    {
+        $profileUrl = mb_strtolower($this->normalizeString((string) $profileUrl));
+
+        return rtrim($profileUrl, '/');
     }
 
     private function ensureUniquePlatformSlug(string $slug, ?string $existingSlug, array $platforms): string

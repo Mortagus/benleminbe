@@ -28,6 +28,7 @@
             </header>
 
             <form class="private-toolbar private-toolbar--stacked" method="get" action="{{ path('app_private_network_contacts') }}">
+                <input type="hidden" name="page" value="1">
                 <input class="private-input" type="search" name="q" value="{{ currentQuery }}" placeholder="Rechercher un contact" />
 
                 <div class="private-toolbar__filters">
@@ -57,7 +58,12 @@
         {% if contacts is not empty %}
             <section class="private-surface">
                 <header class="private-surface__header">
-                    <h2>Liste des contacts</h2>
+                    <div>
+                        <h2>Liste des contacts</h2>
+                        <p class="private-muted">
+                            Affichage {{ visibleFrom }}-{{ visibleTo }} sur {{ totalContacts }} contact{{ totalContacts > 1 ? 's' : '' }}.
+                        </p>
+                    </div>
                 </header>
 
                 <div class="private-table-wrap">
@@ -75,9 +81,13 @@
                         </thead>
                         <tbody>
                             {% for contact in contacts %}
-                                <tr>
+                                <tr data-contact-row data-contact-url="{{ path('app_private_network_contact_show', { id: contact.id }) }}">
                                     <td class="private-table__cell private-table__cell--main" data-label="Contact">
-                                        <strong>{{ contact.display_name }}</strong>
+                                        <strong>
+                                            <a class="private-table__contact-link" href="{{ path('app_private_network_contact_show', { id: contact.id }) }}">
+                                                {{ contact.display_name }}
+                                            </a>
+                                        </strong>
                                         <div class="private-muted">
                                             {% if contact.role %}
                                                 {{ contact.role }}
@@ -107,14 +117,56 @@
                                         {% endif %}
                                     </td>
                                     <td class="private-table__cell private-table__cell--actions private-actions private-actions--inline" data-label="Actions">
-                                        <a href="{{ path('app_private_network_contact_show', { id: contact.id }) }}">Voir</a>
-                                        <a href="{{ path('app_private_network_contact_edit', { id: contact.id }) }}">Modifier</a>
+                                        <a
+                                            class="private-icon-button"
+                                            href="{{ path('app_private_network_contact_show', { id: contact.id }) }}"
+                                            aria-label="Voir {{ contact.display_name }}"
+                                            title="Voir {{ contact.display_name }}"
+                                        >
+                                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path>
+                                                <circle cx="12" cy="12" r="3.25"></circle>
+                                            </svg>
+                                        </a>
+
+                                        <form method="post" action="{{ path('app_private_network_contact_delete', { id: contact.id }) }}" onsubmit="return confirm('Supprimer {{ contact.display_name|e('js') }} ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-delete-' ~ contact.id) }}">
+                                            <input type="hidden" name="q" value="{{ currentQuery }}">
+                                            <input type="hidden" name="priority" value="{{ currentPriority }}">
+                                            <input type="hidden" name="relationship_status" value="{{ currentRelationStatus }}">
+                                            <input type="hidden" name="page" value="{{ currentPage }}">
+                                            <button
+                                                class="private-icon-button private-icon-button--danger"
+                                                type="submit"
+                                                aria-label="Supprimer {{ contact.display_name }}"
+                                                title="Supprimer {{ contact.display_name }}"
+                                            >
+                                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                                    <path d="M4 7h16"></path>
+                                                    <path d="M10 11v6"></path>
+                                                    <path d="M14 11v6"></path>
+                                                    <path d="M6 7l1 12h10l1-12"></path>
+                                                    <path d="M9 7V4h6v3"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+
+                {% if hasMore %}
+                    <div class="private-actions private-actions--inline private-table-footer">
+                        <a
+                            class="private-link-button private-link-button--secondary"
+                            href="{{ path('app_private_network_contacts', app.request.query.all|merge({ page: nextPage })) }}"
+                        >
+                            Charger plus
+                        </a>
+                    </div>
+                {% endif %}
             </section>
         {% else %}
             <section class="private-surface">

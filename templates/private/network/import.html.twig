@@ -9,7 +9,7 @@
                 <p class="private-eyebrow">Outil privé</p>
                 <h1>Import</h1>
                 <p class="private-page__lead">
-                    Import CSV ou JSON, ou collage direct d'un contenu structuré, pour alimenter la base de contacts.
+                    Import vCard du téléphone ou export LinkedIn CSV, ou collage direct d'un contenu brut, pour alimenter la base de contacts.
                 </p>
             </div>
 
@@ -34,7 +34,7 @@
             </header>
 
             <div class="private-copy private-copy--intro">
-                <p>Importer un fichier CSV ou JSON, ou coller un contenu structuré, pour alimenter rapidement la base de contacts.</p>
+                <p>Choisis la source d'import, puis envoie le fichier ou colle son contenu brut. Le script adéquat sera sélectionné automatiquement selon la source.</p>
                 <p>Les champs utiles sont détectés automatiquement quand c'est possible. Les doublons sont fusionnés sur l'email, l'URL de profil ou le nom + entreprise.</p>
             </div>
         </section>
@@ -49,27 +49,22 @@
 
                 <div class="private-form__grid">
                     <label class="private-form__field private-form__field--wide">
-                        <span>Source</span>
-                        <input type="text" name="source_label" value="{{ values.source_label }}" placeholder="LinkedIn export, feuille CSV, email, téléphone...">
-                    </label>
-
-                    <label class="private-form__field">
-                        <span>Format</span>
-                        <select name="format">
-                            <option value="auto" {{ values.format == 'auto' ? 'selected' : '' }}>Auto</option>
-                            <option value="csv" {{ values.format == 'csv' ? 'selected' : '' }}>CSV</option>
-                            <option value="json" {{ values.format == 'json' ? 'selected' : '' }}>JSON</option>
+                        <span>Source de l'import</span>
+                        <select name="source_label">
+                            {% for value, label in sourceOptions %}
+                                <option value="{{ value }}" {{ values.source_label == value ? 'selected' : '' }}>{{ label }}</option>
+                            {% endfor %}
                         </select>
                     </label>
 
                     <label class="private-form__field private-form__field--wide">
                         <span>Fichier</span>
-                        <input type="file" name="file" accept=".csv,.json,.txt">
+                        <input type="file" name="file" accept=".csv,.vcf,.txt">
                     </label>
 
                     <label class="private-form__field private-form__field--wide">
                         <span>Contenu à coller</span>
-                        <textarea name="content" rows="10" placeholder="Colle ici un CSV ou un JSON si tu n'utilises pas de fichier.">{{ values.content }}</textarea>
+                        <textarea name="content" rows="10" placeholder="Colle ici une vCard ou un CSV si tu n'utilises pas de fichier.">{{ values.content }}</textarea>
                     </label>
                 </div>
 

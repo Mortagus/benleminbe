@@ -6,6 +6,8 @@ namespace App\Tests\Functional\Private;
 
 use App\Entity\Network\Contact;
 use App\Entity\Network\ImportLog;
+use App\Enum\Network\ContactImportSource;
+use App\Private\Service\Network\NetworkRepository;
 use Symfony\Component\DomCrawler\Crawler;
 
 final class NetworkWebTest extends NetworkWebTestCase
@@ -121,7 +123,7 @@ final class NetworkWebTest extends NetworkWebTestCase
 
         $client->followRedirect();
         self::assertSelectorTextContains('h1', 'Smoke Test Contact');
-        self::assertSelectorTextContains('.private-section-card', 'Codex QA');
+        self::assertSelectorTextContains('.private-definition-list', 'Codex QA');
         self::assertSelectorTextContains('.private-copy', 'Created by smoke test.');
 
         $contactId = $this->extractContactId($location);
@@ -148,46 +150,107 @@ final class NetworkWebTest extends NetworkWebTestCase
 
     public function testImportFlowCreatesContactsAndLogsImport(): void
     {
-        $client = $this->createAuthenticatedClient();
-        $connection = self::getContainer()->get('doctrine')->getConnection();
-
-        self::assertSame('0', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
-        self::assertSame('0', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_import_logs'));
-
-        $crawler = $client->request('GET', '/private/network/import');
-        self::assertResponseIsSuccessful();
-
-        $client->submit($this->fillImportForm($crawler, [
-            'source_label' => 'CSV smoke test',
-            'format' => 'csv',
-            'content' => <<<CSV
-display_name,organization,email,priority,relationship_status,notes,tags
-Import QA,QA Lab,import-qa@example.com,haute,a_relancer,Imported via smoke test,"qa,import"
+        $this->assertImportFlow(
+            ContactImportSource::LinkedInConnectionsCsv,
+            <<<CSV
+First Name,Last Name,URL,Email Address,Company,Position,Connected On
+Tom,Test,https://www.linkedin.com/in/tom-test,tom.test@example.com,Test Lab,Developer,29 May 2026
 CSV,
-        ]));
+            [
+                'display_name' => 'Tom Test',
+                'organization' => 'Test Lab',
+                'role' => 'Developer',
+                'profile_url' => 'https://www.linkedin.com/in/tom-test',
+                'email' => 'tom.test@example.com',
+                'last_contact_at' => '2026-05-29',
+            ],
+        );
+    }
 
-        self::assertResponseRedirects('/private/network/contacts');
+    public function testImportFlowSupportsVCardSource(): void
+    {
+        $this->assertImportFlow(
+            ContactImportSource::PhoneVCard,
+            <<<VCF
+BEGIN:VCARD
+VERSION:2.1
+FN:Jean Test
+N:Test;Jean;;;
+ORG:Phone Lab
+TITLE:Developer
+TEL:+32000000002
+EMAIL:jean.test@example.com
+URL:https://example.com/jean-test
+END:VCARD
+VCF,
+            [
+                'display_name' => 'Jean Test',
+                'organization' => 'Phone Lab',
+                'role' => 'Developer',
+                'profile_url' => 'https://example.com/jean-test',
+                'phone' => '+32000000002',
+                'email' => 'jean.test@example.com',
+            ],
+        );
+    }
+
+    public function testContactsListIsPaginatedAndRowsExposeMobileLinks(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        for ($index = 1; $index <= 21; ++$index) {
+            $repository->saveContact([
+                'display_name' => sprintf('Contact %02d', $index),
+                'organization' => 'Pagination Lab',
+                'role' => 'Tester',
+                'priority' => 'moyenne',
+                'relationship_status' => 'a_relancer',
+                'email' => sprintf('contact-%02d@example.com', $index),
+            ]);
+        }
+
+        $client->request('GET', '/private/network/contacts');
+
+        self::assertResponseIsSuccessful();
+        self::assertSame(20, $client->getCrawler()->filter('tbody tr')->count());
+        self::assertSelectorExists('tbody tr[data-contact-row]');
+        self::assertSelectorExists('.private-table__contact-link');
+        self::assertStringContainsString('Affichage 1-20 sur 21 contacts.', $client->getResponse()->getContent());
+        self::assertSelectorExists('a[href*="page=2"]');
+
+        $client->clickLink('Charger plus');
+        self::assertResponseIsSuccessful();
+        self::assertSame(1, $client->getCrawler()->filter('tbody tr')->count());
+        self::assertStringContainsString('Affichage 21-21 sur 21 contacts.', $client->getResponse()->getContent());
+    }
+
+    public function testContactDeleteActionRemovesContactFromTheList(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+        $contact = $repository->saveContact([
+            'display_name' => 'Contact à supprimer',
+            'organization' => 'Deletion Lab',
+            'role' => 'Tester',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+            'email' => 'delete-me@example.com',
+        ]);
+
+        $crawler = $client->request('GET', '/private/network/contacts');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists(sprintf('form[action="/private/network/contacts/%s/delete"]', $contact['id']));
+
+        $deleteForm = $crawler->filter(sprintf('form[action="/private/network/contacts/%s/delete"]', $contact['id']))->form();
+        $client->submit($deleteForm);
+
+        self::assertResponseRedirects('/private/network/contacts?page=1');
         $client->followRedirect();
-        self::assertSelectorTextContains('h1', 'Contacts');
-        self::assertSelectorTextContains('.private-list-stack, .private-table, body', 'Import QA');
-
-        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
-        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_import_logs'));
-        self::assertSame('CSV smoke test', (string) $connection->fetchOne('SELECT source_label FROM network_import_logs ORDER BY imported_at DESC LIMIT 1'));
-
-        $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([
-            'email' => 'import-qa@example.com',
-        ]);
-        self::assertInstanceOf(Contact::class, $contact);
-        self::assertSame('Import QA', $contact->getDisplayName());
-
-        $importLog = self::getContainer()->get('doctrine')->getRepository(ImportLog::class)->findOneBy([
-            'sourceLabel' => 'CSV smoke test',
-        ]);
-        self::assertInstanceOf(ImportLog::class, $importLog);
-        self::assertSame(1, $importLog->getTotal());
-        self::assertSame(1, $importLog->getCreated());
-        self::assertSame(0, $importLog->getUpdated());
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Aucun contact enregistré.', $client->getResponse()->getContent());
+        self::assertSame('0', (string) self::getContainer()->get('doctrine')->getConnection()->fetchOne('SELECT COUNT(*) FROM network_contacts'));
     }
 
     /**
@@ -220,6 +283,60 @@ CSV,
     private function fillImportForm(Crawler $crawler, array $values)
     {
         return $crawler->selectButton('Importer')->form($values);
+    }
+
+    /**
+     * @param array<string, string> $expected
+     */
+    private function assertImportFlow(ContactImportSource $source, string $content, array $expected): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+
+        self::assertSame('0', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+        self::assertSame('0', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_import_logs'));
+
+        $crawler = $client->request('GET', '/private/network/import');
+        self::assertResponseIsSuccessful();
+
+        $client->submit($this->fillImportForm($crawler, [
+            'source_label' => $source->value,
+            'content' => $content,
+        ]));
+
+        self::assertResponseRedirects('/private/network/contacts');
+        $client->followRedirect();
+        self::assertSelectorTextContains('h1', 'Contacts');
+        self::assertSelectorTextContains('.private-list-stack, .private-table, body', $expected['display_name']);
+
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_import_logs'));
+        self::assertSame($source->label(), (string) $connection->fetchOne('SELECT source_label FROM network_import_logs ORDER BY imported_at DESC LIMIT 1'));
+
+        $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([
+            'email' => $expected['email'] ?? null,
+        ]);
+        self::assertInstanceOf(Contact::class, $contact);
+        self::assertSame($expected['display_name'], $contact->getDisplayName());
+        self::assertSame($expected['organization'], $contact->getOrganization());
+        self::assertSame($expected['role'], $contact->getRole());
+        self::assertSame($expected['profile_url'], $contact->getProfileUrl());
+
+        if (isset($expected['phone'])) {
+            self::assertSame($expected['phone'], $contact->getPhone());
+        }
+
+        if (isset($expected['last_contact_at'])) {
+            self::assertSame($expected['last_contact_at'], $contact->getLastContactAt()?->format('Y-m-d'));
+        }
+
+        $importLog = self::getContainer()->get('doctrine')->getRepository(ImportLog::class)->findOneBy([
+            'sourceLabel' => $source->label(),
+        ]);
+        self::assertInstanceOf(ImportLog::class, $importLog);
+        self::assertSame(1, $importLog->getTotal());
+        self::assertSame(1, $importLog->getCreated());
+        self::assertSame(0, $importLog->getUpdated());
     }
 
     private function extractContactId(string $location): string

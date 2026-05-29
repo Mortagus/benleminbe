@@ -8,6 +8,7 @@ use App\Entity\Network\Contact;
 use App\Entity\Network\ImportLog;
 use App\Entity\Network\Interaction;
 use App\Entity\Network\Platform;
+use App\Enum\Network\ContactImportSource;
 use App\Enum\Network\ContactPriority;
 use App\Enum\Network\ContactRelationshipStatus;
 use App\Enum\Network\PlatformStatus;
@@ -272,6 +273,19 @@ final class NetworkRepository
         return $this->decorateContact($contact);
     }
 
+    public function deleteContact(string $id): void
+    {
+        $this->ensureSeeded();
+
+        $contact = $this->entityManager->getRepository(Contact::class)->find($id);
+        if (!$contact instanceof Contact) {
+            throw new NotFoundHttpException(sprintf('Contact "%s" was not found.', $id));
+        }
+
+        $this->entityManager->remove($contact);
+        $this->entityManager->flush();
+    }
+
     /**
      * @param array<string, mixed> $payload
      *
@@ -422,6 +436,14 @@ final class NetworkRepository
     public function getContactPriorityOptions(): array
     {
         return ContactPriority::labels();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getImportSourceOptions(): array
+    {
+        return ContactImportSource::labels();
     }
 
     /**

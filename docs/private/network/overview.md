@@ -73,7 +73,7 @@ Etat fonctionnel actuel :
 - creation et edition des plateformes ;
 - creation et edition des contacts ;
 - ajout d'interactions sur les fiches contact ;
-- import CSV / JSON via l'interface privee ;
+- import vCard du telephone et CSV LinkedIn via l'interface privee ;
 - persistance relationnelle active avec tables, migration et seed initial des plateformes ;
 - tests fonctionnels PHPUnit / WebTestCase en place pour les parcours principaux, dont l'import.
 

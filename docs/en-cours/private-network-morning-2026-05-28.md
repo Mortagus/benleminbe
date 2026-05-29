@@ -13,9 +13,11 @@ Ce document consigne le travail realise ce matin sur la zone privee et les outil
 - simplification du rendu mobile des plateformes ;
 - ajustement des fiches detail avec un `dl` en 50/50 ;
 - ajout d’un bouton de copie discret pour le lien de plateforme ;
+- remplissage manuel des données des plateformes ;
 - decoupage du CSS prive en plusieurs fichiers plus petits ;
 - extraction des scripts Bash du `makefile` vers `tools/private/` ;
 - ajout du `login_throttling` sur le formulaire prive ;
+- remplacement du champ libre de source d import par un enum avec parsing dedie pour vCard et LinkedIn CSV ;
 - creation de la doc de deploiement et des checks prod ;
 - ajout du smoke test prod dans `make deploy`.
 
@@ -30,7 +32,6 @@ Ce document consigne le travail realise ce matin sur la zone privee et les outil
 
 Le prochain travail portera sur :
 
-- remplir les donnees des plateformes ;
 - analyser l’import des contacts depuis le telephone ;
 - analyser l’import des contacts depuis le reseau LinkedIn ;
 - definir la meilleure structure de donnee et de flux d’import pour ces deux sources.

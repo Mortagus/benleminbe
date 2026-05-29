@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Private\Controller;
 
+use App\Enum\Network\ContactImportSource;
+use App\Private\Service\Network\ContactImportParser;
 use App\Private\Service\Network\NetworkRepository;
 use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,13 +13,17 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/private/network', name: 'app_private_network_')]
 final class NetworkController extends AbstractController
 {
+    private const int CONTACTS_PAGE_SIZE = 20;
+
     public function __construct(
         private readonly NetworkRepository $networkRepository,
+        private readonly ContactImportParser $contactImportParser,
     ) {
     }
 
@@ -123,12 +129,28 @@ final class NetworkController extends AbstractController
             'priority' => $request->query->getString('priority'),
             'relationship_status' => $request->query->getString('relationship_status'),
         ];
+        $page = max(1, $request->query->getInt('page', 1));
+        $pageSize = self::CONTACTS_PAGE_SIZE;
+        $allContacts = $this->networkRepository->listContacts($filters);
+        $totalContacts = count($allContacts);
+        $totalPages = max(1, (int) ceil($totalContacts / $pageSize));
+        $page = min($page, $totalPages);
+        $offset = ($page - 1) * $pageSize;
+        $contacts = array_slice($allContacts, $offset, $pageSize);
+        $hasMore = $page < $totalPages;
 
         return $this->render('private/network/contacts/index.html.twig', [
             'currentQuery' => $filters['search'],
             'currentPriority' => $filters['priority'],
             'currentRelationStatus' => $filters['relationship_status'],
-            'contacts' => $this->networkRepository->listContacts($filters),
+            'contacts' => $contacts,
+            'currentPage' => $page,
+            'pageSize' => $pageSize,
+            'totalContacts' => $totalContacts,
+            'visibleFrom' => $totalContacts === 0 ? 0 : $offset + 1,
+            'visibleTo' => min($offset + $pageSize, $totalContacts),
+            'hasMore' => $hasMore,
+            'nextPage' => $page + 1,
             'priorityOptions' => $this->networkRepository->getContactPriorityOptions(),
             'relationOptions' => $this->networkRepository->getContactRelationOptions(),
         ]);
@@ -216,6 +238,35 @@ final class NetworkController extends AbstractController
         ]);
     }
 
+    #[Route('/contacts/{id}/delete', name: 'contact_delete', methods: ['POST'])]
+    public function contactDelete(string $id, Request $request): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('private-network-contact-delete-' . $id, $request->request->getString('_token'))) {
+            $this->addFlash('error', 'Le formulaire de suppression a expiré. Réessaie.');
+
+            return $this->redirectToRoute('app_private_network_contact_show', ['id' => $id]);
+        }
+
+        $query = array_filter([
+            'q' => $request->request->getString('q'),
+            'priority' => $request->request->getString('priority'),
+            'relationship_status' => $request->request->getString('relationship_status'),
+            'page' => max(1, $request->request->getInt('page', 1)),
+        ], static fn (mixed $value): bool => $value !== '' && $value !== null);
+
+        try {
+            $this->networkRepository->deleteContact($id);
+        } catch (NotFoundHttpException) {
+            $this->addFlash('error', 'Le contact à supprimer est introuvable.');
+
+            return $this->redirectToRoute('app_private_network_contacts', $query);
+        }
+
+        $this->addFlash('success', 'Contact supprimé.');
+
+        return $this->redirectToRoute('app_private_network_contacts', $query);
+    }
+
     #[Route('/contacts/{id}/interactions', name: 'contact_interaction', methods: ['POST'])]
     public function contactInteraction(string $id, Request $request): RedirectResponse|Response
     {
@@ -248,6 +299,8 @@ final class NetworkController extends AbstractController
     #[Route('/import', name: 'import', methods: ['GET', 'POST'])]
     public function import(Request $request): Response
     {
+        $source = ContactImportSource::tryFrom($request->request->getString('source_label')) ?? ContactImportSource::default();
+
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('private-network-import', $request->request->getString('_token'))) {
                 $this->addFlash('error', 'Le formulaire d import a expiré. Réessaie.');
@@ -255,26 +308,27 @@ final class NetworkController extends AbstractController
                 return $this->redirectToRoute('app_private_network_import');
             }
 
-            $sourceLabel = $request->request->getString('source_label');
             $rows = [];
 
             try {
-                $rows = $this->extractImportRows($request);
+                $rows = $this->extractImportRows($request, $source);
             } catch (InvalidArgumentException $exception) {
                 return $this->render('private/network/import.html.twig', [
                     'errors' => [$exception->getMessage()],
-                    'values' => $this->extractImportValues($request),
+                    'sourceOptions' => $this->networkRepository->getImportSourceOptions(),
+                    'values' => $this->extractImportValues($request, $source),
                 ]);
             }
 
             if ($rows === []) {
                 return $this->render('private/network/import.html.twig', [
                     'errors' => ['Aucune ligne importable n a été trouvée.'],
-                    'values' => $this->extractImportValues($request),
+                    'sourceOptions' => $this->networkRepository->getImportSourceOptions(),
+                    'values' => $this->extractImportValues($request, $source),
                 ]);
             }
 
-            $summary = $this->networkRepository->importContacts($rows, $sourceLabel !== '' ? $sourceLabel : 'Import manuel');
+            $summary = $this->networkRepository->importContacts($rows, $source->label());
             $this->addFlash('success', sprintf('%d lignes traitées: %d créées, %d mises à jour.', $summary['total'], $summary['created'], $summary['updated']));
 
             return $this->redirectToRoute('app_private_network_contacts');
@@ -282,10 +336,10 @@ final class NetworkController extends AbstractController
 
         return $this->render('private/network/import.html.twig', [
             'errors' => [],
+            'sourceOptions' => $this->networkRepository->getImportSourceOptions(),
             'values' => [
-                'source_label' => '',
+                'source_label' => $source->value,
                 'content' => '',
-                'format' => 'auto',
             ],
         ]);
     }
@@ -499,167 +553,30 @@ final class NetworkController extends AbstractController
     /**
      * @return list<array<string, mixed>>
      */
-    private function extractImportRows(Request $request): array
+    private function extractImportRows(Request $request, ContactImportSource $source): array
     {
         $uploadedFile = $request->files->get('file');
         $content = $request->request->getString('content');
-        $format = $request->request->getString('format');
 
         if ($uploadedFile instanceof UploadedFile) {
-            return $this->parseImportFile($uploadedFile);
+            return $this->contactImportParser->parseUploadedFile($uploadedFile, $source);
         }
 
         if ($content === '') {
             throw new InvalidArgumentException('Un fichier ou un contenu à importer est requis.');
         }
 
-        return match ($format) {
-            'json' => $this->parseJsonImport($content),
-            'csv' => $this->parseCsvImport($content),
-            default => $this->looksLikeJson($content) ? $this->parseJsonImport($content) : $this->parseCsvImport($content),
-        };
+        return $this->contactImportParser->parseContent($content, $source);
     }
 
     /**
      * @return array<string, mixed>
      */
-    private function extractImportValues(Request $request): array
+    private function extractImportValues(Request $request, ContactImportSource $source): array
     {
         return [
-            'source_label' => $request->request->getString('source_label'),
+            'source_label' => $request->request->getString('source_label', $source->value),
             'content' => $request->request->getString('content'),
-            'format' => $request->request->getString('format', 'auto'),
         ];
-    }
-
-    /**
-     * @return list<array<string, mixed>>
-     */
-    private function parseImportFile(UploadedFile $uploadedFile): array
-    {
-        $content = file_get_contents($uploadedFile->getPathname());
-        if ($content === false) {
-            throw new InvalidArgumentException('Impossible de lire le fichier importé.');
-        }
-
-        $extension = strtolower((string) $uploadedFile->getClientOriginalExtension());
-
-        return match ($extension) {
-            'json' => $this->parseJsonImport($content),
-            default => $this->parseCsvImport($content),
-        };
-    }
-
-    /**
-     * @return list<array<string, mixed>>
-     */
-    private function parseCsvImport(string $content): array
-    {
-        $lines = preg_split('/\r\n|\r|\n/', trim($content)) ?: [];
-        if ($lines === []) {
-            return [];
-        }
-
-        $headerLine = (string) array_shift($lines);
-        $delimiter = substr_count($headerLine, ';') > substr_count($headerLine, ',') ? ';' : ',';
-        $headers = str_getcsv($this->stripBom($headerLine), $delimiter, '"', "\\");
-        if ($headers === []) {
-            return [];
-        }
-
-        $rows = [];
-
-        foreach ($lines as $line) {
-            if (trim($line) === '') {
-                continue;
-            }
-
-            $values = str_getcsv($line, $delimiter, '"', "\\");
-            if ($values === []) {
-                continue;
-            }
-
-            $row = [];
-            foreach ($headers as $index => $header) {
-                $row[$this->normalizeCsvHeader((string) $header)] = $values[$index] ?? '';
-            }
-
-            $rows[] = $this->mapImportedRow($row);
-        }
-
-        return $rows;
-    }
-
-    /**
-     * @return list<array<string, mixed>>
-     */
-    private function parseJsonImport(string $content): array
-    {
-        $decoded = json_decode($content, true);
-        if (!is_array($decoded)) {
-            throw new InvalidArgumentException('Le JSON importé est invalide.');
-        }
-
-        $rows = isset($decoded['contacts']) && is_array($decoded['contacts']) ? $decoded['contacts'] : $decoded;
-        if (!is_array($rows)) {
-            throw new InvalidArgumentException('Le JSON importé doit contenir une liste de contacts.');
-        }
-
-        $mappedRows = [];
-
-        foreach ($rows as $row) {
-            if (!is_array($row)) {
-                continue;
-            }
-
-            $mappedRows[] = $this->mapImportedRow($row);
-        }
-
-        return $mappedRows;
-    }
-
-    /**
-     * @param array<string, mixed> $row
-     *
-     * @return array<string, mixed>
-     */
-    private function mapImportedRow(array $row): array
-    {
-        return [
-            'display_name' => $row['display_name'] ?? $row['name'] ?? $row['full_name'] ?? '',
-            'first_name' => $row['first_name'] ?? '',
-            'last_name' => $row['last_name'] ?? '',
-            'organization' => $row['organization'] ?? $row['company'] ?? '',
-            'role' => $row['role'] ?? $row['job_title'] ?? '',
-            'main_channel' => $row['main_channel'] ?? $row['channel'] ?? '',
-            'email' => $row['email'] ?? '',
-            'phone' => $row['phone'] ?? '',
-            'profile_url' => $row['profile_url'] ?? $row['linkedin_url'] ?? '',
-            'source' => $row['source'] ?? $row['origin'] ?? '',
-            'priority' => $row['priority'] ?? 'moyenne',
-            'relationship_status' => $row['relationship_status'] ?? $row['status'] ?? 'a_relancer',
-            'last_contact_at' => $row['last_contact_at'] ?? $row['last_contact'] ?? '',
-            'next_action_at' => $row['next_action_at'] ?? '',
-            'next_action' => $row['next_action'] ?? '',
-            'notes' => $row['notes'] ?? '',
-            'tags' => $row['tags'] ?? '',
-        ];
-    }
-
-    private function normalizeCsvHeader(string $header): string
-    {
-        return strtolower(trim(str_replace([' ', '-'], '_', $header)));
-    }
-
-    private function stripBom(string $value): string
-    {
-        return preg_replace('/^\xEF\xBB\xBF/', '', $value) ?? $value;
-    }
-
-    private function looksLikeJson(string $content): bool
-    {
-        $trimmed = ltrim($content);
-
-        return str_starts_with($trimmed, '{') || str_starts_with($trimmed, '[');
     }
 }

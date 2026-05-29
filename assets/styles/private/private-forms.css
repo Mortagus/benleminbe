@@ -126,6 +126,37 @@
     box-shadow: none;
 }
 
+.private-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.55rem;
+    height: 2.55rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0;
+    background: var(--bg-soft);
+    color: var(--text);
+    box-shadow: none;
+    text-decoration: none;
+}
+
+.private-icon-button svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+.private-icon-button--danger {
+    border-color: color-mix(in srgb, #b42318 22%, var(--border));
+    color: #b42318;
+    background: color-mix(in srgb, #b42318 8%, var(--bg-soft));
+}
+
 .private-alert {
     border: 1px solid rgb(180 35 24 / 50%);
     border-radius: 0.75rem;

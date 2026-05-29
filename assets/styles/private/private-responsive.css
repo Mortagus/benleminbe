@@ -68,6 +68,15 @@
         box-shadow: 0 10px 24px var(--shadow);
     }
 
+    .private-table--responsive tbody tr.private-table__row--clickable {
+        cursor: pointer;
+    }
+
+    .private-table--responsive tbody tr.private-table__row--clickable:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+    }
+
     .private-table--responsive td {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
@@ -114,6 +123,10 @@
         gap: 0.5rem;
         justify-content: flex-start;
         padding-bottom: 0.8rem;
+    }
+
+    .private-table--responsive td.private-table__cell--actions form {
+        display: inline-flex;
     }
 
     .private-table--responsive td.private-table__cell--hide-mobile {

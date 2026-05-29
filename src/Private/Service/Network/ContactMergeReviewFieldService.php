@@ -21,8 +21,8 @@ final class ContactMergeReviewFieldService
         ['name' => 'organization', 'label' => 'Entreprise', 'mode' => 'scalar'],
         ['name' => 'role', 'label' => 'Rôle', 'mode' => 'scalar'],
         ['name' => 'main_channel', 'label' => 'Canal principal', 'mode' => 'scalar'],
-        ['name' => 'email', 'label' => 'Email', 'mode' => 'scalar'],
-        ['name' => 'phone', 'label' => 'Téléphone', 'mode' => 'scalar'],
+        ['name' => 'email', 'label' => 'Email', 'mode' => 'union'],
+        ['name' => 'phone', 'label' => 'Téléphone', 'mode' => 'union'],
         ['name' => 'profile_url', 'label' => 'Profil', 'mode' => 'scalar'],
         ['name' => 'source', 'label' => 'Source', 'mode' => 'union'],
         ['name' => 'priority', 'label' => 'Priorité', 'mode' => 'ranked'],
@@ -49,13 +49,18 @@ final class ContactMergeReviewFieldService
         foreach (self::FIELD_DEFINITIONS as $definition) {
             $fieldName = $definition['name'];
             $mode = $definition['mode'];
+            $leftValue = $this->formatFieldValue($leftContact, $fieldName);
+            $rightValue = $this->formatFieldValue($rightContact, $fieldName);
+            [$leftDisplay, $rightDisplay] = $this->formatComparisonDisplayValues($leftValue, $rightValue, $mode);
 
             $fields[] = [
                 'name' => $fieldName,
                 'label' => $definition['label'],
                 'mode' => $mode,
-                'left_value' => $this->formatFieldValue($leftContact, $fieldName),
-                'right_value' => $this->formatFieldValue($rightContact, $fieldName),
+                'left_value' => $leftValue,
+                'right_value' => $rightValue,
+                'left_display' => $leftDisplay,
+                'right_display' => $rightDisplay,
                 'choice' => $fieldChoices[$fieldName] ?? $this->defaultChoiceForField($fieldName, $leftContact, $rightContact),
                 'choices' => $this->choiceOptionsForMode($mode),
             ];
@@ -113,8 +118,8 @@ final class ContactMergeReviewFieldService
                 'organization' => $canonical->setOrganization($this->mergeRules->normalizeOrganizationName($value)),
                 'role' => $canonical->setRole($this->mergeRules->normalizeOptionalString($value)),
                 'main_channel' => $canonical->setMainChannel($this->mergeRules->normalizeOptionalString($value)),
-                'email' => $canonical->setEmail($this->mergeRules->normalizeOptionalString($value)),
-                'phone' => $canonical->setPhone($this->mergeRules->normalizeOptionalString($value)),
+                'email' => $canonical->setEmail($this->normalizeEmailValues($value, $canonical, $source, $choice)),
+                'phone' => $canonical->setPhone($this->normalizePhoneValues($value, $canonical, $source, $choice)),
                 'profile_url' => $canonical->setProfileUrl($this->mergeRules->normalizeOptionalString($value)),
                 'source' => $canonical->setSource($this->mergeRules->normalizeOptionalString($value)),
                 'priority' => $canonical->setPriority($this->priorityFromValue($value)),
@@ -185,6 +190,8 @@ final class ContactMergeReviewFieldService
     private function defaultChoiceForField(string $field, Contact $leftContact, Contact $rightContact): string
     {
         return match ($field) {
+            'email' => $this->hasValue($leftContact, $field) && $this->hasValue($rightContact, $field) ? 'union' : ($this->hasValue($leftContact, $field) ? 'left' : 'right'),
+            'phone' => $this->hasValue($leftContact, $field) && $this->hasValue($rightContact, $field) ? 'union' : ($this->hasValue($leftContact, $field) ? 'left' : 'right'),
             'source', 'tags' => $this->hasValue($leftContact, $field) && $this->hasValue($rightContact, $field) ? 'union' : ($this->hasValue($leftContact, $field) ? 'left' : 'right'),
             'notes' => $this->hasValue($leftContact, $field) && $this->hasValue($rightContact, $field) ? 'union' : ($this->hasValue($leftContact, $field) ? 'left' : 'right'),
             'last_contact_at' => 'latest',
@@ -243,6 +250,8 @@ final class ContactMergeReviewFieldService
         $rightValue = $this->rawFieldValue($rightContact, $field);
 
         return match ($field) {
+            'email' => $choice === 'union' ? $this->mergeRules->mergeEmailLists($this->mergeRules->normalizeEmailList($leftValue), $this->mergeRules->normalizeEmailList($rightValue)) : ($choice === 'right' ? $rightValue : $leftValue),
+            'phone' => $choice === 'union' ? $this->mergeRules->mergePhoneLists($this->mergeRules->normalizePhoneList($leftValue), $this->mergeRules->normalizePhoneList($rightValue)) : ($choice === 'right' ? $rightValue : $leftValue),
             'source' => $choice === 'union' ? $this->mergeRules->mergeSourceValues($leftValue, $rightValue) : ($choice === 'right' ? $rightValue : $leftValue),
             'notes' => $choice === 'union' ? $this->mergeNotesValues($leftContact, $rightContact) : ($choice === 'right' ? $rightValue : $leftValue),
             'tags' => $choice === 'union' ? $this->mergeRules->mergeTags($this->normalizeTagsValue($leftValue), $this->normalizeTagsValue($rightValue)) : ($choice === 'right' ? $rightValue : $leftValue),
@@ -302,8 +311,8 @@ final class ContactMergeReviewFieldService
             'organization' => $contact->getOrganization(),
             'role' => $contact->getRole(),
             'main_channel' => $contact->getMainChannel(),
-            'email' => $contact->getEmail(),
-            'phone' => $contact->getPhone(),
+            'email' => $contact->getEmails(),
+            'phone' => $contact->getPhones(),
             'profile_url' => $contact->getProfileUrl(),
             'source' => $contact->getSource(),
             'priority' => $contact->getPriority(),
@@ -326,8 +335,8 @@ final class ContactMergeReviewFieldService
             'organization' => $contact->getOrganization() ?? '',
             'role' => $contact->getRole() ?? '',
             'main_channel' => $contact->getMainChannel() ?? '',
-            'email' => $contact->getEmail() ?? '',
-            'phone' => $contact->getPhone() ?? '',
+            'email' => implode("\n", $contact->getEmails()),
+            'phone' => implode("\n", $contact->getPhones()),
             'profile_url' => $contact->getProfileUrl() ?? '',
             'source' => $contact->getSource() ?? '',
             'priority' => $contact->getPriorityLabel(),
@@ -339,6 +348,76 @@ final class ContactMergeReviewFieldService
             'tags' => implode(', ', $contact->getTags()),
             default => '',
         };
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    private function formatComparisonDisplayValues(string $leftValue, string $rightValue, string $mode): array
+    {
+        if ($leftValue === '' && $rightValue === '') {
+            return ['', ''];
+        }
+
+        if ($mode !== 'scalar' || $leftValue === $rightValue) {
+            return [$this->escapeHtml($leftValue), $this->escapeHtml($rightValue)];
+        }
+
+        return $this->highlightStringDifference($leftValue, $rightValue);
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    private function highlightStringDifference(string $leftValue, string $rightValue): array
+    {
+        $leftLength = mb_strlen($leftValue, 'UTF-8');
+        $rightLength = mb_strlen($rightValue, 'UTF-8');
+
+        $prefixLength = 0;
+        while ($prefixLength < $leftLength && $prefixLength < $rightLength) {
+            if (mb_substr($leftValue, $prefixLength, 1, 'UTF-8') !== mb_substr($rightValue, $prefixLength, 1, 'UTF-8')) {
+                break;
+            }
+
+            $prefixLength++;
+        }
+
+        $suffixLength = 0;
+        $maxSuffixLength = min($leftLength, $rightLength) - $prefixLength;
+        while ($suffixLength < $maxSuffixLength) {
+            if (mb_substr($leftValue, $leftLength - $suffixLength - 1, 1, 'UTF-8') !== mb_substr($rightValue, $rightLength - $suffixLength - 1, 1, 'UTF-8')) {
+                break;
+            }
+
+            $suffixLength++;
+        }
+
+        return [
+            $this->buildHighlightedValue($leftValue, $prefixLength, $suffixLength),
+            $this->buildHighlightedValue($rightValue, $prefixLength, $suffixLength),
+        ];
+    }
+
+    private function buildHighlightedValue(string $value, int $prefixLength, int $suffixLength): string
+    {
+        $length = mb_strlen($value, 'UTF-8');
+        $prefix = mb_substr($value, 0, $prefixLength, 'UTF-8');
+        $diffLength = max(0, $length - $prefixLength - $suffixLength);
+        $diff = $diffLength > 0 ? mb_substr($value, $prefixLength, $diffLength, 'UTF-8') : '';
+        $suffix = $suffixLength > 0 ? mb_substr($value, $length - $suffixLength, $suffixLength, 'UTF-8') : '';
+
+        $html = $this->escapeHtml($prefix);
+        if ($diff !== '') {
+            $html .= sprintf('<span class="private-merge-diff">%s</span>', $this->escapeHtml($diff));
+        }
+
+        return $html . $this->escapeHtml($suffix);
+    }
+
+    private function escapeHtml(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     private function mergeNotesValues(Contact $leftContact, Contact $rightContact): ?string
@@ -417,5 +496,29 @@ final class ContactMergeReviewFieldService
     private function formatDate(?DateTimeImmutable $value): ?string
     {
         return $value !== null ? $value->format('Y-m-d') : null;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function normalizeEmailValues(mixed $value, Contact $canonical, Contact $source, string $choice): array
+    {
+        if ($choice === 'union') {
+            return $this->mergeRules->mergeEmailLists($canonical->getEmails(), $source->getEmails());
+        }
+
+        return $this->mergeRules->normalizeEmailList($value);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function normalizePhoneValues(mixed $value, Contact $canonical, Contact $source, string $choice): array
+    {
+        if ($choice === 'union') {
+            return $this->mergeRules->mergePhoneLists($canonical->getPhones(), $source->getPhones());
+        }
+
+        return $this->mergeRules->normalizePhoneList($value);
     }
 }

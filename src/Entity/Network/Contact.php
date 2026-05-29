@@ -38,11 +38,17 @@ class Contact
     #[ORM\Column(length: 120, nullable: true)]
     private ?string $mainChannel = null;
 
-    #[ORM\Column(length: 180, nullable: true)]
-    private ?string $email = null;
+    /**
+     * @var list<string>
+     */
+    #[ORM\Column(type: Types::JSON)]
+    private array $email = [];
 
-    #[ORM\Column(length: 60, nullable: true)]
-    private ?string $phone = null;
+    /**
+     * @var list<string>
+     */
+    #[ORM\Column(type: Types::JSON)]
+    private array $phone = [];
 
     #[ORM\Column(length: 2048, nullable: true)]
     private ?string $profileUrl = null;
@@ -182,28 +188,76 @@ class Contact
         return $this;
     }
 
-    public function getEmail(): ?string
+    /**
+     * @return list<string>
+     */
+    public function getEmails(): array
     {
         return $this->email;
     }
 
-    public function setEmail(?string $email): self
+    /**
+     * @param array<string>|string|null $email
+     */
+    public function setEmail(array|string|null $email): self
     {
-        $this->email = $email !== null && $email !== '' ? $email : null;
+        return $this->setEmails($this->normalizeMultiValue($email));
+    }
+
+    /**
+     * @param list<string> $emails
+     */
+    public function setEmails(array $emails): self
+    {
+        $this->email = $this->normalizeMultiValue($emails);
 
         return $this;
     }
 
-    public function getPhone(): ?string
+    public function addEmail(string $email): self
+    {
+        return $this->setEmails(array_merge($this->email, [$email]));
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email[0] ?? null;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getPhones(): array
     {
         return $this->phone;
     }
 
-    public function setPhone(?string $phone): self
+    /**
+     * @param array<string>|string|null $phone
+     */
+    public function setPhone(array|string|null $phone): self
     {
-        $this->phone = $phone !== null && $phone !== '' ? $phone : null;
+        return $this->setPhones($this->normalizeMultiValue($phone));
+    }
+
+    /**
+     * @param list<string> $phones
+     */
+    public function setPhones(array $phones): self
+    {
+        $this->phone = $this->normalizeMultiValue($phones);
 
         return $this;
+    }
+
+    public function addPhone(string $phone): self
+    {
+        return $this->setPhones(array_merge($this->phone, [$phone]));
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone[0] ?? null;
     }
 
     public function getProfileUrl(): ?string
@@ -402,5 +456,32 @@ class Contact
         }
 
         return $this;
+    }
+
+    /**
+     * @param array<string>|string|null $values
+     *
+     * @return list<string>
+     */
+    private function normalizeMultiValue(array|string|null $values): array
+    {
+        if ($values === null) {
+            return [];
+        }
+
+        if (is_string($values)) {
+            $values = [$values];
+        }
+
+        $normalized = [];
+
+        foreach ($values as $value) {
+            $value = trim((string) $value);
+            if ($value !== '' && !in_array($value, $normalized, true)) {
+                $normalized[] = $value;
+            }
+        }
+
+        return $normalized;
     }
 }

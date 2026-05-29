@@ -28,7 +28,7 @@ CSV, ContactImportSource::LinkedInConnectionsCsv);
             'organization' => 'Test Lab',
             'role' => 'Developer',
             'main_channel' => 'LinkedIn',
-            'email' => 'tom.test@example.com',
+            'email' => ['tom.test@example.com'],
             'profile_url' => 'https://www.linkedin.com/in/tom-test',
             'priority' => 'moyenne',
             'relationship_status' => 'a_relancer',
@@ -54,7 +54,7 @@ CSV);
             self::assertCount(1, $rows);
             $this->assertRowContains($rows[0], [
                 'display_name' => 'Lina Test',
-                'email' => 'lina.test@example.com',
+                'email' => ['lina.test@example.com'],
                 'profile_url' => 'https://www.linkedin.com/in/lina-test',
                 'last_contact_at' => '23 May 2026',
             ]);
@@ -74,7 +74,9 @@ N:Vander;Jean;;;
 ORG:Phone Lab
 TITLE:Developer
 TEL;CELL;PREF:+32470123456
+TEL;HOME:+32470123457
 EMAIL;PREF:jean.vander@example.com
+EMAIL;HOME:jean.vander.alt@example.com
 URL:https://example.com/jean-vander
 END:VCARD
 VCF, ContactImportSource::PhoneVCard);
@@ -87,8 +89,8 @@ VCF, ContactImportSource::PhoneVCard);
             'organization' => 'Phone Lab',
             'role' => 'Developer',
             'main_channel' => 'email',
-            'email' => 'jean.vander@example.com',
-            'phone' => '+32470123456',
+            'email' => ['jean.vander@example.com', 'jean.vander.alt@example.com'],
+            'phone' => ['+32470123456', '+32470123457'],
             'profile_url' => 'https://example.com/jean-vander',
         ]);
     }
@@ -117,8 +119,8 @@ VCF, ContactImportSource::PhoneVCard);
             'organization' => 'Codex QA',
             'role' => 'Developer',
             'main_channel' => 'email',
-            'email' => 'emilie.dupuy@example.com',
-            'phone' => '+33651898438',
+            'email' => ['emilie.dupuy@example.com'],
+            'phone' => ['+33651898438'],
         ]);
     }
 

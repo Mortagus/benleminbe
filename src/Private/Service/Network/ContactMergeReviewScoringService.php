@@ -54,8 +54,6 @@ final class ContactMergeReviewScoringService
             'organization' => 'entreprise',
             'role' => 'rôle',
             'main_channel' => 'canal principal',
-            'email' => 'email',
-            'phone' => 'téléphone',
             'profile_url' => 'profil',
         ] as $field => $label) {
             $leftValue = $this->comparisonFieldValue($left, $field);
@@ -86,7 +84,19 @@ final class ContactMergeReviewScoringService
             return $reasons;
         }
 
-        return ['Pas de clé forte suffisante'];
+        if ($this->mergeRules->hasSharedEmailValue($left->getEmails(), $right->getEmails())) {
+            $reasons[] = 'Email identique';
+        }
+
+        if ($this->mergeRules->hasSharedPhoneValue($left->getPhones(), $right->getPhones())) {
+            $reasons[] = 'Téléphone identique';
+        }
+
+        if ($this->normalizeUrlKey($left->getProfileUrl()) !== '' && $this->normalizeUrlKey($left->getProfileUrl()) === $this->normalizeUrlKey($right->getProfileUrl())) {
+            $reasons[] = 'Profil identique';
+        }
+
+        return $reasons !== [] ? $reasons : ['Pas de clé forte suffisante'];
     }
 
     /**
@@ -97,12 +107,12 @@ final class ContactMergeReviewScoringService
         $score = 0;
         $reasons = [];
 
-        if ($this->normalizePhoneKey($left->getPhone()) !== '' && $this->normalizePhoneKey($left->getPhone()) === $this->normalizePhoneKey($right->getPhone())) {
+        if ($this->mergeRules->hasSharedPhoneValue($left->getPhones(), $right->getPhones())) {
             $score += 100;
             $reasons[] = 'Téléphone identique';
         }
 
-        if ($this->normalizeComparableText($left->getEmail()) !== '' && $this->normalizeComparableText($left->getEmail()) === $this->normalizeComparableText($right->getEmail())) {
+        if ($this->mergeRules->hasSharedEmailValue($left->getEmails(), $right->getEmails())) {
             $score += 95;
             $reasons[] = 'Email identique';
         }
@@ -232,8 +242,6 @@ final class ContactMergeReviewScoringService
             'organization' => $this->normalizeComparableText($contact->getOrganization()),
             'role' => $this->normalizeComparableText($contact->getRole()),
             'main_channel' => $this->normalizeComparableText($contact->getMainChannel()),
-            'email' => $this->normalizeComparableText($contact->getEmail()),
-            'phone' => $this->normalizePhoneKey($contact->getPhone()),
             'profile_url' => $this->normalizeUrlKey($contact->getProfileUrl()),
             default => '',
         };
@@ -249,11 +257,6 @@ final class ContactMergeReviewScoringService
     private function normalizeComparableText(mixed $value): string
     {
         return $this->mergeRules->normalizeComparableText($value);
-    }
-
-    private function normalizePhoneKey(mixed $phone): string
-    {
-        return $this->mergeRules->normalizePhoneKey($phone);
     }
 
     private function normalizeUrlKey(mixed $url): string

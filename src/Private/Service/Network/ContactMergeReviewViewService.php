@@ -78,8 +78,10 @@ final class ContactMergeReviewViewService
             'organization' => $contact->getOrganization() ?? '',
             'role' => $contact->getRole() ?? '',
             'main_channel' => $contact->getMainChannel() ?? '',
-            'email' => $contact->getEmail() ?? '',
-            'phone' => $contact->getPhone() ?? '',
+            'email' => implode(', ', $contact->getEmails()),
+            'phone' => implode(', ', $contact->getPhones()),
+            'emails' => $contact->getEmails(),
+            'phones' => $contact->getPhones(),
             'profile_url' => $contact->getProfileUrl() ?? '',
             'source' => $contact->getSource() ?? '',
             'priority' => $contact->getPriority()->value,
@@ -111,6 +113,8 @@ final class ContactMergeReviewViewService
             'main_channel' => '',
             'email' => '',
             'phone' => '',
+            'emails' => [],
+            'phones' => [],
             'profile_url' => '',
             'source' => '',
             'priority' => ContactPriority::default()->value,
@@ -136,8 +140,8 @@ final class ContactMergeReviewViewService
         $contact->setOrganization($data['organization'] !== '' ? (string) $data['organization'] : null);
         $contact->setRole($data['role'] !== '' ? (string) $data['role'] : null);
         $contact->setMainChannel($data['main_channel'] !== '' ? (string) $data['main_channel'] : null);
-        $contact->setEmail($data['email'] !== '' ? (string) $data['email'] : null);
-        $contact->setPhone($data['phone'] !== '' ? (string) $data['phone'] : null);
+        $contact->setEmail($this->snapshotValues($data['emails'] ?? $data['email'] ?? null, $data['email'] ?? null));
+        $contact->setPhone($this->snapshotValues($data['phones'] ?? $data['phone'] ?? null, $data['phone'] ?? null));
         $contact->setProfileUrl($data['profile_url'] !== '' ? (string) $data['profile_url'] : null);
         $contact->setSource($data['source'] !== '' ? (string) $data['source'] : null);
         $contact->setPriority($this->priorityFromValue($data['priority']));
@@ -239,5 +243,46 @@ final class ContactMergeReviewViewService
     private function generateId(string $prefix): string
     {
         return sprintf('%s_%s', $prefix, bin2hex(random_bytes(8)));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function snapshotValues(mixed $value, mixed $fallback = null): array
+    {
+        if (is_array($value)) {
+            return array_values(array_filter(array_map(
+                static fn (mixed $entry): string => trim((string) $entry),
+                $value,
+            ), static fn (string $entry): bool => $entry !== ''));
+        }
+
+        if (is_string($value)) {
+            $parts = preg_split('/[\r\n,;|]+/', trim($value)) ?: [];
+            $parts = array_values(array_filter(array_map(
+                static fn (string $entry): string => trim($entry),
+                $parts,
+            ), static fn (string $entry): bool => $entry !== ''));
+
+            if ($parts !== []) {
+                return $parts;
+            }
+        }
+
+        if (is_array($fallback)) {
+            return array_values(array_filter(array_map(
+                static fn (mixed $entry): string => trim((string) $entry),
+                $fallback,
+            ), static fn (string $entry): bool => $entry !== ''));
+        }
+
+        if (is_string($fallback)) {
+            $fallback = trim($fallback);
+            if ($fallback !== '') {
+                return [$fallback];
+            }
+        }
+
+        return [];
     }
 }

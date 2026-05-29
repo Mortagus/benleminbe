@@ -39,6 +39,8 @@ Le prochain travail portera sur :
 - continuer a enrichir les données de contacts depuis le telephone et LinkedIn si de nouveaux cas apparaissent ;
 - garder en tete l’idee d’un annuaire public accessible via le web comme aide ponctuelle d’identification, sans en faire une source de vérité.
 
+Suite de la reprise la plus recente : [private-network-reprise-2026-05-29.md](private-network-reprise-2026-05-29.md).
+
 ## Note
 
 Ce document sert de trace de reprise du chantier de ce matin.  

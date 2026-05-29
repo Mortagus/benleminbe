@@ -125,10 +125,22 @@
                                             <strong>{{ field.label }}</strong>
                                         </td>
                                         <td class="private-table__cell" data-label="Gauche">
-                                            <div class="private-merge-value">{{ field.left_value ?: '—' }}</div>
+                                            <div class="private-merge-value">
+                                                {% if field.left_display is not empty %}
+                                                    {{ field.left_display|raw }}
+                                                {% else %}
+                                                    —
+                                                {% endif %}
+                                            </div>
                                         </td>
                                         <td class="private-table__cell" data-label="Droite">
-                                            <div class="private-merge-value">{{ field.right_value ?: '—' }}</div>
+                                            <div class="private-merge-value">
+                                                {% if field.right_display is not empty %}
+                                                    {{ field.right_display|raw }}
+                                                {% else %}
+                                                    —
+                                                {% endif %}
+                                            </div>
                                         </td>
                                         <td class="private-table__cell" data-label="Choix">
                                             <select class="private-merge-field-select" name="field_choices[{{ field.name }}]">

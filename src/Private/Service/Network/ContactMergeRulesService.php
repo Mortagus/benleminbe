@@ -63,6 +63,94 @@ final class ContactMergeRulesService
         return mb_strtolower($phone);
     }
 
+    /**
+     * @return list<string>
+     */
+    public function normalizeEmailList(mixed $emails): array
+    {
+        $emails = $this->normalizeDelimitedValueList($emails);
+        if ($emails === []) {
+            return [];
+        }
+
+        $normalized = [];
+        $seen = [];
+
+        foreach ($emails as $email) {
+            $key = mb_strtolower($email);
+            if ($key !== '' && !isset($seen[$key])) {
+                $seen[$key] = true;
+                $normalized[] = $key;
+            }
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function normalizePhoneList(mixed $phones): array
+    {
+        $phones = $this->normalizeDelimitedValueList($phones);
+        if ($phones === []) {
+            return [];
+        }
+
+        $normalized = [];
+        $seen = [];
+
+        foreach ($phones as $phone) {
+            $key = $this->normalizePhoneKey($phone);
+            if ($key !== '' && !isset($seen[$key])) {
+                $seen[$key] = true;
+                $normalized[] = $phone;
+            }
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @param list<string> $left
+     * @param list<string> $right
+     *
+     * @return list<string>
+     */
+    public function mergeEmailLists(array $left, array $right): array
+    {
+        return $this->normalizeEmailList(array_merge($left, $right));
+    }
+
+    /**
+     * @param list<string> $left
+     * @param list<string> $right
+     *
+     * @return list<string>
+     */
+    public function mergePhoneLists(array $left, array $right): array
+    {
+        return $this->normalizePhoneList(array_merge($left, $right));
+    }
+
+    /**
+     * @param list<string> $left
+     * @param list<string> $right
+     */
+    public function hasSharedEmailValue(array $left, array $right): bool
+    {
+        return array_intersect($this->normalizeEmailList($left), $this->normalizeEmailList($right)) !== [];
+    }
+
+    /**
+     * @param list<string> $left
+     * @param list<string> $right
+     */
+    public function hasSharedPhoneValue(array $left, array $right): bool
+    {
+        return array_intersect($this->phoneKeys($left), $this->phoneKeys($right)) !== [];
+    }
+
     public function normalizeProfileUrlKey(mixed $profileUrl): string
     {
         $profileUrl = $this->normalizeOptionalString($profileUrl);
@@ -229,8 +317,6 @@ final class ContactMergeRulesService
             $contact->getOrganization(),
             $contact->getRole(),
             $contact->getMainChannel(),
-            $contact->getEmail(),
-            $contact->getPhone(),
             $contact->getProfileUrl(),
             $contact->getSource(),
             $contact->getNextAction(),
@@ -251,12 +337,60 @@ final class ContactMergeRulesService
             $score++;
         }
 
+        if ($contact->getEmails() !== []) {
+            $score++;
+        }
+
+        if ($contact->getPhones() !== []) {
+            $score++;
+        }
+
         return $score;
     }
 
     public function isSparseContactForAutoMerge(Contact $contact): bool
     {
         return $this->scoreContactCompleteness($contact) <= self::SPARSE_AUTO_MERGE_SCORE_THRESHOLD;
+    }
+
+    /**
+     * @param mixed $values
+     *
+     * @return list<string>
+     */
+    private function normalizeDelimitedValueList(mixed $values): array
+    {
+        if (is_string($values)) {
+            $values = preg_split('/[\r\n,;|]+/', $values) ?: [$values];
+        }
+
+        if (!is_array($values)) {
+            return [];
+        }
+
+        return array_values(array_filter(array_map(
+            static fn (mixed $value): string => trim((string) $value),
+            $values,
+        ), static fn (string $value): bool => $value !== ''));
+    }
+
+    /**
+     * @param list<string> $values
+     *
+     * @return list<string>
+     */
+    private function phoneKeys(array $values): array
+    {
+        $keys = [];
+
+        foreach ($values as $value) {
+            $key = $this->normalizePhoneKey($value);
+            if ($key !== '' && !in_array($key, $keys, true)) {
+                $keys[] = $key;
+            }
+        }
+
+        return $keys;
     }
 
     /**

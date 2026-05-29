@@ -233,8 +233,8 @@ final class ContactAutoMergeService
             $target->getProfileUrl(),
             $source->getProfileUrl(),
         ));
-        $target->setEmail($this->preferContactValue($target->getEmail(), $source->getEmail()));
-        $target->setPhone($this->preferContactValue($target->getPhone(), $source->getPhone()));
+        $target->setEmail($this->mergeRules->mergeEmailLists($target->getEmails(), $source->getEmails()));
+        $target->setPhone($this->mergeRules->mergePhoneLists($target->getPhones(), $source->getPhones()));
         $target->setProfileUrl($this->preferContactValue($target->getProfileUrl(), $source->getProfileUrl()));
         $target->setSource($this->mergeSourceValues($target->getSource(), $source->getSource()));
         $target->setPriority($this->mergeContactPriority($target->getPriority(), $source->getPriority()));
@@ -251,7 +251,7 @@ final class ContactAutoMergeService
 
     private function canAutoMergeContacts(Contact $left, Contact $right): bool
     {
-        if ($this->mergeRules->normalizePhoneKey($left->getPhone()) !== '' && $this->mergeRules->normalizePhoneKey($left->getPhone()) === $this->mergeRules->normalizePhoneKey($right->getPhone())) {
+        if ($this->mergeRules->hasSharedPhoneValue($left->getPhones(), $right->getPhones())) {
             return true;
         }
 
@@ -259,9 +259,7 @@ final class ContactAutoMergeService
             return true;
         }
 
-        $leftEmail = mb_strtolower($this->mergeRules->normalizeOptionalString($left->getEmail()) ?? '');
-        $rightEmail = mb_strtolower($this->mergeRules->normalizeOptionalString($right->getEmail()) ?? '');
-        if ($leftEmail !== '' && $leftEmail === $rightEmail) {
+        if ($this->mergeRules->hasSharedEmailValue($left->getEmails(), $right->getEmails())) {
             return true;
         }
 
@@ -275,8 +273,6 @@ final class ContactAutoMergeService
             ['left' => $left->getLastName(), 'right' => $right->getLastName()],
             ['left' => $left->getOrganization(), 'right' => $right->getOrganization()],
             ['left' => $left->getRole(), 'right' => $right->getRole()],
-            ['left' => $left->getEmail(), 'right' => $right->getEmail()],
-            ['left' => $left->getPhone(), 'right' => $right->getPhone()],
             ['left' => $left->getProfileUrl(), 'right' => $right->getProfileUrl()],
             ['left' => $left->getNextAction(), 'right' => $right->getNextAction()],
             ['left' => $left->getNotes(), 'right' => $right->getNotes()],
@@ -325,8 +321,6 @@ final class ContactAutoMergeService
             ['left' => $left->getLastName(), 'right' => $right->getLastName()],
             ['left' => $left->getOrganization(), 'right' => $right->getOrganization()],
             ['left' => $left->getRole(), 'right' => $right->getRole()],
-            ['left' => $left->getEmail(), 'right' => $right->getEmail()],
-            ['left' => $left->getPhone(), 'right' => $right->getPhone()],
             ['left' => $left->getProfileUrl(), 'right' => $right->getProfileUrl()],
             ['left' => $left->getNextAction(), 'right' => $right->getNextAction()],
             ['left' => $left->getNotes(), 'right' => $right->getNotes()],
@@ -358,14 +352,18 @@ final class ContactAutoMergeService
     {
         $keys = [];
 
-        $phone = $this->mergeRules->normalizePhoneKey($contact->getPhone());
-        if ($phone !== '') {
-            $keys[] = 'phone:' . $phone;
+        foreach ($contact->getPhones() as $phone) {
+            $phoneKey = $this->mergeRules->normalizePhoneKey($phone);
+            if ($phoneKey !== '') {
+                $keys[] = 'phone:' . $phoneKey;
+            }
         }
 
-        $email = mb_strtolower($this->mergeRules->normalizeOptionalString($contact->getEmail()) ?? '');
-        if ($email !== '') {
-            $keys[] = 'email:' . $email;
+        foreach ($contact->getEmails() as $email) {
+            $emailKey = mb_strtolower($this->mergeRules->normalizeOptionalString($email) ?? '');
+            if ($emailKey !== '') {
+                $keys[] = 'email:' . $emailKey;
+            }
         }
 
         $profileUrl = $this->mergeRules->normalizeProfileUrlKey($contact->getProfileUrl());
@@ -511,8 +509,8 @@ final class ContactAutoMergeService
             'Entreprise' => $source->getOrganization(),
             'Rôle' => $source->getRole(),
             'Canal principal' => $source->getMainChannel(),
-            'Email' => $source->getEmail(),
-            'Téléphone' => $source->getPhone(),
+            'Email' => implode(', ', $source->getEmails()),
+            'Téléphone' => implode(', ', $source->getPhones()),
             'Profil' => $source->getProfileUrl(),
             'Source' => $source->getSource(),
             'Priorité' => $source->getPriorityLabel(),

@@ -24,6 +24,8 @@ Conserver deux tests fonctionnels distincts :
 
 Chaque test doit utiliser un contenu inline minimal, pas les gros fichiers reels.
 
+Depuis le passage du modele `Contact` en listes multi-valeurs pour `email` et `phone`, les tests doivent verifier que le parseur renvoie des tableaux normalises, meme si une seule valeur est presente.
+
 ### Remise A Zero
 
 La remise a zero de la base est deja geree par [NetworkWebTestCase](../../tests/Functional/Private/NetworkWebTestCase.php).
@@ -33,6 +35,9 @@ Rien a changer cote strategie :
 - les tables du reseau sont truncatees avant chaque test ;
 - chaque test part donc d'un etat vierge ;
 - il n'est pas utile de vider manuellement les tables dans chaque cas d'import.
+- la migration du schema doit etre appliquee avant les tests qui ecrivent des contacts ;
+- les colonnes `email` et `phone` sont stockees en JSON ;
+- le contrat fonctionnel des imports doit donc verifier des listes, pas des chaines scalaires.
 
 ## Fixtures Minimales
 
@@ -55,6 +60,7 @@ Cas de validation :
 - `organization` est rempli ;
 - `role` est rempli ;
 - `profile_url` est rempli ;
+- `email` et `phone` sont integres comme listes lorsque le format source les fournit plusieurs fois ;
 - `source_label` du log correspond a `linkedin_connections_csv`.
 
 ### 2. Import vCard Telephone
@@ -75,8 +81,8 @@ Cas de validation :
 - le nom affiche est extrait correctement ;
 - `organization` est rempli ;
 - `role` est rempli ;
-- `phone` est rempli ;
-- `email` est rempli si present ;
+- `phone` est rempli comme liste si plusieurs numeros sont presents ;
+- `email` est rempli comme liste si plusieurs adresses sont presentes ;
 - `source_label` du log correspond a `phone_vcard`.
 
 ## Ce Qu'On Ne Valide Pas Ici

@@ -142,8 +142,8 @@ final class ContactImportParser
         $fullName = $this->firstVCardValue($card, 'FN');
         $organization = $this->firstVCardValue($card, 'ORG');
         $role = $this->firstVCardValue($card, 'TITLE');
-        $email = $this->firstVCardValue($card, 'EMAIL');
-        $phone = $this->firstVCardValue($card, 'TEL');
+        $emails = $this->allVCardValues($card, 'EMAIL');
+        $phones = $this->allVCardValues($card, 'TEL');
         $profileUrl = $this->firstVCardValue($card, 'URL');
         $notes = $this->firstVCardValue($card, 'NOTE');
         $tags = $this->firstVCardValue($card, 'CATEGORIES');
@@ -155,8 +155,8 @@ final class ContactImportParser
         $displayName = $this->firstNonEmpty([
             $fullName,
             $organization,
-            $email,
-            $phone,
+            $this->firstListValue($emails),
+            $this->firstListValue($phones),
         ]);
 
         if ($displayName === '') {
@@ -169,9 +169,9 @@ final class ContactImportParser
             'last_name' => $lastName ?? '',
             'organization' => $organization ?? '',
             'role' => $role ?? '',
-            'main_channel' => $email !== null && $email !== '' ? 'email' : ($phone !== null && $phone !== '' ? 'téléphone' : ''),
-            'email' => $email ?? '',
-            'phone' => $phone ?? '',
+            'main_channel' => $emails !== [] ? 'email' : ($phones !== [] ? 'téléphone' : ''),
+            'email' => $emails,
+            'phone' => $phones,
             'profile_url' => $profileUrl ?? '',
             'source' => '',
             'priority' => 'moyenne',
@@ -196,8 +196,8 @@ final class ContactImportParser
         $displayName = $this->firstRowValue($row, ['display_name', 'name', 'full_name', 'nom_complet']);
         $organization = $this->firstRowValue($row, ['organization', 'company', 'company_name', 'entreprise', 'societe', 'société']);
         $role = $this->firstRowValue($row, ['role', 'position', 'job_title', 'headline', 'poste', 'fonction']);
-        $email = $this->firstRowValue($row, ['email', 'email_address', 'adresse_email', 'adresse_e_mail']);
-        $phone = $this->firstRowValue($row, ['phone', 'phone_number', 'telephone', 'téléphone']);
+        $emails = $this->splitMultiValueField($this->firstRowValue($row, ['email', 'email_address', 'adresse_email', 'adresse_e_mail']));
+        $phones = $this->splitMultiValueField($this->firstRowValue($row, ['phone', 'phone_number', 'telephone', 'téléphone']));
         $profileUrl = $this->firstRowValue($row, ['profile_url', 'linkedin_url', 'url', 'profile']);
         $connectedOn = $this->firstRowValue($row, ['connected_on', 'connection_date', 'date_de_connexion', 'date_connexion']);
 
@@ -208,8 +208,8 @@ final class ContactImportParser
         if ($displayName === '') {
             $displayName = $this->firstNonEmpty([
                 $organization,
-                $email,
-                $phone,
+                $this->firstListValue($emails),
+                $this->firstListValue($phones),
             ]);
         }
 
@@ -220,8 +220,8 @@ final class ContactImportParser
             'organization' => $organization,
             'role' => $role,
             'main_channel' => 'LinkedIn',
-            'email' => $email,
-            'phone' => $phone,
+            'email' => $emails,
+            'phone' => $phones,
             'profile_url' => $profileUrl,
             'source' => '',
             'priority' => 'moyenne',
@@ -291,6 +291,63 @@ final class ContactImportParser
      * @param list<string> $values
      */
     private function firstNonEmpty(array $values): string
+    {
+        foreach ($values as $value) {
+            $value = $this->normalizeString($value);
+            if ($value !== '') {
+                return $value;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * @param array<string, list<string>> $card
+     *
+     * @return list<string>
+     */
+    private function allVCardValues(array $card, string $property): array
+    {
+        $property = strtoupper($property);
+        $values = $card[$property] ?? [];
+        if (!is_array($values) || $values === []) {
+            return [];
+        }
+
+        $decoded = [];
+
+        foreach ($values as $value) {
+            if (!is_string($value)) {
+                continue;
+            }
+
+            $trimmed = trim($value);
+            if ($trimmed !== '') {
+                $decoded[] = $this->decodeVCardText($trimmed);
+            }
+        }
+
+        return array_values(array_filter($decoded, static fn (string $value): bool => $value !== ''));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function splitMultiValueField(string $value): array
+    {
+        $values = preg_split('/[\r\n,;|]+/', trim($value)) ?: [];
+
+        return array_values(array_filter(array_map(
+            fn (string $entry): string => $this->normalizeString($entry),
+            $values,
+        ), static fn (string $entry): bool => $entry !== ''));
+    }
+
+    /**
+     * @param list<string> $values
+     */
+    private function firstListValue(array $values): string
     {
         foreach ($values as $value) {
             $value = $this->normalizeString($value);

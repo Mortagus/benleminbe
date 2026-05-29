@@ -30,6 +30,8 @@ final class ContactWritePolicyService
         $lastName = $this->normalizeString($payload['last_name'] ?? '');
         $organization = $this->normalizeOrganizationName($payload['organization'] ?? '');
         $role = $this->normalizeString($payload['role'] ?? '');
+        $emails = $this->normalizeEmailValues($payload['email'] ?? []);
+        $phones = $this->normalizePhoneValues($payload['phone'] ?? []);
 
         if ($displayName === '') {
             $displayName = trim($firstName . ' ' . $lastName);
@@ -53,9 +55,9 @@ final class ContactWritePolicyService
             'last_name' => $lastName,
             'organization' => $organization,
             'role' => $role,
-            'main_channel' => $this->normalizeString($payload['main_channel'] ?? ''),
-            'email' => $this->normalizeString($payload['email'] ?? ''),
-            'phone' => $this->normalizeString($payload['phone'] ?? ''),
+            'main_channel' => $this->normalizeString($payload['main_channel'] ?? ($emails !== [] ? 'email' : ($phones !== [] ? 'téléphone' : ''))),
+            'email' => $emails,
+            'phone' => $phones,
             'profile_url' => $this->normalizeString($payload['profile_url'] ?? ''),
             'source' => $this->normalizeString($payload['source'] ?? $sourceLabel),
             'priority' => $this->normalizeContactPriority($payload['priority'] ?? 'moyenne')->value,
@@ -97,8 +99,8 @@ final class ContactWritePolicyService
             $contact->getProfileUrl(),
             $data['profile_url'],
         ) : $data['main_channel']);
-        $contact->setEmail($merge ? $this->mergeString($contact->getEmail(), $data['email']) : $data['email']);
-        $contact->setPhone($merge ? $this->mergeString($contact->getPhone(), $data['phone']) : $data['phone']);
+        $contact->setEmail($merge ? $this->mergeRules->mergeEmailLists($contact->getEmails(), $data['email']) : $data['email']);
+        $contact->setPhone($merge ? $this->mergeRules->mergePhoneLists($contact->getPhones(), $data['phone']) : $data['phone']);
         $contact->setProfileUrl($merge ? $this->mergeString($contact->getProfileUrl(), $data['profile_url']) : $data['profile_url']);
         $contact->setSource($merge ? $this->mergeRules->mergeSourceValues($contact->getSource(), $data['source']) : $data['source']);
         $contact->setPriority($this->normalizeContactPriority($data['priority']));
@@ -122,8 +124,8 @@ final class ContactWritePolicyService
      */
     public function findMatchingContactIndex(array $contacts, array $candidate): ?int
     {
-        $candidateEmail = mb_strtolower($this->normalizeString($candidate['email'] ?? ''));
-        $candidatePhone = $this->mergeRules->normalizePhoneKey($candidate['phone'] ?? null);
+        $candidateEmail = $this->mergeRules->normalizeEmailList($candidate['email'] ?? []);
+        $candidatePhone = $this->mergeRules->normalizePhoneList($candidate['phone'] ?? []);
         $candidateProfileUrl = $this->mergeRules->normalizeProfileUrlKey($candidate['profile_url'] ?? null);
         $candidateNameKeys = $this->mergeRules->buildContactNameKeys(
             $candidate['display_name'] ?? '',
@@ -137,8 +139,8 @@ final class ContactWritePolicyService
                 continue;
             }
 
-            $contactEmail = mb_strtolower($this->normalizeString($contact->getEmail() ?? ''));
-            $contactPhone = $this->mergeRules->normalizePhoneKey($contact->getPhone());
+            $contactEmail = $this->mergeRules->normalizeEmailList($contact->getEmails());
+            $contactPhone = $this->mergeRules->normalizePhoneList($contact->getPhones());
             $contactProfileUrl = $this->mergeRules->normalizeProfileUrlKey($contact->getProfileUrl());
             $contactNameKeys = $this->mergeRules->buildContactNameKeys(
                 $contact->getDisplayName(),
@@ -147,11 +149,11 @@ final class ContactWritePolicyService
                 $contact->getOrganization() ?? '',
             );
 
-            if ($candidateEmail !== '' && $contactEmail !== '' && $candidateEmail === $contactEmail) {
+            if ($candidateEmail !== [] && $contactEmail !== [] && array_intersect($candidateEmail, $contactEmail) !== []) {
                 return $index;
             }
 
-            if ($candidatePhone !== '' && $contactPhone !== '' && $candidatePhone === $contactPhone) {
+            if ($candidatePhone !== [] && $contactPhone !== [] && $this->mergeRules->hasSharedPhoneValue($candidatePhone, $contactPhone)) {
                 return $index;
             }
 
@@ -172,6 +174,22 @@ final class ContactWritePolicyService
         $incoming = $this->normalizeString($incoming);
 
         return $incoming !== '' ? $incoming : $current;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function normalizeEmailValues(mixed $value): array
+    {
+        return $this->mergeRules->normalizeEmailList($value);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function normalizePhoneValues(mixed $value): array
+    {
+        return $this->mergeRules->normalizePhoneList($value);
     }
 
     private function mergeOrganizationValue(?string $current, ?string $incoming): ?string

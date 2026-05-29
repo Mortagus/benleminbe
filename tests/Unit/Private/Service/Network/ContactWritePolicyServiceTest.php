@@ -28,7 +28,8 @@ final class ContactWritePolicyServiceTest extends TestCase
             'last_name' => 'Dupont',
             'organization' => 'acme   inc',
             'role' => 'Lead',
-            'phone' => '00 32 470 12 34 56',
+            'email' => ['Alice@example.com', 'alice@example.com', 'other@example.com'],
+            'phone' => ['00 32 470 12 34 56', '+32470123457', '+32470123457'],
             'tags' => 'alpha, beta; gamma',
             'priority' => 'invalid',
             'relationship_status' => 'invalid',
@@ -41,7 +42,8 @@ final class ContactWritePolicyServiceTest extends TestCase
         self::assertSame('Dupont', $normalized['last_name']);
         self::assertSame('Acme Inc', $normalized['organization']);
         self::assertSame('Lead', $normalized['role']);
-        self::assertSame('00 32 470 12 34 56', $normalized['phone']);
+        self::assertSame(['alice@example.com', 'other@example.com'], $normalized['email']);
+        self::assertSame(['00 32 470 12 34 56', '+32470123457'], $normalized['phone']);
         self::assertSame('LinkedIn', $normalized['source']);
         self::assertSame(ContactPriority::default()->value, $normalized['priority']);
         self::assertSame(ContactRelationshipStatus::default()->value, $normalized['relationship_status']);
@@ -145,8 +147,8 @@ final class ContactWritePolicyServiceTest extends TestCase
         $contact->setOrganization('Old Org');
         $contact->setRole('Old Role');
         $contact->setMainChannel('Slack');
-        $contact->setEmail('old@example.com');
-        $contact->setPhone('+32470000000');
+        $contact->setEmail(['old@example.com', 'shared@example.com']);
+        $contact->setPhone(['+32470000000', '+32470000001']);
         $contact->setProfileUrl('https://example.com/old');
         $contact->setSource('crm');
         $contact->setPriority(ContactPriority::Low);
@@ -167,8 +169,8 @@ final class ContactWritePolicyServiceTest extends TestCase
             'organization' => 'New Org',
             'role' => 'New Role',
             'main_channel' => '',
-            'email' => '',
-            'phone' => '+32470000001',
+            'email' => ['shared@example.com', 'new@example.com'],
+            'phone' => ['+32470000001', '+32470000002'],
             'profile_url' => 'https://www.linkedin.com/in/new-name',
             'source' => 'website',
             'priority' => ContactPriority::High->value,
@@ -188,8 +190,10 @@ final class ContactWritePolicyServiceTest extends TestCase
         self::assertSame('New Org', $contact->getOrganization());
         self::assertSame('New Role', $contact->getRole());
         self::assertSame('LinkedIn', $contact->getMainChannel());
+        self::assertSame(['old@example.com', 'shared@example.com', 'new@example.com'], $contact->getEmails());
+        self::assertSame(['+32470000000', '+32470000001', '+32470000002'], $contact->getPhones());
         self::assertSame('old@example.com', $contact->getEmail());
-        self::assertSame('+32470000001', $contact->getPhone());
+        self::assertSame('+32470000000', $contact->getPhone());
         self::assertSame('https://www.linkedin.com/in/new-name', $contact->getProfileUrl());
         self::assertSame('crm | website', $contact->getSource());
         self::assertSame(ContactPriority::High, $contact->getPriority());

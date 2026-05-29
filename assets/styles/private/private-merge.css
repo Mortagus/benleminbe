@@ -4,6 +4,15 @@
     word-break: normal;
 }
 
+.private-merge-diff {
+    display: inline-block;
+    padding: 0 0.2rem;
+    border-radius: 0.2rem;
+    background: rgb(196 153 59 / 20%);
+    color: inherit;
+    font-weight: 700;
+}
+
 .private-merge-scoreline {
     display: flex;
     flex-wrap: wrap;

@@ -11,6 +11,10 @@ Le refactor vise aussi a rester aligne sur le style du projet: services fins ori
 
 Le module fonctionne, mais il a atteint une taille qui rend la maintenance fragile.
 
+Note de contexte: le refactor structurel du module a maintenant ete largement applique.  
+Les controllers sont repartis par flux, les services ont ete decoupes, et `email` / `phone` sont des listes multi-valeurs.  
+La suite du chantier porte surtout sur le reglage fin des heuristiques de fusion automatique et sur la baisse du volume de doublons difficiles.
+
 Deux classes concentrent une part trop importante de la logique:
 
 - [NetworkRepository](../../src/Private/Service/Network/NetworkRepository.php) : 1921 lignes ;

@@ -16,7 +16,7 @@
             <div class="private-page__actions">
                 <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contact_merge_reviews_index') }}">Retour à la file</a>
                 {% if review.status == 'pending' %}
-                    <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_ignore', { id: review.id }) }}" onsubmit="return confirm('Ignorer ce doublon ?');">
+                    <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_ignore', { id: review.id }) }}" data-private-confirm="Ignorer ce doublon ?">
                         <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-ignore-' ~ review.id) }}">
                         <button class="private-link-button private-link-button--secondary" type="submit">Ignorer</button>
                     </form>
@@ -87,7 +87,7 @@
         </div>
 
         {% if review.status == 'pending' %}
-            <form class="private-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_resolve', { id: review.id }) }}">
+            <form class="private-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_resolve', { id: review.id }) }}" data-private-progress-submit="Fusion en cours…">
                 <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-resolve-' ~ review.id) }}">
 
                 <section class="private-surface">

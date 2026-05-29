@@ -164,6 +164,13 @@
     box-shadow: none;
 }
 
+.private-link-button--danger {
+    border-color: color-mix(in srgb, #b42318 60%, var(--border));
+    background: linear-gradient(180deg, color-mix(in srgb, #b42318 88%, white) 0%, #b42318 100%);
+    color: #fff;
+    box-shadow: none;
+}
+
 .private-icon-button {
     display: inline-flex;
     align-items: center;

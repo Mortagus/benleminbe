@@ -14,11 +14,11 @@
             </div>
 
             <div class="private-page__actions">
-                <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_generate') }}" onsubmit="return confirm('Rafraîchir la file des doublons ?');">
+                <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_generate') }}" data-private-confirm="Rafraîchir la file des doublons ?" data-private-progress-submit="Détection en cours…">
                     <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-refresh') }}">
                     <button class="private-link-button" type="submit">Détecter les doublons</button>
                 </form>
-                <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_purge_pending') }}" onsubmit="return confirm('Supprimer tous les doublons en attente ? Cette action ne touche pas les doublons résolus ou ignorés.');">
+                <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_purge_pending') }}" data-private-confirm="Supprimer tous les doublons en attente ? Cette action ne touche pas les doublons résolus ou ignorés.">
                     <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-purge-pending') }}">
                     <button class="private-link-button private-link-button--secondary" type="submit">Supprimer les en attente</button>
                 </form>
@@ -73,11 +73,13 @@
 
                             <div>
                                 <h3>{{ review.left_contact.display_name }} et {{ review.right_contact.display_name }}</h3>
-                                <div class="private-tags">
-                                    {% for reason in review.reasons %}
-                                        <span class="private-badge private-badge--secondary">{{ reason }}</span>
-                                    {% endfor %}
-                                </div>
+                                {% if review.reasons is not empty %}
+                                    <div class="private-tags">
+                                        {% for reason in review.reasons %}
+                                            <span class="private-badge private-badge--secondary">{{ reason }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                                 <p class="private-muted">
                                     Canonique conseillé: {{ review.recommended_canonical_side == 'right' ? 'contact de droite' : 'contact de gauche' }}.
                                 </p>

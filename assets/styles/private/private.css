@@ -11,3 +11,8 @@
 @import url("./private-forms.css");
 @import url("./private-merge.css");
 @import url("./private-responsive.css");
+
+html.private-is-processing,
+html.private-is-processing * {
+    cursor: progress !important;
+}

@@ -42,6 +42,7 @@ final class ContactMergeReviewService
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
+        private readonly NetworkRepository $networkRepository,
     ) {
     }
 
@@ -79,6 +80,8 @@ final class ContactMergeReviewService
      */
     public function refreshCandidates(): array
     {
+        $autoMergeSummary = $this->networkRepository->autoMergeContacts();
+        $purgedPendingReviews = $this->purgeOrphanedPendingReviews();
         $contacts = $this->loadContacts();
         $reviews = [];
 
@@ -153,6 +156,10 @@ final class ContactMergeReviewService
             'skipped' => $skipped,
             'considered' => $considered,
             'total' => $created + $updated + $skipped,
+            'auto_merged_contacts' => $autoMergeSummary['merged_contacts'],
+            'auto_merged_groups' => $autoMergeSummary['merged_groups'],
+            'auto_merged_interactions' => $autoMergeSummary['moved_interactions'],
+            'purged_pending_reviews' => $purgedPendingReviews['deleted'],
         ];
     }
 
@@ -161,6 +168,7 @@ final class ContactMergeReviewService
      */
     public function purgePendingReviews(): array
     {
+        /** @noinspection SqlNoDataSourceInspection */
         $deleted = $this->entityManager->createQuery(
             'DELETE FROM App\\Entity\\Network\\ContactMergeReview review WHERE review.status = :status',
         )
@@ -169,6 +177,48 @@ final class ContactMergeReviewService
 
         return [
             'deleted' => (int) $deleted,
+        ];
+    }
+
+    /**
+     * @return array{contacts: int, interactions: int, imports: int, reviews: int}
+     */
+    public function resetNetworkData(): array
+    {
+        return $this->networkRepository->resetNetworkData();
+    }
+
+    /**
+     * @return array{deleted: int}
+     */
+    private function purgeOrphanedPendingReviews(): array
+    {
+        $deleted = 0;
+
+        /** @var list<ContactMergeReview> $pendingReviews */
+        $pendingReviews = $this->entityManager->getRepository(ContactMergeReview::class)->findBy([
+            'status' => ContactMergeReviewStatus::Pending,
+        ]);
+
+        foreach ($pendingReviews as $review) {
+            if (!$review instanceof ContactMergeReview) {
+                continue;
+            }
+
+            if ($review->getLeftContact() instanceof Contact && $review->getRightContact() instanceof Contact) {
+                continue;
+            }
+
+            $this->entityManager->remove($review);
+            $deleted++;
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        return [
+            'deleted' => $deleted,
         ];
     }
 
@@ -345,7 +395,7 @@ final class ContactMergeReviewService
             'status_label' => $review->getStatusLabel(),
             'score' => $review->getScore(),
             'review_score' => $review->getReviewScore(),
-            'reasons' => $review->getReasons(),
+            'reasons' => $this->normalizeReasonsForDisplay($review->getReasons()),
             'left_contact' => $left,
             'right_contact' => $right,
             'recommended_canonical_side' => $this->recommendedCanonicalSide($leftContact, $rightContact),
@@ -599,7 +649,7 @@ final class ContactMergeReviewService
                 'display_name' => $canonical->setDisplayName($this->normalizeDisplayName($value, $canonical, $source)),
                 'first_name' => $canonical->setFirstName($this->normalizeOptionalString($value)),
                 'last_name' => $canonical->setLastName($this->normalizeOptionalString($value)),
-                'organization' => $canonical->setOrganization($this->normalizeOptionalString($value)),
+                'organization' => $canonical->setOrganization($this->normalizeOrganizationName($value)),
                 'role' => $canonical->setRole($this->normalizeOptionalString($value)),
                 'main_channel' => $canonical->setMainChannel($this->normalizeOptionalString($value)),
                 'email' => $canonical->setEmail($this->normalizeOptionalString($value)),
@@ -692,6 +742,19 @@ final class ContactMergeReviewService
         return $value !== '' ? $value : null;
     }
 
+    private function normalizeOrganizationName(mixed $value): ?string
+    {
+        $value = $this->normalizeOptionalString($value);
+        if ($value === null) {
+            return null;
+        }
+
+        $value = preg_replace('/\s+/', ' ', $value) ?? $value;
+        $value = mb_strtolower($value);
+
+        return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
+    }
+
     private function rawFieldValue(Contact $contact, string $field): mixed
     {
         return match ($field) {
@@ -752,8 +815,95 @@ final class ContactMergeReviewService
         return [
             'score' => $exactScoreData['score'],
             'review_score' => $reviewScoreData['score'],
-            'reasons' => array_values(array_unique(array_merge($exactScoreData['reasons'], $reviewScoreData['reasons']))),
+            'reasons' => $this->buildComparisonReasons($left, $right),
         ];
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function buildComparisonReasons(Contact $left, Contact $right): array
+    {
+        $reasons = [];
+        $blocking = [];
+
+        foreach ([
+            'organization' => 'entreprise',
+            'role' => 'rôle',
+            'main_channel' => 'canal principal',
+            'email' => 'email',
+            'phone' => 'téléphone',
+            'profile_url' => 'profil',
+        ] as $field => $label) {
+            $leftValue = $this->comparisonFieldValue($left, $field);
+            $rightValue = $this->comparisonFieldValue($right, $field);
+
+            if ($leftValue === '' && $rightValue === '') {
+                continue;
+            }
+
+            if ($leftValue === $rightValue) {
+                continue;
+            }
+
+            if ($leftValue === '' || $rightValue === '') {
+                continue;
+            }
+
+            if ($field === 'main_channel' && ($this->isLinkedInProfileUrl($left->getProfileUrl()) || $this->isLinkedInProfileUrl($right->getProfileUrl()))) {
+                continue;
+            }
+
+            $blocking[] = $label;
+        }
+
+        if ($blocking !== []) {
+            $reasons[] = 'Conflit à trancher: ' . implode(', ', $blocking);
+
+            return $reasons;
+        }
+
+        return ['Pas de clé forte suffisante'];
+    }
+
+    /**
+     * @param list<string> $reasons
+     *
+     * @return list<string>
+     */
+    private function normalizeReasonsForDisplay(array $reasons): array
+    {
+        $reasons = array_values(array_filter(array_map(
+            static fn (mixed $reason): string => trim((string) $reason),
+            $reasons,
+        ), static fn (string $reason): bool => $reason !== ''));
+
+        $reasons = array_values(array_filter(
+            $reasons,
+            static fn (string $reason): bool => str_starts_with($reason, 'Conflit à trancher:') || $reason === 'Pas de clé forte suffisante',
+        ));
+
+        return $reasons !== [] ? array_values(array_unique($reasons)) : ['Pas de clé forte suffisante'];
+    }
+
+    private function comparisonFieldValue(Contact $contact, string $field): string
+    {
+        return match ($field) {
+            'organization' => $this->normalizeComparableText($contact->getOrganization()),
+            'role' => $this->normalizeComparableText($contact->getRole()),
+            'main_channel' => $this->normalizeComparableText($contact->getMainChannel()),
+            'email' => $this->normalizeComparableText($contact->getEmail()),
+            'phone' => $this->normalizePhoneKey($contact->getPhone()),
+            'profile_url' => $this->normalizeUrlKey($contact->getProfileUrl()),
+            default => '',
+        };
+    }
+
+    private function isLinkedInProfileUrl(mixed $profileUrl): bool
+    {
+        $profileUrl = $this->normalizeUrlKey($profileUrl);
+
+        return $profileUrl !== '' && str_contains($profileUrl, 'linkedin.com');
     }
 
     /**

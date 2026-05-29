@@ -37,10 +37,33 @@ final class ContactMergeReviewController extends AbstractController
         }
 
         $summary = $this->contactMergeReviewService->refreshCandidates();
+        $details = [];
+
+        if ($summary['auto_merged_contacts'] > 0) {
+            $details[] = sprintf(
+                '%d contact%s fusionné%s automatiquement dans %d groupe%s',
+                $summary['auto_merged_contacts'],
+                $summary['auto_merged_contacts'] > 1 ? 's' : '',
+                $summary['auto_merged_contacts'] > 1 ? 's' : '',
+                $summary['auto_merged_groups'],
+                $summary['auto_merged_groups'] > 1 ? 's' : '',
+            );
+        }
+
+        if ($summary['purged_pending_reviews'] > 0) {
+            $details[] = sprintf(
+                '%d doublon%s en attente obsolète%s supprimé%s',
+                $summary['purged_pending_reviews'],
+                $summary['purged_pending_reviews'] > 1 ? 's' : '',
+                $summary['purged_pending_reviews'] > 1 ? 's' : '',
+                $summary['purged_pending_reviews'] > 1 ? 's' : '',
+            );
+        }
+
         $this->addFlash(
             'success',
-            sprintf(
-                '%d candidat%s créé%s, %d mis à jour, %d ignoré%s sur %d paire%s étudiée%s.',
+            trim(sprintf(
+                '%d candidat%s créé%s, %d mis à jour, %d ignoré%s sur %d paire%s étudiée%s.%s',
                 $summary['created'],
                 $summary['created'] > 1 ? 's' : '',
                 $summary['created'] > 1 ? 's' : '',
@@ -50,7 +73,8 @@ final class ContactMergeReviewController extends AbstractController
                 $summary['considered'],
                 $summary['considered'] > 1 ? 's' : '',
                 $summary['considered'] > 1 ? 's' : '',
-            ),
+                $details !== [] ? ' ' . implode(' ', $details) : '',
+            )),
         );
 
         return $this->redirectToRoute('app_private_network_contact_merge_reviews_index');
@@ -79,6 +103,35 @@ final class ContactMergeReviewController extends AbstractController
         } else {
             $this->addFlash('info', 'Aucun doublon en attente à supprimer.');
         }
+
+        return $this->redirectToRoute('app_private_network_contact_merge_reviews_index');
+    }
+
+    #[Route('/reset', name: 'reset', methods: ['POST'])]
+    public function reset(Request $request): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('private-network-contact-merge-reviews-reset', $request->request->getString('_token'))) {
+            $this->addFlash('error', 'Le formulaire de réinitialisation a expiré. Réessaie.');
+
+            return $this->redirectToRoute('app_private_network_contact_merge_reviews_index');
+        }
+
+        $summary = $this->contactMergeReviewService->resetNetworkData();
+        $this->addFlash(
+            'success',
+            sprintf(
+                '%d contact%s, %d interaction%s, %d import%s et %d doublon%s supprimé%s.',
+                $summary['contacts'],
+                $summary['contacts'] > 1 ? 's' : '',
+                $summary['interactions'],
+                $summary['interactions'] > 1 ? 's' : '',
+                $summary['imports'],
+                $summary['imports'] > 1 ? 's' : '',
+                $summary['reviews'],
+                $summary['reviews'] > 1 ? 's' : '',
+                $summary['reviews'] > 1 ? 's' : '',
+            ),
+        );
 
         return $this->redirectToRoute('app_private_network_contact_merge_reviews_index');
     }

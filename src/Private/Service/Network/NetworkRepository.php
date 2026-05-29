@@ -287,6 +287,30 @@ final class NetworkRepository
     }
 
     /**
+     * @return array{contacts: int, interactions: int, imports: int, reviews: int}
+     */
+    public function resetNetworkData(): array
+    {
+        return $this->entityManager->wrapInTransaction(function (EntityManagerInterface $entityManager): array {
+            $connection = $entityManager->getConnection();
+
+            $deletedInteractions = (int) $connection->executeStatement('DELETE FROM network_interactions');
+            $deletedReviews = (int) $connection->executeStatement('DELETE FROM network_contact_merge_reviews');
+            $deletedImports = (int) $connection->executeStatement('DELETE FROM network_import_logs');
+            $deletedContacts = (int) $connection->executeStatement('DELETE FROM network_contacts');
+
+            $entityManager->clear();
+
+            return [
+                'contacts' => $deletedContacts,
+                'interactions' => $deletedInteractions,
+                'imports' => $deletedImports,
+                'reviews' => $deletedReviews,
+            ];
+        });
+    }
+
+    /**
      * @return array{merged_contacts: int, merged_groups: int, moved_interactions: int}
      */
     public function autoMergeContacts(): array
@@ -334,6 +358,10 @@ final class NetworkRepository
 
                     $duplicate = $contacts[$index] ?? null;
                     if (!$duplicate instanceof Contact) {
+                        continue;
+                    }
+
+                    if (!$this->canAutoMergeContacts($canonical, $duplicate)) {
                         continue;
                     }
 
@@ -872,7 +900,7 @@ final class NetworkRepository
         $displayName = $this->normalizeString($payload['display_name'] ?? '');
         $firstName = $this->normalizeString($payload['first_name'] ?? '');
         $lastName = $this->normalizeString($payload['last_name'] ?? '');
-        $organization = $this->normalizeString($payload['organization'] ?? '');
+        $organization = $this->normalizeOrganizationName($payload['organization'] ?? '');
         $role = $this->normalizeString($payload['role'] ?? '');
 
         if ($displayName === '') {
@@ -969,9 +997,14 @@ final class NetworkRepository
         $contact->setDisplayName($merge ? $this->mergeString($contact->getDisplayName(), $data['display_name']) : $data['display_name']);
         $contact->setFirstName($merge ? $this->mergeString($contact->getFirstName(), $data['first_name']) : $data['first_name']);
         $contact->setLastName($merge ? $this->mergeString($contact->getLastName(), $data['last_name']) : $data['last_name']);
-        $contact->setOrganization($merge ? $this->mergeString($contact->getOrganization(), $data['organization']) : $data['organization']);
+        $contact->setOrganization($merge ? $this->mergeOrganizationValue($contact->getOrganization(), $data['organization']) : ($data['organization'] !== '' ? $this->normalizeOrganizationName($data['organization']) : null));
         $contact->setRole($merge ? $this->mergeString($contact->getRole(), $data['role']) : $data['role']);
-        $contact->setMainChannel($merge ? $this->mergeString($contact->getMainChannel(), $data['main_channel']) : $data['main_channel']);
+        $contact->setMainChannel($merge ? $this->resolveMainChannelValue(
+            $contact->getMainChannel(),
+            $data['main_channel'],
+            $contact->getProfileUrl(),
+            $data['profile_url'],
+        ) : $data['main_channel']);
         $contact->setEmail($merge ? $this->mergeString($contact->getEmail(), $data['email']) : $data['email']);
         $contact->setPhone($merge ? $this->mergeString($contact->getPhone(), $data['phone']) : $data['phone']);
         $contact->setProfileUrl($merge ? $this->mergeString($contact->getProfileUrl(), $data['profile_url']) : $data['profile_url']);
@@ -1107,6 +1140,38 @@ final class NetworkRepository
             }
         }
 
+        $sparseIndices = [];
+        foreach ($contacts as $index => $contact) {
+            if (!$contact instanceof Contact) {
+                continue;
+            }
+
+            if ($this->isSparseContactForAutoMerge($contact)) {
+                $sparseIndices[] = $index;
+            }
+        }
+
+        $sparseCount = count($sparseIndices);
+        for ($leftOffset = 0; $leftOffset < $sparseCount; ++$leftOffset) {
+            $leftIndex = $sparseIndices[$leftOffset];
+            $left = $contacts[$leftIndex] ?? null;
+            if (!$left instanceof Contact) {
+                continue;
+            }
+
+            for ($rightOffset = $leftOffset + 1; $rightOffset < $sparseCount; ++$rightOffset) {
+                $rightIndex = $sparseIndices[$rightOffset];
+                $right = $contacts[$rightIndex] ?? null;
+                if (!$right instanceof Contact) {
+                    continue;
+                }
+
+                if ($this->canAutoMergeSparseDisplayNameContacts($left, $right)) {
+                    $this->unionContactMergeRoots($parents, $leftIndex, $rightIndex);
+                }
+            }
+        }
+
         $clusters = [];
 
         foreach ($contacts as $index => $contact) {
@@ -1171,9 +1236,14 @@ final class NetworkRepository
         $target->setDisplayName($this->preferContactValue($target->getDisplayName(), $source->getDisplayName()) ?? $target->getDisplayName());
         $target->setFirstName($this->preferContactValue($target->getFirstName(), $source->getFirstName()));
         $target->setLastName($this->preferContactValue($target->getLastName(), $source->getLastName()));
-        $target->setOrganization($this->preferContactValue($target->getOrganization(), $source->getOrganization()));
+        $target->setOrganization($this->mergeOrganizationValue($target->getOrganization(), $source->getOrganization()));
         $target->setRole($this->preferContactValue($target->getRole(), $source->getRole()));
-        $target->setMainChannel($this->preferContactValue($target->getMainChannel(), $source->getMainChannel()));
+        $target->setMainChannel($this->resolveMainChannelValue(
+            $target->getMainChannel(),
+            $source->getMainChannel(),
+            $target->getProfileUrl(),
+            $source->getProfileUrl(),
+        ));
         $target->setEmail($this->preferContactValue($target->getEmail(), $source->getEmail()));
         $target->setPhone($this->preferContactValue($target->getPhone(), $source->getPhone()));
         $target->setProfileUrl($this->preferContactValue($target->getProfileUrl(), $source->getProfileUrl()));
@@ -1188,6 +1258,102 @@ final class NetworkRepository
         $target->setUpdatedAt(new DateTimeImmutable());
 
         return $movedInteractions;
+    }
+
+    private function canAutoMergeContacts(Contact $left, Contact $right): bool
+    {
+        if ($this->canAutoMergeSparseDisplayNameContacts($left, $right)) {
+            return true;
+        }
+
+        foreach ([
+            ['left' => $left->getDisplayName(), 'right' => $right->getDisplayName()],
+            ['left' => $left->getFirstName(), 'right' => $right->getFirstName()],
+            ['left' => $left->getLastName(), 'right' => $right->getLastName()],
+            ['left' => $left->getOrganization(), 'right' => $right->getOrganization()],
+            ['left' => $left->getRole(), 'right' => $right->getRole()],
+            ['left' => $left->getEmail(), 'right' => $right->getEmail()],
+            ['left' => $left->getPhone(), 'right' => $right->getPhone()],
+            ['left' => $left->getProfileUrl(), 'right' => $right->getProfileUrl()],
+            ['left' => $left->getNextAction(), 'right' => $right->getNextAction()],
+            ['left' => $left->getNotes(), 'right' => $right->getNotes()],
+            ['left' => $left->getPriority()->value, 'right' => $right->getPriority()->value],
+            ['left' => $left->getRelationshipStatus()->value, 'right' => $right->getRelationshipStatus()->value],
+            ['left' => $this->formatDate($left->getLastContactAt()) ?? '', 'right' => $this->formatDate($right->getLastContactAt()) ?? ''],
+            ['left' => $this->formatDate($left->getNextActionAt()) ?? '', 'right' => $this->formatDate($right->getNextActionAt()) ?? ''],
+        ] as $pair) {
+            $leftValue = $this->normalizeComparableText($pair['left']);
+            $rightValue = $this->normalizeComparableText($pair['right']);
+
+            if ($leftValue !== '' && $rightValue !== '' && $leftValue !== $rightValue) {
+                return false;
+            }
+        }
+
+        $leftMainChannel = $this->normalizeComparableText($left->getMainChannel());
+        $rightMainChannel = $this->normalizeComparableText($right->getMainChannel());
+        if ($leftMainChannel !== '' && $rightMainChannel !== '' && $leftMainChannel !== $rightMainChannel) {
+            if (!$this->isLinkedInProfileUrl($left->getProfileUrl()) && !$this->isLinkedInProfileUrl($right->getProfileUrl())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function canAutoMergeSparseDisplayNameContacts(Contact $left, Contact $right): bool
+    {
+        if ($this->isSparseContactForAutoMerge($left) === false || $this->isSparseContactForAutoMerge($right) === false) {
+            return false;
+        }
+
+        $leftDisplayName = $this->normalizeComparableText($left->getDisplayName());
+        $rightDisplayName = $this->normalizeComparableText($right->getDisplayName());
+        if ($leftDisplayName === '' || $rightDisplayName === '') {
+            return false;
+        }
+
+        if (levenshtein($leftDisplayName, $rightDisplayName) !== 1) {
+            return false;
+        }
+
+        foreach ([
+            ['left' => $left->getFirstName(), 'right' => $right->getFirstName()],
+            ['left' => $left->getLastName(), 'right' => $right->getLastName()],
+            ['left' => $left->getOrganization(), 'right' => $right->getOrganization()],
+            ['left' => $left->getRole(), 'right' => $right->getRole()],
+            ['left' => $left->getEmail(), 'right' => $right->getEmail()],
+            ['left' => $left->getPhone(), 'right' => $right->getPhone()],
+            ['left' => $left->getProfileUrl(), 'right' => $right->getProfileUrl()],
+            ['left' => $left->getNextAction(), 'right' => $right->getNextAction()],
+            ['left' => $left->getNotes(), 'right' => $right->getNotes()],
+            ['left' => $left->getPriority()->value, 'right' => $right->getPriority()->value],
+            ['left' => $left->getRelationshipStatus()->value, 'right' => $right->getRelationshipStatus()->value],
+            ['left' => $this->formatDate($left->getLastContactAt()) ?? '', 'right' => $this->formatDate($right->getLastContactAt()) ?? ''],
+            ['left' => $this->formatDate($left->getNextActionAt()) ?? '', 'right' => $this->formatDate($right->getNextActionAt()) ?? ''],
+        ] as $pair) {
+            $leftValue = $this->normalizeComparableText($pair['left']);
+            $rightValue = $this->normalizeComparableText($pair['right']);
+
+            if ($leftValue !== '' && $rightValue !== '' && $leftValue !== $rightValue) {
+                return false;
+            }
+        }
+
+        $leftMainChannel = $this->normalizeComparableText($left->getMainChannel());
+        $rightMainChannel = $this->normalizeComparableText($right->getMainChannel());
+        if ($leftMainChannel !== '' && $rightMainChannel !== '' && $leftMainChannel !== $rightMainChannel) {
+            if (!$this->isLinkedInProfileUrl($left->getProfileUrl()) && !$this->isLinkedInProfileUrl($right->getProfileUrl())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function isSparseContactForAutoMerge(Contact $contact): bool
+    {
+        return $this->scoreContactForMerge($contact) <= 3;
     }
 
     /**
@@ -1212,16 +1378,25 @@ final class NetworkRepository
             $keys[] = 'profile:' . $profileUrl;
         }
 
-        foreach ($this->buildContactNameKeys(
-            $contact->getDisplayName(),
-            $contact->getFirstName() ?? '',
-            $contact->getLastName() ?? '',
-            $contact->getOrganization() ?? '',
-        ) as $key) {
-            $keys[] = 'name:' . $key;
+        $identityKey = $this->buildContactIdentityKey($contact);
+        if ($identityKey !== null) {
+            $keys[] = 'identity:' . $identityKey;
         }
 
         return array_values(array_unique($keys));
+    }
+
+    private function buildContactIdentityKey(Contact $contact): ?string
+    {
+        $displayName = $this->normalizeComparableText($contact->getDisplayName());
+        $firstName = $this->normalizeComparableText($contact->getFirstName());
+        $lastName = $this->normalizeComparableText($contact->getLastName());
+
+        if ($displayName === '' || $firstName === '' || $lastName === '') {
+            return null;
+        }
+
+        return $displayName . '|' . $firstName . '|' . $lastName;
     }
 
     /**
@@ -1595,6 +1770,19 @@ final class NetworkRepository
         return trim((string) $value);
     }
 
+    private function normalizeOrganizationName(mixed $value): string
+    {
+        $value = $this->normalizeString($value);
+        if ($value === '') {
+            return '';
+        }
+
+        $value = preg_replace('/\s+/', ' ', $value) ?? $value;
+        $value = mb_strtolower($value);
+
+        return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
+    }
+
     private function normalizeDate(mixed $value): ?string
     {
         $value = $this->normalizeString((string) $value);
@@ -1652,6 +1840,41 @@ final class NetworkRepository
         $incoming = $this->normalizeString($incoming);
 
         return $incoming !== '' ? $incoming : $current;
+    }
+
+    private function mergeOrganizationValue(?string $current, ?string $incoming): ?string
+    {
+        $incoming = $this->normalizeOrganizationName($incoming);
+        if ($incoming !== '') {
+            return $incoming;
+        }
+
+        $current = $this->normalizeOrganizationName($current);
+
+        return $current !== '' ? $current : null;
+    }
+
+    private function resolveMainChannelValue(mixed $currentMainChannel, mixed $incomingMainChannel, mixed $currentProfileUrl, mixed $incomingProfileUrl): ?string
+    {
+        if ($this->isLinkedInProfileUrl($currentProfileUrl) || $this->isLinkedInProfileUrl($incomingProfileUrl)) {
+            return 'LinkedIn';
+        }
+
+        $incoming = $this->normalizeString((string) $incomingMainChannel);
+        if ($incoming !== '') {
+            return $incoming;
+        }
+
+        $current = $this->normalizeString((string) $currentMainChannel);
+
+        return $current !== '' ? $current : null;
+    }
+
+    private function isLinkedInProfileUrl(mixed $profileUrl): bool
+    {
+        $profileUrl = $this->normalizeProfileUrlKey($profileUrl);
+
+        return $profileUrl !== '' && str_contains($profileUrl, 'linkedin.com');
     }
 
     private function mergeDate(?DateTimeImmutable $current, mixed $incoming): ?DateTimeImmutable

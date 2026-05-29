@@ -20,37 +20,39 @@
         </header>
 
         <section class="private-surface">
-            <header class="private-surface__header">
-                <div>
-                    <h2>Filtres</h2>
-                    <p class="private-muted">Recherche libre et filtres essentiels pour retrouver un contact rapidement.</p>
-                </div>
-            </header>
-
-            <form class="private-toolbar private-toolbar--stacked" method="get" action="{{ path('app_private_network_contacts') }}">
+            <form class="private-toolbar private-toolbar--compact" method="get" action="{{ path('app_private_network_contacts') }}">
                 <input type="hidden" name="page" value="1">
-                <input class="private-input" type="search" name="q" value="{{ currentQuery }}" placeholder="Rechercher un contact" />
 
-                <div class="private-toolbar__filters">
-                    <label>
-                        <span>Priorité</span>
-                        <select name="priority">
-                            <option value="">Toutes</option>
-                            {% for value, label in priorityOptions %}
-                                <option value="{{ value }}" {{ currentPriority == value ? 'selected' : '' }}>{{ label }}</option>
-                            {% endfor %}
-                        </select>
-                    </label>
-                    <label>
-                        <span>Relation</span>
-                        <select name="relationship_status">
-                            <option value="">Toutes</option>
-                            {% for value, label in relationOptions %}
-                                <option value="{{ value }}" {{ currentRelationStatus == value ? 'selected' : '' }}>{{ label }}</option>
-                            {% endfor %}
-                        </select>
-                    </label>
+                <label class="private-toolbar__field private-toolbar__field--search">
+                    <span>Recherche</span>
+                    <input class="private-input" type="search" name="q" value="{{ currentQuery }}" placeholder="Nom, société, note..." />
+                </label>
+
+                <label class="private-toolbar__field">
+                    <span>Priorité</span>
+                    <select name="priority">
+                        <option value="">Toutes</option>
+                        {% for value, label in priorityOptions %}
+                            <option value="{{ value }}" {{ currentPriority == value ? 'selected' : '' }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label class="private-toolbar__field">
+                    <span>Relation</span>
+                    <select name="relationship_status">
+                        <option value="">Toutes</option>
+                        {% for value, label in relationOptions %}
+                            <option value="{{ value }}" {{ currentRelationStatus == value ? 'selected' : '' }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <div class="private-toolbar__actions">
                     <button class="private-link-button" type="submit">Filtrer</button>
+                    {% if currentQuery or currentPriority or currentRelationStatus %}
+                        <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contacts') }}">Réinitialiser</a>
+                    {% endif %}
                 </div>
             </form>
         </section>

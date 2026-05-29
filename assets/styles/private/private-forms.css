@@ -24,6 +24,14 @@
     gap: 0.6rem;
 }
 
+.private-toolbar__field--search {
+    min-width: 0;
+}
+
+.private-toolbar__field--search input {
+    min-width: 0;
+}
+
 .private-form label {
     font-weight: 700;
 }
@@ -67,6 +75,32 @@
 
 .private-toolbar--stacked {
     grid-template-columns: 1fr;
+}
+
+.private-toolbar--compact {
+    grid-template-columns: minmax(16rem, 2fr) repeat(2, minmax(10rem, 1fr)) auto;
+    align-items: end;
+    gap: 0.8rem;
+}
+
+.private-toolbar__field {
+    display: grid;
+    gap: 0.35rem;
+    font-weight: 700;
+}
+
+.private-toolbar__field span {
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.private-toolbar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
 }
 
 .private-toolbar__filters {

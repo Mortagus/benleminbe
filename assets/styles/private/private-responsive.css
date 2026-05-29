@@ -38,6 +38,14 @@
         grid-template-columns: 1fr;
     }
 
+    .private-toolbar--compact {
+        grid-template-columns: 1fr;
+    }
+
+    .private-toolbar__actions {
+        width: 100%;
+    }
+
     .private-toolbar__filters {
         flex-direction: column;
         align-items: stretch;
@@ -176,6 +184,10 @@
     }
 
     .private-toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .private-toolbar--compact {
         grid-template-columns: 1fr;
     }
 

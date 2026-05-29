@@ -199,6 +199,127 @@ VCF,
         );
     }
 
+    public function testImportFlowCollapsesDuplicateRowsThatShareTheSamePhone(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+
+        $crawler = $client->request('GET', '/private/network/import');
+        self::assertResponseIsSuccessful();
+
+        $client->submit($this->fillImportForm($crawler, [
+            'source_label' => ContactImportSource::PhoneVCard->value,
+            'content' => <<<VCF
+BEGIN:VCARD
+VERSION:2.1
+FN:Alice Phone
+N:Phone;Alice;;;
+ORG:Phone Lab
+TITLE:Developer
+TEL:+32470123456
+EMAIL:alice.one@example.com
+END:VCARD
+BEGIN:VCARD
+VERSION:2.1
+FN:Alice Phone Updated
+N:Phone;Alice;;;
+ORG:Phone Lab Updated
+TITLE:Lead
+TEL:0032470123456
+EMAIL:alice.two@example.com
+END:VCARD
+VCF,
+        ]));
+
+        self::assertResponseRedirects('/private/network/contacts');
+        $client->followRedirect();
+        self::assertResponseIsSuccessful();
+
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_import_logs'));
+
+        $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([
+            'displayName' => 'Alice Phone Updated',
+        ]);
+        self::assertInstanceOf(Contact::class, $contact);
+        self::assertSame('Alice Phone Updated', $contact->getDisplayName());
+        self::assertSame('Phone Lab Updated', $contact->getOrganization());
+        self::assertSame('Lead', $contact->getRole());
+        self::assertSame('alice.two@example.com', $contact->getEmail());
+        self::assertSame('1', (string) $connection->fetchOne('SELECT created FROM network_import_logs LIMIT 1'));
+        self::assertSame('1', (string) $connection->fetchOne('SELECT updated FROM network_import_logs LIMIT 1'));
+        self::assertSame('2', (string) $connection->fetchOne('SELECT total FROM network_import_logs LIMIT 1'));
+    }
+
+    public function testImportFlowCollapsesDuplicateRowsThatShareTheSameProfileUrl(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+
+        $crawler = $client->request('GET', '/private/network/import');
+        self::assertResponseIsSuccessful();
+
+        $client->submit($this->fillImportForm($crawler, [
+            'source_label' => ContactImportSource::LinkedInConnectionsCsv->value,
+            'content' => <<<CSV
+First Name,Last Name,URL,Email Address,Company,Position,Connected On
+Tom,Test,https://www.linkedin.com/in/tom-test,tom.one@example.com,Lab One,Developer,29 May 2026
+Thomas,Test,https://www.linkedin.com/in/tom-test,tom.two@example.com,Lab One Updated,Lead,30 May 2026
+CSV,
+        ]));
+
+        self::assertResponseRedirects('/private/network/contacts');
+        $client->followRedirect();
+        self::assertResponseIsSuccessful();
+
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_import_logs'));
+
+        $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([
+            'profileUrl' => 'https://www.linkedin.com/in/tom-test',
+        ]);
+        self::assertInstanceOf(Contact::class, $contact);
+        self::assertSame('Thomas Test', $contact->getDisplayName());
+        self::assertSame('Lab One Updated', $contact->getOrganization());
+        self::assertSame('Lead', $contact->getRole());
+        self::assertSame('tom.two@example.com', $contact->getEmail());
+    }
+
+    public function testImportFlowCollapsesDuplicateRowsThatShareTheSameEmail(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+
+        $crawler = $client->request('GET', '/private/network/import');
+        self::assertResponseIsSuccessful();
+
+        $client->submit($this->fillImportForm($crawler, [
+            'source_label' => ContactImportSource::LinkedInConnectionsCsv->value,
+            'content' => <<<CSV
+First Name,Last Name,URL,Email Address,Company,Position,Connected On
+Jean,Dupond,https://www.linkedin.com/in/jean-dupond,jean.dupond@example.com,Lab One,Lead,29 May 2026
+Jean,Dupond,https://www.linkedin.com/in/jean-dupond,jean.dupond@example.com,Lab One Updated,Lead,30 May 2026
+CSV,
+        ]));
+
+        self::assertResponseRedirects('/private/network/contacts');
+        $client->followRedirect();
+        self::assertResponseIsSuccessful();
+
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_import_logs'));
+
+        $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([
+            'email' => 'jean.dupond@example.com',
+        ]);
+        self::assertInstanceOf(Contact::class, $contact);
+        self::assertSame('Jean Dupond', $contact->getDisplayName());
+        self::assertSame('Lab One Updated', $contact->getOrganization());
+        self::assertSame('Lead', $contact->getRole());
+        self::assertSame('https://www.linkedin.com/in/jean-dupond', $contact->getProfileUrl());
+        self::assertSame('2026-05-30', $contact->getLastContactAt()?->format('Y-m-d'));
+    }
+
     public function testContactsListIsPaginatedAndRowsExposeMobileLinks(): void
     {
         $client = $this->createAuthenticatedClient();
@@ -376,6 +497,56 @@ VCF,
         self::assertSame('Acseo', $contact->getOrganization());
         self::assertSame('LinkedIn', $contact->getMainChannel());
         self::assertStringContainsString('Fiche plus complète', $contact->getNotes() ?? '');
+    }
+
+    public function testAutoMergeContactsActionMergesContactsSharingTheSameProfileUrl(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+
+        $primary = new Contact('contact-merge-profile-primary', 'Profil principal');
+        $primary->setOrganization('Lab Profile');
+        $primary->setNotes('Fiche de départ');
+        $primary->setProfileUrl('https://www.linkedin.com/in/benlemin-profile');
+        $primary->setSource('website');
+        $primary->setPriority(ContactPriority::Medium);
+        $primary->setRelationshipStatus(ContactRelationshipStatus::FollowUp);
+
+        $duplicate = new Contact('contact-merge-profile-duplicate', 'Profil secondaire');
+        $duplicate->setFirstName('Benjamin');
+        $duplicate->setLastName('Lemin');
+        $duplicate->setOrganization('Lab Profile Updated');
+        $duplicate->setRole('Lead');
+        $duplicate->setProfileUrl('https://www.linkedin.com/in/benlemin-profile');
+        $duplicate->setSource('linkedin');
+        $duplicate->setPriority(ContactPriority::High);
+        $duplicate->setRelationshipStatus(ContactRelationshipStatus::Priority);
+
+        $entityManager->persist($primary);
+        $entityManager->persist($duplicate);
+        $entityManager->flush();
+
+        $crawler = $client->request('GET', '/private/network/contacts');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('form[action="/private/network/contacts/merge-duplicates"]');
+
+        $client->submit($crawler->filter('form[action="/private/network/contacts/merge-duplicates"]')->form());
+
+        self::assertResponseRedirects('/private/network/contacts?page=1');
+        $client->followRedirect();
+        self::assertResponseIsSuccessful();
+
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+
+        $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([]);
+        self::assertInstanceOf(Contact::class, $contact);
+        self::assertSame('https://www.linkedin.com/in/benlemin-profile', $contact->getProfileUrl());
+        self::assertSame('LinkedIn', $contact->getMainChannel());
+        self::assertStringContainsString('website', $contact->getSource() ?? '');
+        self::assertStringContainsString('linkedin', $contact->getSource() ?? '');
+        self::assertStringContainsString('Fiche de départ', $contact->getNotes() ?? '');
+        self::assertStringContainsString('Fusion automatique du doublon', $contact->getNotes() ?? '');
     }
 
     public function testManualReviewGenerationAutoMergesExactIdentityMatches(): void

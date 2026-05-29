@@ -20,6 +20,8 @@ Ce document consigne le travail realise ce matin sur la zone privee et les outil
 - remplacement du champ libre de source d import par un enum avec parsing dedie pour vCard et LinkedIn CSV ;
 - creation de la doc de deploiement et des checks prod ;
 - ajout du smoke test prod dans `make deploy`.
+- ajout d’une auto-fusion des doublons sur les signaux forts ;
+- mise en place d’une revue manuelle des doublons avec file de candidats, comparaison cote a cote et fusion champ par champ.
 
 ## Etat Actuel
 
@@ -32,9 +34,10 @@ Ce document consigne le travail realise ce matin sur la zone privee et les outil
 
 Le prochain travail portera sur :
 
-- analyser l’import des contacts depuis le telephone ;
-- analyser l’import des contacts depuis le reseau LinkedIn ;
-- definir la meilleure structure de donnee et de flux d’import pour ces deux sources.
+- affiner les heuristiques de detection des doublons et de priorisation de la file ;
+- améliorer l'ergonomie de la comparaison cote a cote si besoin ;
+- continuer a enrichir les données de contacts depuis le telephone et LinkedIn si de nouveaux cas apparaissent ;
+- garder en tete l’idee d’un annuaire public accessible via le web comme aide ponctuelle d’identification, sans en faire une source de vérité.
 
 ## Note
 

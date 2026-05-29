@@ -320,6 +320,102 @@ VCF,
         self::assertSame('À vérifier', (string) $connection->fetchOne('SELECT result FROM network_interactions LIMIT 1'));
     }
 
+    public function testManualMergeReviewFlowGeneratesCandidatesAndResolvesOnePair(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $left = $repository->saveContact([
+            'display_name' => 'Jean Dupond',
+            'first_name' => 'Jean',
+            'last_name' => 'Dupond',
+            'organization' => 'Lab One',
+            'role' => 'Lead',
+            'email' => 'jean.dupond@example.com',
+            'source' => 'phone',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+            'notes' => 'Notes gauche',
+            'tags' => 'alpha,beta',
+        ]);
+
+        $right = $repository->saveContact([
+            'display_name' => 'Jean Dupont',
+            'first_name' => 'Jean',
+            'last_name' => 'Dupont',
+            'organization' => 'Lab One',
+            'role' => 'Lead',
+            'phone' => '+32470000099',
+            'source' => 'linkedin',
+            'priority' => 'haute',
+            'relationship_status' => 'a_relancer',
+            'notes' => 'Notes droite',
+            'tags' => 'beta,gamma',
+        ]);
+
+        $repository->addInteraction($right['id'], [
+            'date' => '2026-05-28',
+            'channel' => 'email',
+            'summary' => 'Interaction à déplacer',
+            'result' => 'OK',
+        ]);
+
+        $crawler = $client->request('GET', '/private/network/contact-merge-reviews');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'Revue des doublons');
+        self::assertSelectorExists('form[action="/private/network/contact-merge-reviews/generate"]');
+
+        $client->submit($crawler->filter('form[action="/private/network/contact-merge-reviews/generate"]')->form());
+
+        self::assertResponseRedirects('/private/network/contact-merge-reviews');
+        $client->followRedirect();
+        self::assertSelectorTextContains('body', 'Jean Dupond');
+        self::assertSelectorTextContains('body', 'Jean Dupont');
+        self::assertSelectorExists('a[href*="/private/network/contact-merge-reviews/"]');
+
+        $client->clickLink('Comparer');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'Revue d’un doublon');
+        self::assertSelectorExists('select[name="canonical_side"]');
+        self::assertSelectorExists('select[name="field_choices[display_name]"]');
+        self::assertSelectorExists('select[name="field_choices[notes]"]');
+
+        $client->submit($client->getCrawler()->selectButton('Fusionner')->form([
+            'canonical_side' => 'left',
+        ]));
+
+        self::assertResponseRedirects('/private/network/contact-merge-reviews');
+        $client->followRedirect();
+        self::assertResponseIsSuccessful();
+
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contacts'));
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_interactions'));
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_contact_merge_reviews'));
+        self::assertSame('resolved', (string) $connection->fetchOne('SELECT status FROM network_contact_merge_reviews LIMIT 1'));
+
+        $leftContact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->find($left['id']);
+        $rightContact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->find($right['id']);
+
+        self::assertTrue(($leftContact instanceof Contact) xor ($rightContact instanceof Contact));
+
+        $contact = $leftContact instanceof Contact ? $leftContact : $rightContact;
+        self::assertInstanceOf(Contact::class, $contact);
+        self::assertTrue(in_array($contact->getDisplayName(), ['Jean Dupond', 'Jean Dupont'], true));
+        self::assertSame('jean.dupond@example.com', $contact->getEmail());
+        self::assertSame('+32470000099', $contact->getPhone());
+        self::assertStringContainsString('phone', $contact->getSource() ?? '');
+        self::assertStringContainsString('linkedin', $contact->getSource() ?? '');
+        self::assertNotNull($contact->getNotes());
+        self::assertStringContainsString('Notes gauche', $contact->getNotes() ?? '');
+        self::assertStringContainsString('Notes droite', $contact->getNotes() ?? '');
+        self::assertContains('alpha', $contact->getTags());
+        self::assertContains('beta', $contact->getTags());
+        self::assertContains('gamma', $contact->getTags());
+        self::assertSame($contact->getId(), (string) $connection->fetchOne('SELECT contact_id FROM network_interactions LIMIT 1'));
+        self::assertSame('Interaction à déplacer', (string) $connection->fetchOne('SELECT summary FROM network_interactions LIMIT 1'));
+    }
+
     /**
      * @param array<string, mixed> $values
      */

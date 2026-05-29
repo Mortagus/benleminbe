@@ -1,0 +1,169 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Revue des doublons{% endblock %}
+
+{% block body %}
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
+                <p class="private-eyebrow">Outil privé</p>
+                <h1>Revue d’un doublon</h1>
+                <p class="private-page__lead">
+                    Choisis le contact canonique et décide champ par champ quelle valeur conserver.
+                </p>
+            </div>
+
+            <div class="private-page__actions">
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contact_merge_reviews_index') }}">Retour à la file</a>
+                {% if review.status == 'pending' %}
+                    <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_ignore', { id: review.id }) }}" onsubmit="return confirm('Ignorer ce doublon ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-ignore-' ~ review.id) }}">
+                        <button class="private-link-button private-link-button--secondary" type="submit">Ignorer</button>
+                    </form>
+                {% endif %}
+            </div>
+        </header>
+
+        <section class="private-surface">
+            <header class="private-surface__header">
+                <div>
+                    <h2>Résumé</h2>
+                    <p class="private-muted">
+                        Score exact {{ review.score }}/100, score d’ordre {{ review.review_score }}/100.
+                    </p>
+                </div>
+                <span class="private-badge">{{ review.status_label }}</span>
+            </header>
+
+            <div class="private-tags">
+                {% for reason in review.reasons %}
+                    <span class="private-badge private-badge--secondary">{{ reason }}</span>
+                {% endfor %}
+            </div>
+        </section>
+
+        <div class="private-grid private-grid--two-columns">
+            <article class="private-surface">
+                <header class="private-surface__header">
+                    <div>
+                        <h2>Contact gauche</h2>
+                        <p class="private-muted">{{ review.left_contact.display_name }}</p>
+                    </div>
+                    {% if review.recommended_canonical_side == 'left' %}
+                        <span class="private-badge">Canonique conseillé</span>
+                    {% endif %}
+                </header>
+
+                <dl class="private-definition-list">
+                    <div><dt>Entreprise</dt><dd>{{ review.left_contact.organization ?: '—' }}</dd></div>
+                    <div><dt>Rôle</dt><dd>{{ review.left_contact.role ?: '—' }}</dd></div>
+                    <div><dt>Email</dt><dd>{{ review.left_contact.email ?: '—' }}</dd></div>
+                    <div><dt>Téléphone</dt><dd>{{ review.left_contact.phone ?: '—' }}</dd></div>
+                    <div><dt>Source</dt><dd>{{ review.left_contact.source ?: '—' }}</dd></div>
+                    <div><dt>Tags</dt><dd>{{ review.left_contact.tags is not empty ? review.left_contact.tags|join(', ') : '—' }}</dd></div>
+                </dl>
+            </article>
+
+            <article class="private-surface">
+                <header class="private-surface__header">
+                    <div>
+                        <h2>Contact droit</h2>
+                        <p class="private-muted">{{ review.right_contact.display_name }}</p>
+                    </div>
+                    {% if review.recommended_canonical_side == 'right' %}
+                        <span class="private-badge">Canonique conseillé</span>
+                    {% endif %}
+                </header>
+
+                <dl class="private-definition-list">
+                    <div><dt>Entreprise</dt><dd>{{ review.right_contact.organization ?: '—' }}</dd></div>
+                    <div><dt>Rôle</dt><dd>{{ review.right_contact.role ?: '—' }}</dd></div>
+                    <div><dt>Email</dt><dd>{{ review.right_contact.email ?: '—' }}</dd></div>
+                    <div><dt>Téléphone</dt><dd>{{ review.right_contact.phone ?: '—' }}</dd></div>
+                    <div><dt>Source</dt><dd>{{ review.right_contact.source ?: '—' }}</dd></div>
+                    <div><dt>Tags</dt><dd>{{ review.right_contact.tags is not empty ? review.right_contact.tags|join(', ') : '—' }}</dd></div>
+                </dl>
+            </article>
+        </div>
+
+        {% if review.status == 'pending' %}
+            <form class="private-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_resolve', { id: review.id }) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-resolve-' ~ review.id) }}">
+
+                <section class="private-surface">
+                    <header class="private-surface__header">
+                        <div>
+                            <h2>Fusion champ par champ</h2>
+                            <p class="private-muted">Chaque ligne permet de choisir la valeur à conserver.</p>
+                        </div>
+                    </header>
+
+                    <div class="private-toolbar private-toolbar--compact">
+                        <label class="private-toolbar__field">
+                            <span>Contact canonique</span>
+                            <select name="canonical_side">
+                                <option value="left" {{ review.recommended_canonical_side == 'left' ? 'selected' : '' }}>Gauche</option>
+                                <option value="right" {{ review.recommended_canonical_side == 'right' ? 'selected' : '' }}>Droite</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="private-table-wrap">
+                        <table class="private-table private-table--responsive">
+                            <thead>
+                                <tr>
+                                    <th>Champ</th>
+                                    <th>Gauche</th>
+                                    <th>Droite</th>
+                                    <th>Choix</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for field in review.fields %}
+                                    <tr>
+                                        <td class="private-table__cell private-table__cell--main" data-label="Champ">
+                                            <strong>{{ field.label }}</strong>
+                                        </td>
+                                        <td class="private-table__cell" data-label="Gauche">
+                                            <div class="private-merge-value">{{ field.left_value ?: '—' }}</div>
+                                        </td>
+                                        <td class="private-table__cell" data-label="Droite">
+                                            <div class="private-merge-value">{{ field.right_value ?: '—' }}</div>
+                                        </td>
+                                        <td class="private-table__cell" data-label="Choix">
+                                            <select class="private-merge-field-select" name="field_choices[{{ field.name }}]">
+                                                {% for choice, label in field.choices %}
+                                                    <option value="{{ choice }}" {{ field.choice == choice ? 'selected' : '' }}>{{ label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="private-merge-form-actions">
+                        <button class="private-link-button" type="submit">Fusionner</button>
+                        <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contact_merge_reviews_index') }}">Annuler</a>
+                    </div>
+                </section>
+            </form>
+        {% else %}
+            <section class="private-surface">
+                <header class="private-surface__header">
+                    <div>
+                        <h2>Décision enregistrée</h2>
+                        <p class="private-muted">
+                            {% if review.resolved_contact %}
+                                Contact canonique: {{ review.resolved_contact.display_name }}.
+                            {% else %}
+                                Ce doublon a été traité.
+                            {% endif %}
+                        </p>
+                    </div>
+                </header>
+            </section>
+        {% endif %}
+    </section>
+{% endblock %}

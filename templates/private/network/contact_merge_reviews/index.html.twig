@@ -1,0 +1,93 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Revue des doublons{% endblock %}
+
+{% block body %}
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
+                <p class="private-eyebrow">Outil privé</p>
+                <h1>Revue des doublons</h1>
+                <p class="private-page__lead">
+                    Les candidats sont comparés côte à côte, avec fusion champ par champ pour éviter les pertes d'information.
+                </p>
+            </div>
+
+            <div class="private-page__actions">
+                <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_generate') }}" onsubmit="return confirm('Rafraîchir la file des doublons ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-refresh') }}">
+                    <button class="private-link-button" type="submit">Détecter les doublons</button>
+                </form>
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contacts') }}">Retour aux contacts</a>
+            </div>
+        </header>
+
+        <div class="private-grid private-grid--stats">
+            <article class="private-surface">
+                <header class="private-surface__header">
+                    <h2>En attente</h2>
+                </header>
+                <p class="private-page__lead">{{ stats.pending }}</p>
+            </article>
+            <article class="private-surface">
+                <header class="private-surface__header">
+                    <h2>Résolus</h2>
+                </header>
+                <p class="private-page__lead">{{ stats.resolved }}</p>
+            </article>
+            <article class="private-surface">
+                <header class="private-surface__header">
+                    <h2>Ignorés</h2>
+                </header>
+                <p class="private-page__lead">{{ stats.ignored }}</p>
+            </article>
+            <article class="private-surface">
+                <header class="private-surface__header">
+                    <h2>Total</h2>
+                </header>
+                <p class="private-page__lead">{{ stats.total }}</p>
+            </article>
+        </div>
+
+        <section class="private-surface">
+            <header class="private-surface__header">
+                <div>
+                    <h2>Doublons à traiter</h2>
+                    <p class="private-muted">Les candidats sont triés par score d’ordre décroissant.</p>
+                </div>
+            </header>
+
+            {% if reviews is not empty %}
+                <div class="private-list-stack">
+                    {% for review in reviews %}
+                        <article class="private-list-item">
+                            <div class="private-merge-scoreline">
+                                <span class="private-badge">Score {{ review.score }}/100</span>
+                                <span class="private-badge private-badge--secondary">Ordre {{ review.review_score }}/100</span>
+                                <span class="private-badge private-badge--secondary">{{ review.status_label }}</span>
+                            </div>
+
+                            <div>
+                                <h3>{{ review.left_contact.display_name }} et {{ review.right_contact.display_name }}</h3>
+                                <div class="private-tags">
+                                    {% for reason in review.reasons %}
+                                        <span class="private-badge private-badge--secondary">{{ reason }}</span>
+                                    {% endfor %}
+                                </div>
+                                <p class="private-muted">
+                                    Canonique conseillé: {{ review.recommended_canonical_side == 'right' ? 'contact de droite' : 'contact de gauche' }}.
+                                </p>
+                            </div>
+
+                            <div class="private-list-item__meta">
+                                <a class="private-link-button" href="{{ path('app_private_network_contact_merge_reviews_show', { id: review.id }) }}">Comparer</a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="private-empty">Aucun doublon en attente pour le moment.</p>
+            {% endif %}
+        </section>
+    </section>
+{% endblock %}

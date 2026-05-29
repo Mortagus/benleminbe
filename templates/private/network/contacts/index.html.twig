@@ -15,6 +15,7 @@
 
             <div class="private-page__actions">
                 <a class="private-link-button" href="{{ path('app_private_network_contact_new') }}">Ajouter un contact</a>
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contact_merge_reviews_index') }}">Revue manuelle</a>
                 <form class="private-inline-form" method="post" action="{{ path('app_private_network_contacts_merge_duplicates') }}" onsubmit="return confirm('Fusionner automatiquement les doublons détectés ?');">
                     <input type="hidden" name="_token" value="{{ csrf_token('private-network-contacts-merge-duplicates') }}">
                     <input type="hidden" name="q" value="{{ currentQuery }}">

@@ -18,6 +18,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class ContactService
 {
+    private const string CONTACT_SORT_DEFAULT = 'default';
+    private const string CONTACT_SORT_ORGANIZATION = 'organization';
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ContactMergeRulesService $mergeRules,
@@ -38,6 +41,7 @@ final class ContactService
      *     currentRelationStatus: string,
      *     currentOrganizationState: string,
      *     currentLetter: string,
+     *     currentSort: string,
      *     currentPage: int,
      *     totalPages: int,
      *     visibleFrom: int,
@@ -49,6 +53,7 @@ final class ContactService
      *     nextPage: int,
      *     paginationPages: list<array{type: string, page?: int, label?: string, current?: bool}>,
      *     letterOptions: list<array{value: string, label: string, active: bool}>,
+     *     sortOptions: array<string, string>,
      *     organizationStateOptions: array<string, string>,
      *     priorityOptions: array<string, string>,
      *     relationOptions: array<string, string>
@@ -67,6 +72,7 @@ final class ContactService
         $visibleTo = $pageContacts === [] ? 0 : min($totalContacts, $offset + count($pageContacts));
         $currentLetter = $this->normalizeLetterFilter($filters['letter'] ?? '');
         $currentOrganizationState = $this->normalizeOrganizationStateFilter($filters['organization_state'] ?? '');
+        $currentSort = $this->normalizeSortFilter($filters['sort'] ?? '');
 
         return [
             'contacts' => $pageContacts,
@@ -75,6 +81,7 @@ final class ContactService
             'currentRelationStatus' => $this->normalizeString($filters['relationship_status'] ?? ''),
             'currentOrganizationState' => $currentOrganizationState,
             'currentLetter' => $currentLetter,
+            'currentSort' => $currentSort,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'visibleFrom' => $visibleFrom,
@@ -86,6 +93,7 @@ final class ContactService
             'nextPage' => min($totalPages, $page + 1),
             'paginationPages' => $this->buildPaginationPages($page, $totalPages),
             'letterOptions' => $this->buildLetterOptions($currentLetter),
+            'sortOptions' => $this->getSortOptions(),
             'organizationStateOptions' => $this->getOrganizationStateOptions(),
             'priorityOptions' => $this->getPriorityOptions(),
             'relationOptions' => $this->getRelationOptions(),
@@ -105,6 +113,7 @@ final class ContactService
         $status = $this->normalizeString($criteria['relationship_status'] ?? '');
         $organizationState = $this->normalizeOrganizationStateFilter($criteria['organization_state'] ?? '');
         $letter = $this->normalizeLetterFilter($criteria['letter'] ?? '');
+        $sort = $this->normalizeSortFilter($criteria['sort'] ?? '');
 
         $contacts = array_values(array_filter($contacts, function (array $contact) use ($search, $priority, $status, $organizationState, $letter): bool {
             if ($priority !== '' && $contact['priority'] !== $priority) {
@@ -145,7 +154,7 @@ final class ContactService
             return str_contains(mb_strtolower($haystack), $search);
         }));
 
-        return $this->sortContacts($contacts);
+        return $this->sortContacts($contacts, $sort);
     }
 
     /**
@@ -364,6 +373,17 @@ final class ContactService
     /**
      * @return array<string, string>
      */
+    public function getSortOptions(): array
+    {
+        return [
+            self::CONTACT_SORT_DEFAULT => 'Par défaut',
+            self::CONTACT_SORT_ORGANIZATION => 'Entreprise',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
     public function getImportSourceOptions(): array
     {
         return ContactImportSource::labels();
@@ -521,30 +541,118 @@ final class ContactService
      *
      * @return list<array<string, mixed>>
      */
-    private function sortContacts(array $contacts): array
+    private function sortContacts(array $contacts, string $sort): array
+    {
+        usort($contacts, function (array $left, array $right) use ($sort): int {
+            if ($sort === self::CONTACT_SORT_ORGANIZATION) {
+                $leftHasOrganization = $this->contactHasOrganization($left);
+                $rightHasOrganization = $this->contactHasOrganization($right);
+
+                if ($leftHasOrganization !== $rightHasOrganization) {
+                    return $leftHasOrganization ? -1 : 1;
+                }
+
+                if ($leftHasOrganization && $rightHasOrganization) {
+                    $organizationDiff = strcasecmp(
+                        $this->normalizeOrganizationSortKey($left['organization'] ?? ''),
+                        $this->normalizeOrganizationSortKey($right['organization'] ?? ''),
+                    );
+
+                    if ($organizationDiff !== 0) {
+                        return $organizationDiff;
+                    }
+                }
+            }
+
+            return $this->compareContactsByDefaultOrder($left, $right);
+        });
+
+        return $contacts;
+    }
+
+    /**
+     * @param array<string, mixed> $left
+     * @param array<string, mixed> $right
+     */
+    private function compareContactsByDefaultOrder(array $left, array $right): int
+    {
+        $priorityDiff = $this->mergeRules->priorityWeight($right['priority']) <=> $this->mergeRules->priorityWeight($left['priority']);
+        if ($priorityDiff !== 0) {
+            return $priorityDiff;
+        }
+
+        $leftDate = $left['last_contact_at'] ?? null;
+        $rightDate = $right['last_contact_at'] ?? null;
+
+        if ($leftDate === $rightDate) {
+            return strcasecmp($left['display_name'], $right['display_name']);
+        }
+
+        if ($leftDate === null) {
+            return -1;
+        }
+
+        if ($rightDate === null) {
+            return 1;
+        }
+
+        return strcmp((string) $leftDate, (string) $rightDate);
+    }
+
+    private function normalizeSortFilter(mixed $value): string
+    {
+        $value = $this->normalizeString($value);
+        if ($value === '') {
+            return self::CONTACT_SORT_DEFAULT;
+        }
+
+        return in_array($value, [self::CONTACT_SORT_DEFAULT, self::CONTACT_SORT_ORGANIZATION], true) ? $value : self::CONTACT_SORT_DEFAULT;
+    }
+
+    private function normalizeOrganizationSortKey(mixed $value): string
+    {
+        return $this->mergeRules->normalizeComparableText($value);
+    }
+
+    /**
+     * @param list<array<string, mixed>> $contacts
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function sortContactsByDefault(array $contacts): array
+    {
+        usort($contacts, fn (array $left, array $right): int => $this->compareContactsByDefaultOrder($left, $right));
+
+        return $contacts;
+    }
+
+    /**
+     * @param list<array<string, mixed>> $contacts
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function sortContactsByOrganization(array $contacts): array
     {
         usort($contacts, function (array $left, array $right): int {
-            $priorityDiff = $this->mergeRules->priorityWeight($right['priority']) <=> $this->mergeRules->priorityWeight($left['priority']);
-            if ($priorityDiff !== 0) {
-                return $priorityDiff;
+            $leftHasOrganization = $this->contactHasOrganization($left);
+            $rightHasOrganization = $this->contactHasOrganization($right);
+
+            if ($leftHasOrganization !== $rightHasOrganization) {
+                return $leftHasOrganization ? -1 : 1;
             }
 
-            $leftDate = $left['last_contact_at'] ?? null;
-            $rightDate = $right['last_contact_at'] ?? null;
+            if ($leftHasOrganization && $rightHasOrganization) {
+                $organizationDiff = strcasecmp(
+                    $this->normalizeOrganizationSortKey($left['organization'] ?? ''),
+                    $this->normalizeOrganizationSortKey($right['organization'] ?? ''),
+                );
 
-            if ($leftDate === $rightDate) {
-                return strcasecmp($left['display_name'], $right['display_name']);
+                if ($organizationDiff !== 0) {
+                    return $organizationDiff;
+                }
             }
 
-            if ($leftDate === null) {
-                return -1;
-            }
-
-            if ($rightDate === null) {
-                return 1;
-            }
-
-            return strcmp((string) $leftDate, (string) $rightDate);
+            return $this->compareContactsByDefaultOrder($left, $right);
         });
 
         return $contacts;
@@ -588,24 +696,29 @@ final class ContactService
         $organizations = [];
 
         foreach ($contacts as $contact) {
-            $organization = trim((string) ($contact['organization'] ?? ''));
-            if ($organization === '') {
+            $organization = $this->normalizeOrganizationLabel($contact['organization'] ?? '');
+            if ($organization === null) {
                 continue;
             }
 
-            if (!isset($organizations[$organization])) {
-                $organizations[$organization] = [
+            $organizationKey = $this->normalizeOrganizationSortKey($organization);
+            if ($organizationKey === '') {
+                continue;
+            }
+
+            if (!isset($organizations[$organizationKey])) {
+                $organizations[$organizationKey] = [
                     'organization' => $organization,
                     'count' => 0,
                     'last_contact_at' => null,
                 ];
             }
 
-            $organizations[$organization]['count']++;
+            $organizations[$organizationKey]['count']++;
 
             $lastContactAt = $contact['last_contact_at'] ?? null;
-            if ($lastContactAt !== null && ($organizations[$organization]['last_contact_at'] === null || $lastContactAt > $organizations[$organization]['last_contact_at'])) {
-                $organizations[$organization]['last_contact_at'] = $lastContactAt;
+            if ($lastContactAt !== null && ($organizations[$organizationKey]['last_contact_at'] === null || $lastContactAt > $organizations[$organizationKey]['last_contact_at'])) {
+                $organizations[$organizationKey]['last_contact_at'] = $lastContactAt;
             }
         }
 
@@ -836,6 +949,18 @@ final class ContactService
         $value = $this->normalizeString($value);
 
         return in_array($value, ['with', 'without'], true) ? $value : '';
+    }
+
+    private function normalizeOrganizationLabel(mixed $value): ?string
+    {
+        $value = $this->mergeRules->normalizeOrganizationName($value);
+        if ($value !== null && $value !== '') {
+            return $value;
+        }
+
+        $value = $this->normalizeString($value);
+
+        return $value !== '' ? $value : null;
     }
 
     /**

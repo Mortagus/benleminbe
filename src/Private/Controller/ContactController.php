@@ -34,6 +34,7 @@ final class ContactController extends AbstractController
             'relationship_status' => $request->query->getString('relationship_status'),
             'organization_state' => $request->query->getString('organization_state'),
             'letter' => $request->query->getString('letter'),
+            'sort' => $request->query->getString('sort'),
         ];
         $page = max(1, $request->query->getInt('page', 1));
 
@@ -165,8 +166,15 @@ final class ContactController extends AbstractController
             'q' => $request->request->getString('q'),
             'priority' => $request->request->getString('priority'),
             'relationship_status' => $request->request->getString('relationship_status'),
+            'organization_state' => $request->request->getString('organization_state'),
+            'letter' => $request->request->getString('letter'),
+            'sort' => $request->request->getString('sort'),
             'page' => max(1, $request->request->getInt('page', 1)),
         ], static fn (mixed $value): bool => $value !== '' && $value !== null);
+
+        if (($query['sort'] ?? '') === 'default') {
+            unset($query['sort']);
+        }
 
         try {
             $this->contactService->deleteContact($id);
@@ -312,14 +320,21 @@ final class ContactController extends AbstractController
      */
     private function extractContactsFilters(Request $request): array
     {
-        return array_filter([
+        $filters = array_filter([
             'q' => $request->request->getString('q'),
             'priority' => $request->request->getString('priority'),
             'relationship_status' => $request->request->getString('relationship_status'),
             'organization_state' => $request->request->getString('organization_state'),
             'letter' => $request->request->getString('letter'),
+            'sort' => $request->request->getString('sort'),
             'page' => 1,
         ], static fn (mixed $value): bool => $value !== '' && $value !== null);
+
+        if (($filters['sort'] ?? '') === 'default') {
+            unset($filters['sort']);
+        }
+
+        return $filters;
     }
 
     /**

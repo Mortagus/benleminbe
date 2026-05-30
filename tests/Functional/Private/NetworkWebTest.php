@@ -184,6 +184,44 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertStringNotContainsString('Sans Entreprise', $client->getResponse()->getContent());
     }
 
+    public function testContactsListingCanSortByOrganization(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+
+        $first = new Contact('contact_sort_org_a', 'Alice Alpha');
+        $first->setOrganization('  acseo  ');
+        $first->setPriority(ContactPriority::Medium);
+        $first->setRelationshipStatus(ContactRelationshipStatus::FollowUp);
+        $entityManager->persist($first);
+
+        $second = new Contact('contact_sort_org_b', 'Bob Beta');
+        $second->setOrganization('ACSEO');
+        $second->setPriority(ContactPriority::Medium);
+        $second->setRelationshipStatus(ContactRelationshipStatus::FollowUp);
+        $entityManager->persist($second);
+
+        $third = new Contact('contact_sort_org_c', 'Charlie Gamma');
+        $third->setOrganization('Beta Lab');
+        $third->setPriority(ContactPriority::Medium);
+        $third->setRelationshipStatus(ContactRelationshipStatus::FollowUp);
+        $entityManager->persist($third);
+
+        $entityManager->flush();
+
+        $client->request('GET', '/private/network/contacts?sort=organization');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('select[name="sort"]');
+        self::assertSame('organization', $client->getCrawler()->filter('select[name="sort"] option[selected]')->attr('value'));
+
+        $rows = $client->getCrawler()->filter('tbody tr');
+        self::assertCount(3, $rows);
+        self::assertSame('Alice Alpha', trim($rows->eq(0)->filter('a.private-table__contact-link')->text()));
+        self::assertSame('Bob Beta', trim($rows->eq(1)->filter('a.private-table__contact-link')->text()));
+        self::assertSame('Charlie Gamma', trim($rows->eq(2)->filter('a.private-table__contact-link')->text()));
+    }
+
     public function testPlatformCrudFlowWorks(): void
     {
         $client = $this->createAuthenticatedClient();

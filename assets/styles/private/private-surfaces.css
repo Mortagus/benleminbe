@@ -56,3 +56,31 @@
     gap: 1rem;
     align-self: start;
 }
+
+.private-dashboard-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+    gap: 0.85rem;
+}
+
+.private-dashboard-metric {
+    display: grid;
+    gap: 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 0.875rem;
+    padding: 0.85rem 0.95rem;
+    background: var(--bg-soft);
+}
+
+.private-dashboard-metric strong {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.private-dashboard-metric__label {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}

@@ -37,5 +37,45 @@
                 <span>sélection dans le header</span>
             </article>
         </div>
+
+        <section class="private-section-card">
+            <header class="private-section-card__header">
+                <div>
+                    <h2>Contacts en chiffres</h2>
+                    <p class="private-muted">Répartition de la base de contacts sur les critères utiles au suivi.</p>
+                </div>
+            </header>
+
+            <div class="private-dashboard-metrics">
+                <article class="private-dashboard-metric" data-stat-key="total_contacts">
+                    <span class="private-dashboard-metric__label">Total contacts</span>
+                    <strong>{{ contact_stats.total_contacts }}</strong>
+                </article>
+                <article class="private-dashboard-metric" data-stat-key="contacts_with_organization">
+                    <span class="private-dashboard-metric__label">Avec entreprise</span>
+                    <strong>{{ contact_stats.contacts_with_organization }}</strong>
+                </article>
+                <article class="private-dashboard-metric" data-stat-key="contacts_with_linkedin">
+                    <span class="private-dashboard-metric__label">Avec LinkedIn</span>
+                    <strong>{{ contact_stats.contacts_with_linkedin }}</strong>
+                </article>
+                <article class="private-dashboard-metric" data-stat-key="contacts_with_email">
+                    <span class="private-dashboard-metric__label">Avec email</span>
+                    <strong>{{ contact_stats.contacts_with_email }}</strong>
+                </article>
+                <article class="private-dashboard-metric" data-stat-key="contacts_with_phone">
+                    <span class="private-dashboard-metric__label">Avec téléphone</span>
+                    <strong>{{ contact_stats.contacts_with_phone }}</strong>
+                </article>
+                <article class="private-dashboard-metric" data-stat-key="contacts_to_qualify">
+                    <span class="private-dashboard-metric__label">À qualifier</span>
+                    <strong>{{ contact_stats.contacts_to_qualify }}</strong>
+                </article>
+                <article class="private-dashboard-metric" data-stat-key="contacts_professionals">
+                    <span class="private-dashboard-metric__label">Professionnels</span>
+                    <strong>{{ contact_stats.contacts_professionals }}</strong>
+                </article>
+            </div>
+        </section>
     </section>
 {% endblock %}

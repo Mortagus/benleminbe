@@ -31,6 +31,48 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertSelectorExists('input[name="_csrf_token"]');
     }
 
+    public function testPrivateDashboardShowsContactStatistics(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $repository->saveContact([
+            'display_name' => 'Alice Example',
+            'organization' => 'Example Lab',
+            'email' => 'alice@example.com',
+            'phone' => '+32470000001',
+            'profile_url' => 'https://www.linkedin.com/in/alice-example',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $repository->saveContact([
+            'display_name' => 'Bob Example',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $repository->saveContact([
+            'display_name' => 'Claire Example',
+            'organization' => 'Example Studio',
+            'role' => 'Consultante',
+            'email' => 'claire@example.com',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+
+        $client->request('GET', '/private');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'Tableau de bord');
+        self::assertSelectorTextContains('h2', 'Contacts en chiffres');
+        self::assertSelectorTextContains('[data-stat-key="total_contacts"]', '3');
+        self::assertSelectorTextContains('[data-stat-key="contacts_with_organization"]', '2');
+        self::assertSelectorTextContains('[data-stat-key="contacts_with_linkedin"]', '1');
+        self::assertSelectorTextContains('[data-stat-key="contacts_with_email"]', '2');
+        self::assertSelectorTextContains('[data-stat-key="contacts_with_phone"]', '1');
+        self::assertSelectorTextContains('[data-stat-key="contacts_to_qualify"]', '1');
+        self::assertSelectorTextContains('[data-stat-key="contacts_professionals"]', '2');
+    }
+
     public function testDashboardAndListsRenderForAuthenticatedAdmin(): void
     {
         $client = $this->createAuthenticatedClient();

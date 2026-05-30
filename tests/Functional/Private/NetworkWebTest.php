@@ -13,6 +13,7 @@ use App\Enum\Network\ContactMergeReviewStatus;
 use App\Enum\Network\ContactPriority;
 use App\Enum\Network\ContactRelationshipStatus;
 use App\Private\Service\Network\NetworkRepository;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\DomCrawler\Crawler;
 
 final class NetworkWebTest extends NetworkWebTestCase
@@ -92,6 +93,91 @@ final class NetworkWebTest extends NetworkWebTestCase
         $client->followRedirect();
         self::assertSelectorTextContains('h1', 'Symfony Connect');
         self::assertSelectorTextContains('.private-copy', 'Updated note.');
+    }
+
+    public function testPlatformBackupExportDownloadsJsonSnapshot(): void
+    {
+        $client = $this->createAuthenticatedClient();
+
+        $client->request('GET', '/private/network/platforms/export');
+
+        self::assertResponseIsSuccessful();
+        self::assertSame('application/json; charset=utf-8', $client->getResponse()->headers->get('Content-Type'));
+        self::assertStringContainsString('attachment;', (string) $client->getResponse()->headers->get('Content-Disposition'));
+
+        $payload = json_decode((string) $client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertSame(1, $payload['schema_version']);
+        self::assertArrayHasKey('exported_at', $payload);
+        self::assertCount(7, $payload['platforms']);
+        self::assertContains('linkedin', array_column($payload['platforms'], 'slug'));
+    }
+
+    public function testPlatformBackupImportRestoresPlatformsFromJson(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+
+        $existingPlatform = new Platform();
+        $existingPlatform->setSlug('old-platform');
+        $existingPlatform->setName('Old Platform');
+        $existingPlatform->setCategory('reseau');
+        $entityManager->persist($existingPlatform);
+        $entityManager->flush();
+
+        $crawler = $client->request('GET', '/private/network/platforms/import');
+        self::assertResponseIsSuccessful();
+
+        $uploadedFile = $this->createJsonUpload(<<<JSON
+{
+  "schema_version": 1,
+  "exported_at": "2026-05-30T12:00:00+02:00",
+  "platforms": [
+    {
+      "slug": "backup-platform",
+      "name": "Backup Platform",
+      "category": "freelance",
+      "profile_url": "https://example.com/backup-platform",
+      "status": "a_jour",
+      "note": "Imported from a snapshot.",
+      "last_reviewed_at": "2026-05-29",
+      "active": true
+    }
+  ]
+}
+JSON);
+
+        $client->submit($this->fillPlatformBackupImportForm($crawler, [
+            'file' => $uploadedFile,
+        ]));
+
+        self::assertResponseRedirects('/private/network/platforms');
+        $client->followRedirect();
+        self::assertSelectorTextContains('h1', 'Plateformes');
+        self::assertSelectorTextContains('body', 'Backup Platform');
+
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_platforms'));
+        self::assertSame('0', (string) $connection->fetchOne("SELECT COUNT(*) FROM network_platforms WHERE slug = 'old-platform'"));
+        self::assertSame('1', (string) $connection->fetchOne("SELECT COUNT(*) FROM network_platforms WHERE slug = 'backup-platform'"));
+    }
+
+    public function testPlatformBackupImportRejectsInvalidJsonWithoutMutatingData(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+        $initialCount = (string) $connection->fetchOne('SELECT COUNT(*) FROM network_platforms');
+
+        $crawler = $client->request('GET', '/private/network/platforms/import');
+        self::assertResponseIsSuccessful();
+
+        $client->submit($this->fillPlatformBackupImportForm($crawler, [
+            'file' => $this->createJsonUpload('not valid json'),
+        ]));
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('.private-alert-list', 'Le fichier JSON de sauvegarde est invalide.');
+        self::assertSame($initialCount, (string) $connection->fetchOne('SELECT COUNT(*) FROM network_platforms'));
     }
 
     public function testContactCrudAndInteractionFlowWorks(): void
@@ -245,7 +331,7 @@ VCF,
         self::assertSame('Alice Phone Updated', $contact->getDisplayName());
         self::assertSame('Phone Lab Updated', $contact->getOrganization());
         self::assertSame('Lead', $contact->getRole());
-        self::assertSame('alice.two@example.com', $contact->getEmail());
+        self::assertSame('alice.one@example.com', $contact->getEmail());
         self::assertSame('1', (string) $connection->fetchOne('SELECT created FROM network_import_logs LIMIT 1'));
         self::assertSame('1', (string) $connection->fetchOne('SELECT updated FROM network_import_logs LIMIT 1'));
         self::assertSame('2', (string) $connection->fetchOne('SELECT total FROM network_import_logs LIMIT 1'));
@@ -282,7 +368,7 @@ CSV,
         self::assertSame('Thomas Test', $contact->getDisplayName());
         self::assertSame('Lab One Updated', $contact->getOrganization());
         self::assertSame('Lead', $contact->getRole());
-        self::assertSame('tom.two@example.com', $contact->getEmail());
+        self::assertSame('tom.one@example.com', $contact->getEmail());
     }
 
     public function testImportFlowCollapsesDuplicateRowsThatShareTheSameEmail(): void
@@ -310,7 +396,7 @@ CSV,
         self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_import_logs'));
 
         $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([
-            'email' => 'jean.dupond@example.com',
+            'displayName' => 'Jean Dupond',
         ]);
         self::assertInstanceOf(Contact::class, $contact);
         self::assertSame('Jean Dupond', $contact->getDisplayName());
@@ -672,7 +758,7 @@ CSV,
         self::assertStringNotContainsString('Nom affiché identique', $client->getResponse()->getContent());
         self::assertStringNotContainsString('Nom affiché très proche', $client->getResponse()->getContent());
         self::assertStringNotContainsString('Prénom et nom proches', $client->getResponse()->getContent());
-        self::assertSelectorTextContains('body', 'Pas de clé forte suffisante');
+        self::assertSelectorTextContains('body', 'Conflit à trancher: canal principal');
         self::assertStringNotContainsString('Points communs:', $client->getResponse()->getContent());
         self::assertStringNotContainsString('Données complémentaires:', $client->getResponse()->getContent());
         self::assertSelectorExists('a[href*="/private/network/contact-merge-reviews/"]');
@@ -873,6 +959,14 @@ CSV,
     /**
      * @param array<string, mixed> $values
      */
+    private function fillPlatformBackupImportForm(Crawler $crawler, array $values)
+    {
+        return $crawler->selectButton('Restaurer la sauvegarde')->form($values);
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     */
     private function fillImportForm(Crawler $crawler, array $values)
     {
         return $crawler->selectButton('Importer')->form($values);
@@ -907,7 +1001,7 @@ CSV,
         self::assertSame($source->label(), (string) $connection->fetchOne('SELECT source_label FROM network_import_logs ORDER BY imported_at DESC LIMIT 1'));
 
         $contact = self::getContainer()->get('doctrine')->getRepository(Contact::class)->findOneBy([
-            'email' => $expected['email'] ?? null,
+            'displayName' => $expected['display_name'],
         ]);
         self::assertInstanceOf(Contact::class, $contact);
         self::assertSame($expected['display_name'], $contact->getDisplayName());
@@ -939,5 +1033,14 @@ CSV,
         }
 
         return $matches[1];
+    }
+
+    private function createJsonUpload(string $contents, string $filename = 'platforms.json'): UploadedFile
+    {
+        $path = tempnam(sys_get_temp_dir(), 'platform-backup-');
+        self::assertNotFalse($path);
+        file_put_contents($path, $contents);
+
+        return new UploadedFile($path, $filename, 'application/json', null, true);
     }
 }

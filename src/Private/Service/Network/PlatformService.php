@@ -9,90 +9,21 @@ use App\Enum\Network\PlatformStatus;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
+use JsonException;
+use RuntimeException;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class PlatformService
 {
-    /**
-     * @var array<int, array{slug: string, name: string, category: string, profile_url: string, status: string, note: string, last_reviewed_at: string|null, active: bool}>
-     */
-    private const array DEFAULT_PLATFORMS = [
-        [
-            'slug' => 'linkedin',
-            'name' => 'LinkedIn',
-            'category' => 'reseau',
-            'profile_url' => 'https://www.linkedin.com/in/benlem/',
-            'status' => 'a_jour',
-            'note' => 'Profil professionnel principal.',
-            'last_reviewed_at' => null,
-            'active' => true,
-        ],
-        [
-            'slug' => 'malt',
-            'name' => 'Malt',
-            'category' => 'freelance',
-            'profile_url' => 'https://fr.malt.be/profile/benjaminlemin',
-            'status' => 'a_jour',
-            'note' => 'Canal principal pour les missions freelance structurées.',
-            'last_reviewed_at' => null,
-            'active' => true,
-        ],
-        [
-            'slug' => 'indeed',
-            'name' => 'Indeed',
-            'category' => 'jobboard',
-            'profile_url' => '',
-            'status' => 'a_enrichir',
-            'note' => 'À renseigner si un profil est ouvert ou à créer.',
-            'last_reviewed_at' => null,
-            'active' => true,
-        ],
-        [
-            'slug' => 'lehibou',
-            'name' => 'LeHibou',
-            'category' => 'freelance',
-            'profile_url' => '',
-            'status' => 'a_enrichir',
-            'note' => 'À renseigner si un profil existe ou doit être créé.',
-            'last_reviewed_at' => null,
-            'active' => true,
-        ],
-        [
-            'slug' => 'wiggli',
-            'name' => 'Wiggli',
-            'category' => 'freelance',
-            'profile_url' => '',
-            'status' => 'a_enrichir',
-            'note' => 'À renseigner si un profil existe ou doit être créé.',
-            'last_reviewed_at' => null,
-            'active' => true,
-        ],
-        [
-            'slug' => 'superprof',
-            'name' => 'Superprof',
-            'category' => 'coaching',
-            'profile_url' => '',
-            'status' => 'a_enrichir',
-            'note' => 'Plateforme de coaching technique à suivre séparément.',
-            'last_reviewed_at' => null,
-            'active' => true,
-        ],
-        [
-            'slug' => 'apprentus',
-            'name' => 'Apprentus',
-            'category' => 'coaching',
-            'profile_url' => '',
-            'status' => 'a_enrichir',
-            'note' => 'Plateforme de coaching technique à suivre séparément.',
-            'last_reviewed_at' => null,
-            'active' => true,
-        ],
-    ];
+    private const int PLATFORM_BACKUP_SCHEMA_VERSION = 1;
 
     private bool $seeded = false;
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
     ) {
     }
 
@@ -193,6 +124,37 @@ final class PlatformService
     }
 
     /**
+     * @return array{schema_version: int, exported_at: string, platforms: list<array<string, mixed>>}
+     */
+    public function exportPlatformsBackup(): array
+    {
+        $this->ensureSeeded();
+        $platforms = array_map(
+            fn (Platform $platform): array => $this->platformToBackupRecord($platform),
+            $this->loadPlatforms(),
+        );
+
+        return [
+            'schema_version' => self::PLATFORM_BACKUP_SCHEMA_VERSION,
+            'exported_at' => (new DateTimeImmutable())->format(DATE_ATOM),
+            'platforms' => $this->sortPlatforms($platforms),
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     *
+     * @return array{imported: int, replaced: int, total: int}
+     */
+    public function importPlatformsBackup(array $payload): array
+    {
+        $platformRecords = $this->extractBackupRecords($payload);
+        $normalizedRecords = $this->normalizeBackupRecords($platformRecords);
+
+        return $this->replaceAllPlatforms($normalizedRecords);
+    }
+
+    /**
      * @return list<Platform>
      */
     private function loadPlatforms(): array
@@ -212,16 +174,9 @@ final class PlatformService
             return;
         }
 
-        foreach (self::DEFAULT_PLATFORMS as $data) {
+        foreach ($this->loadDefaultPlatformRecords() as $data) {
             $platform = new Platform();
-            $platform->setSlug($data['slug']);
-            $platform->setName($data['name']);
-            $platform->setCategory($data['category']);
-            $platform->setProfileUrl($data['profile_url'] !== '' ? $data['profile_url'] : null);
-            $platform->setStatus($this->platformStatusFromValue($data['status']));
-            $platform->setNote($data['note']);
-            $platform->setLastReviewedAt($this->parseDate($data['last_reviewed_at']));
-            $platform->setActive($data['active']);
+            $this->applyPlatformData($platform, $data);
             $this->entityManager->persist($platform);
         }
 
@@ -321,6 +276,201 @@ final class PlatformService
         $platform->setNote($data['note'] !== '' ? $data['note'] : null);
         $platform->setLastReviewedAt($this->parseDate($data['last_reviewed_at']));
         $platform->setActive((bool) $data['active']);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function platformToBackupRecord(Platform $platform): array
+    {
+        return [
+            'slug' => $platform->getSlug(),
+            'name' => $platform->getName(),
+            'category' => $platform->getCategory(),
+            'profile_url' => $platform->getProfileUrl() ?? '',
+            'status' => $platform->getStatus()->value,
+            'note' => $platform->getNote() ?? '',
+            'last_reviewed_at' => $this->formatDate($platform->getLastReviewedAt()),
+            'active' => $platform->isActive(),
+        ];
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function loadDefaultPlatformRecords(): array
+    {
+        $backup = $this->readBackupFile();
+        $records = $this->extractBackupRecords($backup);
+
+        return $this->normalizeBackupRecords($records);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function readBackupFile(): array
+    {
+        $path = $this->getBackupFilePath();
+
+        if (!is_file($path)) {
+            throw new RuntimeException(sprintf('Platform backup file not found at "%s".', $path));
+        }
+
+        $contents = file_get_contents($path);
+        if ($contents === false) {
+            throw new RuntimeException(sprintf('Unable to read platform backup file at "%s".', $path));
+        }
+
+        try {
+            $payload = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            throw new InvalidArgumentException('The platform backup file contains invalid JSON.', 0, $exception);
+        }
+
+        if (!is_array($payload)) {
+            throw new InvalidArgumentException('The platform backup file must decode to an array.');
+        }
+
+        return $payload;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function extractBackupRecords(array $payload): array
+    {
+        if (array_is_list($payload)) {
+            return $payload;
+        }
+
+        $schemaVersion = $payload['schema_version'] ?? null;
+        if ($schemaVersion !== null && (int) $schemaVersion !== self::PLATFORM_BACKUP_SCHEMA_VERSION) {
+            throw new InvalidArgumentException(sprintf('Unsupported platform backup schema version "%s".', (string) $schemaVersion));
+        }
+
+        if (!array_key_exists('platforms', $payload) || !is_array($payload['platforms'])) {
+            throw new InvalidArgumentException('The platform backup must contain a "platforms" list.');
+        }
+
+        /** @var list<array<string, mixed>> $records */
+        $records = $payload['platforms'];
+
+        return $records;
+    }
+
+    /**
+     * @param list<array<string, mixed>> $records
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function normalizeBackupRecords(array $records): array
+    {
+        $normalized = [];
+        $seenSlugs = [];
+
+        foreach ($records as $index => $record) {
+            if (!is_array($record)) {
+                throw new InvalidArgumentException(sprintf('Platform entry #%d is not valid.', $index + 1));
+            }
+
+            $data = $this->normalizeBackupRecord($record, $index + 1);
+            if (isset($seenSlugs[$data['slug']])) {
+                throw new InvalidArgumentException(sprintf('Duplicate platform slug "%s" found in backup.', $data['slug']));
+            }
+
+            $seenSlugs[$data['slug']] = true;
+            $normalized[] = $data;
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @param array<string, mixed> $record
+     *
+     * @return array<string, mixed>
+     */
+    private function normalizeBackupRecord(array $record, int $position): array
+    {
+        $slug = $this->normalizeString($record['slug'] ?? '');
+        if ($slug === '') {
+            throw new InvalidArgumentException(sprintf('Platform entry #%d is missing a slug.', $position));
+        }
+
+        $name = $this->normalizeString($record['name'] ?? '');
+        if ($name === '') {
+            throw new InvalidArgumentException(sprintf('Platform entry "%s" is missing a name.', $slug));
+        }
+
+        return [
+            'slug' => $slug,
+            'name' => $name,
+            'category' => $this->normalizeString($record['category'] ?? 'reseau'),
+            'profile_url' => $this->normalizeString($record['profile_url'] ?? ''),
+            'status' => $this->normalizeBackupStatus($record['status'] ?? PlatformStatus::default()->value, $position),
+            'note' => $this->normalizeString($record['note'] ?? ''),
+            'last_reviewed_at' => $this->normalizeBackupDate($record['last_reviewed_at'] ?? null, $position, 'last_reviewed_at'),
+            'active' => $this->normalizeBoolean($record['active'] ?? true),
+        ];
+    }
+
+    /**
+     * @param list<array<string, mixed>> $platformsData
+     *
+     * @return array{imported: int, replaced: int, total: int}
+     */
+    private function replaceAllPlatforms(array $platformsData): array
+    {
+        return $this->entityManager->wrapInTransaction(function (EntityManagerInterface $entityManager) use ($platformsData): array {
+            $entityManager->clear();
+            $connection = $entityManager->getConnection();
+            $replaced = (int) $connection->executeStatement('DELETE FROM network_platforms');
+
+            foreach ($platformsData as $data) {
+                $platform = new Platform();
+                $this->applyPlatformData($platform, $data);
+                $entityManager->persist($platform);
+            }
+
+            $entityManager->flush();
+
+            return [
+                'imported' => count($platformsData),
+                'replaced' => $replaced,
+                'total' => count($platformsData),
+            ];
+        });
+    }
+
+    private function getBackupFilePath(): string
+    {
+        return rtrim($this->projectDir, '/\\') . '/data/private/network/platforms.json';
+    }
+
+    private function normalizeBackupStatus(mixed $status, int $position): string
+    {
+        $status = $this->normalizeString((string) $status);
+        if ($status === '' || PlatformStatus::tryFrom($status) === null) {
+            throw new InvalidArgumentException(sprintf('Platform entry #%d has an invalid status.', $position));
+        }
+
+        return $status;
+    }
+
+    private function normalizeBackupDate(mixed $value, int $position, string $field): ?string
+    {
+        $value = $this->normalizeString((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+        if ($date === false || $date->format('Y-m-d') !== $value) {
+            throw new InvalidArgumentException(sprintf('Platform entry #%d has an invalid %s value.', $position, $field));
+        }
+
+        return $date->format('Y-m-d');
     }
 
     private function findPlatformIndex(array $platforms, string $slug): ?int

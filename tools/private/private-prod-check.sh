@@ -67,6 +67,12 @@ for protected_path in /private/network /private/network/contacts /private/networ
     esac
 done
 
+printf '%s\n' '==> Checking database accessibility'
+if ! php bin/console dbal:run-sql 'SELECT 1' --env=prod --no-interaction >/dev/null; then
+    printf '%s\n' 'Unable to reach the production database through Doctrine.' >&2
+    exit 1
+fi
+
 printf '%s\n' '==> Checking robots.txt'
 curl -sS "$base_url/robots.txt" -o "$body_file"
 

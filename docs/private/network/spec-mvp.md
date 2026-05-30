@@ -300,15 +300,16 @@ Role :
 
 Le premier jet implementé suit une approche volontairement legere :
 
-- stockage fichier dans `var/private/network/network.json` ;
+- snapshot JSON versionne dans `data/private/network/platforms.json` pour le seed, l'export et la restauration des plateformes ;
 - dashboard prive sur `/private/network` ;
 - listes et fiches pour les plateformes et les contacts ;
 - edition par formulaires simples ;
 - journalisation des interactions par contact ;
 - import de contacts depuis vCard du telephone ou CSV LinkedIn ;
+- export et import JSON des plateformes depuis la page de listing ;
 - modele organisationnel reduit pour l'instant a un champ `organization` sur le contact, avec regroupement derive pour le dashboard.
 
-Ce choix permet de travailler sans base de donnees tout en gardant une structure suffisamment propre pour migrer plus tard vers un stockage plus robuste si le besoin le justifie.
+Ce choix garde un support simple a diff et a transporter entre environnements tout en laissant la base de donnees comme source operationnelle des donnees actives.
 
 ## Ordre De Construction Recommande
 

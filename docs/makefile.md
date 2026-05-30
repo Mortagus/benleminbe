@@ -38,6 +38,24 @@ Usage typique:
 make cc
 ```
 
+### `make migrate`
+
+Execute les migrations Doctrine dans l'environnement courant.
+
+Par defaut, la cible utilise `dev`. Pour viser un autre environnement, passer `MIGRATION_ENV`.
+
+Usage typique:
+
+```bash
+make migrate
+```
+
+Pour executer les migrations en production:
+
+```bash
+make migrate MIGRATION_ENV=prod
+```
+
 ### `make deploy`
 
 Procedure de deploiement standard du site.
@@ -47,7 +65,7 @@ Ordre des operations:
 1. `git pull --rebase`
 2. `composer install --no-dev --optimize-autoloader --no-interaction`
 3. preparation du fichier de log `var/log/cv-downloads.log`
-4. migration Doctrine en prod
+4. `make migrate MIGRATION_ENV=prod`
 5. `cache:clear --env=prod`
 6. `cache:warmup --env=prod`
 7. `asset-map:compile --env=prod`
@@ -70,6 +88,7 @@ Verifications:
 - la page de login expose le CSRF ;
 - la page de login affiche bien le titre attendu ;
 - les routes privees principales redirigent vers le login sans session ;
+- la base de donnees de production est joignable via Doctrine avec une requete simple ;
 - `robots.txt` bloque `/private/` ;
 - `sitemap.xml` n'expose aucune URL privee ;
 - l'entrypoint prive est disponible ;
@@ -139,4 +158,5 @@ make private-prod-auth-check
 - les scripts shell d'implementation des verifications privees vivent dans `tools/private/` ;
 - les cibles de deploiement supposent que les secrets prod et les identifiants base de donnees sont deja valides ;
 - en cas de probleme sur `/private/network`, verifier d'abord l'etat de la base avant d'interpréter un défaut d'affichage ;
-- `make private-prod-check` ne demande pas de secret et peut servir de smoke test rapide apres un deploiement.
+- `make private-prod-check` ne demande pas de secret et peut servir de smoke test rapide apres un deploiement ;
+- il inclut aussi un test d'accessibilite base sur `php bin/console dbal:run-sql 'SELECT 1' --env=prod --no-interaction`.

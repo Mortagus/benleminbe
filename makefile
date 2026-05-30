@@ -1,8 +1,9 @@
-.PHONY: deploy track_logs reload_assets cc serv check test_php install-hooks gpt_css pagespeed_audit private-admin-secret private-prod-check private-prod-auth-check
+.PHONY: deploy track_logs reload_assets cc serv check test_php install-hooks gpt_css pagespeed_audit private-admin-secret private-prod-check private-prod-auth-check db-check migrate
 
 PRIVATE_SECRET_ENV ?= prod
 PRIVATE_BASE_URL ?= https://benlemin.be
 PRIVATE_ADMIN_USERNAME ?= private_admin
+MIGRATION_ENV ?= dev
 PAGESPEED_BASE_URL ?= https://benlemin.be
 PAGESPEED_LOCALE ?= fr-FR
 PAGESPEED_STRATEGY ?= both
@@ -18,7 +19,7 @@ deploy:
 	mkdir -p var/log
 	touch var/log/cv-downloads.log
 	chmod 664 var/log/cv-downloads.log
-	php bin/console doctrine:migrations:migrate --no-interaction --env=prod
+	$(MAKE) migrate MIGRATION_ENV=prod
 	php bin/console cache:clear --env=prod
 	php bin/console cache:warmup --env=prod
 	php bin/console asset-map:compile --env=prod
@@ -36,6 +37,23 @@ cc: reload_assets
 
 serv:
 	symfony local:server:start
+
+migrate:
+	php bin/console doctrine:migrations:migrate --no-interaction --env="$(MIGRATION_ENV)"
+
+db-check:
+	@set -e; \
+	container_id="$$(docker compose ps -q db)"; \
+	if [ -z "$$container_id" ]; then \
+		echo "db service is not running. Start it with: docker compose up -d db"; \
+		exit 1; \
+	fi; \
+	if [ "$$(docker inspect -f '{{.State.Running}}' "$$container_id")" != "true" ]; then \
+		echo "db service container exists but is not running."; \
+		exit 1; \
+	fi; \
+	docker compose exec -T db mariadb -uapp -papp -h 127.0.0.1 -e "SELECT 1;" app >/dev/null; \
+	echo "db service is running and MariaDB is reachable."
 
 check:
 	@echo "==> Composer metadata"

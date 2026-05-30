@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "exported_at": "2026-05-30T12:00:00+02:00",
+  "platforms": [
+    {
+      "slug": "linkedin",
+      "name": "LinkedIn",
+      "category": "reseau",
+      "profile_url": "https://www.linkedin.com/in/benlem/",
+      "status": "a_jour",
+      "note": "Profil professionnel principal.",
+      "last_reviewed_at": null,
+      "active": true
+    },
+    {
+      "slug": "malt",
+      "name": "Malt",
+      "category": "freelance",
+      "profile_url": "https://fr.malt.be/profile/benjaminlemin",
+      "status": "a_jour",
+      "note": "Canal principal pour les missions freelance structurées.",
+      "last_reviewed_at": null,
+      "active": true
+    },
+    {
+      "slug": "indeed",
+      "name": "Indeed",
+      "category": "jobboard",
+      "profile_url": "",
+      "status": "a_enrichir",
+      "note": "À renseigner si un profil est ouvert ou à créer.",
+      "last_reviewed_at": null,
+      "active": true
+    },
+    {
+      "slug": "lehibou",
+      "name": "LeHibou",
+      "category": "freelance",
+      "profile_url": "",
+      "status": "a_enrichir",
+      "note": "À renseigner si un profil existe ou doit être créé.",
+      "last_reviewed_at": null,
+      "active": true
+    },
+    {
+      "slug": "wiggli",
+      "name": "Wiggli",
+      "category": "freelance",
+      "profile_url": "",
+      "status": "a_enrichir",
+      "note": "À renseigner si un profil existe ou doit être créé.",
+      "last_reviewed_at": null,
+      "active": true
+    },
+    {
+      "slug": "superprof",
+      "name": "Superprof",
+      "category": "coaching",
+      "profile_url": "",
+      "status": "a_enrichir",
+      "note": "Plateforme de coaching technique à suivre séparément.",
+      "last_reviewed_at": null,
+      "active": true
+    },
+    {
+      "slug": "apprentus",
+      "name": "Apprentus",
+      "category": "coaching",
+      "profile_url": "",
+      "status": "a_enrichir",
+      "note": "Plateforme de coaching technique à suivre séparément.",
+      "last_reviewed_at": null,
+      "active": true
+    }
+  ]
+}

@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Private\Controller;
 
 use App\Private\Service\Network\PlatformService;
+use DateTimeImmutable;
 use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -31,6 +34,64 @@ final class PlatformController extends AbstractController
             'platforms' => $this->platformService->listPlatforms($query),
             'statusOptions' => $this->platformService->getStatusOptions(),
         ]);
+    }
+
+    #[Route('/platforms/export', name: 'platform_export', methods: ['GET'])]
+    public function platformExport(): Response|RedirectResponse
+    {
+        try {
+            $backup = $this->platformService->exportPlatformsBackup();
+            $json = json_encode($backup, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        } catch (\Throwable $exception) {
+            $this->addFlash('error', sprintf('L’export des plateformes a échoué: %s', $exception->getMessage()));
+
+            return $this->redirectToRoute('app_private_network_platforms');
+        }
+
+        $filename = sprintf('private-network-platforms-%s.json', (new DateTimeImmutable())->format('Y-m-d'));
+        $response = new Response($json);
+        $response->headers->set('Content-Type', 'application/json; charset=utf-8');
+        $response->headers->set('Content-Disposition', HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, $filename));
+
+        return $response;
+    }
+
+    #[Route('/platforms/import', name: 'platform_import', methods: ['GET', 'POST'])]
+    public function platformImport(Request $request): Response|RedirectResponse
+    {
+        if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('private-network-platform-import', $request->request->getString('_token'))) {
+                $this->addFlash('error', 'Le formulaire d’import a expiré. Réessaie.');
+
+                return $this->redirectToRoute('app_private_network_platform_import');
+            }
+
+            $uploadedFile = $request->files->get('file');
+            if (!$uploadedFile instanceof UploadedFile || !$uploadedFile->isValid()) {
+                return $this->renderPlatformImportPage(['Le fichier JSON de sauvegarde est obligatoire et doit être valide.']);
+            }
+
+            $contents = file_get_contents($uploadedFile->getPathname());
+            if ($contents === false) {
+                return $this->renderPlatformImportPage(['Le fichier JSON de sauvegarde est illisible.']);
+            }
+
+            try {
+                $summary = $this->platformService->importPlatformsBackup(json_decode($contents, true, 512, JSON_THROW_ON_ERROR));
+            } catch (\JsonException) {
+                return $this->renderPlatformImportPage(['Le fichier JSON de sauvegarde est invalide.']);
+            } catch (InvalidArgumentException $exception) {
+                return $this->renderPlatformImportPage([$exception->getMessage()]);
+            } catch (\Throwable $exception) {
+                return $this->renderPlatformImportPage([sprintf('L’import des plateformes a échoué: %s', $exception->getMessage())]);
+            }
+
+            $this->addFlash('success', sprintf('%d plateforme%s restaurée%s.', $summary['imported'], $summary['imported'] > 1 ? 's' : '', $summary['imported'] > 1 ? 's' : ''));
+
+            return $this->redirectToRoute('app_private_network_platforms');
+        }
+
+        return $this->renderPlatformImportPage();
     }
 
     #[Route('/platforms/new', name: 'platform_new', methods: ['GET', 'POST'])]
@@ -142,5 +203,15 @@ final class PlatformController extends AbstractController
         $this->addFlash('success', sprintf('Plateforme "%s" enregistrée.', $platform['name']));
 
         return $this->redirectToRoute('app_private_network_platform_show', ['slug' => $platform['slug']]);
+    }
+
+    /**
+     * @param list<string> $errors
+     */
+    private function renderPlatformImportPage(array $errors = []): Response
+    {
+        return $this->render('private/network/platforms/import.html.twig', [
+            'errors' => $errors,
+        ]);
     }
 }

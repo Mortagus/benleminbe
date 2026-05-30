@@ -71,10 +71,11 @@ Etat fonctionnel actuel :
 - dashboard prive `/private/network` en place ;
 - pages de listing et de fiche pour les plateformes et les contacts ;
 - creation et edition des plateformes ;
+- export et import JSON des plateformes via la page de liste ;
 - creation et edition des contacts ;
 - ajout d'interactions sur les fiches contact ;
 - import vCard du telephone et CSV LinkedIn via l'interface privee ;
-- persistance relationnelle active avec tables, migration et seed initial des plateformes ;
+- persistance relationnelle active avec tables, migration et seed initial des plateformes depuis un snapshot JSON versionne ;
 - tests fonctionnels PHPUnit / WebTestCase en place pour les parcours principaux, dont l'import.
 
 Etat d'organisation :
@@ -82,6 +83,7 @@ Etat d'organisation :
 - `Organization` reste un champ du contact ;
 - `Platform` et le profil de plateforme restent fusionnes ;
 - `ImportLog` sert de journal minimal ;
+- le backup de reference des plateformes vit dans `data/private/network/platforms.json` ;
 - `tags` restent en JSON ;
 - les statuts sont formalises en enums.
 

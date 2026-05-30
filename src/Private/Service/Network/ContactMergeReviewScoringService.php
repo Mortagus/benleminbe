@@ -20,6 +20,10 @@ final class ContactMergeReviewScoringService
      */
     public function buildCandidatePair(Contact $left, Contact $right): ?array
     {
+        if ($this->mergeRules->isLinkedInContact($left) || $this->mergeRules->isLinkedInContact($right)) {
+            return null;
+        }
+
         $exactScoreData = $this->computeExactScore($left, $right);
         $reviewScoreData = $this->computeReviewScore($left, $right, $exactScoreData['score']);
 

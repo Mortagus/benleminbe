@@ -206,4 +206,60 @@ final class ContactWritePolicyServiceTest extends TestCase
         self::assertSame('2026-05-01T08:00:00+00:00', $contact->getCreatedAt()->format(DATE_ATOM));
         self::assertSame('2026-05-29T10:00:00+00:00', $contact->getUpdatedAt()->format(DATE_ATOM));
     }
+
+    public function testItPreservesLinkedInValuesWhenANonLinkedInPayloadConflictsWithAnExistingLinkedInContact(): void
+    {
+        $policy = new ContactWritePolicyService(new ContactMergeRulesService());
+
+        $contact = new Contact('contact-linkedin', 'LinkedIn Name');
+        $contact->setFirstName('Linked');
+        $contact->setLastName('In');
+        $contact->setOrganization('LinkedIn Org');
+        $contact->setRole('LinkedIn Role');
+        $contact->setMainChannel('LinkedIn');
+        $contact->setProfileUrl('https://www.linkedin.com/in/linked-in');
+        $contact->setSource('linkedin');
+        $contact->setNotes('LinkedIn notes');
+        $contact->setNextAction('LinkedIn follow-up');
+        $contact->setCreatedAt(new DateTimeImmutable('2026-05-01T08:00:00+00:00'));
+        $contact->setUpdatedAt(new DateTimeImmutable('2026-05-01T08:00:00+00:00'));
+
+        $policy->applyContactData($contact, [
+            'id' => 'contact-linkedin',
+            'display_name' => 'CRM Name',
+            'first_name' => 'CRM',
+            'last_name' => 'Contact',
+            'organization' => 'CRM Org',
+            'role' => 'CRM Role',
+            'main_channel' => 'email',
+            'email' => ['crm@example.com'],
+            'phone' => ['+32470000003'],
+            'profile_url' => 'https://example.com/crm-contact',
+            'source' => 'crm',
+            'priority' => ContactPriority::Medium->value,
+            'relationship_status' => ContactRelationshipStatus::FollowUp->value,
+            'last_contact_at' => '2026-05-28',
+            'next_action_at' => '2026-06-01',
+            'next_action' => 'CRM follow-up',
+            'notes' => 'CRM notes',
+            'tags' => ['crm', 'updated'],
+            'updated_at' => '2026-05-29T10:00:00+00:00',
+        ], true);
+
+        self::assertSame('LinkedIn Name', $contact->getDisplayName());
+        self::assertSame('Linked', $contact->getFirstName());
+        self::assertSame('In', $contact->getLastName());
+        self::assertSame('Linkedin Org', $contact->getOrganization());
+        self::assertSame('LinkedIn Role', $contact->getRole());
+        self::assertSame('LinkedIn', $contact->getMainChannel());
+        self::assertSame('https://www.linkedin.com/in/linked-in', $contact->getProfileUrl());
+        self::assertSame('linkedin | crm', $contact->getSource());
+        self::assertSame(['crm@example.com'], $contact->getEmails());
+        self::assertSame(['+32470000003'], $contact->getPhones());
+        self::assertSame('LinkedIn notes', $contact->getNotes());
+        self::assertSame('LinkedIn follow-up', $contact->getNextAction());
+        self::assertSame(['crm', 'updated'], $contact->getTags());
+        self::assertSame('2026-05-28', $contact->getLastContactAt()?->format('Y-m-d'));
+        self::assertSame('2026-06-01', $contact->getNextActionAt()?->format('Y-m-d'));
+    }
 }

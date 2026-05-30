@@ -730,7 +730,7 @@ CSV,
             'organization' => 'Lab One',
             'role' => 'Lead',
             'phone' => '+32470000099',
-            'source' => 'linkedin',
+            'source' => 'crm',
             'priority' => 'haute',
             'relationship_status' => 'a_relancer',
             'notes' => 'Notes droite',
@@ -795,7 +795,7 @@ CSV,
         self::assertSame('jean.dupond@example.com', $contact->getEmail());
         self::assertSame('+32470000099', $contact->getPhone());
         self::assertStringContainsString('phone', $contact->getSource() ?? '');
-        self::assertStringContainsString('linkedin', $contact->getSource() ?? '');
+        self::assertStringContainsString('crm', $contact->getSource() ?? '');
         self::assertNotNull($contact->getNotes());
         self::assertStringContainsString('Notes gauche', $contact->getNotes() ?? '');
         self::assertStringContainsString('Notes droite', $contact->getNotes() ?? '');

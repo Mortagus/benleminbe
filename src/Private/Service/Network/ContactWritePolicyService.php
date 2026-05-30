@@ -88,27 +88,33 @@ final class ContactWritePolicyService
             $contact->setId($data['id']);
         }
 
-        $contact->setDisplayName($merge ? $this->mergeString($contact->getDisplayName(), $data['display_name']) : $data['display_name']);
-        $contact->setFirstName($merge ? $this->mergeString($contact->getFirstName(), $data['first_name']) : $data['first_name']);
-        $contact->setLastName($merge ? $this->mergeString($contact->getLastName(), $data['last_name']) : $data['last_name']);
-        $contact->setOrganization($merge ? $this->mergeOrganizationValue($contact->getOrganization(), $data['organization']) : ($data['organization'] !== '' ? $this->normalizeOrganizationName($data['organization']) : null));
-        $contact->setRole($merge ? $this->mergeString($contact->getRole(), $data['role']) : $data['role']);
+        $currentIsLinkedIn = $this->isLinkedInContact($contact);
+        $incomingIsLinkedIn = $this->isLinkedInPayload($data);
+        $preferCurrentLinkedInValues = $merge && $currentIsLinkedIn && !$incomingIsLinkedIn;
+
+        $contact->setDisplayName($merge ? $this->chooseMergedString($contact->getDisplayName(), $data['display_name'], $preferCurrentLinkedInValues) : $data['display_name']);
+        $contact->setFirstName($merge ? $this->chooseMergedString($contact->getFirstName(), $data['first_name'], $preferCurrentLinkedInValues) : $data['first_name']);
+        $contact->setLastName($merge ? $this->chooseMergedString($contact->getLastName(), $data['last_name'], $preferCurrentLinkedInValues) : $data['last_name']);
+        $contact->setOrganization($merge ? $this->chooseMergedOrganizationValue($contact->getOrganization(), $data['organization'], $preferCurrentLinkedInValues) : ($data['organization'] !== '' ? $this->normalizeOrganizationName($data['organization']) : null));
+        $contact->setRole($merge ? $this->chooseMergedString($contact->getRole(), $data['role'], $preferCurrentLinkedInValues) : $data['role']);
         $contact->setMainChannel($merge ? $this->resolveMainChannelValue(
             $contact->getMainChannel(),
             $data['main_channel'],
             $contact->getProfileUrl(),
             $data['profile_url'],
+            $currentIsLinkedIn,
+            $incomingIsLinkedIn,
         ) : $data['main_channel']);
         $contact->setEmail($merge ? $this->mergeRules->mergeEmailLists($contact->getEmails(), $data['email']) : $data['email']);
         $contact->setPhone($merge ? $this->mergeRules->mergePhoneLists($contact->getPhones(), $data['phone']) : $data['phone']);
-        $contact->setProfileUrl($merge ? $this->mergeString($contact->getProfileUrl(), $data['profile_url']) : $data['profile_url']);
+        $contact->setProfileUrl($merge ? $this->chooseMergedString($contact->getProfileUrl(), $data['profile_url'], $preferCurrentLinkedInValues) : $data['profile_url']);
         $contact->setSource($merge ? $this->mergeRules->mergeSourceValues($contact->getSource(), $data['source']) : $data['source']);
         $contact->setPriority($this->normalizeContactPriority($data['priority']));
         $contact->setRelationshipStatus($this->normalizeContactRelationStatus($data['relationship_status']));
         $contact->setLastContactAt($merge ? $this->mergeDate($contact->getLastContactAt(), $data['last_contact_at']) : $this->parseDate($data['last_contact_at']));
         $contact->setNextActionAt($merge ? $this->mergeDate($contact->getNextActionAt(), $data['next_action_at']) : $this->parseDate($data['next_action_at']));
-        $contact->setNextAction($merge ? $this->mergeString($contact->getNextAction(), $data['next_action']) : $data['next_action']);
-        $contact->setNotes($merge ? $this->mergeString($contact->getNotes(), $data['notes']) : $data['notes']);
+        $contact->setNextAction($merge ? $this->chooseMergedString($contact->getNextAction(), $data['next_action'], $preferCurrentLinkedInValues) : $data['next_action']);
+        $contact->setNotes($merge ? $this->chooseMergedString($contact->getNotes(), $data['notes'], $preferCurrentLinkedInValues) : $data['notes']);
         $contact->setTags($merge ? $this->mergeRules->mergeTags($contact->getTags(), $data['tags']) : $data['tags']);
 
         if (!$merge) {
@@ -169,9 +175,15 @@ final class ContactWritePolicyService
         return null;
     }
 
-    private function mergeString(?string $current, string $incoming): ?string
+    private function chooseMergedString(?string $current, string $incoming, bool $preferCurrent): ?string
     {
         $incoming = $this->normalizeString($incoming);
+        if ($preferCurrent) {
+            $current = $this->normalizeString($current);
+            if ($current !== '') {
+                return $current;
+            }
+        }
 
         return $incoming !== '' ? $incoming : $current;
     }
@@ -192,21 +204,33 @@ final class ContactWritePolicyService
         return $this->mergeRules->normalizePhoneList($value);
     }
 
-    private function mergeOrganizationValue(?string $current, ?string $incoming): ?string
+    private function chooseMergedOrganizationValue(?string $current, ?string $incoming, bool $preferCurrent): ?string
     {
         $incoming = $this->normalizeOrganizationName($incoming);
-        if ($incoming !== '') {
+        if ($preferCurrent) {
+            $current = $this->normalizeOrganizationName($current);
+            if ($current !== null && $current !== '') {
+                return $current;
+            }
+        }
+
+        if ($incoming !== null && $incoming !== '') {
             return $incoming;
         }
 
         $current = $this->normalizeOrganizationName($current);
 
-        return $current !== '' ? $current : null;
+        return $current !== null && $current !== '' ? $current : null;
     }
 
-    private function resolveMainChannelValue(mixed $currentMainChannel, mixed $incomingMainChannel, mixed $currentProfileUrl, mixed $incomingProfileUrl): ?string
+    private function resolveMainChannelValue(mixed $currentMainChannel, mixed $incomingMainChannel, mixed $currentProfileUrl, mixed $incomingProfileUrl, bool $currentIsLinkedIn, bool $incomingIsLinkedIn): ?string
     {
-        if ($this->mergeRules->isLinkedInProfileUrl($currentProfileUrl) || $this->mergeRules->isLinkedInProfileUrl($incomingProfileUrl)) {
+        if (
+            $currentIsLinkedIn
+            || $incomingIsLinkedIn
+            || $this->mergeRules->isLinkedInProfileUrl($currentProfileUrl)
+            || $this->mergeRules->isLinkedInProfileUrl($incomingProfileUrl)
+        ) {
             return 'LinkedIn';
         }
 
@@ -218,6 +242,21 @@ final class ContactWritePolicyService
         $current = $this->normalizeString((string) $currentMainChannel);
 
         return $current !== '' ? $current : null;
+    }
+
+    private function isLinkedInContact(Contact $contact): bool
+    {
+        return $this->mergeRules->isLinkedInContact($contact);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function isLinkedInPayload(array $data): bool
+    {
+        return $this->mergeRules->isLinkedInSourceValue($data['source'] ?? null)
+            || $this->mergeRules->isLinkedInProfileUrl($data['profile_url'] ?? null)
+            || mb_strtolower($this->normalizeString($data['main_channel'] ?? '')) === 'linkedin';
     }
 
     private function normalizeContactPriority(mixed $priority): ContactPriority

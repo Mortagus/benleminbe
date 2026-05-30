@@ -189,6 +189,23 @@ final class ContactMergeRulesService
         return $profileUrl !== '' && str_contains($profileUrl, 'linkedin.com');
     }
 
+    public function isLinkedInSourceValue(mixed $source): bool
+    {
+        $source = $this->normalizeOptionalString($source);
+        if ($source === null) {
+            return false;
+        }
+
+        return str_contains(mb_strtolower($source), 'linkedin');
+    }
+
+    public function isLinkedInContact(Contact $contact): bool
+    {
+        return $this->isLinkedInSourceValue($contact->getSource())
+            || $this->isLinkedInProfileUrl($contact->getProfileUrl())
+            || mb_strtolower($this->normalizeOptionalString($contact->getMainChannel()) ?? '') === 'linkedin';
+    }
+
     /**
      * @return list<string>
      */

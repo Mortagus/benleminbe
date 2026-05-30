@@ -81,6 +81,11 @@ final class ContactMergeReviewService
 
                 $pair = $this->scoringService->buildCandidatePair($left, $right);
                 if ($pair === null) {
+                    if ($existingReview instanceof ContactMergeReview && $existingReview->getStatus() === ContactMergeReviewStatus::Pending) {
+                        $this->entityManager->remove($existingReview);
+                        $skipped++;
+                    }
+
                     continue;
                 }
 

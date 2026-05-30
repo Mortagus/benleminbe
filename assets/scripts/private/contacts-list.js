@@ -36,6 +36,12 @@ if (contactRows.length > 0) {
                 return;
             }
 
+            const path = typeof event.composedPath === 'function' ? event.composedPath() : [];
+            const elementConstructor = globalThis.Element;
+            if (typeof elementConstructor !== 'undefined' && path.some((element) => element instanceof elementConstructor && element.matches(interactiveSelector))) {
+                return;
+            }
+
             const target = event.target;
             if (!target || typeof target.closest !== 'function') {
                 return;

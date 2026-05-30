@@ -183,7 +183,8 @@ export function setupContactPreparationModal(document, clipboard = navigator.cli
     };
 
     openButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', event => {
+            event.stopPropagation();
             openModal(button);
         });
     });

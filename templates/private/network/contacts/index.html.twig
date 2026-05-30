@@ -206,6 +206,34 @@
                                         {% endif %}
                                     </td>
                                     <td class="private-table__cell private-table__cell--actions private-actions private-actions--inline" data-label="Actions">
+                                        {% set contactPreparation = contact.contact_preparation|merge({
+                                            id: contact.id,
+                                            display_name: contact.display_name,
+                                            role: contact.role,
+                                            organization: contact.organization,
+                                            role_category_label: contact.role_category_label,
+                                            profile_url: contact.profile_url,
+                                            emails: contact.emails,
+                                            phones: contact.phones,
+                                            token: csrf_token('private-network-contact-mark-contacted-' ~ contact.id),
+                                        }) %}
+                                        <button
+                                            class="private-icon-button"
+                                            type="button"
+                                            aria-label="Préparer un contact pour {{ contact.display_name }}"
+                                            title="Préparer un contact pour {{ contact.display_name }}"
+                                            aria-haspopup="dialog"
+                                            aria-controls="contactPreparationModal"
+                                            data-contact-preparation-open
+                                            data-contact-preparation="{{ contactPreparation|json_encode|e('html_attr') }}"
+                                        >
+                                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                                <path d="M4 5h16v10H8l-4 4V5Z"></path>
+                                                <path d="M8 9h8"></path>
+                                                <path d="M8 12h5"></path>
+                                            </svg>
+                                        </button>
+
                                         <a
                                             class="private-icon-button"
                                             href="{{ path('app_private_network_contact_show', { id: contact.id }) }}"
@@ -310,5 +338,7 @@
                 <p class="private-empty">Aucun contact enregistré.</p>
             </section>
         {% endif %}
+
+        {% include 'private/network/contacts/_contact_preparation_modal.html.twig' %}
     </section>
 {% endblock %}

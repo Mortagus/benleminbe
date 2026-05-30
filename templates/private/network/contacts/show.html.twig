@@ -14,6 +14,27 @@
             </div>
 
             <div class="private-page__actions">
+                {% set contactPreparation = contact.contact_preparation|merge({
+                    id: contact.id,
+                    display_name: contact.display_name,
+                    role: contact.role,
+                    organization: contact.organization,
+                    role_category_label: contact.role_category_label,
+                    profile_url: contact.profile_url,
+                    emails: contact.emails,
+                    phones: contact.phones,
+                    token: csrf_token('private-network-contact-mark-contacted-' ~ contact.id),
+                }) %}
+                <button
+                    class="private-link-button private-link-button--secondary"
+                    type="button"
+                    aria-haspopup="dialog"
+                    aria-controls="contactPreparationModal"
+                    data-contact-preparation-open
+                    data-contact-preparation="{{ contactPreparation|json_encode|e('html_attr') }}"
+                >
+                    Préparer un contact
+                </button>
                 <a class="private-link-button" href="{{ path('app_private_network_contact_edit', { id: contact.id }) }}">Modifier</a>
                 <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contacts') }}">Retour</a>
             </div>
@@ -205,5 +226,7 @@
                 {% endif %}
             </section>
         </div>
+
+        {% include 'private/network/contacts/_contact_preparation_modal.html.twig' %}
     </section>
 {% endblock %}

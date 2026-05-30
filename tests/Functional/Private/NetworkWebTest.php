@@ -240,6 +240,59 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertStringNotContainsString('Recruiter Example', $client->getResponse()->getContent());
     }
 
+    public function testContactsListingExposesContactPreparationModal(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $repository->saveContact([
+            'display_name' => 'Anne Example',
+            'first_name' => 'Anne',
+            'role' => 'Talent Acquisition Specialist',
+            'profile_url' => 'https://www.linkedin.com/in/anne-example',
+            'email' => 'anne@example.com',
+            'phone' => '+32 475 25 89 41',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+
+        $client->request('GET', '/private/network/contacts');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('[data-contact-preparation-modal]');
+        self::assertSelectorExists('[data-contact-preparation-open]');
+        self::assertSelectorTextContains('body', 'Préparer un contact');
+    }
+
+    public function testMarkContactedActionUpdatesTheContactStatus(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $contact = $repository->saveContact([
+            'display_name' => 'Anne Example',
+            'first_name' => 'Anne',
+            'role' => 'Talent Acquisition Specialist',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+
+        $client->request('GET', '/private/network/contacts');
+        $preparationData = json_decode($client->getCrawler()->filter('[data-contact-preparation-open]')->first()->attr('data-contact-preparation'), true, 512, JSON_THROW_ON_ERROR);
+
+        $client->request('POST', sprintf('/private/network/contacts/%s/mark-contacted', $contact['id']), [
+            '_token' => $preparationData['token'],
+            'return_to' => '/private/network/contacts',
+        ]);
+
+        self::assertResponseRedirects('/private/network/contacts');
+        $client->followRedirect();
+
+        $updatedContact = $repository->getContact($contact['id']);
+        self::assertSame('en_cours', $updatedContact['relationship_status']);
+        self::assertNotEmpty($updatedContact['last_contact_at']);
+    }
+
     public function testContactsListingCanSortByOrganization(): void
     {
         $client = $this->createAuthenticatedClient();

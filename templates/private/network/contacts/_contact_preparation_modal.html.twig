@@ -1,0 +1,127 @@
+<div
+    class="private-modal"
+    id="contactPreparationModal"
+    hidden
+    role="presentation"
+    data-contact-preparation-modal
+    data-contact-preparation-return-to="{{ app.request.requestUri|e('html_attr') }}"
+>
+    <div class="private-modal__backdrop" data-contact-preparation-close aria-hidden="true"></div>
+
+    <section
+        class="private-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="contactPreparationModalTitle"
+    >
+        <header class="private-modal__header">
+            <div>
+                <p class="private-eyebrow">Prise de contact</p>
+                <h2 id="contactPreparationModalTitle" data-contact-preparation-title>Préparer un contact</h2>
+            </div>
+
+            <button
+                class="private-icon-button"
+                type="button"
+                aria-label="Fermer la fenêtre de préparation"
+                title="Fermer"
+                data-contact-preparation-close
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 6l12 12"></path>
+                    <path d="M18 6L6 18"></path>
+                </svg>
+            </button>
+        </header>
+
+        <div class="private-modal__body">
+            <section class="private-contact-preparation__summary">
+                <dl class="private-definition-list">
+                    <div>
+                        <dt>Contact</dt>
+                        <dd data-contact-preparation-name>Contact</dd>
+                    </div>
+                    <div>
+                        <dt>Rôle</dt>
+                        <dd data-contact-preparation-role>Non renseigné</dd>
+                    </div>
+                    <div>
+                        <dt>Entreprise</dt>
+                        <dd data-contact-preparation-organization>Sans entreprise renseignée</dd>
+                    </div>
+                    <div>
+                        <dt>Catégorie métier</dt>
+                        <dd data-contact-preparation-category>Autre</dd>
+                    </div>
+                    <div>
+                        <dt>Canal recommandé</dt>
+                        <dd data-contact-preparation-recommended-channel>Aucun canal exploitable</dd>
+                    </div>
+                </dl>
+
+                <div class="private-contact-preparation__channels" aria-label="Canaux disponibles">
+                    <a
+                        class="private-link-button private-link-button--secondary private-contact-preparation__channel"
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        hidden
+                        data-contact-preparation-linkedin
+                    >
+                        Ouvrir LinkedIn
+                    </a>
+
+                    <a
+                        class="private-link-button private-link-button--secondary private-contact-preparation__channel"
+                        href="#"
+                        hidden
+                        data-contact-preparation-email
+                    >
+                        Ouvrir un email
+                    </a>
+
+                    <a
+                        class="private-link-button private-link-button--secondary private-contact-preparation__channel"
+                        href="#"
+                        hidden
+                        data-contact-preparation-phone
+                    >
+                        Appeler
+                    </a>
+                </div>
+            </section>
+
+            <section class="private-contact-preparation__editor">
+                <label class="private-form__field">
+                    <span>Objet</span>
+                    <input class="private-input" type="text" data-contact-preparation-subject>
+                </label>
+
+                <label class="private-form__field">
+                    <span>Message</span>
+                    <textarea class="private-input" rows="10" data-contact-preparation-message></textarea>
+                </label>
+
+                <p class="private-contact-preparation__feedback" hidden data-contact-preparation-feedback></p>
+            </section>
+
+            <div class="private-contact-preparation__actions">
+                <button class="private-link-button" type="button" data-contact-preparation-copy>Copier le message</button>
+
+                <form
+                    class="private-contact-preparation__mark-form private-inline-form"
+                    method="post"
+                    action="{{ path('app_private_network_contact_mark_contacted', { id: '__CONTACT_ID__' }) }}"
+                    data-contact-preparation-mark-form
+                    data-contact-preparation-mark-action-template="{{ path('app_private_network_contact_mark_contacted', { id: '__CONTACT_ID__' }) }}"
+                    data-private-confirm="Marquer ce contact comme contacté ?"
+                    data-private-progress-submit="Enregistrement en cours…"
+                >
+                    <input type="hidden" name="_token" value="">
+                    <input type="hidden" name="return_to" value="">
+                    <button class="private-link-button private-link-button--secondary" type="submit">Marquer comme contacté</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>

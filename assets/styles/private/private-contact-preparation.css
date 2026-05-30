@@ -1,0 +1,112 @@
+.private-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+}
+
+.private-modal[hidden] {
+    display: none;
+}
+
+.private-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(10 12 16 / 58%);
+    backdrop-filter: blur(8px);
+}
+
+.private-modal__dialog {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 54rem);
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: var(--card);
+    box-shadow: 0 24px 56px rgb(0 0 0 / 28%);
+}
+
+.private-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.2rem 1.2rem 0;
+}
+
+.private-modal__body {
+    display: grid;
+    gap: 1rem;
+    padding: 1.2rem;
+}
+
+.private-contact-preparation__summary {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.private-contact-preparation__channels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.private-contact-preparation__channel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.private-contact-preparation__channel[hidden] {
+    display: none;
+}
+
+.private-contact-preparation__editor {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.private-contact-preparation__editor textarea {
+    min-height: 15rem;
+    resize: vertical;
+}
+
+.private-contact-preparation__feedback {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.private-contact-preparation__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.private-contact-preparation__mark-form {
+    display: inline-flex;
+}
+
+.private-modal-is-open {
+    overflow: hidden;
+}
+
+@media (width <= 40rem) {
+    .private-modal {
+        padding: 0.5rem;
+    }
+
+    .private-modal__dialog {
+        max-height: calc(100vh - 1rem);
+    }
+
+    .private-modal__header,
+    .private-modal__body {
+        padding-inline: 0.9rem;
+    }
+}

@@ -224,6 +224,33 @@ final class ContactController extends AbstractController
         return $this->redirectToRoute('app_private_network_contact_show', ['id' => $id]);
     }
 
+    #[Route('/contacts/{id}/mark-contacted', name: 'contact_mark_contacted', methods: ['POST'])]
+    public function contactMarkContacted(string $id, Request $request): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('private-network-contact-mark-contacted-' . $id, $request->request->getString('_token'))) {
+            $this->addFlash('error', 'Le formulaire de suivi a expiré. Réessaie.');
+
+            return $this->redirectToRoute('app_private_network_contact_show', ['id' => $id]);
+        }
+
+        try {
+            $this->contactService->markContactAsContacted($id);
+        } catch (NotFoundHttpException) {
+            $this->addFlash('error', 'Le contact à marquer est introuvable.');
+
+            return $this->redirectToRoute('app_private_network_contacts');
+        }
+
+        $this->addFlash('success', 'Contact marqué comme contacté.');
+
+        $returnTo = $request->request->getString('return_to');
+        if ($returnTo !== '' && str_starts_with($returnTo, '/')) {
+            return $this->redirect($returnTo);
+        }
+
+        return $this->redirectToRoute('app_private_network_contact_show', ['id' => $id]);
+    }
+
     #[Route('/import', name: 'import', methods: ['GET', 'POST'])]
     public function import(Request $request): Response
     {

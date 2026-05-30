@@ -25,6 +25,7 @@ final class ContactService
         private readonly EntityManagerInterface $entityManager,
         private readonly ContactMergeRulesService $mergeRules,
         private readonly ContactRoleClassifier $roleClassifier,
+        private readonly ContactMessageSuggestionBuilder $messageSuggestionBuilder,
         private readonly ContactAutoMergeService $autoMergeService,
         private readonly ContactWritePolicyService $writePolicy,
         private readonly ContactImportService $contactImportService,
@@ -319,6 +320,27 @@ final class ContactService
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public function markContactAsContacted(string $contactId): array
+    {
+        $contact = $this->entityManager->getRepository(Contact::class)->find($contactId);
+        if (!$contact instanceof Contact) {
+            throw new NotFoundHttpException(sprintf('Contact "%s" was not found.', $contactId));
+        }
+
+        $now = new DateTimeImmutable();
+        $contact->setRelationshipStatus(ContactRelationshipStatus::InProgress);
+        $contact->setLastContactAt($now);
+        $contact->setUpdatedAt($now);
+
+        $this->entityManager->persist($contact);
+        $this->entityManager->flush();
+
+        return $this->decorateContact($contact);
+    }
+
+    /**
      * @param list<array<string, mixed>> $rows
      *
      * @return array{created: int, updated: int, total: int, import_id: string}
@@ -566,6 +588,18 @@ final class ContactService
             'tags' => array_values($contact->getTags()),
             'created_at' => $this->formatDateTime($contact->getCreatedAt()),
             'updated_at' => $this->formatDateTime($contact->getUpdatedAt()),
+            'contact_preparation' => $this->messageSuggestionBuilder->build([
+                'display_name' => $contact->getDisplayName(),
+                'first_name' => $contact->getFirstName() ?? '',
+                'organization' => $contact->getOrganization() ?? '',
+                'role' => $contact->getRole() ?? '',
+                'role_category' => $roleClassification['category'],
+                'role_category_label' => $roleClassification['label'],
+                'profile_url' => $contact->getProfileUrl() ?? '',
+                'main_channel' => $contact->getMainChannel() ?? '',
+                'emails' => $contact->getEmails(),
+                'phones' => $contact->getPhones(),
+            ]),
         ];
     }
 

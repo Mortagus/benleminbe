@@ -305,6 +305,7 @@ Le premier jet implementé suit une approche volontairement legere :
 - listes et fiches pour les plateformes et les contacts ;
 - edition par formulaires simples ;
 - journalisation des interactions par contact ;
+- preparation locale d'un message de prise de contact avec canal recommande et action de suivi minimale ;
 - import de contacts depuis vCard du telephone ou CSV LinkedIn ;
 - export et import JSON des plateformes depuis la page de listing ;
 - modele organisationnel reduit pour l'instant a un champ `organization` sur le contact, avec regroupement derive pour le dashboard.

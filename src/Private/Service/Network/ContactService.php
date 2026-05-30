@@ -40,6 +40,8 @@ final class ContactService
      *     currentPriority: string,
      *     currentRelationStatus: string,
      *     currentOrganizationState: string,
+     *     currentRoleState: string,
+     *     currentRole: string,
      *     currentLetter: string,
      *     currentSort: string,
      *     currentPage: int,
@@ -53,6 +55,8 @@ final class ContactService
      *     nextPage: int,
      *     paginationPages: list<array{type: string, page?: int, label?: string, current?: bool}>,
      *     letterOptions: list<array{value: string, label: string, active: bool}>,
+     *     roleStateOptions: array<string, string>,
+     *     roleOptions: array<string, string>,
      *     sortOptions: array<string, string>,
      *     organizationStateOptions: array<string, string>,
      *     priorityOptions: array<string, string>,
@@ -72,6 +76,8 @@ final class ContactService
         $visibleTo = $pageContacts === [] ? 0 : min($totalContacts, $offset + count($pageContacts));
         $currentLetter = $this->normalizeLetterFilter($filters['letter'] ?? '');
         $currentOrganizationState = $this->normalizeOrganizationStateFilter($filters['organization_state'] ?? '');
+        $currentRoleState = $this->normalizeRoleStateFilter($filters['role_state'] ?? '');
+        $currentRole = $this->normalizeRoleFilter($filters['role'] ?? '');
         $currentSort = $this->normalizeSortFilter($filters['sort'] ?? '');
 
         return [
@@ -80,6 +86,8 @@ final class ContactService
             'currentPriority' => $this->normalizeString($filters['priority'] ?? ''),
             'currentRelationStatus' => $this->normalizeString($filters['relationship_status'] ?? ''),
             'currentOrganizationState' => $currentOrganizationState,
+            'currentRoleState' => $currentRoleState,
+            'currentRole' => $currentRole,
             'currentLetter' => $currentLetter,
             'currentSort' => $currentSort,
             'currentPage' => $page,
@@ -93,6 +101,8 @@ final class ContactService
             'nextPage' => min($totalPages, $page + 1),
             'paginationPages' => $this->buildPaginationPages($page, $totalPages),
             'letterOptions' => $this->buildLetterOptions($currentLetter),
+            'roleStateOptions' => $this->getRoleStateOptions(),
+            'roleOptions' => $this->getRoleOptions(),
             'sortOptions' => $this->getSortOptions(),
             'organizationStateOptions' => $this->getOrganizationStateOptions(),
             'priorityOptions' => $this->getPriorityOptions(),
@@ -112,10 +122,12 @@ final class ContactService
         $priority = $this->normalizeString($criteria['priority'] ?? '');
         $status = $this->normalizeString($criteria['relationship_status'] ?? '');
         $organizationState = $this->normalizeOrganizationStateFilter($criteria['organization_state'] ?? '');
+        $roleState = $this->normalizeRoleStateFilter($criteria['role_state'] ?? '');
+        $role = $this->normalizeRoleFilter($criteria['role'] ?? '');
         $letter = $this->normalizeLetterFilter($criteria['letter'] ?? '');
         $sort = $this->normalizeSortFilter($criteria['sort'] ?? '');
 
-        $contacts = array_values(array_filter($contacts, function (array $contact) use ($search, $priority, $status, $organizationState, $letter): bool {
+        $contacts = array_values(array_filter($contacts, function (array $contact) use ($search, $priority, $status, $organizationState, $roleState, $role, $letter): bool {
             if ($priority !== '' && $contact['priority'] !== $priority) {
                 return false;
             }
@@ -129,6 +141,18 @@ final class ContactService
             }
 
             if ($organizationState === 'without' && $this->contactHasOrganization($contact)) {
+                return false;
+            }
+
+            if ($roleState === 'with' && !$this->contactHasRole($contact)) {
+                return false;
+            }
+
+            if ($roleState === 'without' && $this->contactHasRole($contact)) {
+                return false;
+            }
+
+            if ($role !== '' && $this->normalizeRoleKey($contact['role'] ?? '') !== $role) {
                 return false;
             }
 
@@ -368,6 +392,44 @@ final class ContactService
             'with' => 'Avec entreprise',
             'without' => 'Sans entreprise',
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getRoleStateOptions(): array
+    {
+        return [
+            '' => 'Tous',
+            'with' => 'Avec rôle',
+            'without' => 'Sans rôle',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getRoleOptions(): array
+    {
+        $roles = [];
+
+        foreach ($this->decorateContacts($this->loadContacts()) as $contact) {
+            $role = $this->normalizeRoleLabel($contact['role'] ?? '');
+            if ($role === null) {
+                continue;
+            }
+
+            $roleKey = $this->normalizeRoleKey($role);
+            if ($roleKey === '') {
+                continue;
+            }
+
+            $roles[$roleKey] = $role;
+        }
+
+        asort($roles, SORT_NATURAL | SORT_FLAG_CASE);
+
+        return ['' => 'Tous les rôles'] + $roles;
     }
 
     /**
@@ -951,6 +1013,32 @@ final class ContactService
         return in_array($value, ['with', 'without'], true) ? $value : '';
     }
 
+    private function normalizeRoleStateFilter(mixed $value): string
+    {
+        $value = $this->normalizeString($value);
+
+        return in_array($value, ['with', 'without'], true) ? $value : '';
+    }
+
+    private function normalizeRoleFilter(mixed $value): string
+    {
+        $value = $this->normalizeString($value);
+
+        return $value !== '' ? $this->normalizeRoleKey($value) : '';
+    }
+
+    private function normalizeRoleKey(mixed $value): string
+    {
+        return $this->mergeRules->normalizeComparableText($value);
+    }
+
+    private function normalizeRoleLabel(mixed $value): ?string
+    {
+        $value = $this->normalizeString($value);
+
+        return $value !== '' ? $value : null;
+    }
+
     private function normalizeOrganizationLabel(mixed $value): ?string
     {
         $value = $this->mergeRules->normalizeOrganizationName($value);
@@ -969,6 +1057,14 @@ final class ContactService
     private function contactHasOrganization(array $contact): bool
     {
         return trim((string) ($contact['organization'] ?? '')) !== '';
+    }
+
+    /**
+     * @param array<string, mixed> $contact
+     */
+    private function contactHasRole(array $contact): bool
+    {
+        return trim((string) ($contact['role'] ?? '')) !== '';
     }
 
     private function contactInitialLetter(string $displayName): string

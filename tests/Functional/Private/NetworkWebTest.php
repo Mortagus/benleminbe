@@ -184,6 +184,33 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertStringNotContainsString('Sans Entreprise', $client->getResponse()->getContent());
     }
 
+    public function testContactsListingCanFilterContactsWithRole(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $repository->saveContact([
+            'display_name' => 'Rôle Example',
+            'role' => 'Consultante',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $repository->saveContact([
+            'display_name' => 'Sans Rôle',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+
+        $client->request('GET', '/private/network/contacts?role_state=with');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('select[name="role_state"]');
+        self::assertSame('with', $client->getCrawler()->filter('select[name="role_state"] option[selected]')->attr('value'));
+        self::assertSelectorTextContains('.private-muted', 'Affichage 1-1 sur 1 contact.');
+        self::assertSelectorTextContains('body', 'Rôle Example');
+        self::assertStringNotContainsString('Sans Rôle', $client->getResponse()->getContent());
+    }
+
     public function testContactsListingCanSortByOrganization(): void
     {
         $client = $this->createAuthenticatedClient();
@@ -220,6 +247,41 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertSame('Alice Alpha', trim($rows->eq(0)->filter('a.private-table__contact-link')->text()));
         self::assertSame('Bob Beta', trim($rows->eq(1)->filter('a.private-table__contact-link')->text()));
         self::assertSame('Charlie Gamma', trim($rows->eq(2)->filter('a.private-table__contact-link')->text()));
+    }
+
+    public function testContactsListingCanFilterContactsBySpecificRole(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $repository->saveContact([
+            'display_name' => 'Consultante One',
+            'role' => 'Consultante',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $repository->saveContact([
+            'display_name' => 'Consultante Two',
+            'role' => 'consultante',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $repository->saveContact([
+            'display_name' => 'Developer Example',
+            'role' => 'Developer',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+
+        $client->request('GET', '/private/network/contacts?role=consultante');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('select[name="role"]');
+        self::assertSame('consultante', $client->getCrawler()->filter('select[name="role"] option[selected]')->attr('value'));
+        self::assertSelectorTextContains('.private-muted', 'Affichage 1-2 sur 2 contacts.');
+        self::assertSelectorTextContains('body', 'Consultante One');
+        self::assertSelectorTextContains('body', 'Consultante Two');
+        self::assertStringNotContainsString('Developer Example', $client->getResponse()->getContent());
     }
 
     public function testPlatformCrudFlowWorks(): void

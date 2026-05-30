@@ -22,6 +22,8 @@
                     <input type="hidden" name="priority" value="{{ currentPriority }}">
                     <input type="hidden" name="relationship_status" value="{{ currentRelationStatus }}">
                     <input type="hidden" name="organization_state" value="{{ currentOrganizationState }}">
+                    <input type="hidden" name="role_state" value="{{ currentRoleState }}">
+                    <input type="hidden" name="role" value="{{ currentRole }}">
                     <input type="hidden" name="letter" value="{{ currentLetter }}">
                     <input type="hidden" name="sort" value="{{ currentSort }}">
                     <button class="private-link-button private-link-button--secondary" type="submit">Fusionner les doublons</button>
@@ -51,6 +53,24 @@
                     <select name="organization_state">
                         {% for value, label in organizationStateOptions %}
                             <option value="{{ value }}" {{ currentOrganizationState == value ? 'selected' : '' }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label class="private-toolbar__field">
+                    <span>Rôle</span>
+                    <select name="role_state">
+                        {% for value, label in roleStateOptions %}
+                            <option value="{{ value }}" {{ currentRoleState == value ? 'selected' : '' }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label class="private-toolbar__field">
+                    <span>Rôle précis</span>
+                    <select name="role">
+                        {% for value, label in roleOptions %}
+                            <option value="{{ value }}" {{ currentRole == value ? 'selected' : '' }}>{{ label }}</option>
                         {% endfor %}
                     </select>
                 </label>
@@ -86,7 +106,7 @@
 
                 <div class="private-toolbar__actions">
                     <button class="private-link-button" type="submit">Filtrer</button>
-                    {% if currentQuery or currentPriority or currentRelationStatus or currentOrganizationState or currentSort != 'default' %}
+                    {% if currentQuery or currentPriority or currentRelationStatus or currentOrganizationState or currentRoleState or currentRole or currentSort != 'default' %}
                         <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contacts') }}">Réinitialiser</a>
                     {% endif %}
                 </div>
@@ -189,6 +209,8 @@
                                             <input type="hidden" name="priority" value="{{ currentPriority }}">
                                             <input type="hidden" name="relationship_status" value="{{ currentRelationStatus }}">
                                             <input type="hidden" name="organization_state" value="{{ currentOrganizationState }}">
+                                            <input type="hidden" name="role_state" value="{{ currentRoleState }}">
+                                            <input type="hidden" name="role" value="{{ currentRole }}">
                                             <input type="hidden" name="letter" value="{{ currentLetter }}">
                                             <input type="hidden" name="sort" value="{{ currentSort }}">
                                             <input type="hidden" name="page" value="{{ currentPage }}">

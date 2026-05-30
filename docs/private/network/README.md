@@ -7,6 +7,7 @@ Documentation du premier outil prive `Contacts et reseau`.
 - [Vue D'Ensemble](overview.md) : contexte general du projet prive de suivi du reseau.
 - [Analyse Du Besoin](analyse-besoin.md) : phase 0 et clarification du besoin.
 - [Specification MVP](spec-mvp.md) : perimetre fonctionnel minimal et ecrans cibles.
+- [Presentation Du Module](presentation.md) : synthese courte des fonctionnalites actuellement en place.
 - [Audit Structure Et CSS](ui-structure-audit.md) : audit du rendu Twig et CSS de la partie privee.
 - [Audit Mobile Et Tablette](mobile-tablet-audit.md) : audit du comportement responsive sur les pages `contacts` et `platforms`.
 

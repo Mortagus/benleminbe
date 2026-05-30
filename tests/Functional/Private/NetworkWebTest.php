@@ -54,6 +54,68 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertSelectorTextContains('h1', 'Import');
     }
 
+    public function testContactsListingPaginatesWithNumberedNavigation(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        for ($index = 1; $index <= 22; ++$index) {
+            $repository->saveContact([
+                'display_name' => sprintf('Contact %02d', $index),
+                'organization' => 'Pagination Lab',
+                'priority' => 'moyenne',
+                'relationship_status' => 'a_relancer',
+            ]);
+        }
+
+        $client->request('GET', '/private/network/contacts?page=2');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'Contacts');
+        self::assertSelectorTextContains('.private-muted', 'Affichage 21-22 sur 22 contacts.');
+        self::assertSelectorExists('.private-pagination');
+        self::assertSelectorTextContains('.private-pagination', 'Précédente');
+        self::assertSelectorTextContains('.private-pagination', 'Suivante');
+        self::assertSelectorTextContains('.private-pagination', '1');
+        self::assertSelectorTextContains('.private-pagination', '2');
+        self::assertSelectorTextContains('.private-pagination__link--current', '2');
+    }
+
+    public function testContactsListingSupportsAlphabeticFilter(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $repository->saveContact([
+            'display_name' => 'Alpha Example',
+            'organization' => 'Alphabet Lab',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $repository->saveContact([
+            'display_name' => 'Élodie Example',
+            'organization' => 'Alphabet Lab',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $repository->saveContact([
+            'display_name' => 'Ethan Example',
+            'organization' => 'Alphabet Lab',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+
+        $client->request('GET', '/private/network/contacts?letter=E');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'Contacts');
+        self::assertSelectorTextContains('.private-alpha-index__link--active', 'E');
+        self::assertSelectorTextContains('.private-muted', 'Affichage 1-2 sur 2 contacts.');
+        self::assertSelectorTextContains('body', 'Élodie Example');
+        self::assertSelectorTextContains('body', 'Ethan Example');
+        self::assertStringNotContainsString('Alpha Example', $client->getResponse()->getContent());
+    }
+
     public function testPlatformCrudFlowWorks(): void
     {
         $client = $this->createAuthenticatedClient();
@@ -430,9 +492,13 @@ CSV,
         self::assertSelectorExists('tbody tr[data-contact-row]');
         self::assertSelectorExists('.private-table__contact-link');
         self::assertStringContainsString('Affichage 1-20 sur 21 contacts.', $client->getResponse()->getContent());
-        self::assertSelectorExists('a[href*="page=2"]');
+        self::assertSelectorExists('.private-pagination');
+        self::assertSelectorTextContains('.private-pagination', 'Précédente');
+        self::assertSelectorTextContains('.private-pagination', 'Suivante');
+        self::assertSelectorTextContains('.private-pagination', '1');
+        self::assertSelectorTextContains('.private-pagination', '2');
 
-        $client->clickLink('Charger plus');
+        $client->clickLink('Suivante');
         self::assertResponseIsSuccessful();
         self::assertSame(1, $client->getCrawler()->filter('tbody tr')->count());
         self::assertStringContainsString('Affichage 21-21 sur 21 contacts.', $client->getResponse()->getContent());

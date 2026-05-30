@@ -32,6 +32,7 @@ final class ContactController extends AbstractController
             'search' => $request->query->getString('q'),
             'priority' => $request->query->getString('priority'),
             'relationship_status' => $request->query->getString('relationship_status'),
+            'letter' => $request->query->getString('letter'),
         ];
         $page = max(1, $request->query->getInt('page', 1));
 
@@ -314,6 +315,7 @@ final class ContactController extends AbstractController
             'q' => $request->request->getString('q'),
             'priority' => $request->request->getString('priority'),
             'relationship_status' => $request->request->getString('relationship_status'),
+            'letter' => $request->request->getString('letter'),
             'page' => 1,
         ], static fn (mixed $value): bool => $value !== '' && $value !== null);
     }

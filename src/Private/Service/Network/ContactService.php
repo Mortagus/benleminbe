@@ -36,12 +36,18 @@ final class ContactService
      *     currentQuery: string,
      *     currentPriority: string,
      *     currentRelationStatus: string,
+     *     currentLetter: string,
      *     currentPage: int,
+     *     totalPages: int,
      *     visibleFrom: int,
      *     visibleTo: int,
      *     totalContacts: int,
-     *     hasMore: bool,
+     *     hasPrevious: bool,
+     *     previousPage: int,
+     *     hasNext: bool,
      *     nextPage: int,
+     *     paginationPages: list<array{type: string, page?: int, label?: string, current?: bool}>,
+     *     letterOptions: list<array{value: string, label: string, active: bool}>,
      *     priorityOptions: array<string, string>,
      *     relationOptions: array<string, string>
      * }
@@ -50,24 +56,32 @@ final class ContactService
     {
         $contacts = $this->listContacts($filters);
         $totalContacts = count($contacts);
-        $page = max(1, $page);
         $pageSize = max(1, $pageSize);
+        $totalPages = max(1, (int) ceil($totalContacts / $pageSize));
+        $page = min(max(1, $page), $totalPages);
         $offset = ($page - 1) * $pageSize;
         $pageContacts = array_slice($contacts, $offset, $pageSize);
         $visibleFrom = $pageContacts === [] ? 0 : $offset + 1;
         $visibleTo = $pageContacts === [] ? 0 : min($totalContacts, $offset + count($pageContacts));
+        $currentLetter = $this->normalizeLetterFilter($filters['letter'] ?? '');
 
         return [
             'contacts' => $pageContacts,
             'currentQuery' => $this->normalizeString($filters['search'] ?? ''),
             'currentPriority' => $this->normalizeString($filters['priority'] ?? ''),
             'currentRelationStatus' => $this->normalizeString($filters['relationship_status'] ?? ''),
+            'currentLetter' => $currentLetter,
             'currentPage' => $page,
+            'totalPages' => $totalPages,
             'visibleFrom' => $visibleFrom,
             'visibleTo' => $visibleTo,
             'totalContacts' => $totalContacts,
-            'hasMore' => $offset + $pageSize < $totalContacts,
-            'nextPage' => $page + 1,
+            'hasPrevious' => $page > 1,
+            'previousPage' => max(1, $page - 1),
+            'hasNext' => $page < $totalPages,
+            'nextPage' => min($totalPages, $page + 1),
+            'paginationPages' => $this->buildPaginationPages($page, $totalPages),
+            'letterOptions' => $this->buildLetterOptions($currentLetter),
             'priorityOptions' => $this->getPriorityOptions(),
             'relationOptions' => $this->getRelationOptions(),
         ];
@@ -84,13 +98,18 @@ final class ContactService
         $search = $this->normalizeString($criteria['search'] ?? '');
         $priority = $this->normalizeString($criteria['priority'] ?? '');
         $status = $this->normalizeString($criteria['relationship_status'] ?? '');
+        $letter = $this->normalizeLetterFilter($criteria['letter'] ?? '');
 
-        $contacts = array_values(array_filter($contacts, static function (array $contact) use ($search, $priority, $status): bool {
+        $contacts = array_values(array_filter($contacts, function (array $contact) use ($search, $priority, $status, $letter): bool {
             if ($priority !== '' && $contact['priority'] !== $priority) {
                 return false;
             }
 
             if ($status !== '' && $contact['relationship_status'] !== $status) {
+                return false;
+            }
+
+            if ($letter !== '' && $this->contactInitialLetter((string) ($contact['display_name'] ?? '')) !== $letter) {
                 return false;
             }
 
@@ -683,6 +702,119 @@ final class ContactService
     private function normalizeString(mixed $value): string
     {
         return trim((string) $value);
+    }
+
+    /**
+     * @return list<array{type: string, page?: int, label?: string, current?: bool}>
+     */
+    private function buildPaginationPages(int $currentPage, int $totalPages): array
+    {
+        if ($totalPages <= 1) {
+            return [];
+        }
+
+        if ($totalPages <= 7) {
+            $pages = [];
+            for ($page = 1; $page <= $totalPages; ++$page) {
+                $pages[] = $this->buildPaginationPage($page, $currentPage);
+            }
+
+            return $pages;
+        }
+
+        $start = max(2, $currentPage - 2);
+        $end = min($totalPages - 1, $currentPage + 2);
+
+        if ($currentPage <= 3) {
+            $start = 2;
+            $end = min($totalPages - 1, 5);
+        }
+
+        if ($currentPage >= $totalPages - 2) {
+            $start = max(2, $totalPages - 4);
+            $end = $totalPages - 1;
+        }
+
+        $pages = [$this->buildPaginationPage(1, $currentPage)];
+
+        if ($start > 2) {
+            $pages[] = ['type' => 'ellipsis'];
+        }
+
+        for ($page = $start; $page <= $end; ++$page) {
+            $pages[] = $this->buildPaginationPage($page, $currentPage);
+        }
+
+        if ($end < $totalPages - 1) {
+            $pages[] = ['type' => 'ellipsis'];
+        }
+
+        $pages[] = $this->buildPaginationPage($totalPages, $currentPage);
+
+        return $pages;
+    }
+
+    /**
+     * @return array{type: string, page: int, label: string, current: bool}
+     */
+    private function buildPaginationPage(int $page, int $currentPage): array
+    {
+        return [
+            'type' => 'page',
+            'page' => $page,
+            'label' => (string) $page,
+            'current' => $page === $currentPage,
+        ];
+    }
+
+    /**
+     * @return list<array{value: string, label: string, active: bool}>
+     */
+    private function buildLetterOptions(string $currentLetter): array
+    {
+        $options = [
+            [
+                'value' => '',
+                'label' => 'Toutes',
+                'active' => $currentLetter === '',
+            ],
+        ];
+
+        foreach (range('A', 'Z') as $letter) {
+            $options[] = [
+                'value' => $letter,
+                'label' => $letter,
+                'active' => $currentLetter === $letter,
+            ];
+        }
+
+        return $options;
+    }
+
+    private function normalizeLetterFilter(mixed $value): string
+    {
+        $value = $this->normalizeString($value);
+        if ($value === '') {
+            return '';
+        }
+
+        $value = mb_substr($value, 0, 1, 'UTF-8');
+        $value = $this->transliterateToAscii($value);
+        $value = mb_strtoupper(mb_substr($value, 0, 1, 'UTF-8'), 'UTF-8');
+
+        return preg_match('/^[A-Z]$/', $value) === 1 ? $value : '';
+    }
+
+    private function contactInitialLetter(string $displayName): string
+    {
+        return $this->normalizeLetterFilter($displayName);
+    }
+
+    private function transliterateToAscii(string $value): string
+    {
+        $converted = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $value);
+
+        return $converted === false || $converted === '' ? $value : $converted;
     }
 
     private function generateId(string $prefix): string

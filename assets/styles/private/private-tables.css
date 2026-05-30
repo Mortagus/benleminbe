@@ -66,3 +66,122 @@
     flex-wrap: nowrap;
     white-space: nowrap;
 }
+
+.private-alpha-index {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.private-alpha-index__label {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.private-alpha-index__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.2rem;
+    border: 1px solid var(--border);
+    border-radius: 0.65rem;
+    padding: 0.38rem 0.6rem;
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.private-alpha-index__link:hover,
+.private-alpha-index__link:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent-text);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.private-alpha-index__link--active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-text-contrast);
+}
+
+.private-pagination {
+    margin-top: 1rem;
+}
+
+.private-pagination__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.private-pagination__pages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+}
+
+.private-pagination__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.4rem;
+    border: 1px solid var(--border);
+    border-radius: 0.65rem;
+    padding: 0.42rem 0.75rem;
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.private-pagination__link:hover,
+.private-pagination__link:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent-text);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.private-pagination__link--current {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-text-contrast);
+}
+
+.private-pagination__link--nav {
+    min-width: 0;
+    padding-inline: 0.9rem;
+}
+
+.private-pagination__link--disabled {
+    opacity: 0.5;
+}
+
+.private-pagination__ellipsis {
+    color: var(--muted);
+    font-weight: 700;
+    padding-inline: 0.2rem;
+}

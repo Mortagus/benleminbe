@@ -55,6 +55,14 @@
         width: 100%;
     }
 
+    .private-pagination__controls {
+        justify-content: flex-start;
+    }
+
+    .private-pagination__pages {
+        justify-content: flex-start;
+    }
+
     .private-table--responsive,
     .private-table--responsive tbody,
     .private-table--responsive tr,

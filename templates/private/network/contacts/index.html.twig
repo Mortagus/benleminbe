@@ -21,10 +21,12 @@
                     <input type="hidden" name="q" value="{{ currentQuery }}">
                     <input type="hidden" name="priority" value="{{ currentPriority }}">
                     <input type="hidden" name="relationship_status" value="{{ currentRelationStatus }}">
+                    <input type="hidden" name="letter" value="{{ currentLetter }}">
                     <button class="private-link-button private-link-button--secondary" type="submit">Fusionner les doublons</button>
                 </form>
                 <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_reset') }}" data-private-confirm="Tout réinitialiser ? Cela supprimera les contacts, interactions, imports et doublons." data-private-progress-submit="Réinitialisation en cours…">
                     <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-reset') }}">
+                    <input type="hidden" name="letter" value="{{ currentLetter }}">
                     <button class="private-link-button private-link-button--danger" type="submit">Tout réinitialiser</button>
                 </form>
                 <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_index') }}">Retour au réseau</a>
@@ -34,6 +36,7 @@
         <section class="private-surface">
             <form class="private-toolbar private-toolbar--compact" method="get" action="{{ path('app_private_network_contacts') }}">
                 <input type="hidden" name="page" value="1">
+                <input type="hidden" name="letter" value="{{ currentLetter }}">
 
                 <label class="private-toolbar__field private-toolbar__field--search">
                     <span>Recherche</span>
@@ -67,6 +70,22 @@
                     {% endif %}
                 </div>
             </form>
+        </section>
+
+        <section class="private-surface">
+            <nav class="private-alpha-index" aria-label="Filtrer les contacts par lettre">
+                <span class="private-alpha-index__label">Annuaire</span>
+
+                {% for letter in letterOptions %}
+                    <a
+                        class="private-alpha-index__link{{ letter.active ? ' private-alpha-index__link--active' : '' }}"
+                        href="{{ path('app_private_network_contacts', app.request.query.all|merge({ letter: letter.value, page: 1 })) }}"
+                        {{ letter.active ? 'aria-current="true"' : '' }}
+                    >
+                        {{ letter.label }}
+                    </a>
+                {% endfor %}
+            </nav>
         </section>
 
         {% if contacts is not empty %}
@@ -148,6 +167,7 @@
                                             <input type="hidden" name="q" value="{{ currentQuery }}">
                                             <input type="hidden" name="priority" value="{{ currentPriority }}">
                                             <input type="hidden" name="relationship_status" value="{{ currentRelationStatus }}">
+                                            <input type="hidden" name="letter" value="{{ currentLetter }}">
                                             <input type="hidden" name="page" value="{{ currentPage }}">
                                             <button
                                                 class="private-icon-button private-icon-button--danger"
@@ -171,15 +191,57 @@
                     </table>
                 </div>
 
-                {% if hasMore %}
-                    <div class="private-actions private-actions--inline private-table-footer">
-                        <a
-                            class="private-link-button private-link-button--secondary"
-                            href="{{ path('app_private_network_contacts', app.request.query.all|merge({ page: nextPage })) }}"
-                        >
-                            Charger plus
-                        </a>
-                    </div>
+                {% if totalPages > 1 %}
+                    <nav class="private-pagination" aria-label="Pagination des contacts">
+                        <div class="private-pagination__controls">
+                            {% if hasPrevious %}
+                                <a
+                                    class="private-pagination__link private-pagination__link--nav"
+                                    href="{{ path('app_private_network_contacts', app.request.query.all|merge({ page: previousPage })) }}"
+                                    rel="prev"
+                                >
+                                    Précédente
+                                </a>
+                            {% else %}
+                                <span class="private-pagination__link private-pagination__link--nav private-pagination__link--disabled" aria-disabled="true">
+                                    Précédente
+                                </span>
+                            {% endif %}
+
+                            <div class="private-pagination__pages" aria-label="Pages">
+                                {% for item in paginationPages %}
+                                    {% if item.type == 'ellipsis' %}
+                                        <span class="private-pagination__ellipsis" aria-hidden="true">…</span>
+                                    {% else %}
+                                        {% if item.current %}
+                                            <span class="private-pagination__link private-pagination__link--current" aria-current="page">{{ item.label }}</span>
+                                        {% else %}
+                                            <a
+                                                class="private-pagination__link"
+                                                href="{{ path('app_private_network_contacts', app.request.query.all|merge({ page: item.page })) }}"
+                                            >
+                                                {{ item.label }}
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                            {% if hasNext %}
+                                <a
+                                    class="private-pagination__link private-pagination__link--nav"
+                                    href="{{ path('app_private_network_contacts', app.request.query.all|merge({ page: nextPage })) }}"
+                                    rel="next"
+                                >
+                                    Suivante
+                                </a>
+                            {% else %}
+                                <span class="private-pagination__link private-pagination__link--nav private-pagination__link--disabled" aria-disabled="true">
+                                    Suivante
+                                </span>
+                            {% endif %}
+                        </div>
+                    </nav>
                 {% endif %}
             </section>
         {% else %}

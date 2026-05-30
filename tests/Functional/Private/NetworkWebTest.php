@@ -70,7 +70,6 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertSelectorTextContains('[data-stat-key="contacts_with_email"]', '2');
         self::assertSelectorTextContains('[data-stat-key="contacts_with_phone"]', '1');
         self::assertSelectorTextContains('[data-stat-key="contacts_to_qualify"]', '1');
-        self::assertSelectorTextContains('[data-stat-key="contacts_professionals"]', '2');
     }
 
     public function testDashboardAndListsRenderForAuthenticatedAdmin(): void

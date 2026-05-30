@@ -22,8 +22,7 @@ final class ContactStatisticsService
      *     contacts_with_linkedin: int,
      *     contacts_with_email: int,
      *     contacts_with_phone: int,
-     *     contacts_to_qualify: int,
-     *     contacts_professionals: int
+     *     contacts_to_qualify: int
      * }
      */
     public function getContactOverviewStats(): array
@@ -37,7 +36,6 @@ final class ContactStatisticsService
             'contacts_with_email' => 0,
             'contacts_with_phone' => 0,
             'contacts_to_qualify' => 0,
-            'contacts_professionals' => 0,
         ];
 
         foreach ($contacts as $contact) {
@@ -67,8 +65,6 @@ final class ContactStatisticsService
                 $stats['contacts_to_qualify']++;
             }
         }
-
-        $stats['contacts_professionals'] = $stats['total_contacts'] - $stats['contacts_to_qualify'];
 
         return $stats;
     }

@@ -116,6 +116,33 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertStringNotContainsString('Alpha Example', $client->getResponse()->getContent());
     }
 
+    public function testContactsListingCanFilterContactsWithOrganization(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $repository->saveContact([
+            'display_name' => 'Entreprise Example',
+            'organization' => 'Entreprise Lab',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $repository->saveContact([
+            'display_name' => 'Sans Entreprise',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+
+        $client->request('GET', '/private/network/contacts?organization_state=with');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('select[name="organization_state"]');
+        self::assertSame('with', $client->getCrawler()->filter('select[name="organization_state"] option[selected]')->attr('value'));
+        self::assertSelectorTextContains('.private-muted', 'Affichage 1-1 sur 1 contact.');
+        self::assertSelectorTextContains('body', 'Entreprise Example');
+        self::assertStringNotContainsString('Sans Entreprise', $client->getResponse()->getContent());
+    }
+
     public function testPlatformCrudFlowWorks(): void
     {
         $client = $this->createAuthenticatedClient();

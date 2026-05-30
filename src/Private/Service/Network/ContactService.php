@@ -36,6 +36,7 @@ final class ContactService
      *     currentQuery: string,
      *     currentPriority: string,
      *     currentRelationStatus: string,
+     *     currentOrganizationState: string,
      *     currentLetter: string,
      *     currentPage: int,
      *     totalPages: int,
@@ -48,6 +49,7 @@ final class ContactService
      *     nextPage: int,
      *     paginationPages: list<array{type: string, page?: int, label?: string, current?: bool}>,
      *     letterOptions: list<array{value: string, label: string, active: bool}>,
+     *     organizationStateOptions: array<string, string>,
      *     priorityOptions: array<string, string>,
      *     relationOptions: array<string, string>
      * }
@@ -64,12 +66,14 @@ final class ContactService
         $visibleFrom = $pageContacts === [] ? 0 : $offset + 1;
         $visibleTo = $pageContacts === [] ? 0 : min($totalContacts, $offset + count($pageContacts));
         $currentLetter = $this->normalizeLetterFilter($filters['letter'] ?? '');
+        $currentOrganizationState = $this->normalizeOrganizationStateFilter($filters['organization_state'] ?? '');
 
         return [
             'contacts' => $pageContacts,
             'currentQuery' => $this->normalizeString($filters['search'] ?? ''),
             'currentPriority' => $this->normalizeString($filters['priority'] ?? ''),
             'currentRelationStatus' => $this->normalizeString($filters['relationship_status'] ?? ''),
+            'currentOrganizationState' => $currentOrganizationState,
             'currentLetter' => $currentLetter,
             'currentPage' => $page,
             'totalPages' => $totalPages,
@@ -82,6 +86,7 @@ final class ContactService
             'nextPage' => min($totalPages, $page + 1),
             'paginationPages' => $this->buildPaginationPages($page, $totalPages),
             'letterOptions' => $this->buildLetterOptions($currentLetter),
+            'organizationStateOptions' => $this->getOrganizationStateOptions(),
             'priorityOptions' => $this->getPriorityOptions(),
             'relationOptions' => $this->getRelationOptions(),
         ];
@@ -98,14 +103,23 @@ final class ContactService
         $search = $this->normalizeString($criteria['search'] ?? '');
         $priority = $this->normalizeString($criteria['priority'] ?? '');
         $status = $this->normalizeString($criteria['relationship_status'] ?? '');
+        $organizationState = $this->normalizeOrganizationStateFilter($criteria['organization_state'] ?? '');
         $letter = $this->normalizeLetterFilter($criteria['letter'] ?? '');
 
-        $contacts = array_values(array_filter($contacts, function (array $contact) use ($search, $priority, $status, $letter): bool {
+        $contacts = array_values(array_filter($contacts, function (array $contact) use ($search, $priority, $status, $organizationState, $letter): bool {
             if ($priority !== '' && $contact['priority'] !== $priority) {
                 return false;
             }
 
             if ($status !== '' && $contact['relationship_status'] !== $status) {
+                return false;
+            }
+
+            if ($organizationState === 'with' && !$this->contactHasOrganization($contact)) {
+                return false;
+            }
+
+            if ($organizationState === 'without' && $this->contactHasOrganization($contact)) {
                 return false;
             }
 
@@ -333,6 +347,18 @@ final class ContactService
     public function getRelationOptions(): array
     {
         return ContactRelationshipStatus::labels();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getOrganizationStateOptions(): array
+    {
+        return [
+            '' => 'Toutes',
+            'with' => 'Avec entreprise',
+            'without' => 'Sans entreprise',
+        ];
     }
 
     /**
@@ -803,6 +829,21 @@ final class ContactService
         $value = mb_strtoupper(mb_substr($value, 0, 1, 'UTF-8'), 'UTF-8');
 
         return preg_match('/^[A-Z]$/', $value) === 1 ? $value : '';
+    }
+
+    private function normalizeOrganizationStateFilter(mixed $value): string
+    {
+        $value = $this->normalizeString($value);
+
+        return in_array($value, ['with', 'without'], true) ? $value : '';
+    }
+
+    /**
+     * @param array<string, mixed> $contact
+     */
+    private function contactHasOrganization(array $contact): bool
+    {
+        return trim((string) ($contact['organization'] ?? '')) !== '';
     }
 
     private function contactInitialLetter(string $displayName): string

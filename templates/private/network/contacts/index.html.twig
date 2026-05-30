@@ -21,11 +21,13 @@
                     <input type="hidden" name="q" value="{{ currentQuery }}">
                     <input type="hidden" name="priority" value="{{ currentPriority }}">
                     <input type="hidden" name="relationship_status" value="{{ currentRelationStatus }}">
+                    <input type="hidden" name="organization_state" value="{{ currentOrganizationState }}">
                     <input type="hidden" name="letter" value="{{ currentLetter }}">
                     <button class="private-link-button private-link-button--secondary" type="submit">Fusionner les doublons</button>
                 </form>
                 <form class="private-inline-form" method="post" action="{{ path('app_private_network_contact_merge_reviews_reset') }}" data-private-confirm="Tout réinitialiser ? Cela supprimera les contacts, interactions, imports et doublons." data-private-progress-submit="Réinitialisation en cours…">
                     <input type="hidden" name="_token" value="{{ csrf_token('private-network-contact-merge-reviews-reset') }}">
+                    <input type="hidden" name="organization_state" value="{{ currentOrganizationState }}">
                     <input type="hidden" name="letter" value="{{ currentLetter }}">
                     <button class="private-link-button private-link-button--danger" type="submit">Tout réinitialiser</button>
                 </form>
@@ -41,6 +43,15 @@
                 <label class="private-toolbar__field private-toolbar__field--search">
                     <span>Recherche</span>
                     <input class="private-input" type="search" name="q" value="{{ currentQuery }}" placeholder="Nom, société, note..." />
+                </label>
+
+                <label class="private-toolbar__field">
+                    <span>Entreprise</span>
+                    <select name="organization_state">
+                        {% for value, label in organizationStateOptions %}
+                            <option value="{{ value }}" {{ currentOrganizationState == value ? 'selected' : '' }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
                 </label>
 
                 <label class="private-toolbar__field">
@@ -65,7 +76,7 @@
 
                 <div class="private-toolbar__actions">
                     <button class="private-link-button" type="submit">Filtrer</button>
-                    {% if currentQuery or currentPriority or currentRelationStatus %}
+                    {% if currentQuery or currentPriority or currentRelationStatus or currentOrganizationState %}
                         <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contacts') }}">Réinitialiser</a>
                     {% endif %}
                 </div>
@@ -167,6 +178,7 @@
                                             <input type="hidden" name="q" value="{{ currentQuery }}">
                                             <input type="hidden" name="priority" value="{{ currentPriority }}">
                                             <input type="hidden" name="relationship_status" value="{{ currentRelationStatus }}">
+                                            <input type="hidden" name="organization_state" value="{{ currentOrganizationState }}">
                                             <input type="hidden" name="letter" value="{{ currentLetter }}">
                                             <input type="hidden" name="page" value="{{ currentPage }}">
                                             <button

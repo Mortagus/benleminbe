@@ -78,7 +78,7 @@
 }
 
 .private-toolbar--compact {
-    grid-template-columns: minmax(16rem, 2fr) repeat(2, minmax(10rem, 1fr)) auto;
+    grid-template-columns: minmax(16rem, 2fr) repeat(3, minmax(10rem, 1fr)) auto;
     align-items: end;
     gap: 0.8rem;
 }

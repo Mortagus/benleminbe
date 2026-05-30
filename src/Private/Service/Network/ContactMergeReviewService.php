@@ -78,6 +78,8 @@ final class ContactMergeReviewService
             for ($rightIndex = $leftIndex + 1; $rightIndex < $count; ++$rightIndex) {
                 $left = $contacts[$leftIndex];
                 $right = $contacts[$rightIndex];
+                $fingerprint = $this->scoringService->buildFingerprint($left->getId(), $right->getId());
+                $existingReview = $reviews[$fingerprint] ?? null;
 
                 $pair = $this->scoringService->buildCandidatePair($left, $right);
                 if ($pair === null) {
@@ -90,8 +92,6 @@ final class ContactMergeReviewService
                 }
 
                 $considered++;
-                $fingerprint = $this->scoringService->buildFingerprint($left->getId(), $right->getId());
-                $existingReview = $reviews[$fingerprint] ?? null;
 
                 if ($existingReview instanceof ContactMergeReview) {
                     if ($existingReview->getStatus() !== ContactMergeReviewStatus::Pending) {

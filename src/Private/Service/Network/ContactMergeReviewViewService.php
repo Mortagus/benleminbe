@@ -14,6 +14,7 @@ final class ContactMergeReviewViewService
 {
     public function __construct(
         private readonly ContactMergeReviewFieldService $fieldService,
+        private readonly ContactMergeRulesService $mergeRules,
     ) {
     }
 
@@ -79,7 +80,7 @@ final class ContactMergeReviewViewService
             'role' => $contact->getRole() ?? '',
             'main_channel' => $contact->getMainChannel() ?? '',
             'email' => implode(', ', $contact->getEmails()),
-            'phone' => implode(', ', $contact->getPhones()),
+            'phone' => $this->mergeRules->formatPhoneListDisplay($contact->getPhones()),
             'emails' => $contact->getEmails(),
             'phones' => $contact->getPhones(),
             'profile_url' => $contact->getProfileUrl() ?? '',

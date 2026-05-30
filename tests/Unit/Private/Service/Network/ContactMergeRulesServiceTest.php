@@ -23,6 +23,10 @@ final class ContactMergeRulesServiceTest extends TestCase
         self::assertSame('www.linkedin.com/in/benlem/?trk=profile', $rules->normalizeProfileUrlKey('https://www.linkedin.com/in/benlem/?trk=profile'));
         self::assertTrue($rules->isLinkedInProfileUrl('https://www.linkedin.com/in/benlem/'));
         self::assertTrue($rules->isLinkedInSourceValue('Connexions LinkedIn (CSV)'));
+        self::assertSame('0475 25 89 41', $rules->formatPhoneDisplayValue('0475258941'));
+        self::assertSame('+32 475 25 89 41', $rules->formatPhoneDisplayValue('+32475258941'));
+        self::assertSame('02 123 45 67', $rules->formatPhoneDisplayValue('021234567'));
+        self::assertSame('0475 25 89 41, 02 123 45 67', $rules->formatPhoneListDisplay(['0475258941', '021234567']));
 
         $contact = new Contact('c_linkedin', 'LinkedIn Person');
         $contact->setSource('website | linkedin');

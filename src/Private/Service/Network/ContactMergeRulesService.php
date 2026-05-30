@@ -471,4 +471,122 @@ final class ContactMergeRulesService
             ContactRelationshipStatus::Cold => 1,
         };
     }
+
+    public function formatPhoneDisplayValue(mixed $phone): string
+    {
+        $phone = $this->normalizeOptionalString($phone);
+        if ($phone === null) {
+            return '';
+        }
+
+        $normalized = $this->normalizePhoneKey($phone);
+        if ($normalized === '') {
+            return $phone;
+        }
+
+        if (str_starts_with($normalized, '+32')) {
+            return $this->formatBelgianPhoneDigits(substr($normalized, 3), true);
+        }
+
+        if (preg_match('/^0\d+$/', $normalized) === 1) {
+            return $this->formatBelgianPhoneDigits(substr($normalized, 1), false);
+        }
+
+        if (str_starts_with($normalized, '+')) {
+            return '+' . $this->formatGenericPhoneDigits(ltrim($normalized, '+'));
+        }
+
+        return $this->formatGenericPhoneDigits($normalized);
+    }
+
+    /**
+     * @param list<string> $phones
+     */
+    public function formatPhoneListDisplay(array $phones, string $separator = ', '): string
+    {
+        $phones = array_values(array_filter(array_map(
+            fn (mixed $phone): string => $this->formatPhoneDisplayValue($phone),
+            $phones,
+        ), static fn (string $phone): bool => $phone !== ''));
+
+        return implode($separator, $phones);
+    }
+
+    private function formatBelgianPhoneDigits(string $digits, bool $internationalPrefix): string
+    {
+        $digits = preg_replace('/\D+/', '', $digits) ?? '';
+        if ($digits === '') {
+            return $internationalPrefix ? '+32' : '';
+        }
+
+        if ($internationalPrefix) {
+            if (strlen($digits) === 9 && str_starts_with($digits, '4')) {
+                return sprintf('+32 %s %s %s %s', substr($digits, 0, 3), substr($digits, 3, 2), substr($digits, 5, 2), substr($digits, 7, 2));
+            }
+
+            if (strlen($digits) === 8 && str_starts_with($digits, '1')) {
+                return sprintf('+32 %s %s %s %s', substr($digits, 0, 2), substr($digits, 2, 2), substr($digits, 4, 2), substr($digits, 6, 2));
+            }
+
+            if (strlen($digits) === 8 && in_array($digits[0], ['2', '3', '4', '9'], true)) {
+                return sprintf('+32 %s %s %s %s', $digits[0], substr($digits, 1, 3), substr($digits, 4, 2), substr($digits, 6, 2));
+            }
+
+            return '+32 ' . $this->groupDigitsFromLeft($digits, 2);
+        }
+
+        if (strlen($digits) === 9 && str_starts_with($digits, '4')) {
+            return sprintf('0%s %s %s %s', substr($digits, 0, 3), substr($digits, 3, 2), substr($digits, 5, 2), substr($digits, 7, 2));
+        }
+
+        if (strlen($digits) === 8 && str_starts_with($digits, '1')) {
+            return sprintf('0%s %s %s %s', substr($digits, 0, 2), substr($digits, 2, 2), substr($digits, 4, 2), substr($digits, 6, 2));
+        }
+
+        if (strlen($digits) === 8 && in_array($digits[0], ['2', '3', '4', '9'], true)) {
+            return sprintf('0%s %s %s %s', $digits[0], substr($digits, 1, 3), substr($digits, 4, 2), substr($digits, 6, 2));
+        }
+
+        return '0' . $this->groupDigitsFromLeft($digits, 2);
+    }
+
+    private function formatGenericPhoneDigits(string $digits): string
+    {
+        $digits = preg_replace('/\D+/', '', $digits) ?? '';
+        if ($digits === '') {
+            return '';
+        }
+
+        if (strlen($digits) <= 4) {
+            return $digits;
+        }
+
+        return $this->groupDigitsFromRight($digits, 2);
+    }
+
+    private function groupDigitsFromLeft(string $digits, int $size): string
+    {
+        $digits = preg_replace('/\D+/', '', $digits) ?? '';
+        if ($digits === '' || $size <= 0) {
+            return $digits;
+        }
+
+        return trim(implode(' ', str_split($digits, $size)));
+    }
+
+    private function groupDigitsFromRight(string $digits, int $size): string
+    {
+        $digits = preg_replace('/\D+/', '', $digits) ?? '';
+        if ($digits === '' || $size <= 0) {
+            return $digits;
+        }
+
+        $groups = [];
+        while ($digits !== '') {
+            $groups[] = substr($digits, -$size);
+            $digits = substr($digits, 0, -$size);
+        }
+
+        return implode(' ', array_reverse($groups));
+    }
 }

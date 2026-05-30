@@ -195,7 +195,7 @@ JSON);
             'role' => 'Validation',
             'main_channel' => 'email',
             'email' => 'smoke-test-contact@example.com',
-            'phone' => '+32000000000',
+            'phone' => '+32475258941',
             'profile_url' => 'https://example.com/smoke-test-contact',
             'source' => 'smoke test',
             'priority' => 'haute',
@@ -215,6 +215,7 @@ JSON);
         $client->followRedirect();
         self::assertSelectorTextContains('h1', 'Smoke Test Contact');
         self::assertSelectorTextContains('.private-definition-list', 'Codex Qa');
+        self::assertSelectorTextContains('.private-definition-list', '+32 475 25 89 41');
         self::assertSelectorTextContains('.private-copy', 'Created by smoke test.');
 
         $contactId = $this->extractContactId($location);

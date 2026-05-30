@@ -398,7 +398,7 @@ final class ContactService
             'role' => $contact->getRole() ?? '',
             'main_channel' => $contact->getMainChannel() ?? '',
             'email' => implode(', ', $contact->getEmails()),
-            'phone' => implode(', ', $contact->getPhones()),
+            'phone' => $this->mergeRules->formatPhoneListDisplay($contact->getPhones()),
             'emails' => $contact->getEmails(),
             'phones' => $contact->getPhones(),
             'profile_url' => $contact->getProfileUrl() ?? '',

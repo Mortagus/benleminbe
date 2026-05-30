@@ -336,7 +336,7 @@ final class ContactMergeReviewFieldService
             'role' => $contact->getRole() ?? '',
             'main_channel' => $contact->getMainChannel() ?? '',
             'email' => implode("\n", $contact->getEmails()),
-            'phone' => implode("\n", $contact->getPhones()),
+            'phone' => $this->mergeRules->formatPhoneListDisplay($contact->getPhones(), "\n"),
             'profile_url' => $contact->getProfileUrl() ?? '',
             'source' => $contact->getSource() ?? '',
             'priority' => $contact->getPriorityLabel(),

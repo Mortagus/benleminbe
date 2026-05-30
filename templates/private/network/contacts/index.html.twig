@@ -24,6 +24,7 @@
                     <input type="hidden" name="organization_state" value="{{ currentOrganizationState }}">
                     <input type="hidden" name="role_state" value="{{ currentRoleState }}">
                     <input type="hidden" name="role" value="{{ currentRole }}">
+                    <input type="hidden" name="role_category" value="{{ currentRoleCategory }}">
                     <input type="hidden" name="letter" value="{{ currentLetter }}">
                     <input type="hidden" name="sort" value="{{ currentSort }}">
                     <button class="private-link-button private-link-button--secondary" type="submit">Fusionner les doublons</button>
@@ -76,6 +77,15 @@
                 </label>
 
                 <label class="private-toolbar__field">
+                    <span>Catégorie métier</span>
+                    <select name="role_category">
+                        {% for value, label in roleCategoryOptions %}
+                            <option value="{{ value }}" {{ currentRoleCategory == value ? 'selected' : '' }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label class="private-toolbar__field">
                     <span>Trier par</span>
                     <select name="sort">
                         {% for value, label in sortOptions %}
@@ -106,7 +116,7 @@
 
                 <div class="private-toolbar__actions">
                     <button class="private-link-button" type="submit">Filtrer</button>
-                    {% if currentQuery or currentPriority or currentRelationStatus or currentOrganizationState or currentRoleState or currentRole or currentSort != 'default' %}
+                    {% if currentQuery or currentPriority or currentRelationStatus or currentOrganizationState or currentRoleState or currentRole or currentRoleCategory or currentSort != 'default' %}
                         <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_network_contacts') }}">Réinitialiser</a>
                     {% endif %}
                 </div>
@@ -169,6 +179,11 @@
                                                 Aucun rôle renseigné
                                             {% endif %}
                                         </div>
+                                        <div class="private-muted">
+                                            <span class="private-badge private-badge--secondary" title="{{ contact.role_category_rule ?: 'Classification déterministe' }}">
+                                                {{ contact.role_category_label }}
+                                            </span>
+                                        </div>
                                     </td>
                                     <td class="private-table__cell private-table__cell--hide-mobile" data-label="Entreprise">{{ contact.organization ?: 'Sans entreprise renseignée' }}</td>
                                     <td class="private-table__cell private-table__cell--badge" data-label="Priorité"><span class="private-badge private-badge--secondary">{{ contact.priority_label }}</span></td>
@@ -211,6 +226,7 @@
                                             <input type="hidden" name="organization_state" value="{{ currentOrganizationState }}">
                                             <input type="hidden" name="role_state" value="{{ currentRoleState }}">
                                             <input type="hidden" name="role" value="{{ currentRole }}">
+                                            <input type="hidden" name="role_category" value="{{ currentRoleCategory }}">
                                             <input type="hidden" name="letter" value="{{ currentLetter }}">
                                             <input type="hidden" name="sort" value="{{ currentSort }}">
                                             <input type="hidden" name="page" value="{{ currentPage }}">

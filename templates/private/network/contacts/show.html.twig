@@ -43,6 +43,15 @@
                         <dd>{{ contact.role ?: 'Non renseigné' }}</dd>
                     </div>
                     <div>
+                        <dt>Catégorie métier</dt>
+                        <dd>
+                            <span class="private-badge private-badge--secondary" title="{{ contact.role_category_rule ?: 'Classification déterministe' }}">
+                                {{ contact.role_category_label }}
+                            </span>
+                            <span class="private-muted">({{ contact.role_category_confidence }}%)</span>
+                        </dd>
+                    </div>
+                    <div>
                         <dt>Canal principal</dt>
                         <dd>{{ contact.main_channel ?: 'Non renseigné' }}</dd>
                     </div>

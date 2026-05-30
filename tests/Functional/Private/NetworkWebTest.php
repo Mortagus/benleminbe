@@ -211,6 +211,35 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertStringNotContainsString('Sans Rôle', $client->getResponse()->getContent());
     }
 
+    public function testContactsListingCanFilterContactsByRoleCategory(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $repository->saveContact([
+            'display_name' => 'Developer Example',
+            'role' => 'Senior Symfony Developer',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $repository->saveContact([
+            'display_name' => 'Recruiter Example',
+            'role' => 'Talent Acquisition Specialist',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+
+        $client->request('GET', '/private/network/contacts?role_category=developer_technical');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('select[name="role_category"]');
+        self::assertSame('developer_technical', $client->getCrawler()->filter('select[name="role_category"] option[selected]')->attr('value'));
+        self::assertSelectorTextContains('.private-muted', 'Affichage 1-1 sur 1 contact.');
+        self::assertSelectorTextContains('body', 'Developer Example');
+        self::assertStringContainsString('Développement / technique', $client->getResponse()->getContent());
+        self::assertStringNotContainsString('Recruiter Example', $client->getResponse()->getContent());
+    }
+
     public function testContactsListingCanSortByOrganization(): void
     {
         $client = $this->createAuthenticatedClient();

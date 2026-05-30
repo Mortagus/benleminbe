@@ -35,6 +35,7 @@ final class ContactController extends AbstractController
             'organization_state' => $request->query->getString('organization_state'),
             'role_state' => $request->query->getString('role_state'),
             'role' => $request->query->getString('role'),
+            'role_category' => $request->query->getString('role_category'),
             'letter' => $request->query->getString('letter'),
             'sort' => $request->query->getString('sort'),
         ];
@@ -171,6 +172,7 @@ final class ContactController extends AbstractController
             'organization_state' => $request->request->getString('organization_state'),
             'role_state' => $request->request->getString('role_state'),
             'role' => $request->request->getString('role'),
+            'role_category' => $request->request->getString('role_category'),
             'letter' => $request->request->getString('letter'),
             'sort' => $request->request->getString('sort'),
             'page' => max(1, $request->request->getInt('page', 1)),
@@ -331,6 +333,7 @@ final class ContactController extends AbstractController
             'organization_state' => $request->request->getString('organization_state'),
             'role_state' => $request->request->getString('role_state'),
             'role' => $request->request->getString('role'),
+            'role_category' => $request->request->getString('role_category'),
             'letter' => $request->request->getString('letter'),
             'sort' => $request->request->getString('sort'),
             'page' => 1,

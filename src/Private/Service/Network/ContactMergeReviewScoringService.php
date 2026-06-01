@@ -10,6 +10,8 @@ use App\Enum\Network\ContactPriority;
 
 final class ContactMergeReviewScoringService
 {
+    private const int MIN_REVIEW_SCORE_FOR_CANDIDATE = 50;
+
     public function __construct(
         private readonly ContactMergeRulesService $mergeRules,
     ) {
@@ -27,7 +29,7 @@ final class ContactMergeReviewScoringService
         $exactScoreData = $this->computeExactScore($left, $right);
         $reviewScoreData = $this->computeReviewScore($left, $right, $exactScoreData['score']);
 
-        if ($exactScoreData['score'] === 0 && $reviewScoreData['score'] < 40) {
+        if ($reviewScoreData['score'] < self::MIN_REVIEW_SCORE_FOR_CANDIDATE) {
             return null;
         }
 
@@ -100,6 +102,33 @@ final class ContactMergeReviewScoringService
             $reasons[] = 'Profil identique';
         }
 
+        $displaySimilarity = $this->textSimilarity($left->getDisplayName(), $right->getDisplayName());
+        if ($displaySimilarity >= 100) {
+            $reasons[] = 'Nom affiché identique';
+        } elseif ($displaySimilarity >= 90) {
+            $reasons[] = 'Nom affiché proche';
+        }
+
+        $nameSimilarity = $this->textSimilarity($this->buildComparableFullName($left), $this->buildComparableFullName($right));
+        if ($nameSimilarity >= 100) {
+            $reasons[] = 'Prénom et nom identiques';
+        } elseif ($nameSimilarity >= 90) {
+            $reasons[] = 'Prénom et nom proches';
+        }
+
+        if ($this->normalizeComparableText($left->getOrganization()) !== '' && $this->normalizeComparableText($left->getOrganization()) === $this->normalizeComparableText($right->getOrganization())) {
+            $reasons[] = 'Entreprise identique';
+        }
+
+        if ($this->normalizeComparableText($left->getRole()) !== '' && $this->normalizeComparableText($left->getRole()) === $this->normalizeComparableText($right->getRole())) {
+            $reasons[] = 'Rôle identique';
+        }
+
+        $namePenaltyData = $this->computeNameMismatchPenalty($left, $right);
+        $reasons = array_merge($reasons, $namePenaltyData['reasons']);
+
+        $reasons = array_values(array_unique($reasons));
+
         return $reasons !== [] ? $reasons : ['Pas de clé forte suffisante'];
     }
 
@@ -147,6 +176,10 @@ final class ContactMergeReviewScoringService
             $score += 10;
             $reasons[] = 'Rôle identique';
         }
+
+        $namePenaltyData = $this->computeNameMismatchPenalty($left, $right);
+        $score += $namePenaltyData['score'];
+        $reasons = array_merge($reasons, $namePenaltyData['reasons']);
 
         $leftSources = $this->sourceTokens($left->getSource());
         $rightSources = $this->sourceTokens($right->getSource());
@@ -249,6 +282,54 @@ final class ContactMergeReviewScoringService
             'profile_url' => $this->normalizeUrlKey($contact->getProfileUrl()),
             default => '',
         };
+    }
+
+    private function buildComparableFullName(Contact $contact): string
+    {
+        return trim(
+            $this->normalizeComparableText($contact->getFirstName()) . ' ' . $this->normalizeComparableText($contact->getLastName()),
+        );
+    }
+
+    /**
+     * @return array{score: int, reasons: list<string>}
+     */
+    private function computeNameMismatchPenalty(Contact $left, Contact $right): array
+    {
+        $score = 0;
+        $reasons = [];
+
+        $displaySimilarity = $this->textSimilarity($left->getDisplayName(), $right->getDisplayName());
+        if ($displaySimilarity !== 100) {
+            if ($displaySimilarity < 40) {
+                $score -= 25;
+                $reasons[] = 'Nom affiché très différent';
+            } elseif ($displaySimilarity < 60) {
+                $score -= 15;
+                $reasons[] = 'Nom affiché différent';
+            }
+        }
+
+        $fullNameSimilarity = $this->textSimilarity($this->buildComparableFullName($left), $this->buildComparableFullName($right));
+        if ($fullNameSimilarity !== 100) {
+            if ($fullNameSimilarity < 40) {
+                $score -= 20;
+                $reasons[] = 'Prénom et nom très différents';
+            } elseif ($fullNameSimilarity < 60) {
+                $score -= 10;
+                $reasons[] = 'Prénom et nom différents';
+            }
+        }
+
+        if ($displaySimilarity < 40 && $fullNameSimilarity < 40) {
+            $score -= 10;
+            $reasons[] = 'Identité nominative très faible';
+        }
+
+        return [
+            'score' => $score,
+            'reasons' => $reasons,
+        ];
     }
 
     private function isLinkedInProfileUrl(mixed $profileUrl): bool

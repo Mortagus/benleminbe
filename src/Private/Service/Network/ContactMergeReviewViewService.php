@@ -201,11 +201,6 @@ final class ContactMergeReviewViewService
             $reasons,
         ), static fn (string $reason): bool => $reason !== ''));
 
-        $reasons = array_values(array_filter(
-            $reasons,
-            static fn (string $reason): bool => str_starts_with($reason, 'Conflit à trancher:') || $reason === 'Pas de clé forte suffisante',
-        ));
-
         return $reasons !== [] ? array_values(array_unique($reasons)) : ['Pas de clé forte suffisante'];
     }
 

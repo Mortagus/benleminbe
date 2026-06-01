@@ -37,3 +37,4 @@ Ce document donne a Codex une base de lecture minimale pour reprendre rapidement
 - Ne pas confondre un index avec une reference métier.
 - Ne pas supposer qu'un document en cours fait autorité.
 - Preferer les fichiers au nom explicite plutot que les `README.md` de sous-dossiers.
+- Pour un pack plus large a partager avec ChatGPT, utiliser `make gpt_docs`.

@@ -96,6 +96,14 @@ make gpt_css
 
 La commande génère le fichier temporaire `var/gpt/consolidated-css-context.css` à partir de l'ensemble des fichiers CSS de `assets/styles`.
 
+Générer un document Markdown de contexte pour partager l'état courant du projet :
+
+```bash
+make gpt_docs
+```
+
+La commande génère le fichier temporaire `var/gpt/consolidated-markdown-context.md` à partir des documents de référence, de la documentation de la zone privée, du lab et des travaux en cours utiles.
+
 ## Hooks Git
 
 Le dépôt fournit un hook Git `pre-commit` versionné dans `.githooks/`.

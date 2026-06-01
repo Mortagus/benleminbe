@@ -15,6 +15,7 @@ La règle generale est simple:
 
 - [Architecture du site](project-architecture.md) : vue stable des grandes parties du projet.
 - [Architecture documentaire](documentation-architecture.md) : typologie, regles de classement et documents de reference.
+- [Guide de routage documentaire](documentation-routing.md) : aide pratique pour savoir quoi lire ou où écrire selon une question.
 - [Workflow de contenu](content-workflow.md) : sources de verite pour les contenus publics.
 - [Deploiement et verification](deployment-and-verification.md) : cibles `make`, deploiement et checks.
 - [Zone privee](private/private-area-index.md) : documentation stable de la zone privee et de son premier module.
@@ -29,6 +30,7 @@ La règle generale est simple:
 docs/
 ├── documentation-index.md
 ├── documentation-architecture.md
+├── documentation-routing.md
 ├── project-architecture.md
 ├── deployment-and-verification.md
 ├── content-workflow.md

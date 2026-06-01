@@ -54,6 +54,7 @@ La documentation explique le comportement du projet, mais la verite executable r
 | Archive                     | Conserver les audits et plans clos                            | Historique        | `docs/termines/*`                                         |
 | Corpus éditorial            | Porter la matière rédactionnelle                              | Source de travail | `docs/editorial/*`                                        |
 | Documentation IA            | Donner un point d'entrée court à Codex                        | Utilitaire        | `assistant-context.md`                                    |
+| Routage documentaire        | Indiquer quoi lire ou où écrire selon une question            | Utilitaire        | `documentation-routing.md`                                |
 
 ## Où Mettre Une Nouvelle Information
 
@@ -67,6 +68,7 @@ La documentation explique le comportement du projet, mais la verite executable r
 | Pourquoi une décision technique a-t-elle été prise ?  | Le document d'architecture ou l'audit associé                 |
 | Quelle documentation fournir à Codex ?                | `assistant-context.md`                                        |
 | Quel document fait autorité ?                         | Le document de référence du sujet, pas l'index                |
+| Où lire ou écrire selon le type de question ?         | `documentation-routing.md`                                    |
 
 ## Règles De Lecture
 
@@ -74,10 +76,11 @@ Quand une tâche arrive, l'ordre de lecture conseillé est:
 
 1. `documentation-index.md`
 2. `project-architecture.md`
-3. `content-workflow.md`
-4. le document de domaine concerné
-5. le suivi actif si le sujet est en cours
-6. l'archive si la décision a déjà été discutée auparavant
+3. `documentation-routing.md`
+4. `content-workflow.md`
+5. le document de domaine concerné
+6. le suivi actif si le sujet est en cours
+7. l'archive si la décision a déjà été discutée auparavant
 
 ## Règles De Maintenance
 

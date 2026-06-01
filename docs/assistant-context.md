@@ -9,6 +9,7 @@ Ce document donne a Codex une base de lecture minimale pour reprendre rapidement
 - [Documentation du projet](documentation-index.md)
 - [Architecture du site](project-architecture.md)
 - [Architecture documentaire](documentation-architecture.md)
+- [Guide de routage documentaire](documentation-routing.md)
 - [Workflow de contenu](content-workflow.md)
 
 ### Zone Privee

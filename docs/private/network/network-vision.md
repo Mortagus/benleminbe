@@ -1,4 +1,4 @@
-# Premier Outil Prive - Contacts Et Reseau
+# Vision Du Module Contacts Et Reseau
 
 Date de redaction : 2026-05-27
 
@@ -6,7 +6,7 @@ Ce document decrit le premier outil prive envisage pour `benlemin.be`.
 
 Le sujet reste volontairement separe du protocole PageSpeed.
 
-L'analyse du besoin et de l'objectif est decrite dans [Analyse Du Besoin](analyse-besoin.md).
+L'analyse du besoin et de l'objectif est decrite dans [Analyse du besoin](network-besoin-analysis.md).
 
 ## Objectif
 
@@ -89,3 +89,18 @@ Etat d'organisation :
 - les statuts sont formalises en enums.
 
 La prochaine priorite est la mise en page de l'outil prive. La fonctionnalite est suffisante pour servir de base, mais l'interface reste trop brute et doit etre habillee avec une meilleure hierarchy visuelle, une grille plus lisible et un traitement plus soigne des formulaires, des tableaux et des cartes.
+
+## Règles Métier Détaillées
+
+Les règles métier stables du module sont documentées séparément pour éviter de mélanger vision, spec et logique de comparaison:
+
+- [Regles de comparaison et de score](merge-review-scoring-rules.md)
+- [Regles de matching](contact-write-matching-rules.md)
+- [Regles d'auto-fusion](contact-auto-merge-rules.md)
+
+## Ce Qu'il Faut Retenir
+
+- le module n'est pas un CRM généraliste ;
+- il sert de base de stockage et d'outil opérationnel pour reprendre contact ;
+- il réduit la friction entre "j'ai un contact" et "je peux agir dessus" ;
+- il reste volontairement simple pour évoluer sans rearchitecture lourde.

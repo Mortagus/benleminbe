@@ -1,4 +1,4 @@
-# Premier Outil Prive - Contacts Et Reseau - Specification MVP
+# Specification MVP - Contacts Et Reseau
 
 Date de redaction : 2026-05-27
 

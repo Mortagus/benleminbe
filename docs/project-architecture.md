@@ -53,7 +53,7 @@ assets/styles/private/
 config/packages/security.yaml
 ```
 
-Les règles de gestion du secret admin sont documentées dans [private-security-recommendations.md](private/security-recommendations.md).
+Les règles de gestion du secret admin sont documentées dans [private-security-recommendations.md](private/private-security-recommendations.md).
 
 ### Lab
 
@@ -90,7 +90,7 @@ translations/*.en.yaml
 Corpus éditorial :
 
 ```text
-docs/pro_exp/
+docs/editorial/
 ```
 
 Le contrat de contenu est détaillé dans [content-workflow.md](content-workflow.md).
@@ -131,8 +131,8 @@ make private-prod-auth-check
 
 ## Documentation Associee
 
-- [Index documentation](README.md)
+- [Index documentation](documentation-index.md)
 - [Workflow de contenu](content-workflow.md)
-- [Sécurité de la zone privée](private/security-recommendations.md)
+- [Sécurité de la zone privée](private/private-security-recommendations.md)
 - [Documents en cours](en-cours/)
 - [Travaux terminés](termines/)

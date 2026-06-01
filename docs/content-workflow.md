@@ -11,12 +11,12 @@ translations/*.fr.yaml
 translations/*.en.yaml
 ```
 
-The files in `docs/pro_exp/` are editorial source material. They are useful to draft, review and compare professional content, but they are not read by the application at runtime.
+The files in `docs/editorial/` are editorial source material. They are useful to draft, review and compare professional content, but they are not read by the application at runtime.
 
 Practical rule:
 
 - update YAML when the public website must change;
-- update `docs/pro_exp/` when the editorial corpus should stay aligned;
+- update `docs/editorial/` when the editorial corpus should stay aligned;
 - when both exist for the same information, the YAML value is the source of truth for the website.
 
 ## Editorial Keyword Highlights

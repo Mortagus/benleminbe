@@ -44,4 +44,4 @@ Suite de la reprise la plus recente : [private-network-reprise-2026-05-29.md](pr
 ## Note
 
 Ce document sert de trace de reprise du chantier de ce matin.  
-La documentation d’exploitation du `makefile` vit dans [Makefile Et Deploiement](../makefile.md), et la documentation stable de la zone privee reste dans [`docs/private/`](../private/README.md).
+La documentation d’exploitation du `makefile` vit dans [Deploiement et verification](../deployment-and-verification.md), et la documentation stable de la zone privee reste dans [`docs/private/`](../private/private-area-index.md).

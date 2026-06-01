@@ -136,7 +136,7 @@ benleminbe/
 └── README.md            # Documentation du projet
 ```
 
-La documentation détaillée commence dans [`docs/README.md`](docs/README.md). La vue stable de l'architecture est dans [`docs/architecture.md`](docs/architecture.md).
+La documentation détaillée commence dans [`docs/documentation-index.md`](docs/documentation-index.md). La vue stable de l'architecture est dans [`docs/project-architecture.md`](docs/project-architecture.md).
 
 ## Roadmap
 

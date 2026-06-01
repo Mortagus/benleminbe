@@ -1,4 +1,4 @@
-# Makefile Et Deploiement
+# Deploiement Et Verification
 
 Ce document decrit les cibles principales du `makefile` et la procedure de deploiement associee.
 

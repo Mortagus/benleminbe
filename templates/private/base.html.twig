@@ -23,6 +23,10 @@
         {% include 'private/_header.html.twig' %}
     {% endblock %}
 
+    {% block universe_navigation %}
+        {% include 'shared/navigation/_universes_nav.html.twig' %}
+    {% endblock %}
+
     <main class="private-main">
         <div class="private-page-shell{% block page_class %}{% endblock %}">
             {% block body %}{% endblock %}

@@ -2,11 +2,17 @@
 
 Ce dossier regroupe la documentation stable de la zone privee du site `benlemin.be`.
 
+La zone privee fait partie de l'univers global du site, mais elle conserve sa propre navigation et ne doit pas être confondue avec la partie publique professionnelle. Le découpage général des univers est décrit dans [Univers du site et navigation](../site-universes-and-navigation.md).
+
+Les actions `Import` et `Revue des doublons` relèvent du flux Contacts et doivent rester contextuelles, pas devenir des entrées principales de navigation.
+
 ## Points D'Entree
 
 - [Recommandations de sécurité](private-security-recommendations.md) : strategie de gestion du secret admin prive.
 - [Prochaines étapes](private-next-steps.md) : note de reprise et suivi des suites a donner a la zone privee.
 - [Réseau privé](network/network-index.md) : documentation du premier outil prive `Contacts et reseau`.
+
+La fonctionnalité d'import des contacts est traitée comme une action contextuelle du module réseau, pas comme une entrée de navigation de premier niveau.
 
 ## Organisation
 

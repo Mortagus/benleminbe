@@ -13,6 +13,19 @@ Documentation du premier outil prive `Contacts et reseau`.
 - [Audit structure et CSS](network-ui-structure-audit.md) : audit du rendu Twig et CSS de la partie privee.
 - [Audit mobile et tablette](network-responsive-audit.md) : audit du comportement responsive sur les pages `contacts` et `platforms`.
 - [Architecture documentaire globale](../../documentation-architecture.md) : carte de lecture du projet entier.
+- [Univers du site et navigation](../../site-universes-and-navigation.md) : contexte global de navigation du site et position du réseau dans l'univers privé.
+
+## Routes Et Ecrans Actuels
+
+- tableau de bord du réseau `/private/network`;
+- liste des contacts `/private/network/contacts`;
+- fiche contact `/private/network/contacts/{id}`;
+- formulaire contact `/private/network/contacts/new` et `/private/network/contacts/{id}/edit`;
+- import de contacts `/private/network/import` comme action contextuelle des contacts et du tableau de bord réseau;
+- revue des doublons `/private/network/contact-merge-reviews` comme action contextuelle du flux Contacts;
+- liste des plateformes `/private/network/platforms`;
+- fiche plateforme `/private/network/platforms/{slug}`;
+- import et export des plateformes `/private/network/platforms/import` et `/private/network/platforms/export`.
 
 ## Perimetre
 

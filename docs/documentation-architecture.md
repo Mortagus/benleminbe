@@ -54,6 +54,7 @@ La documentation explique le comportement du projet, mais la verite executable r
 | Archive                     | Conserver les audits et plans clos                            | Historique        | `docs/termines/*`                                         |
 | Corpus éditorial            | Porter la matière rédactionnelle                              | Source de travail | `docs/editorial/*`                                        |
 | Documentation IA            | Donner un point d'entrée court à Codex                        | Utilitaire        | `assistant-context.md`                                    |
+| Architecture de navigation  | Expliquer les univers du site et leurs parcours               | Forte             | `site-universes-and-navigation.md`                        |
 | Routage documentaire        | Indiquer quoi lire ou où écrire selon une question            | Utilitaire        | `documentation-routing.md`                                |
 
 ## Où Mettre Une Nouvelle Information
@@ -61,6 +62,7 @@ La documentation explique le comportement du projet, mais la verite executable r
 | Question                                              | Emplacement recommandé                                        |
 | ----------------------------------------------------- | ------------------------------------------------------------- |
 | Quel est le but du projet ?                           | `project-architecture.md` ou une vision dédiée                |
+| Comment le site est-il structuré en univers ?         | `site-universes-and-navigation.md`                            |
 | Quelles fonctionnalités existent déjà ?               | `documentation-index.md` puis le document de domaine concerné |
 | Quelles fonctionnalités sont en cours ?               | `docs/en-cours/current-work-index.md` puis la note active     |
 | Quelles sont les prochaines fonctionnalités prévues ? | Le backlog du domaine concerné                                |

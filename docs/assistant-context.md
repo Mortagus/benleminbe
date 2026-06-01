@@ -8,6 +8,7 @@ Ce document donne a Codex une base de lecture minimale pour reprendre rapidement
 
 - [Documentation du projet](documentation-index.md)
 - [Architecture du site](project-architecture.md)
+- [Univers du site et navigation](site-universes-and-navigation.md)
 - [Architecture documentaire](documentation-architecture.md)
 - [Guide de routage documentaire](documentation-routing.md)
 - [Workflow de contenu](content-workflow.md)
@@ -17,6 +18,10 @@ Ce document donne a Codex une base de lecture minimale pour reprendre rapidement
 - [Documentation de la zone privee](private/private-area-index.md)
 - [Reseau prive](private/network/network-index.md)
 - [Deploiement et verification](deployment-and-verification.md)
+
+### Lab
+
+- [Documentation du Lab](lab/lab-index.md)
 
 ### Suivi Actif Et Historique
 

@@ -14,6 +14,7 @@ La règle generale est simple:
 ## Points D'Entree
 
 - [Architecture du site](project-architecture.md) : vue stable des grandes parties du projet.
+- [Univers du site et navigation](site-universes-and-navigation.md) : découpage des univers, routes racines et navigation associée.
 - [Architecture documentaire](documentation-architecture.md) : typologie, regles de classement et documents de reference.
 - [Guide de routage documentaire](documentation-routing.md) : aide pratique pour savoir quoi lire ou où écrire selon une question.
 - [Workflow de contenu](content-workflow.md) : sources de verite pour les contenus publics.
@@ -21,7 +22,7 @@ La règle generale est simple:
 - [Zone privee](private/private-area-index.md) : documentation stable de la zone privee et de son premier module.
 - [Travaux en cours](en-cours/current-work-index.md) : fil de reprise, backlog et notes actives.
 - [Travaux terminés](termines/archive-index.md) : archives des audits, plans et notes clotures.
-- [Lab](lab/) : documentation des outils experimentaux.
+- [Lab](lab/lab-index.md) : documentation des outils experimentaux.
 - [Contexte assistant](assistant-context.md) : lecture minimale a fournir a Codex.
 
 ## Organisation
@@ -32,13 +33,14 @@ docs/
 ├── documentation-architecture.md
 ├── documentation-routing.md
 ├── project-architecture.md
+├── site-universes-and-navigation.md
 ├── deployment-and-verification.md
 ├── content-workflow.md
 ├── assistant-context.md
+├── lab/
 ├── private/
 ├── en-cours/
 ├── termines/
-├── lab/
 └── editorial/
 ```
 

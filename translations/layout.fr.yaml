@@ -10,6 +10,14 @@ header:
         open_menu: "Ouvrir le menu principal"
         close_menu: "Fermer le menu principal"
 
+    universes:
+        label: "Navigation inter-univers"
+        pro: "Pro"
+        lab: "Lab"
+        articles: "Articles"
+        games: "Jeux"
+        private: "Privé"
+
 theme:
     toggle: "Changer le thème"
     system: "Auto"

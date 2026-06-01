@@ -7,6 +7,7 @@ Il sert de passerelle pratique entre les index, les documents de référence, le
 ## Regle Simple
 
 - Si la question porte sur le but global du projet, lire la vision ou l'architecture du site.
+- Si la question porte sur le découpage du site en univers ou sur la navigation entre univers, lire `site-universes-and-navigation.md`.
 - Si la question porte sur une fonctionnalité ou une règle métier, lire le document de référence du domaine concerné.
 - Si la question porte sur un chantier en cours, lire le suivi actif correspondant.
 - Si la question porte sur une décision passée, lire l'archive ou l'audit associé.
@@ -35,6 +36,7 @@ Si deux documents semblent couvrir le même sujet, privilégier:
 | Type de question                                     | Lire en priorité                                            | Où écrire / mettre à jour                                                      | Document qui fait autorité            |
 | ---------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------- |
 | Quel est le but du projet ?                          | `project-architecture.md`                                   | `project-architecture.md` ou une vision dédiée                                 | Vision / architecture du site         |
+| Comment le site est-il découpé en univers ?          | `site-universes-and-navigation.md`                          | `site-universes-and-navigation.md`                                             | Architecture de navigation            |
 | Comment la documentation est-elle organisée ?        | `documentation-architecture.md`                             | `documentation-routing.md` ou `documentation-index.md` si l'index doit changer | Architecture documentaire             |
 | Où trouver rapidement un sujet ?                     | `documentation-index.md`                                    | `documentation-index.md` si un nouveau point d'entrée est nécessaire           | Index global                          |
 | Quelle fonctionnalité existe déjà ?                  | `documentation-index.md` puis l'index du domaine            | Le document métier du domaine concerné                                         | Document de référence du domaine      |
@@ -65,19 +67,21 @@ Exemples de bons noms:
 
 ## Carte Par Emplacement
 
-| Emplacement                          | Usage                                                               |
-| ------------------------------------ | ------------------------------------------------------------------- |
-| `docs/documentation-index.md`        | Porte d'entrée globale de la documentation                          |
-| `docs/documentation-architecture.md` | Règles de structure, rôles et autorité des familles de documents    |
-| `docs/documentation-routing.md`      | Aide pratique pour savoir quoi lire ou où écrire selon une question |
-| `docs/project-architecture.md`       | Architecture stable du site                                         |
-| `docs/content-workflow.md`           | Source de vérité des contenus publics                               |
-| `docs/assistant-context.md`          | Pack de lecture minimal pour Codex                                  |
-| `docs/en-cours/*`                    | Suivi actif, backlog, notes de chantier                             |
-| `docs/termines/*`                    | Historique des audits, plans et notes clôturés                      |
-| `docs/private/*`                     | Documentation stable de la zone privée                              |
-| `docs/private/network/*`             | Références du module `Contacts et reseau`                           |
-| `docs/editorial/*`                   | Corpus éditorial de travail                                         |
+| Emplacement                             | Usage                                                               |
+| --------------------------------------- | ------------------------------------------------------------------- |
+| `docs/documentation-index.md`           | Porte d'entrée globale de la documentation                          |
+| `docs/documentation-architecture.md`    | Règles de structure, rôles et autorité des familles de documents    |
+| `docs/documentation-routing.md`         | Aide pratique pour savoir quoi lire ou où écrire selon une question |
+| `docs/project-architecture.md`          | Architecture stable du site                                         |
+| `docs/site-universes-and-navigation.md` | Découpage des univers et navigation du site                         |
+| `docs/content-workflow.md`              | Source de vérité des contenus publics                               |
+| `docs/lab/lab-index.md`                 | Index stable du Lab public                                          |
+| `docs/assistant-context.md`             | Pack de lecture minimal pour Codex                                  |
+| `docs/en-cours/*`                       | Suivi actif, backlog, notes de chantier                             |
+| `docs/termines/*`                       | Historique des audits, plans et notes clôturés                      |
+| `docs/private/*`                        | Documentation stable de la zone privée                              |
+| `docs/private/network/*`                | Références du module `Contacts et reseau`                           |
+| `docs/editorial/*`                      | Corpus éditorial de travail                                         |
 
 ## Utilisation Pratique
 

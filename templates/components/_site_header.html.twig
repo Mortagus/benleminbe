@@ -29,35 +29,7 @@
             data-site-nav
             aria-label="{{ 'header.navigation.label'|trans }}"
         >
-            <a href="{{ path('app_home', { _locale: app.request.locale }) }}"
-               class="site-header__link {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}">
-                {{ 'header.navigation.home'|trans }}
-            </a>
-
-            <a href="{{ path('app_projects_index', { _locale: app.request.locale }) }}"
-               class="site-header__link {{ app.request.attributes.get('_route') starts with 'app_projects' ? 'active' : '' }}">
-                {{ 'header.navigation.projects'|trans }}
-            </a>
-
-            <a href="{{ path('app_experiences_index', { _locale: app.request.locale }) }}"
-               class="site-header__link {{ app.request.attributes.get('_route') starts with 'app_experiences' ? 'active' : '' }}">
-                {{ 'header.navigation.experiences'|trans }}
-            </a>
-
-            <a href="{{ path('app_skills', { _locale: app.request.locale }) }}"
-               class="site-header__link {{ app.request.attributes.get('_route') == 'app_skills' ? 'active' : '' }}">
-                {{ 'header.navigation.skills'|trans }}
-            </a>
-
-            <a href="{{ path('app_about', { _locale: app.request.locale }) }}"
-               class="site-header__link {{ app.request.attributes.get('_route') == 'app_about' ? 'active' : '' }}">
-                {{ 'header.navigation.about'|trans }}
-            </a>
-
-            <a href="{{ path('app_contact', { _locale: app.request.locale }) }}"
-               class="site-header__link {{ app.request.attributes.get('_route') == 'app_contact' ? 'active' : '' }}">
-                {{ 'header.navigation.contact'|trans }}
-            </a>
+            {% include 'shared/navigation/_pro_nav.html.twig' %}
         </nav>
 
         <div class="site-header__actions">

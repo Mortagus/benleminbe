@@ -1,0 +1,40 @@
+{% trans_default_domain 'layout' %}
+
+{% set currentRoute = currentRoute|default(app.request.attributes.get('_route')) %}
+
+{% include 'shared/navigation/_universe_nav.html.twig' with {
+    link_class: 'site-header__link',
+    active_class: 'active',
+    links: [
+        {
+            href: path('app_home', { _locale: app.request.locale }),
+            label: 'header.navigation.home'|trans,
+            active: currentRoute == 'app_home',
+        },
+        {
+            href: path('app_projects_index', { _locale: app.request.locale }),
+            label: 'header.navigation.projects'|trans,
+            active: currentRoute starts with 'app_projects',
+        },
+        {
+            href: path('app_experiences_index', { _locale: app.request.locale }),
+            label: 'header.navigation.experiences'|trans,
+            active: currentRoute starts with 'app_experiences',
+        },
+        {
+            href: path('app_skills', { _locale: app.request.locale }),
+            label: 'header.navigation.skills'|trans,
+            active: currentRoute == 'app_skills',
+        },
+        {
+            href: path('app_about', { _locale: app.request.locale }),
+            label: 'header.navigation.about'|trans,
+            active: currentRoute == 'app_about',
+        },
+        {
+            href: path('app_contact', { _locale: app.request.locale }),
+            label: 'header.navigation.contact'|trans,
+            active: currentRoute == 'app_contact',
+        },
+    ],
+} only %}

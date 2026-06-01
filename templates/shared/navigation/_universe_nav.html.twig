@@ -1,0 +1,13 @@
+{% set links = links|default([]) %}
+{% set link_class = link_class|default('universe-nav__link') %}
+{% set active_class = active_class|default('is-active') %}
+
+{% for link in links %}
+    <a
+        href="{{ link.href }}"
+        class="{{ link.class|default(link_class) }}{{ link.active|default(false) ? ' ' ~ (link.active_class|default(active_class)) : '' }}"
+        {% if link.aria_current|default(false) %}aria-current="page"{% endif %}
+    >
+        {{ link.label }}
+    </a>
+{% endfor %}

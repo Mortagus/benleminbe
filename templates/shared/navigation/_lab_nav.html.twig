@@ -1,0 +1,18 @@
+{% set currentRoute = currentRoute|default(app.request.attributes.get('_route')) %}
+
+{% include 'shared/navigation/_universe_nav.html.twig' with {
+    link_class: 'lab-nav__link',
+    active_class: 'is-active',
+    links: [
+        {
+            href: path('app_lab_index'),
+            label: 'Lab',
+            active: currentRoute == 'app_lab_index',
+        },
+        {
+            href: path('app_lab_dnd_initiative'),
+            label: 'DnD Initiative Tracker',
+            active: currentRoute == 'app_lab_dnd_initiative',
+        },
+    ],
+} only %}

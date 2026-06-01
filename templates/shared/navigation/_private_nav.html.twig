@@ -1,0 +1,28 @@
+{% set currentRoute = currentRoute|default(app.request.attributes.get('_route')) %}
+
+{% include 'shared/navigation/_universe_nav.html.twig' with {
+    link_class: 'private-header__link',
+    active_class: 'is-active',
+    links: [
+        {
+            href: path('app_private_dashboard'),
+            label: 'Tableau de bord',
+            active: currentRoute == 'app_private_dashboard',
+        },
+        {
+            href: path('app_private_network_index'),
+            label: 'Réseau',
+            active: currentRoute == 'app_private_network_index',
+        },
+        {
+            href: path('app_private_network_contacts'),
+            label: 'Contacts',
+            active: currentRoute starts with 'app_private_network_contact',
+        },
+        {
+            href: path('app_private_network_platforms'),
+            label: 'Plateformes',
+            active: currentRoute starts with 'app_private_network_platform',
+        },
+    ],
+} only %}

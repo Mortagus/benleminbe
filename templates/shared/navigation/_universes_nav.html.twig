@@ -1,0 +1,37 @@
+{% trans_default_domain 'layout' %}
+
+{% set currentRoute = currentRoute|default(app.request.attributes.get('_route')) %}
+
+{% set universes = [
+    {
+        href: path('app_home', { _locale: app.request.locale }),
+        label: 'header.universes.pro'|trans,
+        active: currentRoute starts with 'app_' and not currentRoute starts with 'app_lab' and not currentRoute starts with 'app_private',
+    },
+    {
+        href: path('app_lab_index'),
+        label: 'header.universes.lab'|trans,
+        active: currentRoute starts with 'app_lab',
+    },
+    {
+        href: path('app_private_dashboard'),
+        label: 'header.universes.private'|trans,
+        active: currentRoute starts with 'app_private',
+    },
+] %}
+
+<nav class="universe-nav" aria-label="{{ 'header.universes.label'|trans }}">
+    <div class="universe-nav__inner">
+        {% for universe in universes %}
+            {% if not loop.first %}
+                <span class="universe-nav__separator" aria-hidden="true">·</span>
+            {% endif %}
+
+            {% include 'shared/navigation/_universe_nav.html.twig' with {
+                link_class: 'universe-nav__link',
+                active_class: 'is-active',
+                links: [universe],
+            } only %}
+        {% endfor %}
+    </div>
+</nav>

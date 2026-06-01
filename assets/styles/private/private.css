@@ -3,6 +3,7 @@
 @import url("../base/typography.css");
 @import url("../components/theme-switcher.css");
 @import url("./private-layout.css");
+@import url("../layout/universe-nav.css");
 @import url("./private-surfaces.css");
 @import url("./private-tables.css");
 @import url("./private-lists.css");

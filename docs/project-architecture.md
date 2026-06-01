@@ -8,6 +8,8 @@ Le site est une application Symfony qui présente le profil professionnel de Ben
 
 Le projet remplace progressivement un CV PDF statique par une présence en ligne bilingue et maintenable. Les contenus publics sont disponibles en français et en anglais.
 
+Le site est aussi pensé comme un ensemble d'univers fonctionnels clairement séparés: `Pro`, `Lab`, `Private`, puis plus tard `Articles` et `Games`. Le découpage de navigation associé est documenté dans [Univers du site et navigation](site-universes-and-navigation.md).
+
 ## Stack
 
 - PHP 8.4
@@ -132,6 +134,7 @@ make private-prod-auth-check
 ## Documentation Associee
 
 - [Index documentation](documentation-index.md)
+- [Univers du site et navigation](site-universes-and-navigation.md)
 - [Workflow de contenu](content-workflow.md)
 - [Sécurité de la zone privée](private/private-security-recommendations.md)
 - [Documents en cours](en-cours/)

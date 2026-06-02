@@ -72,7 +72,21 @@ index
 - `eyebrow`;
 - `title`;
 - `lead`;
+- `contexts_intro`;
+- `contexts`;
 - `cards`.
+
+`index.contexts_intro` contains the contextual introduction shown above the grouped listing. It should contain:
+
+- `eyebrow`;
+- `title`;
+- `lead`;
+- `nav_title`.
+
+`index.contexts.<context_key>` is used for the grouped project listing on the projects index page. Each context entry should contain:
+
+- `title`;
+- `description`.
 
 `index.cards.<project_key>` is used for project cards and project associations on experience detail pages. Each card should contain:
 
@@ -117,7 +131,8 @@ It defines:
 
 - the display order of projects;
 - the project key used in routes and translation files;
-- the associated experience slug, when a project belongs to an experience.
+- the associated experience slug, when a project belongs to an experience;
+- the context key used by the grouped projects listing.
 
 Shape:
 
@@ -125,6 +140,7 @@ Shape:
 [
     'key' => 'project_key',
     'experience' => 'experience-slug-or-null',
+    'context' => 'context-key',
 ]
 ```
 
@@ -133,6 +149,7 @@ Rules:
 - `key` must exist as a top-level key in both `translations/projects.fr.yaml` and `translations/projects.en.yaml`;
 - `key` should also exist under `index.cards` in both locales;
 - `experience` must be either `null` or a slug present in `ExperienceProvider::EXPERIENCES`;
+- `context` must be a key present under `index.contexts` in both locales;
 - order in `PROJECTS` is used by project pagination.
 
 ## ExperienceProvider Contract

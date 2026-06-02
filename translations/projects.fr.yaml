@@ -8,11 +8,46 @@ project:
         link: "Voir l’expérience correspondante"
 
 index:
-    meta_title: "Projets | Benjamin Lemin"
-    meta_description: "Découvrez mes projets marquants depuis 2010, avec leur contexte, les défis techniques rencontrés et les solutions mises en place. Explorez mes réalisations dans le domaine de l’agriculture, de la recherche, et de la finance."
+    meta_title: "Projets par contexte | Benjamin Lemin"
+    meta_description: "Explorez l’ensemble de mes projets regroupés par contexte métier: applications internes, plateformes commerciales, médias, authentification, data et accompagnement. Tous les projets restent visibles."
     eyebrow: "Projets"
-    title: "Projets marquants de mon parcours"
-    lead: "Une vue d’ensemble des principaux projets sur lesquels j’ai travaillé depuis 2010, avec leur **contexte**, les **défis techniques** rencontrés et les solutions mises en place."
+    title: "Mes projets, classés par contexte"
+    lead: "Une vue complète de mon parcours, organisée par grands **contextes de travail** pour faire ressortir les types de problématiques rencontrées plutôt qu’une simple chronologie."
+
+    contexts_intro:
+        eyebrow: "Lecture rapide"
+        title: "Parcourir le parcours par grands contextes"
+        lead: "Chaque bloc rassemble les projets qui relèvent d’un même type de problème ou d’un même environnement produit. Le listing reste exhaustif: aucun projet n’est retiré."
+        nav_title: "Aller directement à un contexte"
+
+    contexts:
+        research_data:
+            title: "Données, recherche & pilotage"
+            description: "Projets centrés sur l’**ingestion**, la structuration et l’exploitation de données, avec des enjeux de qualité, de volumétrie et d’analyse."
+
+        business_systems:
+            title: "Applications métier & systèmes complexes"
+            description: "Outils internes et prototypes opérationnels destinés à **numériser des workflows**, modéliser des règles métier et soutenir l’activité quotidienne."
+
+        commercial_platforms:
+            title: "Plateformes commerciales, marketplaces & listings"
+            description: "Plateformes de vente, de mise en relation ou de consultation de catalogues, avec des enjeux de **performance**, de recherche et de médias."
+
+        content_institutional:
+            title: "Médias, contenus & sites institutionnels"
+            description: "Sites publics ou éditoriaux où le **contenu**, l’interface de publication, les parcours d’information et les besoins d’accès structurent la conception."
+
+        access_auth:
+            title: "Accès, intranets & authentification"
+            description: "Projets où l’**identité**, la segmentation des espaces publics/privés et les mécanismes d’accès sécurisés sont centraux."
+
+        agency_projects:
+            title: "Agence digitale & contextes multi-clients"
+            description: "Missions en **agence**, avec changements fréquents de contexte, diversité de stacks et délais de livraison serrés."
+
+        coaching:
+            title: "Coaching & transmission"
+            description: "Accompagnement individuel pour clarifier une architecture, débloquer un problème technique ou progresser sur des sujets de développement."
 
     cards:
         raidgbs:

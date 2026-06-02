@@ -33,9 +33,9 @@ final class ProjectsController extends AbstractController {
         ],
         methods: ['GET'])
     ]
-    public function index(): Response {
+    public function index(string $_locale): Response {
         return $this->render(self::TEMPLATE_DIR . 'index.html.twig', [
-            'projects' => $this->projectProvider->getProjects(),
+            'projectGroups' => $this->projectProvider->getProjectsByContext($_locale),
         ]);
     }
 

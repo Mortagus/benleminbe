@@ -8,11 +8,46 @@ project:
         link: "View related experience"
 
 index:
-    meta_title: "Projects | Benjamin Lemin"
-    meta_description: "Explore a selection of my projects, focusing on context, technical challenges, and implemented solutions. Discover my work in agriculture, research, and finance."
+    meta_title: "Projects by context | Benjamin Lemin"
+    meta_description: "Explore my projects grouped by professional context: internal applications, commercial platforms, media, authentication, data and coaching. All projects remain visible."
     eyebrow: "Projects"
-    title: "Selected projects"
-    lead: "A selection of projects I worked on, with a focus on **context**, **technical challenges** and implemented solutions."
+    title: "My projects, grouped by context"
+    lead: "A complete view of my background, organized around the main **work contexts** to highlight the types of problems I have handled rather than a simple chronology."
+
+    contexts_intro:
+        eyebrow: "Quick reading"
+        title: "Browse the journey by major context"
+        lead: "Each block gathers projects that belong to the same type of problem or product environment. The listing stays exhaustive: no project has been removed."
+        nav_title: "Jump to a context"
+
+    contexts:
+        research_data:
+            title: "Data, research & analytics"
+            description: "Projects focused on **ingestion**, structuring and exploiting data, with quality, volume and analysis challenges."
+
+        business_systems:
+            title: "Business applications & complex systems"
+            description: "Internal tools and operational prototypes designed to **digitize workflows**, model business rules and support day-to-day activity."
+
+        commercial_platforms:
+            title: "Commercial platforms, marketplaces & listings"
+            description: "Selling, matching or catalog browsing platforms, with **performance**, search and media concerns."
+
+        content_institutional:
+            title: "Media, content & institutional websites"
+            description: "Public or editorial websites where **content**, publishing workflows, information journeys and access needs shape the design."
+
+        access_auth:
+            title: "Access, intranets & authentication"
+            description: "Projects where **identity**, public/private area separation and secure access mechanisms are central."
+
+        agency_projects:
+            title: "Digital agency & multi-client contexts"
+            description: "Agency missions with frequent context changes, a mix of stacks and tight delivery deadlines."
+
+        coaching:
+            title: "Coaching & knowledge sharing"
+            description: "One-to-one support to clarify architecture, unblock technical issues or grow development skills."
 
     cards:
         raidgbs:

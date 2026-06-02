@@ -6,25 +6,61 @@
 
 {% block body %}
     <main class="projects-page">
-
-        <section class="page-hero">
+        <header class="page-hero">
             <p class="eyebrow">{{ 'index.eyebrow'|trans({}, 'projects') }}</p>
             <h1>{{ 'index.title'|trans({}, 'projects') }}</h1>
             <p class="lead">{{ 'index.lead'|trans({}, 'projects')|highlight_keywords }}</p>
+        </header>
+
+        <section class="projects-overview" aria-labelledby="projects-contexts-intro-title">
+            <div class="projects-overview__intro">
+                <p class="eyebrow">{{ 'index.contexts_intro.eyebrow'|trans({}, 'projects') }}</p>
+                <h2 id="projects-contexts-intro-title">{{ 'index.contexts_intro.title'|trans({}, 'projects') }}</h2>
+                <p>{{ 'index.contexts_intro.lead'|trans({}, 'projects')|highlight_keywords }}</p>
+            </div>
+
+            <button class="content-toc-toggle"
+                    type="button"
+                    data-content-toc-toggle
+                    aria-controls="projects-contexts-toc"
+                    aria-expanded="false">
+                <span class="content-toc-toggle__icon" aria-hidden="true"></span>
+                <span class="content-toc-toggle__label">{{ 'index.contexts_intro.nav_title'|trans({}, 'projects') }}</span>
+            </button>
+
+            <nav id="projects-contexts-toc" class="content-toc" data-content-toc aria-labelledby="projects-contexts-toc-title">
+                <h2 id="projects-contexts-toc-title">{{ 'index.contexts_intro.nav_title'|trans({}, 'projects') }}</h2>
+
+                <ol>
+                    {% for projectGroup in projectGroups %}
+                        <li>
+                            <a href="#{{ projectGroup.key }}">{{ projectGroup.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </nav>
         </section>
 
-        <section class="projects-list">
+        <div class="projects-contexts">
+            {% for projectGroup in projectGroups %}
+                <section id="{{ projectGroup.key }}" class="projects-context" aria-labelledby="{{ projectGroup.key }}-title">
+                    <header class="projects-context__header">
+                        <h2 id="{{ projectGroup.key }}-title">{{ projectGroup.title }}</h2>
+                        <p>{{ projectGroup.description|highlight_keywords }}</p>
+                    </header>
 
-            {% for project in projects %}
-                <a href="{{ path('app_projects_show', { _locale: app.request.locale, project: project.key }) }}" class="project-card-link">
-                    <article class="project-card">
-                        <h2>{{ ('index.cards.' ~ project.key ~ '.title')|trans({}, 'projects') }}</h2>
-                        <p>{{ ('index.cards.' ~ project.key ~ '.description')|trans({}, 'projects')|highlight_keywords }}</p>
-                    </article>
-                </a>
+                    <div class="projects-context__projects">
+                        {% for project in projectGroup.projects %}
+                            <a href="{{ path('app_projects_show', { _locale: app.request.locale, project: project.key }) }}" class="project-card-link">
+                                <article class="project-card">
+                                    <h3>{{ ('index.cards.' ~ project.key ~ '.title')|trans({}, 'projects') }}</h3>
+                                    <p>{{ ('index.cards.' ~ project.key ~ '.description')|trans({}, 'projects')|highlight_keywords }}</p>
+                                </article>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </section>
             {% endfor %}
-
-        </section>
-
+        </div>
     </main>
 {% endblock %}

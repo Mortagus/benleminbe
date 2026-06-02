@@ -5,6 +5,11 @@ experiences:
         eyebrow: "Parcours"
         title: "Expériences professionnelles"
         description: "Une vue d’ensemble des postes, missions et **environnements techniques** dans lesquels j’ai travaillé."
+        duration:
+            year_singular: "an"
+            year_plural: "ans"
+            month_singular: "mois"
+            month_plural: "mois"
         summary:
             eyebrow: "Synthèse"
             title: "L’essentiel en un coup d’œil"
@@ -60,6 +65,8 @@ experiences:
             period: "novembre 2019 – octobre 2025"
             meta_title: "Expérience chez Contraste Digital"
             summary: "Participation au développement, à la maintenance et à l’évolution de **plateformes web et d’applications métier** pour différents clients, avec une forte exposition aux écosystèmes PHP, Drupal et aux architectures orientées microservices."
+            list_context: "Médias · E-commerce · Applications métier"
+            list_summary: "Missions longues sur des plateformes Drupal/PHP en production, avec une forte exposition aux architectures microservices."
             context:
                 1: "Contraste Digital est une société de développement logiciel qui livre des plateformes web et des produits digitaux pour des clients externes."
                 2: "J’ai travaillé au sein d’équipes internes chargées de construire, maintenir et faire évoluer des plateformes client, principalement depuis les bureaux de l’entreprise."
@@ -86,6 +93,8 @@ experiences:
             period: "avril 2018 – juillet 2019"
             meta_title: "Expérience chez Blubird"
             summary: "Missions de consultance **intégrées à des équipes clientes**, principalement sur des applications PHP existantes, avec maintenance, développement de fonctionnalités et amélioration de systèmes en production."
+            list_context: "Marketplace · Banque"
+            list_summary: "Consultance sur des plateformes de production existantes pour Delcampe et Keytrade, entre correction, évolution et fiabilisation."
             context:
                 1: "Blubird est une société de consultance logicielle qui fournit des services de développement à des clients externes."
                 2: "En tant que consultant, j’ai été intégré à des **équipes clientes** pour intervenir sur des plateformes déjà en production."
@@ -112,6 +121,8 @@ experiences:
             period: "juillet 2017 – février 2018"
             meta_title: "Expérience chez Isobar"
             summary: "Travail en agence digitale sur des **plateformes marketing**, des CMS et des applications web, dans un environnement rythmé par des délais courts et une collaboration étroite avec les équipes projet."
+            list_context: "Agence digitale · Marketing"
+            list_summary: "Projets courts pour des marques, des CMS et des plateformes marketing, avec une forte cadence agence."
             context:
                 1: "Isobar est une agence digitale spécialisée dans les plateformes marketing, les expériences digitales et les services en ligne pour des clients corporate."
                 2: "J’ai travaillé comme développeur full-stack au sein d’une équipe chargée de construire et maintenir des plateformes web pour différents clients."
@@ -138,6 +149,8 @@ experiences:
             period: "juillet 2016 – juillet 2017"
             meta_title: "Expérience chez Adneom"
             summary: "Première expérience significative en consultance, avec des missions au sein d’équipes clientes sur des **plateformes PHP/Symfony existantes**, incluant maintenance, évolution et développement backend."
+            list_context: "Logistique · Médias · Consulting"
+            list_summary: "Premières missions de consultance sur des plateformes PHP/Symfony existantes, avec backend et API."
             context:
                 1: "Adneom est une société de consultance proposant des services de développement logiciel et d’IT à des clients externes."
                 2: "En tant que consultant, j’ai travaillé au sein d’équipes clientes sur des plateformes web existantes."
@@ -164,6 +177,8 @@ experiences:
             period: "janvier 2015 – septembre 2015"
             meta_title: "Expérience chez Financial Communication Consult"
             summary: "Développement et maintenance d’**outils internes** liés à la génération et à la distribution de documents financiers, avec automatisation de traitements et manipulation de données financières."
+            list_context: "Finance · Génération documentaire"
+            list_summary: "Outils internes qui automatisaient la génération et la distribution de documents financiers."
             context:
                 1: "Financial Communication Consult, aussi appelée F2C, était une société spécialisée dans la distribution et la gestion de données financières liées aux fonds d’investissement."
                 2: "L’entreprise développait des systèmes permettant de générer et distribuer des documents et jeux de données nécessaires aux institutions financières et investisseurs."
@@ -190,6 +205,8 @@ experiences:
             period: "novembre 2011 – décembre 2014"
             meta_title: "Expérience chez Sogesa"
             summary: "Première expérience professionnelle longue, centrée sur le développement progressif d’une **application métier interne** dédiée à la gestion de données agricoles et administratives."
+            list_context: "Agriculture · ERP sur mesure"
+            list_summary: "Application métier interne qui numérisait des workflows agricoles et administratifs."
             context:
                 1: "Sogesa est une société spécialisée dans la gestion de terres agricoles et de processus administratifs liés."
                 2: "L’entreprise développait des outils internes pour gérer des parcelles, des contrats et des informations utilisées dans le secteur agricole."
@@ -216,6 +233,8 @@ experiences:
             period: "février 2010 – juin 2010"
             meta_title: "Expérience au CBMN"
             summary: "Projet de fin d’études réalisé dans un laboratoire de recherche, avec **conception d’une base de données** et développement de scripts Perl pour traiter et importer automatiquement des données biologiques."
+            list_context: "Recherche · Données biologiques"
+            list_summary: "Pipeline d’import pour structurer automatiquement des données de recherche."
             context:
                 1: "Le CBMN, Centre de Biophysique moléculaire numérique, est un laboratoire public de recherche impliqué dans des projets de recherche biologique et moléculaire."
                 2: "Cette expérience a été réalisée dans le cadre de mon projet de fin d’études durant mon bachelier en informatique."

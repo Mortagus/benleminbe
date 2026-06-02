@@ -66,6 +66,8 @@
 
             {% for experience in experiences %}
                 {% set translationPrefix = 'experiences.items.' ~ experience.translation_key %}
+                {% set listContext = (translationPrefix ~ '.list_context')|trans %}
+                {% set listSummary = (translationPrefix ~ '.list_summary')|trans %}
                 {% set visibleTechnologies = experience.technologies|slice(0, 3) %}
                 {% set remainingTechnologiesCount = experience.technologies|length - visibleTechnologies|length %}
 
@@ -77,10 +79,16 @@
                     <article class="experience-card">
                         <header class="experience-card__header">
                             <div>
-                                <p class="experience-card__period">{{ experience.period }}</p>
+                                <p class="experience-card__period">
+                                    {{ experience.period }}
+                                    <span class="experience-card__duration">· {{ experience.duration }}</span>
+                                </p>
                                 <h3 class="experience-card__title">
                                     {{ (translationPrefix ~ '.company')|trans }}
                                 </h3>
+                                <p class="experience-card__context">
+                                    {{ listContext }}
+                                </p>
                                 <p class="experience-card__role">
                                     {{ (translationPrefix ~ '.role')|trans }}
                                 </p>
@@ -88,7 +96,7 @@
                         </header>
 
                         <p class="experience-card__summary">
-                            {{ (translationPrefix ~ '.summary')|trans|highlight_keywords }}
+                            {{ listSummary|highlight_keywords }}
                         </p>
 
                         <ul class="experience-card__technologies" aria-label="{{ 'experiences.index.technologies_label'|trans }}">

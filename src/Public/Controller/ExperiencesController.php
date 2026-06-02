@@ -37,10 +37,10 @@ final class ExperiencesController extends AbstractController
         ],
         methods: ['GET'],
     )]
-    public function index(): Response
+    public function index(string $_locale): Response
     {
         return $this->render(self::TEMPLATE_DIR . 'index.html.twig', [
-            'experiences' => $this->experienceProvider->getExperiences(),
+            'experiences' => $this->experienceProvider->getExperiences($_locale),
         ]);
     }
 

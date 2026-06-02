@@ -10,13 +10,12 @@ about:
 
     sections:
         why_it:
-            title: "Why computer science?"
+            title: "Why Software Development?"
             paragraphs:
-                1: "My interest in computer science developed in several stages. I grew up in a home where there was already a computer in the 1990s: my mother used it for work, my brother spent a lot of time on it, and at first, I mainly wanted to figure out how to launch my games."
-                2: "Over time, curiosity took a larger place. Films, documentaries, and popular science programs made me want to **understand how things work**. Computer science gradually appeared to me as a field capable of having a concrete impact on many aspects of life, because machines and software are everywhere."
-                3: "At the end of secondary school, while exploring higher education opportunities, I became interested in **bioinformatics**. It felt like a natural intersection between my interest in biology, my fascination with understanding systems, and the intuition that computer science opened an enormous number of doors."
-                4: "During my studies, I discovered **web development**. I found in it a very concrete way to build useful tools: interfaces, data, business logic, databases, algorithms, and software architecture. Everything I had learned began to come together into something tangible."
-                5: "My path toward bioinformatics did not unfold as planned, and I needed to enter professional life. Web development then emerged as a field that was **practical, useful, and broad enough** to keep learning for years to come. That is how it became my profession."
+                1: "I became a developer not because I was particularly fascinated by computers, but because I have always enjoyed **understanding how things work**."
+                2: "What interests me is not just writing code. It is understanding systems, interactions, constraints, and the way very different pieces fit together to create something coherent."
+                3: "I first explored this curiosity through science, then through **bioinformatics**, before discovering **web development** during my studies. There, I found a field where it is possible to understand, structure, and build continuously."
+                4: "Even today, that same curiosity shapes the way I work: **understanding before acting**, clarifying before changing, and looking for solutions that remain relevant and maintainable over time."
 
         work:
             title: "How I work"

@@ -12,11 +12,10 @@ about:
         why_it:
             title: "Pourquoi l’informatique ?"
             paragraphs:
-                1: "Mon intérêt pour l’informatique s’est construit en plusieurs étapes. J’ai grandi dans une maison où il y avait déjà un ordinateur dans les années 1990 : ma mère l’utilisait pour travailler, mon frère y passait beaucoup de temps, et moi, au départ, je voulais surtout savoir comment lancer mes jeux."
-                2: "Avec le temps, la curiosité a pris plus de place. Les films, les documentaires et les émissions de vulgarisation scientifique m’ont donné envie de **comprendre comment les choses fonctionnent**. L’informatique m’est progressivement apparue comme un domaine capable d’agir sur beaucoup de choses concrètes, parce que les machines et les logiciels sont partout."
-                3: "À la fin du secondaire, en découvrant les possibilités d’études supérieures, j’ai été attiré par la **bioinformatique**. C’était un croisement assez naturel entre mon intérêt pour la biologie, mon goût pour la compréhension des systèmes et cette intuition que l’informatique ouvrait énormément de portes."
-                4: "Pendant mes études en haute école, j’ai ensuite découvert le **développement web**. J’y ai trouvé une manière très concrète de construire des outils utiles : une interface, des données, de la logique métier, des bases de données, des algorithmes et de l’architecture logicielle. Tout ce que j’avais appris commençait à se relier dans quelque chose de tangible."
-                5: "Mon parcours vers la bioinformatique ne s’est finalement pas déroulé comme prévu, et j’ai eu besoin d’entrer dans la vie professionnelle. Le web s’est alors imposé comme un terrain à la fois **concret, utile et suffisamment vaste** pour continuer à apprendre. C’est comme ça que j’en ai fait mon métier."
+                1: "Si je suis devenu développeur, ce n’est pas parce que j’aimais particulièrement les ordinateurs. C’est parce que j’ai toujours aimé **comprendre comment les choses fonctionnent**."
+                2: "Ce qui m’intéresse n’est pas uniquement le code. Ce sont les systèmes, les interactions, les contraintes et la façon dont des éléments très différents s’assemblent pour former quelque chose de cohérent."
+                3: "J’ai d’abord exploré cette curiosité à travers les sciences, puis la **bioinformatique**, avant de découvrir le **développement web** pendant mes études. J’y ai trouvé un domaine où il est possible de comprendre, structurer et construire en permanence."
+                4: "Aujourd’hui encore, c’est cette même curiosité qui guide ma manière de travailler : **comprendre avant d’agir**, clarifier avant de modifier et rechercher des solutions qui restent pertinentes dans la durée."
 
         work:
             title: "Ma façon de travailler"

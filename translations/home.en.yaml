@@ -5,7 +5,7 @@ meta:
 hero:
     eyebrow: "Available for freelance missions (20 to 25h/week)"
     name: "Benjamin Lemin"
-    title: "A business need? A complex project?"
+    title: "Understand. Structure. Build to last."
     subtitle: "Senior web developer PHP, Symfony, Drupal"
     intro: "I help companies design, take over and evolve **custom web applications**."
     details_p1: "**15+ years of experience** on business applications, existing project takeovers and production platforms."
@@ -59,7 +59,7 @@ projects:
         title: "Rossel - MoveIT"
         text: "Participated in the development of **Go microservices** for an SSO authentication platform used by several media brands within the Rossel group."
 
-stats:
+summary:
     title: "Experience at a glance"
     experience:
         value: "15+"

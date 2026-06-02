@@ -16,6 +16,49 @@
             </p>
         </section>
 
+        <section class="experience-summary" aria-labelledby="experience-summary-title">
+            <div class="experience-summary__panel card">
+                <div class="experience-summary__intro">
+                    <p class="experience-summary__eyebrow">{{ 'experiences.index.summary.eyebrow'|trans }}</p>
+                    <h2 id="experience-summary-title">{{ 'experiences.index.summary.title'|trans }}</h2>
+                    <p>{{ 'experiences.index.summary.lead'|trans|highlight_keywords }}</p>
+                </div>
+
+                <div class="experience-summary__facts" role="list" aria-label="{{ 'experiences.index.summary.facts_label'|trans }}">
+                    <article class="experience-summary__fact" role="listitem">
+                        <strong>{{ 'experiences.index.summary.fact_1.value'|trans }}</strong>
+                        <span>{{ 'experiences.index.summary.fact_1.label'|trans }}</span>
+                    </article>
+
+                    <article class="experience-summary__fact" role="listitem">
+                        <strong>{{ 'experiences.index.summary.fact_2.value'|trans }}</strong>
+                        <span>{{ 'experiences.index.summary.fact_2.label'|trans }}</span>
+                    </article>
+
+                    <article class="experience-summary__fact" role="listitem">
+                        <strong>{{ 'experiences.index.summary.fact_3.value'|trans }}</strong>
+                        <span>{{ 'experiences.index.summary.fact_3.label'|trans }}</span>
+                    </article>
+
+                    <article class="experience-summary__fact" role="listitem">
+                        <strong>{{ 'experiences.index.summary.fact_4.value'|trans }}</strong>
+                        <span>{{ 'experiences.index.summary.fact_4.label'|trans }}</span>
+                    </article>
+                </div>
+
+                <div class="experience-summary__specialties">
+                    <h3>{{ 'experiences.index.summary.specialties_title'|trans }}</h3>
+
+                    <ul class="experience-summary__chips" aria-label="{{ 'experiences.index.summary.specialties_title'|trans }}">
+                        <li>{{ 'experiences.index.summary.specialty_1'|trans }}</li>
+                        <li>{{ 'experiences.index.summary.specialty_2'|trans }}</li>
+                        <li>{{ 'experiences.index.summary.specialty_3'|trans }}</li>
+                        <li>{{ 'experiences.index.summary.specialty_4'|trans }}</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
         <section class="experience-list" aria-labelledby="experience-list-title">
             <h2 id="experience-list-title" class="visually-hidden">
                 {{ 'experiences.index.list_title'|trans }}

@@ -5,6 +5,28 @@ experiences:
         eyebrow: "Parcours"
         title: "Expériences professionnelles"
         description: "Une vue d’ensemble des postes, missions et **environnements techniques** dans lesquels j’ai travaillé."
+        summary:
+            eyebrow: "Synthèse"
+            title: "L’essentiel en un coup d’œil"
+            lead: "J’aide les entreprises à faire évoluer des applications web complexes en comprenant rapidement l’existant et en proposant des améliorations durables."
+            facts_label: "Points clés du parcours"
+            fact_1:
+                value: "15+ ans"
+                label: "d’expérience en développement web"
+            fact_2:
+                value: "PHP / Symfony / Drupal"
+                label: "Mes expertises principales"
+            fact_3:
+                value: "Plusieurs secteurs"
+                label: "Média, finance, marketplace, e-commerce, marketing, transport, et plus encore"
+            fact_4:
+                value: "Systèmes à faire évoluer"
+                label: "Maintenance évolutive, reprise d’existant et développement d’applications métier"
+            specialties_title: "Spécialités récurrentes"
+            specialty_1: "Comprendre rapidement l’existant"
+            specialty_2: "Faire évoluer durablement"
+            specialty_3: "Développer du backend robuste"
+            specialty_4: "Intégrer des API et stabiliser la production"
         list_title: "Liste des expériences professionnelles"
         technologies_label: "Technologies utilisées"
         more_technologies: "+%count%"

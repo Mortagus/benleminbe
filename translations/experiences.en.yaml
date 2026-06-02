@@ -5,6 +5,28 @@ experiences:
         eyebrow: "Career path"
         title: "Professional experience"
         description: "An overview of the roles, missions and **technical environments** I have worked in."
+        summary:
+            eyebrow: "At a glance"
+            title: "The essentials in a few seconds"
+            lead: "I help companies evolve complex web applications by quickly understanding the existing system and proposing durable improvements."
+            facts_label: "Key points from my background"
+            fact_1:
+                value: "15+ years"
+                label: "of web development experience"
+            fact_2:
+                value: "PHP / Symfony / Drupal"
+                label: "My main areas of expertise"
+            fact_3:
+                value: "Multiple sectors"
+                label: "Media, finance, marketplace, e-commerce, marketing, transport, and more"
+            fact_4:
+                value: "Evolving systems"
+                label: "Evolutionary maintenance, legacy takeovers and business application development"
+            specialties_title: "Recurring focus areas"
+            specialty_1: "Quickly understanding existing systems"
+            specialty_2: "Delivering durable improvements"
+            specialty_3: "Building reliable backend features"
+            specialty_4: "Integrating APIs and stabilizing production"
         list_title: "List of professional experiences"
         technologies_label: "Technologies used"
         more_technologies: "+%count%"

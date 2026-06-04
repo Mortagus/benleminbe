@@ -4,11 +4,21 @@
         width: min(100% - 1rem, 70rem);
     }
 
-    .private-header__top,
     .private-surface__header,
     .private-section-card__header {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .private-header__inner {
+        grid-template-columns: 1fr;
+        justify-items: start;
+        gap: 0.75rem;
+    }
+
+    .private-header__nav,
+    .private-header__actions {
+        justify-self: start;
     }
 
     .private-page__header {
@@ -170,10 +180,20 @@
         width: min(100% - 1rem, 70rem);
     }
 
-    .private-header__top,
     .private-page__header {
         grid-template-columns: 1fr;
         align-items: start;
+    }
+
+    .private-header__inner {
+        grid-template-columns: 1fr;
+        justify-items: start;
+        gap: 0.75rem;
+    }
+
+    .private-header__nav,
+    .private-header__actions {
+        justify-self: start;
     }
 
     .private-header__actions,

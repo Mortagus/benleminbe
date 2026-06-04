@@ -2,21 +2,19 @@
 
 <header class="private-header">
     <div class="private-header__inner">
-        <div class="private-header__top">
-            <a class="private-header__brand" href="{{ path('app_private_dashboard') }}">
-                benlemin.be privé
-            </a>
-
-            <div class="private-header__actions">
-                {% include 'components/_theme_switcher.html.twig' %}
-                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_logout') }}">
-                    Déconnexion
-                </a>
-            </div>
-        </div>
+        <a class="private-header__brand" href="{{ path('app_private_dashboard') }}">
+            benlemin.be privé
+        </a>
 
         <nav class="private-header__nav" aria-label="Navigation privée">
             {% include 'shared/navigation/_private_nav.html.twig' with { currentRoute: currentRoute } only %}
         </nav>
+
+        <div class="private-header__actions">
+            {% include 'components/_theme_switcher.html.twig' %}
+            <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_logout') }}">
+                Déconnexion
+            </a>
+        </div>
     </div>
 </header>

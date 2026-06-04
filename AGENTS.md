@@ -41,9 +41,53 @@ make private-prod-auth-check
 
 ## Regles De Travail
 
-- Lire le contexte documentaire avant de modifier le code.
+- Identifier et consulter la documentation pertinente avant une modification significative.
 - Préférer les conventions existantes du projet aux nouvelles abstractions.
 - Garder les changements ciblés sur la demande.
 - Ne pas traiter `docs/editorial/` comme source runtime : les contenus publiés viennent des fichiers YAML de `translations/`.
 - Déplacer les documents de suivi vers `docs/en-cours/` ou `docs/termines/` selon leur statut.
+- Ne pas modifier du code ou de la documentation sans lien direct avec la demande.
+- Éviter les refactorings opportunistes non demandés.
+- Expliquer brièvement les décisions importantes avant leur implémentation.
 - Lancer `make check` après une modification applicative ou documentaire significative.
+
+## Avant Toute Modification
+
+Avant d'implémenter une modification :
+
+1. Comprendre l'implémentation existante.
+2. Rechercher si une solution similaire existe déjà dans le projet.
+3. Vérifier si une documentation pertinente existe déjà.
+4. Expliquer les changements architecturaux importants avant de les appliquer.
+5. Limiter les modifications au strict nécessaire pour répondre à la demande.
+
+En cas de doute :
+
+- privilégier la cohérence avec l'existant ;
+- privilégier les solutions simples ;
+- éviter les abstractions prématurées ;
+- éviter l'ajout de dépendances sans justification claire.
+
+## Priorités Techniques
+
+Lorsqu'un arbitrage est nécessaire, appliquer l'ordre de priorité suivant :
+
+1. Fonctionnement correct de l'application
+2. Maintenabilité du code
+3. Lisibilité et compréhension du code
+4. Accessibilité
+5. Performance
+
+Éviter les optimisations prématurées.
+
+Privilégier les fonctionnalités natives de Symfony et les composants déjà présents dans le projet avant d'introduire une nouvelle dépendance.
+
+## Skills Projet
+
+Les workflows réutilisables du projet sont définis dans `.agents/skills/`.
+
+Utiliser notamment :
+
+- `requirements-analyst` pour clarifier un besoin avant implémentation.
+- `symfony-developer` pour les modifications applicatives Symfony.
+- `code-reviewer` pour les revues de diff et validations avant commit.

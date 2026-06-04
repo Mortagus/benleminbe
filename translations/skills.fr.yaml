@@ -1,61 +1,83 @@
-# translations/skills.fr.yaml
-
 meta:
-    title: "Compétences techniques et humaines | Benjamin Lemin"
-    description: "Explorez mes compétences techniques et humaines, mon parcours dans le développement web et le coaching. Découvrez comment je peux apporter des solutions durables et collaboratives."
+    title: "Compétences backend, reprise d'existant et accompagnement | Benjamin Lemin"
+    description: "Je reprends, stabilise et fais évoluer des applications web existantes. Mon point fort: le backend, la lecture des systèmes complexes et la collaboration avec les équipes."
 
 hero:
     eyebrow: "Compétences"
-    title: "Des compétences techniques solides, au service de systèmes utiles et durables."
-    intro: "Depuis plus de 15 ans, je travaille sur des **applications web professionnelles** : plateformes métier, CMS, APIs, outils internes, systèmes existants et projets à forte logique métier. Mon approche combine **expertise backend**, compréhension des systèmes complexes, pragmatisme et collaboration avec les équipes."
+    title: "Comprendre l'existant, le stabiliser et le faire évoluer."
+    intro: "Je travaille surtout sur des **applications web professionnelles** déjà en place: plateformes métier, CMS, APIs, outils internes et systèmes complexes. Mon rôle est de **réduire l'incertitude**, sécuriser ce qui existe et faire avancer le produit sans le dénaturer."
+    facts:
+        label: "Points clés du profil"
+        experience:
+            value: "15+ ans"
+            label: "sur des applications web en production"
+        backend:
+            value: "Backend"
+            label: "PHP, Symfony, APIs et logique métier"
+        transmission:
+            value: "Transmission"
+            label: "coaching, explications et code review"
 
 sections:
     contribution:
-        title: "Ce que j’apporte concrètement"
+        eyebrow: "Mon apport"
+        title: "Ce que j'apporte en priorité"
+        intro: "J'interviens là où une équipe a besoin de **clarifier**, **sécuriser** ou **faire évoluer** une base existante sans perdre de temps en réécriture inutile."
 
     technical:
-        title: "Compétences techniques"
+        eyebrow: "Stack"
+        title: "Les briques techniques que j'utilise"
+        intro: "La technologie n'est pas une fin en soi: je la choisis pour **servir le besoin**, réduire le risque et rester exploitable dans la durée."
 
     practices:
-        title: "Pratiques de développement"
+        eyebrow: "Méthode"
+        title: "Ma façon de travailler"
+        intro: "J'essaie de privilégier des choix qui restent **compréhensibles**, testables et faciles à reprendre par une autre personne."
 
     soft_skills:
-        title: "Compétences humaines et professionnelles"
+        eyebrow: "Relation"
+        title: "Les compétences humaines qui comptent dans un projet"
+        intro: "Sur un projet réel, la valeur ne vient pas seulement du code: elle vient aussi de la manière de comprendre le contexte, d'échanger et de faire avancer l'équipe."
 
     domains:
-        title: "Domaines métier rencontrés"
-        intro: "Mon parcours m’a amené à travailler sur des projets dans des **secteurs variés**, avec à chaque fois la nécessité de comprendre les règles métier avant de produire du code utile."
+        eyebrow: "Secteurs"
+        title: "Des contextes variés, un même réflexe: comprendre le métier"
+        intro: "Les secteurs ci-dessous ne sont pas une spécialité unique; ils montrent surtout ma capacité à **entrer vite dans un contexte** et à respecter ses règles métier."
 
     summary:
-        title: "En résumé"
-        paragraph_1: "Je suis particulièrement à l’aise lorsqu’il faut **comprendre une application existante**, la stabiliser, l’améliorer progressivement et aider une équipe à avancer sans perdre de vue la réalité du terrain."
+        eyebrow: "Conclusion"
+        title: "Un profil utile quand il faut avancer sur l'existant"
+        paragraph_1: "Je suis particulièrement à l'aise quand il faut **prendre en charge une application existante**, la stabiliser, prioriser les bons chantiers et faire avancer le produit sans réécriture inutile."
         paragraph_2: "Mon profil est orienté **backend**, **maintenance évolutive**, intégration de systèmes, qualité du code et accompagnement technique."
+        actions:
+            contact: "Me contacter"
+            projects: "Voir les projets"
 
 contribution:
     backend:
-        title: "Développement backend"
-        text: "**PHP, Symfony, Drupal**, APIs REST, intégrations, logique métier, maintenance et évolution d’applications existantes."
+        title: "Backend et intégrations"
+        text: "**PHP, Symfony, Drupal**, APIs REST, services tiers, logique métier et évolutions d'applications existantes."
 
-    complex_systems:
-        title: "Compréhension de systèmes complexes"
-        text: "Analyse de **code existant**, architecture applicative, flux de données, dépendances entre services et contraintes de production."
+    existing_systems:
+        title: "Lecture de l'existant"
+        text: "Analyse de **code déjà en production**, architecture réelle, dépendances, dette technique et points de fragilité."
 
     improvement:
         title: "Amélioration progressive"
-        text: "**Refactoring ciblé**, stabilisation, dette technique, tests, lisibilité du code et évolutions sans réécriture inutile."
+        text: "**Refactoring ciblé**, stabilisation, tests, lisibilité et évolutions sans réécriture inutile."
 
     communication:
-        title: "Communication & accompagnement"
-        text: "Explication claire des choix techniques, **collaboration avec les équipes**, mentoring, coaching et transmission."
+        title: "Collaboration et transmission"
+        text: "Explication claire des choix, **travail avec les équipes**, mentoring, coaching et partage de connaissances."
 
 technical:
     languages: "Langages"
     frameworks: "Frameworks & CMS"
     frontend: "Frontend"
-    databases: "Bases de données"
-    apis: "APIs & intégrations"
+    data: "Données"
+    integrations: "Intégrations"
     third_party_systems: "Systèmes tiers"
-    devops: "DevOps & outils"
+    delivery: "Livraison & outils"
 
 practices:
     quality:
@@ -83,7 +105,7 @@ soft_skills:
 
     pragmatism:
         title: "Pragmatisme"
-        text: "Proposer des solutions adaptées au **contexte réel** : budget, délais, stabilité, dette technique et priorités métier."
+        text: "Proposer des solutions adaptées au **contexte réel**: budget, délais, stabilité, dette technique et priorités métier."
 
     collaboration:
         title: "Collaboration"
@@ -99,7 +121,7 @@ soft_skills:
 
     adaptability:
         title: "Adaptabilité"
-        text: "Intervenir dans des environnements variés : agences, équipes produit, consulting, **maintenance long terme** ou projets existants."
+        text: "Intervenir dans des environnements variés: agences, équipes produit, consulting, **maintenance long terme** ou projets existants."
 
 domains:
     media: "Médias"

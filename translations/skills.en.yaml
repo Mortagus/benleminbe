@@ -1,65 +1,87 @@
-# translations/skills.en.yaml
-
 meta:
-    title: "Technical and Professional Skills | Benjamin Lemin"
-    description: "Explore my technical and professional skills, my journey in web development and coaching. Discover how I can contribute to sustainable and collaborative solutions."
+    title: "Backend skills, existing systems and technical support | Benjamin Lemin"
+    description: "I take over, stabilize and evolve existing web applications. My strengths are backend work, reading complex systems and collaborating with teams."
 
 hero:
     eyebrow: "Skills"
-    title: "Strong technical skills serving useful and sustainable systems."
-    intro: "For more than 15 years, I have been working on **professional web applications**: business platforms, CMSs, APIs, internal tools, existing systems and projects with complex business logic. My approach combines **backend expertise**, deep system understanding, pragmatism and effective collaboration."
+    title: "Understand what already exists, stabilize it and evolve it."
+    intro: "I mostly work on **professional web applications** that are already in place: business platforms, CMSs, APIs, internal tools and complex systems. My role is to **reduce uncertainty**, secure what already works and move the product forward without distorting it."
+    facts:
+        label: "Profile highlights"
+        experience:
+            value: "15+ years"
+            label: "on production web applications"
+        backend:
+            value: "Backend"
+            label: "PHP, Symfony, APIs and business logic"
+        transmission:
+            value: "Knowledge sharing"
+            label: "coaching, explanations and code reviews"
 
 sections:
     contribution:
-        title: "What I Bring in Practice"
+        eyebrow: "What I bring"
+        title: "What I bring in priority"
+        intro: "I step in where a team needs to **clarify**, **secure** or **evolve** an existing codebase without wasting time on unnecessary rewrites."
 
     technical:
-        title: "Technical Skills"
+        eyebrow: "Stack"
+        title: "The technical building blocks I use"
+        intro: "Technology is not the goal by itself: I choose it to **serve the need**, reduce risk and remain maintainable over time."
 
     practices:
-        title: "Development Practices"
+        eyebrow: "How I work"
+        title: "My development approach"
+        intro: "I try to favor decisions that stay **understandable**, testable and easy for someone else to take over."
 
     soft_skills:
-        title: "Professional and Interpersonal Skills"
+        eyebrow: "Working style"
+        title: "The human skills that matter on a project"
+        intro: "On a real project, value does not come only from code: it also comes from understanding the context, communicating well and helping the team move forward."
 
     domains:
-        title: "Business Domains"
-        intro: "Throughout my career, I have worked on projects across a **wide range of industries**, each requiring a solid understanding of business rules before delivering useful software."
+        eyebrow: "Industries"
+        title: "Varied contexts, one constant: understanding the business"
+        intro: "The sectors below are not a single specialization; they mainly show my ability to **enter a context quickly** and respect its business rules."
 
     summary:
-        title: "Summary"
-        paragraph_1: "I am particularly comfortable when it comes to **understanding an existing application**, stabilizing it, improving it incrementally and helping a team move forward while staying grounded in real-world constraints."
-        paragraph_2: "My profile is focused on **backend development**, **application maintenance**, system integration, code quality and technical mentoring."
+        eyebrow: "Wrap-up"
+        title: "A useful profile when the work is about making progress on what already exists"
+        paragraph_1: "I am particularly comfortable when I need to **take over an existing application**, stabilize it, prioritize the right work and help the product move forward without unnecessary rewrites."
+        paragraph_2: "My profile is focused on **backend development**, **continuous maintenance**, system integration, code quality and technical support."
+        actions:
+            contact: "Contact me"
+            projects: "See projects"
 
 contribution:
     backend:
-        title: "Backend Development"
-        text: "**PHP, Symfony, Drupal**, REST APIs, integrations, business logic, maintenance and evolution of existing applications."
+        title: "Backend and integrations"
+        text: "**PHP, Symfony, Drupal**, REST APIs, third-party services, business logic and evolution of existing applications."
 
-    complex_systems:
-        title: "Complex System Understanding"
-        text: "Analysis of **existing codebases**, application architecture, data flows, service dependencies and production constraints."
+    existing_systems:
+        title: "Reading the existing system"
+        text: "Analysis of **code already in production**, actual architecture, dependencies, technical debt and weak spots."
 
     improvement:
-        title: "Incremental Improvement"
-        text: "**Targeted refactoring**, stabilization, technical debt reduction, testing, code readability and sustainable evolution."
+        title: "Incremental improvement"
+        text: "**Targeted refactoring**, stabilization, testing, readability and sustainable evolution without unnecessary rewrites."
 
     communication:
-        title: "Communication & Support"
-        text: "Clear explanation of technical decisions, **team collaboration**, mentoring, coaching and knowledge sharing."
+        title: "Collaboration and knowledge sharing"
+        text: "Clear explanation of decisions, **team collaboration**, mentoring, coaching and knowledge transfer."
 
 technical:
     languages: "Languages"
     frameworks: "Frameworks & CMS"
     frontend: "Frontend"
-    databases: "Databases"
-    apis: "APIs & Integrations"
-    third_party_systems: "Third-Party Systems"
-    devops: "DevOps & Tools"
+    data: "Data"
+    integrations: "Integrations"
+    third_party_systems: "Third-party systems"
+    delivery: "Delivery & tools"
 
 practices:
     quality:
-        title: "Code Quality & Maintainability"
+        title: "Code quality & maintainability"
         items:
             oop: "Structured object-oriented programming"
             solid: "SOLID principles"
@@ -68,7 +90,7 @@ practices:
             documentation: "Useful and contextual documentation"
 
     reliability:
-        title: "Testing & Reliability"
+        title: "Testing & reliability"
         items:
             phpunit: "PHPUnit"
             jasmine: "Jasmine"
@@ -78,12 +100,12 @@ practices:
 
 soft_skills:
     analysis:
-        title: "Analytical Thinking"
-        text: "Quickly understanding **existing systems**, identifying constraints, data flows and potential weak points."
+        title: "Analysis"
+        text: "Quickly understanding an **existing system**, identifying constraints, data flows and weak points."
 
     pragmatism:
         title: "Pragmatism"
-        text: "Designing solutions that fit **real-world constraints**: budget, deadlines, stability, technical debt and business priorities."
+        text: "Proposing solutions that fit the **real context**: budget, deadlines, stability, technical debt and business priorities."
 
     collaboration:
         title: "Collaboration"
@@ -94,12 +116,12 @@ soft_skills:
         text: "Clearly explaining **technical problems**, trade-offs and decision-making options."
 
     transmission:
-        title: "Knowledge Sharing"
+        title: "Knowledge sharing"
         text: "Supporting students, junior developers and career changers through **coaching**, code reviews and practical explanations."
 
     adaptability:
         title: "Adaptability"
-        text: "Working effectively in a wide range of environments: agencies, product teams, consulting assignments, **long-term maintenance** and existing applications."
+        text: "Working effectively in agencies, product teams, consulting assignments, **long-term maintenance** and existing projects."
 
 domains:
     media: "Media"

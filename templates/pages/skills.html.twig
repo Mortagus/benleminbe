@@ -18,21 +18,44 @@
             <p class="skills-hero__intro">
                 {{ 'hero.intro'|trans|highlight_keywords }}
             </p>
+
+            <div class="skills-hero__facts" aria-label="{{ 'hero.facts.label'|trans }}">
+                <article class="skills-hero__fact">
+                    <strong>{{ 'hero.facts.experience.value'|trans }}</strong>
+                    <span>{{ 'hero.facts.experience.label'|trans }}</span>
+                </article>
+
+                <article class="skills-hero__fact">
+                    <strong>{{ 'hero.facts.backend.value'|trans }}</strong>
+                    <span>{{ 'hero.facts.backend.label'|trans }}</span>
+                </article>
+
+                <article class="skills-hero__fact">
+                    <strong>{{ 'hero.facts.transmission.value'|trans }}</strong>
+                    <span>{{ 'hero.facts.transmission.label'|trans }}</span>
+                </article>
+            </div>
         </header>
 
         <section class="content-section" aria-labelledby="skills-main-title">
-            <div class="card">
-                <h2 id="skills-main-title">{{ 'sections.contribution.title'|trans }}</h2>
+            <div class="card skills-panel">
+                <div class="skills-panel__intro">
+                    <p class="eyebrow">{{ 'sections.contribution.eyebrow'|trans }}</p>
 
-                <div class="skills-highlight-grid">
+                    <h2 id="skills-main-title">{{ 'sections.contribution.title'|trans }}</h2>
+
+                    <p>{{ 'sections.contribution.intro'|trans|highlight_keywords }}</p>
+                </div>
+
+                <div class="skills-highlight-grid skills-highlight-grid--tight">
                     <article>
                         <h3>{{ 'contribution.backend.title'|trans }}</h3>
                         <p>{{ 'contribution.backend.text'|trans|highlight_keywords }}</p>
                     </article>
 
                     <article>
-                        <h3>{{ 'contribution.complex_systems.title'|trans }}</h3>
-                        <p>{{ 'contribution.complex_systems.text'|trans|highlight_keywords }}</p>
+                        <h3>{{ 'contribution.existing_systems.title'|trans }}</h3>
+                        <p>{{ 'contribution.existing_systems.text'|trans|highlight_keywords }}</p>
                     </article>
 
                     <article>
@@ -49,8 +72,14 @@
         </section>
 
         <section class="content-section" aria-labelledby="technical-skills-title">
-            <div class="card">
-                <h2 id="technical-skills-title">{{ 'sections.technical.title'|trans }}</h2>
+            <div class="card skills-panel">
+                <div class="skills-panel__intro">
+                    <p class="eyebrow">{{ 'sections.technical.eyebrow'|trans }}</p>
+
+                    <h2 id="technical-skills-title">{{ 'sections.technical.title'|trans }}</h2>
+
+                    <p class="skills-panel__lead">{{ 'sections.technical.intro'|trans|highlight_keywords }}</p>
+                </div>
 
                 <div class="skills-category-list">
                     <article class="skills-category">
@@ -87,7 +116,7 @@
                     </article>
 
                     <article class="skills-category">
-                        <h3>{{ 'technical.databases'|trans }}</h3>
+                        <h3>{{ 'technical.data'|trans }}</h3>
                         <ul class="tag-list">
                             <li>MySQL</li>
                             <li>MariaDB</li>
@@ -98,7 +127,7 @@
                     </article>
 
                     <article class="skills-category">
-                        <h3>{{ 'technical.apis'|trans }}</h3>
+                        <h3>{{ 'technical.integrations'|trans }}</h3>
                         <ul class="tag-list">
                             <li>REST APIs</li>
                             <li>SOAP</li>
@@ -109,7 +138,7 @@
                     </article>
 
                     <article class="skills-category">
-                        <h3>{{ 'technical.devops'|trans }}</h3>
+                        <h3>{{ 'technical.delivery'|trans }}</h3>
                         <ul class="tag-list">
                             <li>Docker</li>
                             <li>Git</li>
@@ -124,8 +153,14 @@
         </section>
 
         <section class="content-section" aria-labelledby="practices-title">
-            <div class="card">
-                <h2 id="practices-title">{{ 'sections.practices.title'|trans }}</h2>
+            <div class="card skills-panel">
+                <div class="skills-panel__intro">
+                    <p class="eyebrow">{{ 'sections.practices.eyebrow'|trans }}</p>
+
+                    <h2 id="practices-title">{{ 'sections.practices.title'|trans }}</h2>
+
+                    <p class="skills-panel__lead">{{ 'sections.practices.intro'|trans|highlight_keywords }}</p>
+                </div>
 
                 <div class="skills-two-columns">
                     <div>
@@ -154,10 +189,16 @@
         </section>
 
         <section class="content-section" aria-labelledby="soft-skills-title">
-            <div class="card">
-                <h2 id="soft-skills-title">{{ 'sections.soft_skills.title'|trans }}</h2>
+            <div class="card skills-panel">
+                <div class="skills-panel__intro">
+                    <p class="eyebrow">{{ 'sections.soft_skills.eyebrow'|trans }}</p>
 
-                <div class="skills-highlight-grid">
+                    <h2 id="soft-skills-title">{{ 'sections.soft_skills.title'|trans }}</h2>
+
+                    <p class="skills-panel__lead">{{ 'sections.soft_skills.intro'|trans|highlight_keywords }}</p>
+                </div>
+
+                <div class="skills-highlight-grid skills-highlight-grid--tight">
                     <article>
                         <h3>{{ 'soft_skills.analysis.title'|trans }}</h3>
                         <p>{{ 'soft_skills.analysis.text'|trans|highlight_keywords }}</p>
@@ -192,10 +233,14 @@
         </section>
 
         <section class="content-section" aria-labelledby="domains-title">
-            <div class="card">
-                <h2 id="domains-title">{{ 'sections.domains.title'|trans }}</h2>
+            <div class="card skills-panel">
+                <div class="skills-panel__intro">
+                    <p class="eyebrow">{{ 'sections.domains.eyebrow'|trans }}</p>
 
-                <p>{{ 'sections.domains.intro'|trans|highlight_keywords }}</p>
+                    <h2 id="domains-title">{{ 'sections.domains.title'|trans }}</h2>
+
+                    <p class="skills-panel__lead">{{ 'sections.domains.intro'|trans|highlight_keywords }}</p>
+                </div>
 
                 <ul class="tag-list tag-list--large">
                     <li>{{ 'domains.media'|trans }}</li>
@@ -213,11 +258,25 @@
         </section>
 
         <section class="content-section" aria-labelledby="skills-summary-title">
-            <div class="card card--accent">
-                <h2 id="skills-summary-title">{{ 'sections.summary.title'|trans }}</h2>
+            <div class="card card--accent skills-panel skills-summary">
+                <div class="skills-panel__intro">
+                    <p class="eyebrow">{{ 'sections.summary.eyebrow'|trans }}</p>
+
+                    <h2 id="skills-summary-title">{{ 'sections.summary.title'|trans }}</h2>
+                </div>
 
                 <p>{{ 'sections.summary.paragraph_1'|trans|highlight_keywords }}</p>
                 <p>{{ 'sections.summary.paragraph_2'|trans|highlight_keywords }}</p>
+
+                <div class="buttons">
+                    <a href="{{ path('app_contact', { _locale: app.request.locale }) }}" class="button">
+                        {{ 'sections.summary.actions.contact'|trans }}
+                    </a>
+
+                    <a href="{{ path('app_projects_index', { _locale: app.request.locale }) }}" class="button button-secondary">
+                        {{ 'sections.summary.actions.projects'|trans }}
+                    </a>
+                </div>
             </div>
         </section>
     </main>

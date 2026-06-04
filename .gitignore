@@ -54,6 +54,7 @@
 # IDE folders
 .idea/
 .vscode/
+.playwright-mcp/
 
 # Env
 .env

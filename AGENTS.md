@@ -50,6 +50,7 @@ make private-prod-auth-check
 - Éviter les refactorings opportunistes non demandés.
 - Expliquer brièvement les décisions importantes avant leur implémentation.
 - Lancer `make check` après une modification applicative ou documentaire significative.
+- Lors des captures Playwright, écrire les fichiers dans `.playwright-mcp/` plutôt qu'à la racine du dépôt.
 
 ## Avant Toute Modification
 

@@ -1,46 +1,53 @@
 contact:
     meta:
-        title: "Contact"
-        description: "Get in touch with me to discuss your project, request a freelance mission, or simply chat. I am available via LinkedIn, Malt, email, WhatsApp, and other platforms."
+        title: "Contact | Benjamin Lemin"
+        description: "Reach out for a freelance mission, an existing project takeover, a technical question, or backend support."
 
     hero:
         eyebrow: "Contact"
-        title: "Let's discuss your project"
+        title: "The easiest option: write to me directly."
         intro: >
-            A question, a project idea, a **freelance opportunity**, or simply feel like getting in touch?
-            You can contact me directly through the platforms below.
+            If you have a **specific need**, a freelance mission, a project to take over or a technical question,
+            send me a few lines about the context and the goal. I can then reply faster and more clearly.
+        actions:
+            label: "Main actions"
+            email: "Send me an email"
+            linkedin: "Contact me on LinkedIn"
+        note: "To move quickly, the most useful thing is to send me the **context, the need and your expected timing**."
 
     methods:
-        title: "Get in touch"
+        eyebrow: "Channels"
+        title: "Pick the channel that is simplest for you"
+        intro: "I can reply through whichever channel suits you best. If you are unsure, **email is the most direct**."
 
         linkedin:
             name: "LinkedIn"
-            description: "To discuss a project, a **freelance opportunity**, or my professional background."
+            description: "To discuss a mission, a project or my professional background."
             action: "Open →"
 
         malt:
             name: "Malt"
-            description: "For structured **freelance project requests**."
+            description: "For structured **freelance mission requests**."
             action: "Open →"
 
         email:
             name: "Email"
-            description: "For direct messages, questions, or an initial conversation."
+            description: "For a direct message, a question or an initial contact."
             action: "Write →"
 
         whatsapp:
             name: "WhatsApp"
-            description: "For quick exchanges if we are already in contact."
+            description: "For a quick exchange if we are already in contact."
             action: "Write →"
 
     details:
-        services:
-            title: "I can notably help with"
-            item_1: "**maintenance and evolution** of PHP / Symfony applications;"
-            item_2: "**debugging and stabilization** of existing projects;"
-            item_3: "**backend architecture** and technical design;"
-            item_4: "technical guidance and **code reviews**;"
-            item_5: "programming **coaching and mentoring**."
+        request:
+            title: "What I need to know"
+            intro: "To give you a useful answer, a short message is enough if it includes:"
+            item_1: "the **context** and the type of project involved;"
+            item_2: "the **main need** or the problem to solve;"
+            item_3: "the **deadline** or urgency level;"
+            item_4: "your preferred **reply channel**."
 
         availability:
             title: "Availability"
@@ -49,4 +56,4 @@ contact:
                 alongside coaching activities and personal projects.
 
             paragraph_2: >
-                An online appointment scheduling system may be added later.
+                If your need is clear but brief, I can also help you structure it before going further.

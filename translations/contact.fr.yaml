@@ -1,21 +1,28 @@
 contact:
     meta:
-        title: "Contact"
-        description: "Prenez contact avec moi pour discuter de votre projet, demander une mission freelance, ou simplement échanger. Je suis disponible via LinkedIn, Malt, email, WhatsApp, et d'autres plateformes."
+        title: "Contact | Benjamin Lemin"
+        description: "Contactez-moi pour une mission freelance, une reprise d'existant, une question technique ou un besoin de renfort backend."
 
     hero:
         eyebrow: "Contact"
-        title: "Discutons de votre projet"
+        title: "Le plus simple: m'écrire directement."
         intro: >
-            Une question, une **mission**, une idée de projet ou simplement envie d’échanger ?
-            Vous pouvez me contacter directement via les plateformes ci-dessous.
+            Si vous avez un **besoin concret**, une mission freelance, un projet à reprendre ou une question technique,
+            envoyez-moi quelques lignes sur le contexte et l'objectif. Je pourrai vous répondre plus vite et plus clairement.
+        actions:
+            label: "Actions principales"
+            email: "M'envoyer un email"
+            linkedin: "Me contacter sur LinkedIn"
+        note: "Pour aller vite, le plus efficace est de m'envoyer **le contexte, le besoin et le délai souhaité**."
 
     methods:
-        title: "Me contacter"
+        eyebrow: "Canaux"
+        title: "Choisissez le canal le plus simple pour vous"
+        intro: "Je peux répondre par le canal qui vous arrange le mieux. Si vous hésitez, **l'email reste le plus direct**."
 
         linkedin:
             name: "LinkedIn"
-            description: "Pour échanger autour d’une **mission**, d’un projet ou de mon parcours."
+            description: "Pour échanger autour d'une **mission**, d'un projet ou de mon parcours."
             action: "Ouvrir →"
 
         malt:
@@ -34,18 +41,19 @@ contact:
             action: "Écrire →"
 
     details:
-        services:
-            title: "Je peux notamment aider sur"
-            item_1: "la **maintenance et l’évolution** d’applications PHP / Symfony ;"
-            item_2: "le **debugging et la stabilisation** de projets existants ;"
-            item_3: "la conception et **l’architecture backend** ;"
-            item_4: "l’accompagnement technique et les **revues de code** ;"
-            item_5: "le **coaching** et l’apprentissage de la programmation."
+        request:
+            title: "Ce que j'ai besoin de savoir"
+            intro: "Pour vous répondre utilement, un message court suffit si vous partagez ces informations:"
+            item_1: "le **contexte** et le type de projet concerné;"
+            item_2: "le **besoin principal** ou le problème à résoudre;"
+            item_3: "le **délai** ou le niveau d'urgence;"
+            item_4: "le **canal de réponse** que vous préférez."
 
         availability:
             title: "Disponibilité"
             paragraph_1: >
                 Je travaille actuellement sur des **missions freelance à temps partiel**,
-                en parallèle d’activités de coaching et de projets personnels.
+                en parallèle d'activités de coaching et de projets personnels.
+
             paragraph_2: >
-                Un système de prise de rendez-vous en ligne sera probablement ajouté plus tard.
+                Si votre besoin est clair mais encore bref, je peux aussi vous aider à le structurer avant d'aller plus loin.

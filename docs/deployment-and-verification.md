@@ -18,6 +18,14 @@ Verification locale de reference. Elle couvre:
 - les fichiers JavaScript ;
 - les tests JavaScript.
 
+Quand cette verification passe, lancer ensuite:
+
+```bash
+make cc
+```
+
+Cette seconde commande recompile les assets et nettoie le cache, ce qui permet de voir plus vite le rendu applique dans le navigateur apres une modification.
+
 ### `make reload_assets`
 
 Recompile les assets avec Asset Mapper en environnement de developpement.

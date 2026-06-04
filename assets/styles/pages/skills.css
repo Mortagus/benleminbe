@@ -158,21 +158,23 @@
 }
 
 .skills-page .tag-list li {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
     padding: 0.35rem 0.7rem;
     border: 1px solid var(--tag-border);
     border-radius: 999px;
     background: var(--tag-bg);
     color: var(--text);
     font-size: 0.95rem;
-    line-height: 1.2;
+    line-height: 1.1;
 }
 
 .skills-page .tag-list--large li {
     font-size: 1rem;
-}
-
-.skills-page .skills-two-columns li + li {
-    margin-top: 0.5rem;
 }
 
 .skills-page .skills-summary p {

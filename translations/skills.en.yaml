@@ -1,127 +1,118 @@
 meta:
-    title: "Backend skills, existing systems and technical support | Benjamin Lemin"
-    description: "I take over, stabilize and evolve existing web applications. My strengths are backend work, reading complex systems and collaborating with teams."
+    title: "Backend skills and existing project takeovers | Benjamin Lemin"
+    description: "Discover the skills that define my profile: PHP / Symfony / Drupal backend, business web applications, APIs, continuous maintenance and existing project takeovers."
 
 hero:
     eyebrow: "Skills"
-    title: "Understand what already exists, stabilize it and evolve it."
-    intro: "I mostly work on **professional web applications** that are already in place: business platforms, CMSs, APIs, internal tools and complex systems. My role is to **reduce uncertainty**, secure what already works and move the product forward without distorting it."
+    title: "Backend first, everything else supports it."
+    intro: "For more than 15 years, my work has been defined first and foremost by **PHP, Symfony, Drupal**, **business web applications**, **APIs** and **continuous maintenance**. The rest of my experience complements that core, but does not define it at the same level."
     facts:
-        label: "Profile highlights"
+        label: "Main markers"
         experience:
             value: "15+ years"
-            label: "on production web applications"
-        backend:
-            value: "Backend"
-            label: "PHP, Symfony, APIs and business logic"
-        transmission:
-            value: "Knowledge sharing"
-            label: "coaching, explanations and code reviews"
+            label: "of backend work"
+        stack:
+            value: "PHP / Symfony / Drupal"
+            label: "core stack"
+        evolution:
+            value: "Takeover & evolution"
+            label: "of existing applications"
 
 sections:
-    contribution:
-        eyebrow: "What I bring"
-        title: "What I bring in priority"
-        intro: "I step in where a team needs to **clarify**, **secure** or **evolve** an existing codebase without wasting time on unnecessary rewrites."
+    core:
+        eyebrow: "Core expertise"
+        title: "What truly defines my profile"
+        intro: "I mainly work on understanding, taking over and evolving **business web applications** already in production."
 
-    technical:
-        eyebrow: "Stack"
-        title: "The technical building blocks I use"
-        intro: "Technology is not the goal by itself: I choose it to **serve the need**, reduce risk and remain maintainable over time."
+    regular:
+        eyebrow: "Regular skills"
+        title: "What I use frequently in that context"
+        intro: "These technologies and practices are recurring in my missions, but they support the core profile rather than replacing it."
 
-    practices:
-        eyebrow: "How I work"
-        title: "My development approach"
-        intro: "I try to favor decisions that stay **understandable**, testable and easy for someone else to take over."
-
-    soft_skills:
-        eyebrow: "Working style"
-        title: "The human skills that matter on a project"
-        intro: "On a real project, value does not come only from code: it also comes from understanding the context, communicating well and helping the team move forward."
-
-    domains:
-        eyebrow: "Industries"
-        title: "Varied contexts, one constant: understanding the business"
-        intro: "The sectors below are not a single specialization; they mainly show my ability to **enter a context quickly** and respect its business rules."
+    complementary:
+        eyebrow: "Complementary experience"
+        title: "Technologies and environments I have encountered"
+        intro: "They are part of my journey, but they do not describe my professional profile on their own."
 
     summary:
-        eyebrow: "Wrap-up"
-        title: "A useful profile when the work is about making progress on what already exists"
-        paragraph_1: "I am particularly comfortable when I need to **take over an existing application**, stabilize it, prioritize the right work and help the product move forward without unnecessary rewrites."
-        paragraph_2: "My profile is focused on **backend development**, **continuous maintenance**, system integration, code quality and technical support."
+        eyebrow: "Summary"
+        title: "Backend first, everything else in support"
+        paragraph_1: "My core work is **PHP, Symfony, Drupal**, **business web applications**, **APIs**, **continuous maintenance** and **existing project takeovers**."
+        paragraph_2: "Around that core, I regularly use the tools that help deliver, operate and improve applications over time: data stores, Git, Docker, CI/CD, automated testing, refactoring and production analysis."
+        paragraph_3: "I also work with a mindset built on **analysis**, **pragmatism**, **collaboration** and **knowledge sharing**, so a team can evolve what already exists without losing sight of the business."
         actions:
             contact: "Contact me"
             projects: "See projects"
 
-contribution:
-    backend:
-        title: "Backend and integrations"
-        text: "**PHP, Symfony, Drupal**, REST APIs, third-party services, business logic and evolution of existing applications."
+core:
+    backend_stack:
+        title: "PHP, Symfony, Drupal"
+        text: "This is the most stable part of my background: backend development, code architecture and the evolution of existing systems."
 
-    existing_systems:
-        title: "Reading the existing system"
-        text: "Analysis of **code already in production**, actual architecture, dependencies, technical debt and weak spots."
+    business_apps:
+        title: "Business web applications"
+        text: "I work on tools that support real business activity: internal platforms, CMSs, specific systems and business logic."
 
-    improvement:
-        title: "Incremental improvement"
-        text: "**Targeted refactoring**, stabilization, testing, readability and sustainable evolution without unnecessary rewrites."
+    apis:
+        title: "APIs and integrations"
+        text: "I design and maintain exchanges between services, third-party systems and internal applications."
 
-    communication:
-        title: "Collaboration and knowledge sharing"
-        text: "Clear explanation of decisions, **team collaboration**, mentoring, coaching and knowledge transfer."
+    maintenance:
+        title: "Continuous maintenance"
+        text: "Project takeovers, stabilization, targeted refactoring and progressive evolution without unnecessary rewrites."
 
-technical:
-    languages: "Languages"
-    frameworks: "Frameworks & CMS"
-    frontend: "Frontend"
-    data: "Data"
-    integrations: "Integrations"
-    third_party_systems: "Third-party systems"
-    delivery: "Delivery & tools"
+regular:
+    data:
+        title: "Data and persistence"
+        items:
+            1: "PostgreSQL"
+            2: "MySQL"
+            3: "MariaDB"
+            4: "SQL"
 
-practices:
+    delivery:
+        title: "Delivery and tooling"
+        items:
+            1: "Git"
+            2: "Docker"
+            3: "CI/CD"
+            4: "Automated testing"
+
+    interface:
+        title: "Useful interface work"
+        items:
+            1: "JavaScript"
+            2: "HTML"
+            3: "CSS"
+            4: "SCSS"
+            5: "jQuery"
+
     quality:
-        title: "Code quality & maintainability"
+        title: "Quality and operations"
         items:
-            oop: "Structured object-oriented programming"
-            solid: "SOLID principles"
-            refactoring: "Incremental refactoring"
-            readability: "Readable and maintainable code"
-            documentation: "Useful and contextual documentation"
+            1: "Refactoring"
+            2: "Readable code"
+            3: "Production debugging"
+            4: "Performance analysis"
+            5: "Useful documentation"
 
-    reliability:
-        title: "Testing & reliability"
+complementary:
+    tools:
+        title: "Complementary technologies"
         items:
-            phpunit: "PHPUnit"
-            jasmine: "Jasmine"
-            vitest: "Vitest"
-            production_debugging: "Production debugging"
-            performance: "Performance analysis"
+            1: "Go"
+            2: "Perl"
+            3: "MongoDB"
+            4: "SQL Server"
+            5: "Jenkins"
+            6: "AWS"
+            7: "Laravel"
+            8: "Zend Framework"
+            9: "Salesforce"
+            10: "ADFS"
 
-soft_skills:
-    analysis:
-        title: "Analysis"
-        text: "Quickly understanding an **existing system**, identifying constraints, data flows and weak points."
-
-    pragmatism:
-        title: "Pragmatism"
-        text: "Proposing solutions that fit the **real context**: budget, deadlines, stability, technical debt and business priorities."
-
-    collaboration:
-        title: "Collaboration"
-        text: "Working with developers, product owners, project managers, designers, **domain experts** and non-technical stakeholders."
-
-    communication:
-        title: "Communication"
-        text: "Clearly explaining **technical problems**, trade-offs and decision-making options."
-
-    transmission:
-        title: "Knowledge sharing"
-        text: "Supporting students, junior developers and career changers through **coaching**, code reviews and practical explanations."
-
-    adaptability:
-        title: "Adaptability"
-        text: "Working effectively in agencies, product teams, consulting assignments, **long-term maintenance** and existing projects."
+    contexts:
+        title: "Industries encountered"
 
 domains:
     media: "Media"

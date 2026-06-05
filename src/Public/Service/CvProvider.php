@@ -13,7 +13,7 @@ final readonly class CvProvider
 
     public function getCvData(string $locale): array
     {
-        $filename = 'benjamin_lemin_backend_developer_' . $locale . '.pdf';
+        $filename = 'Benjamin_Lemin_Senior_Backend_Developer_CV_2026_' . $locale . '.pdf';
         $relativePath = 'files/cv/' . $filename;
         $absolutePath = $this->projectDir . '/public/' . $relativePath;
 

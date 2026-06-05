@@ -56,6 +56,10 @@ return [
         'path' => './assets/pages/legal.js',
         'entrypoint' => true,
     ],
+    'page_lab' => [
+        'path' => './assets/pages/lab.js',
+        'entrypoint' => true,
+    ],
     'dnd_initiative' => [
         'path' => './assets/scripts/lab/dnd/dnd_initiative.js',
         'entrypoint' => true,

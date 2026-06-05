@@ -1,23 +1,73 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Lab{% endblock %}
-{% block meta_description %}Outils et expérimentations du lab de benlemin.be.{% endblock %}
+{% trans_default_domain 'lab' %}
+
+{% block title %}{{ 'meta.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'meta.description'|trans }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_lab']) }}{% endblock %}
 
 {% block body %}
-    <main class="lab-page">
-        <section class="content-section">
-            <header class="dnd-page-header">
-                <h1>Lab</h1>
-                <p>Outils expérimentaux et prototypes publics.</p>
-            </header>
+    <main class="lab-home">
+        <header class="lab-home__hero">
+            <p class="eyebrow">{{ 'hero.eyebrow'|trans }}</p>
 
-            <article class="card">
-                <h2>DnD Initiative Tracker</h2>
-                <p>Préparer une rencontre, lancer l’initiative et suivre l’ordre du tour.</p>
-                <p>
-                    <a href="{{ path('app_lab_dnd_initiative') }}">Ouvrir le tracker DnD</a>
-                </p>
-            </article>
+            <h1>{{ 'hero.title'|trans }}</h1>
+
+            <p class="lab-home__intro">
+                {{ 'hero.intro'|trans|highlight_keywords }}
+            </p>
+
+            <div class="lab-home__facts" aria-label="{{ 'hero.facts.label'|trans }}">
+                <article class="lab-home__fact">
+                    <strong>{{ 'hero.facts.public.value'|trans }}</strong>
+                    <span>{{ 'hero.facts.public.label'|trans }}</span>
+                </article>
+
+                <article class="lab-home__fact">
+                    <strong>{{ 'hero.facts.vanilla.value'|trans }}</strong>
+                    <span>{{ 'hero.facts.vanilla.label'|trans }}</span>
+                </article>
+
+                <article class="lab-home__fact">
+                    <strong>{{ 'hero.facts.stack.value'|trans }}</strong>
+                    <span>{{ 'hero.facts.stack.label'|trans }}</span>
+                </article>
+            </div>
+        </header>
+
+        <section class="content-section" aria-labelledby="lab-tools-title">
+            <div class="card lab-panel">
+                <div class="lab-panel__intro">
+                    <p class="eyebrow">{{ 'tools.eyebrow'|trans }}</p>
+
+                    <h2 id="lab-tools-title">{{ 'tools.title'|trans }}</h2>
+
+                    <p>{{ 'tools.intro'|trans|highlight_keywords }}</p>
+                </div>
+
+                <div class="lab-tool-grid">
+                    <article class="lab-tool-card lab-tool-card--featured">
+                        <p class="lab-tool-card__eyebrow">{{ 'tools.featured.label'|trans }}</p>
+
+                        <h3>{{ 'tools.featured.title'|trans }}</h3>
+
+                        <p>{{ 'tools.featured.description'|trans|highlight_keywords }}</p>
+
+                        <ul class="lab-tool-card__meta" aria-label="{{ 'tools.featured.meta_label'|trans }}">
+                            <li>{{ 'tools.featured.meta.1'|trans }}</li>
+                            <li>{{ 'tools.featured.meta.2'|trans }}</li>
+                            <li>{{ 'tools.featured.meta.3'|trans }}</li>
+                            <li>{{ 'tools.featured.meta.4'|trans }}</li>
+                        </ul>
+
+                        <div class="lab-tool-card__actions">
+                            <a href="{{ path('app_lab_dnd_initiative') }}" class="button">
+                                {{ 'tools.featured.action'|trans }}
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
         </section>
     </main>
 {% endblock %}

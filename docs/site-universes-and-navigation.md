@@ -112,7 +112,7 @@ Le `Lab` regroupe les expérimentations publiques utiles, intégrées au même s
 
 Le Lab est rendu via [templates/lab/index.html.twig](/var/www/projects/benleminbe/templates/lab/index.html.twig) et via [templates/lab/dnd/initiative_tracker.html.twig](/var/www/projects/benleminbe/templates/lab/dnd/initiative_tracker.html.twig).
 
-Il n'existe pas encore de shell de navigation local partagé pour le Lab.
+Sa navigation principale partagée vit dans [templates/shared/navigation/\_lab_nav.html.twig](/var/www/projects/benleminbe/templates/shared/navigation/_lab_nav.html.twig) et remplace le menu Pro dans le header lorsque l'univers courant est le Lab.
 
 ### Présence Dans La Navigation Inter-Univers
 

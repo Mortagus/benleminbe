@@ -1,0 +1,40 @@
+meta:
+    title: "Lab"
+    description: "Outils publics, prototypes et expérimentations intégrés au site benlemin.be."
+
+navigation:
+    label: "Navigation du Lab"
+    home: "Lab"
+    dnd_initiative: "DnD Initiative Tracker"
+
+hero:
+    eyebrow: "Espace public"
+    title: "Lab"
+    intro: "Le Lab rassemble des outils publics, des prototypes et des expérimentations concrètes, intégrés au site principal sans devenir une application à part."
+    facts:
+        label: "Points clés du Lab"
+        public:
+            value: "Public"
+            label: "Outils accessibles sans compte"
+        vanilla:
+            value: "JavaScript vanilla"
+            label: "Interfaces légères, sans framework"
+        stack:
+            value: "Symfony / Twig"
+            label: "Socle commun du site"
+
+tools:
+    eyebrow: "Outil disponible"
+    title: "Outils et expérimentations"
+    intro: "Chaque outil du Lab garde sa propre page, mais partage la même base visuelle et la même navigation locale."
+    featured:
+        label: "Outil public"
+        title: "DnD Initiative Tracker"
+        description: "Prépare une rencontre D&D, ajoute les joueurs, gère les monstres et suis l’ordre du tour depuis une interface légère."
+        meta_label: "Métadonnées de l’outil"
+        meta:
+            1: "Outil public"
+            2: "JavaScript vanilla"
+            3: "Symfony / Twig"
+            4: "D&D"
+        action: "Ouvrir le tracker"

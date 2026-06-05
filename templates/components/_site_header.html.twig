@@ -2,6 +2,11 @@
 
 {% trans_default_domain 'layout' %}
 
+{% set currentRoute = app.request.attributes.get('_route')|default('') %}
+{% set siteHeaderNavTemplate = currentRoute starts with 'app_lab'
+    ? 'shared/navigation/_lab_nav.html.twig'
+    : 'shared/navigation/_pro_nav.html.twig' %}
+
 <header class="site-header" data-site-header>
     <div class="site-header__inner">
         <a href="{{ path('app_home', { _locale: app.request.locale }) }}" class="site-header__brand">
@@ -29,7 +34,7 @@
             data-site-nav
             aria-label="{{ 'header.navigation.label'|trans }}"
         >
-            {% include 'shared/navigation/_pro_nav.html.twig' %}
+            {% include siteHeaderNavTemplate with { currentRoute: currentRoute } only %}
         </nav>
 
         <div class="site-header__actions">

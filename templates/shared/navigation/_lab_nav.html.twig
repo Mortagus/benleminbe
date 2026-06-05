@@ -1,18 +1,22 @@
+{% trans_default_domain 'layout' %}
+
 {% set currentRoute = currentRoute|default(app.request.attributes.get('_route')) %}
 
 {% include 'shared/navigation/_universe_nav.html.twig' with {
-    link_class: 'lab-nav__link',
-    active_class: 'is-active',
+    link_class: 'site-header__link',
+    active_class: 'active',
     links: [
         {
             href: path('app_lab_index'),
-            label: 'Lab',
+            label: 'header.navigation.lab'|trans,
             active: currentRoute == 'app_lab_index',
+            aria_current: currentRoute == 'app_lab_index',
         },
         {
             href: path('app_lab_dnd_initiative'),
-            label: 'DnD Initiative Tracker',
-            active: currentRoute == 'app_lab_dnd_initiative',
+            label: 'header.navigation.dnd_initiative'|trans,
+            active: currentRoute == 'app_lab_dnd_initiative' or currentRoute starts with 'app_lab_dnd_',
+            aria_current: currentRoute == 'app_lab_dnd_initiative' or currentRoute starts with 'app_lab_dnd_',
         },
     ],
 } only %}

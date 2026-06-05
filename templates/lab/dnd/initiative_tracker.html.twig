@@ -4,9 +4,10 @@
 
 {% block title %}D&D Initiative Tracker{% endblock %}
 {% block meta_description %}D&D Initiative Tracker Tool for Awesome GMs{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_lab', 'dnd_initiative']) }}{% endblock %}
 
 {% block body %}
-    <main class="lab-page dnd-initiative-page">
+    <main class="lab-initiative-page dnd-initiative-page">
         <section class="content-section">
             <header class="dnd-page-header">
                 <h1>D&D Initiative Tracker</h1>
@@ -49,8 +50,4 @@
             </div>
         </section>
     </main>
-{% endblock %}
-
-{% block importmap %}
-    {{ importmap(['app', 'dnd_initiative']) }}
 {% endblock %}

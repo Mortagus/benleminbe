@@ -34,6 +34,7 @@ make check
 
 - poursuivre avec `P20` : marqueurs binaires de combat ;
 - poursuivre avec `P34` : jet de constitution des monstres ;
+- préparer ensuite `P35` : détection d'issue de rencontre ;
 - garder `P7`, `P8`, `P10` et `P19` comme bases historiques des fonctionnalités déjà livrées ;
 - remettre `P22` en attente, tant que l'export JSON n'est pas explicitement demandé.
 
@@ -465,6 +466,7 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | 32              | P29 | Plus tard         | Plus tard             | Player-facing              | Mode plein écran                                         | Afficher le tracker sur un écran secondaire ou une TV.                                                                                                                            | Probablement lié à la future vue joueur.                                                                                          |
 | 33              | P30 | Plus tard         | Plus tard             | Fonctionnalité avancée     | Créatures temporaires et invocations                     | Gérer les créatures invoquées ou temporaires avec un cycle de vie plus court qu'un participant classique.                                                                         | À traiter après clarification des conditions, rounds et templates de rencontre.                                                   |
 | 34              | P33 | Plus tard         | Plus tard             | Règles / Joueurs           | DEX des joueurs saisis à la main                         | Ajouter une saisie de DEX ou de modificateur d'initiative pour les joueurs créés manuellement, afin que le départage d'égalité par DEX fonctionne pour tout le monde.             | Complète `P24` sans dépendre de l'import XML ; à brancher dans le formulaire joueur, la validation et la persistance.             |
+| 35              | P35 | Moyenne           | À faire               | Fonctionnalité / Règles    | Détection d'issue de rencontre                           | Détecter quand un camp n’a plus d’acteurs actifs et signaler une issue probable de combat, sans déclarer automatiquement une victoire définitive.                                 | S’appuie sur `P7` pour le pilotage du combat, `P10` pour les PV et `P19` pour les états de combat ; le MJ reste souverain.        |
 
 ## État fonctionnel synthétique
 
@@ -494,11 +496,12 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | PV            | Affichage PV actuels et PV max                                       | Fait                  | Présent dans les formulaires et l'ordre du tour.                                                                                |
 | PV            | Modification manuelle des PV                                         | Fait                  | Possible avant génération et directement dans l'ordre du tour via l'éditeur compact.                                            |
 | PV            | Application rapide dégâts/soins                                      | Fait                  | Saisie `-7`, `+5` ou `12` directement depuis l'ordre du tour.                                                                   |
-| PV            | Marquer inconscient ou mort                                          | À faire               | Aucun statut dédié.                                                                                                             |
+| PV            | Marquer inconscient ou mort                                          | Fait                  | États de combat manuels disponibles via `P19`, sans automatisme lié aux PV.                                                     |
 | CA            | Affichage de la CA                                                   | Fait                  | Présent pour joueurs, monstres et ordre du tour.                                                                                |
 | Règles        | Sélecteur de règles                                                  | Fait - en observation | Popup de règles maison dans le panneau ordre du tour.                                                                           |
-| Règles        | Durées automatiques de conditions                                    | À faire               | Dépend de la gestion des conditions.                                                                                            |
-| États         | Conditions visuelles                                                 | À faire               | Aucun système de conditions.                                                                                                    |
+| Règles        | Durées automatiques de conditions                                    | Fait                  | Les conditions à durée limitée sont décrémentées au changement de round et expirent ensuite automatiquement.                    |
+| États         | Conditions visuelles                                                 | Fait                  | Conditions temporaires affichées en badges, avec état vital séparé sur chaque carte.                                            |
+| Rencontre     | Détection d'issue de combat                                          | À faire               | Détecter quand un camp n'a plus d'acteurs actifs et signaler une issue probable, sans terminer la rencontre automatiquement.    |
 | États         | Marqueurs concentration, réaction, inspiration, avantage/désavantage | À faire               | Aucun marqueur binaire.                                                                                                         |
 | Affichage     | Initiales des participants                                           | Fait                  | Initiale calculée depuis le nom de l'acteur.                                                                                    |
 | Affichage     | Portraits                                                            | À faire               | Seules les initiales existent.                                                                                                  |

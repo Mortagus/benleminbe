@@ -8,9 +8,9 @@ Les constats d'audit, les améliorations réalisées et les fonctionnalités à 
 
 ## Description du projet
 
-`DnD Initiative Tracker` est un outil de laboratoire intégré au site Symfony principal. Il aide un Maître du Jeu à préparer une rencontre D&D, ajouter les personnages joueurs, sélectionner les monstres, lancer l'initiative des monstres, générer un ordre de tour exploitable pendant un combat et piloter explicitement le combat round par round.
+`DnD Initiative Tracker` est un outil de laboratoire intégré au site Symfony principal. Il aide un Maître du Jeu à préparer une rencontre D&D, ajouter les personnages joueurs, sélectionner les monstres, lancer l'initiative des monstres, générer un ordre de tour exploitable pendant un combat, modifier rapidement les PV en combat et piloter explicitement le combat round par round.
 
-Le module reste une application front-end légère en JavaScript vanilla, rendue par Twig et branchée via l'importmap Symfony. La rencontre vit encore dans le navigateur pendant la session courante, mais l'import XML joueur passe déjà par un contrôleur et un service PHP dédiés.
+Le module reste une application front-end légère en JavaScript vanilla, rendue par Twig et branchée via l'importmap Symfony. La rencontre vit encore dans le navigateur pendant la session courante, avec une persistance locale via `localStorage`, et l'import XML joueur passe déjà par un contrôleur et un service PHP dédiés.
 
 Fonctionnalités actuellement présentes :
 
@@ -27,7 +27,9 @@ Fonctionnalités actuellement présentes :
 - affichage lisible du round courant, de l'acteur actif ou de l'état round terminé ;
 - mise en évidence du prochain acteur à jouer ;
 - affichage des initiales, PV, CA et initiative dans l'ordre du tour ;
-- activation ou désactivation de règles maison via une popup de règles.
+- modification rapide des PV directement depuis l'ordre du tour ;
+- activation ou désactivation de règles maison via une popup de règles ;
+- persistance locale de la rencontre et restauration manuelle du snapshot.
 - import XML d'une fiche joueur avec préremplissage des champs visibles, puis consultation à la demande de la fiche complète via une modale dédiée.
 
 ## Emplacement des fichiers
@@ -60,6 +62,8 @@ La page principale assemble trois panneaux : monstres, joueurs et ordre du tour.
 - Gestion des monstres : [assets/scripts/lab/dnd/monsters.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/monsters.js:1)
 - Gestion des joueurs : [assets/scripts/lab/dnd/players.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/players.js:1)
 - Calculs d'initiative : [assets/scripts/lab/dnd/initiative.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/initiative.js:1)
+- Modification rapide des PV : [assets/scripts/lab/dnd/hit-points.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/hit-points.js:1)
+- Persistance locale : [assets/scripts/lab/dnd/persistence.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/persistence.js:1)
 - Règles maison configurables : [assets/scripts/lab/dnd/rules.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/rules.js:1)
 - Construction, rendu et pilotage de l'ordre du tour : [assets/scripts/lab/dnd/turn-order.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/turn-order.js:1)
 - Validation des entrées : [assets/scripts/lab/dnd/validation.js](/var/www/projects/benleminbe/assets/scripts/lab/dnd/validation.js:1)
@@ -72,6 +76,8 @@ Responsabilités principales :
 - `monsters.js` expose `MonstersPanel`, qui initialise le panneau monstres, valide ses entrées, rend la liste et remonte les interactions utilisateur vers le modèle.
 - `players.js` expose `PlayersPanel`, qui initialise le panneau joueurs, crée les lignes joueurs, valide les entrées et synchronise le formulaire avec le modèle.
 - `initiative.js` contient les helpers liés au d20, aux modificateurs et à l'affichage de l'initiative.
+- `hit-points.js` isole le parsing et le descriptif des saisies rapides de PV.
+- `persistence.js` gère le snapshot local, l'autosave et la restauration de la rencontre.
 - `rules.js` expose `RulesPanel`, qui gère la popup de règles et remonte les changements vers le modèle de rencontre.
 - `turn-order.js` expose `TurnOrderPanel`, qui initialise le panneau ordre du tour, affiche les erreurs globales, rend les cartes de combat et pilote les commandes explicites de combat.
 - `validation.js` centralise les validations des champs monstres, joueurs et rencontre.
@@ -119,7 +125,7 @@ Les libellés visibles restent courts pour préserver la lisibilité de l'outil 
 - Configuration Vitest : [vitest.config.mjs](/var/www/projects/benleminbe/vitest.config.mjs:1)
 - Tests du modèle de rencontre : [tests/js/lab/dnd/encounter-state.test.js](/var/www/projects/benleminbe/tests/js/lab/dnd/encounter-state.test.js:1)
 
-Les tests JavaScript se lancent avec `npm run test:js` ou `composer js:test`. Ils couvrent aujourd'hui la création de slots monstres, la sélection depuis le bestiaire injecté, les jets d'initiative, le tri, les règles maison, l'état joué/non joué, l'acteur actif, le réordonnancement manuel et les commandes explicites de combat.
+Les tests JavaScript se lancent avec `npm run test:js` ou `composer js:test`. Ils couvrent aujourd'hui la création de slots monstres, la sélection depuis le bestiaire injecté, les jets d'initiative, le tri, les règles maison, l'état joué/non joué, l'acteur actif, le réordonnancement manuel, les commandes explicites de combat, les PV modifiables en combat et la persistance locale.
 
 ## Architecture actuelle
 
@@ -130,7 +136,7 @@ Flux de données principal :
 1. Twig rend la structure initiale et les templates DOM.
 2. `dnd_initiative.js` crée un état de rencontre via `new EncounterState()` et initialise les panneaux.
 3. Les panneaux DOM possèdent leurs éléments, valident leurs entrées locales et remontent les interactions utilisateur vers le modèle.
-4. `encounter-state.js` applique les mutations métier : slots monstres, sélection, PV, règles, joueurs, ordre du tour, round courant et commandes de combat. Le bestiaire peut être injecté à la création de l'état pour tester le modèle avec une fixture légère.
+4. `encounter-state.js` applique les mutations métier : slots monstres, sélection, PV, règles, joueurs, ordre du tour, round courant, commandes de combat et synchronisation des copies de PV déjà présentes dans l'ordre du tour. Le bestiaire peut être injecté à la création de l'état pour tester le modèle avec une fixture légère.
 5. `validation.js` vérifie les entrées avant la création de la liste et la génération de l'ordre du tour.
 6. `TurnOrderPanel`, `MonstersPanel`, `PlayersPanel` et `RulesPanel` rendent l'état ou les contrôles, sans conserver l'état métier principal.
 
@@ -142,6 +148,7 @@ Sources de vérité actuelles :
 - règles actives : propriété `rules` de l'état de rencontre ;
 - ordre du tour : propriété `turnOrder` de l'état de rencontre ;
 - round courant et acteur actif : propriétés `currentRound` et `activeTurnId` de l'état de rencontre.
+- snapshot local : `persistence.js` et `localStorage`, qui restaurent ou réinitialisent la rencontre selon le dernier état sauvegardé.
 
 Le formulaire joueur reste encore un buffer DOM éditable, mais les données utilisées pour générer l'ordre du tour sont synchronisées dans le modèle de rencontre avant calcul.
 
@@ -162,12 +169,13 @@ Le formulaire joueur reste encore un buffer DOM éditable, mais les données uti
 11. L'outil valide les monstres, les joueurs et la présence d'au moins un acteur exploitable.
 12. L'outil fusionne monstres et joueurs, applique les règles actives, trie par initiative décroissante et rend les cartes de tour.
 13. Le panneau d'ordre du tour expose les commandes explicites de combat et l'état du round courant.
-14. `Acteur suivant` marque l'acteur courant comme joué puis avance vers le prochain acteur non joué, sans lancer automatiquement un nouveau round.
-15. `Nouveau round` incrémente le round courant, remet les tours à joué à zéro et conserve l'ordre manuel.
-16. `Réinitialiser les tours de ce round` remet les tours du round courant à non joué sans changer le round.
-17. `Réinitialiser la rencontre` vide l'état de combat global et neutralise l'ancienne sauvegarde locale.
-18. L'utilisateur peut cliquer sur une carte pour la marquer comme jouée ou non jouée.
-19. L'utilisateur peut réordonner les cartes par glisser-déposer.
+14. L'utilisateur peut modifier rapidement les PV d'un acteur depuis l'ordre du tour avec une saisie compacte.
+15. `Acteur suivant` marque l'acteur courant comme joué puis avance vers le prochain acteur non joué, sans lancer automatiquement un nouveau round.
+16. `Nouveau round` incrémente le round courant, remet les tours à joué à zéro et conserve l'ordre manuel.
+17. `Réinitialiser les tours de ce round` remet les tours du round courant à non joué sans changer le round.
+18. `Réinitialiser la rencontre` vide l'état de combat global et neutralise l'ancienne sauvegarde locale.
+19. L'utilisateur peut cliquer sur une carte pour la marquer comme jouée ou non jouée.
+20. L'utilisateur peut réordonner les cartes par glisser-déposer.
 
 ### Règles maison configurables
 
@@ -183,9 +191,9 @@ Ces règles sont considérées comme des règles maison volontaires. Elles ne so
 
 ### Données persistées
 
-Aucune donnée de rencontre n'est persistée côté serveur ou dans le navigateur.
+La rencontre est persistée localement via `localStorage`.
 
-Un rechargement de page efface :
+Un rechargement de page peut restaurer :
 
 - la liste des monstres ;
 - les sélections de monstres ;
@@ -193,6 +201,8 @@ Un rechargement de page efface :
 - les joueurs saisis ;
 - les PV modifiés ;
 - l'ordre du tour ;
-- les statuts joué/non joué.
+- les statuts joué/non joué ;
+- le round courant et l'acteur actif ;
+- les règles actives.
 
-Les règles actives sont également conservées uniquement en mémoire pendant la session courante.
+Un reset de rencontre sauvegarde un état vide pour empêcher la restauration de l'ancienne rencontre après reload.

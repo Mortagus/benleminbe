@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { bestiarySample } from '../../../fixtures/dnd/bestiary-sample.js';
-import { EncounterState } from '../../../../assets/scripts/lab/dnd/encounter-state.js';
+import { adjustActorHitPoints, EncounterState } from '../../../../assets/scripts/lab/dnd/encounter-state.js';
 import {
     createEncounterSnapshotDto,
     ENCOUNTER_SNAPSHOT_VERSION,
@@ -74,6 +74,43 @@ describe('DnD encounter persistence', () => {
         expect(globalThis.document.getElementById('encounterPersistenceStatus').textContent)
             .toContain('Derniere sauvegarde locale');
         expect(globalThis.document.getElementById('restoreEncounterSnapshot').disabled).toBe(false);
+    });
+
+    test('saves hit points changes made during combat to the snapshot', () => {
+        const encounter = new EncounterState();
+        encounter.setPlayers([
+            {
+                id: 'player-1',
+                type: 'player',
+                name: 'Lia',
+                side: 'party',
+                armorClass: 15,
+                baseHitPoints: 20,
+                currentHitPoints: 18,
+                initiative: 12,
+                roll: 12,
+                initiativeModifier: 2,
+            },
+        ]);
+        encounter.buildRoundOrder();
+        adjustActorHitPoints(encounter, 'player-1', -7);
+
+        const storage = createLocalStorageMock();
+
+        globalThis.document = createPersistenceDocument();
+        globalThis.localStorage = storage;
+
+        const persistence = new EncounterPersistence(encounter, {
+            playersPanel: {
+                sync: vi.fn(),
+            },
+        });
+        persistence.start();
+        persistence.saveEncounter();
+
+        const snapshot = JSON.parse(storage.getItem(DND_INITIATIVE_TRACKER_STORAGE_KEY));
+
+        expect(snapshot.players[0].currentHitPoints).toBe(11);
     });
 
     test('saves a reset encounter as an empty snapshot that preserves rules', () => {

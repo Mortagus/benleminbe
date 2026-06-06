@@ -18,6 +18,12 @@ import { EncounterPersistence } from './persistence.js';
 import { playSoundEffect } from './sound-effects.js';
 
 import {
+    describeHitPointsChange,
+    describeInvalidHitPointsChange,
+    parseHitPointsChange,
+} from './hit-points.js';
+
+import {
     focusFirstInvalidField,
     hasValidationErrors,
     validateEncounterActors,
@@ -42,6 +48,7 @@ class DndInitiativeTrackerApp {
             onStartNewRound: () => this.startNewRound(),
             onResetTurnProgress: () => this.resetTurnProgress(),
             onResetEncounter: () => this.resetEncounter(),
+            onApplyHitPointsChange: (turnId, rawValue) => this.applyTurnHitPointsChange(turnId, rawValue),
         });
         this.turnOrderPanel.start();
 
@@ -184,6 +191,65 @@ class DndInitiativeTrackerApp {
         this.rulesPanel?.sync?.();
         this.turnOrderPanel?.refresh?.();
         this.persistence?.saveEncounter();
+    }
+
+    applyTurnHitPointsChange(turnId, rawValue) {
+        const turn = this.encounter.turnOrder.find(actor => actor.id === turnId);
+
+        if (!turn) {
+            return {
+                ok: false,
+                message: 'Acteur introuvable pour la modification des PV.',
+            };
+        }
+
+        const change = parseHitPointsChange(rawValue);
+
+        if (!change) {
+            return {
+                ok: false,
+                message: describeInvalidHitPointsChange(turn.name),
+            };
+        }
+
+        const actorId = turn.actorId ?? turn.id;
+        const result = change.kind === 'set'
+            ? this.encounter.updateActorHitPoints(actorId, change.amount)
+            : this.encounter.adjustActorHitPoints(
+                actorId,
+                change.kind === 'damage' ? -change.amount : change.amount,
+            );
+
+        if (!result) {
+            return {
+                ok: false,
+                message: 'Acteur introuvable pour la modification des PV.',
+            };
+        }
+
+        if (turn.type === 'monster') {
+            this.monstersPanel?.refresh?.();
+        }
+
+        if (turn.type === 'player') {
+            this.playersPanel?.hydrateFromEncounter?.();
+        }
+
+        this.turnOrderPanel?.refresh?.({
+            focusTurnId: turn.id,
+            focusHitPointsInput: true,
+        });
+        this.persistence?.saveEncounter();
+
+        return {
+            ok: true,
+            message: describeHitPointsChange(
+                result.actorName,
+                change,
+                result.currentHitPoints,
+                result.baseHitPoints,
+            ),
+        };
     }
 }
 

@@ -72,15 +72,30 @@ export class TestElement {
     }
 
     dispatchEvent(event) {
-        const normalizedEvent = {
-            preventDefault: () => {},
-            stopPropagation: () => {},
-            ...event,
-            target: event.target ?? this,
-        };
+        const normalizedEvent = event;
+
+        if (!normalizedEvent.target) {
+            normalizedEvent.target = this;
+        }
+
+        if (typeof normalizedEvent.preventDefault !== 'function') {
+            normalizedEvent.preventDefault = () => {};
+        }
+
+        if (typeof normalizedEvent.stopPropagation !== 'function') {
+            normalizedEvent.stopPropagation = () => {
+                normalizedEvent.__propagationStopped = true;
+            };
+        }
+
+        normalizedEvent.__propagationStopped ??= false;
 
         (this.eventListeners.get(normalizedEvent.type) ?? [])
             .forEach(listener => listener(normalizedEvent));
+
+        if (!normalizedEvent.__propagationStopped && this.parentElement) {
+            this.parentElement.dispatchEvent(normalizedEvent);
+        }
     }
 
     focus() {
@@ -160,6 +175,18 @@ export function createTurnOrderTemplate() {
     stats.appendChild(new TestElement('span', ['turn-order-item__hit-points']));
     item.appendChild(stats);
 
+    const hitPointsEditor = new TestElement('div', ['turn-order-item__hit-points-editor']);
+    const hitPointsInput = createInput();
+    hitPointsInput.dataset.turnHitPointsInput = '';
+    hitPointsEditor.appendChild(hitPointsInput);
+    hitPointsEditor.appendChild(createApplyButton());
+    item.appendChild(hitPointsEditor);
+
+    const hitPointsFeedback = new TestElement('p', ['turn-order-item__hit-points-feedback']);
+    hitPointsFeedback.dataset.turnHitPointsFeedback = '';
+    hitPointsFeedback.hidden = true;
+    item.appendChild(hitPointsFeedback);
+
     const badge = new TestElement('div', ['turn-order-item__badge']);
     badge.hidden = true;
     item.appendChild(badge);
@@ -214,6 +241,13 @@ export function createMonsterOptionTemplate() {
     return {
         content,
     };
+}
+
+function createApplyButton() {
+    const button = new TestElement('button');
+    button.dataset.turnHitPointsApply = '';
+
+    return button;
 }
 
 export function createPlayerItemTemplate() {

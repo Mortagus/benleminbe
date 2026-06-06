@@ -265,6 +265,91 @@ describe('turn order rendering', () => {
         expect(onResetEncounter).toHaveBeenCalledOnce();
     });
 
+    test('renders quick hit points controls and applies them without toggling the turn', async () => {
+        const encounter = new EncounterState();
+        encounter.turnOrder = [
+            createTurn({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+            }),
+        ];
+
+        const onToggleTurnDone = vi.fn();
+        const onApplyHitPointsChange = vi.fn(() => ({
+            ok: true,
+            message: 'Lia : PV définis à 12 / 20.',
+        }));
+
+        globalThis.document = createTurnOrderDocument();
+
+        const { TurnOrderPanel } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const panel = new TurnOrderPanel(encounter, {
+            onToggleTurnDone,
+            onApplyHitPointsChange,
+        });
+        panel.start();
+        panel.refresh();
+
+        const turnItem = globalThis.document.getElementById('turnOrderList').children[0];
+        const hitPointsInput = turnItem.querySelector('[data-turn-hit-points-input]');
+        const hitPointsButton = turnItem.querySelector('[data-turn-hit-points-apply]');
+
+        hitPointsInput.dispatchEvent({ type: 'click' });
+        hitPointsInput.value = '12';
+        hitPointsButton.dispatchEvent({ type: 'click' });
+        hitPointsInput.value = '12';
+        hitPointsInput.dispatchEvent({
+            type: 'keydown',
+            key: 'Enter',
+            preventDefault: vi.fn(),
+        });
+
+        expect(onToggleTurnDone).not.toHaveBeenCalled();
+        expect(onApplyHitPointsChange).toHaveBeenCalledTimes(2);
+        expect(onApplyHitPointsChange).toHaveBeenNthCalledWith(1, 'player-1', '12');
+        expect(onApplyHitPointsChange).toHaveBeenNthCalledWith(2, 'player-1', '12');
+    });
+
+    test('shows a discreet feedback message when the quick hit points input is invalid', async () => {
+        const encounter = new EncounterState();
+        encounter.turnOrder = [
+            createTurn({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+            }),
+        ];
+
+        const onApplyHitPointsChange = vi.fn(() => ({
+            ok: false,
+            message: 'Saisie invalide pour Lia. Utilise -N, +N ou N.',
+        }));
+
+        globalThis.document = createTurnOrderDocument();
+
+        const { TurnOrderPanel } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const panel = new TurnOrderPanel(encounter, {
+            onApplyHitPointsChange,
+        });
+        panel.start();
+        panel.refresh();
+
+        const turnItem = globalThis.document.getElementById('turnOrderList').children[0];
+        const hitPointsInput = turnItem.querySelector('[data-turn-hit-points-input]');
+        const hitPointsButton = turnItem.querySelector('[data-turn-hit-points-apply]');
+        const feedback = turnItem.querySelector('[data-turn-hit-points-feedback]');
+
+        hitPointsInput.value = 'abc';
+        hitPointsButton.dispatchEvent({ type: 'click' });
+
+        expect(onApplyHitPointsChange).toHaveBeenCalledOnce();
+        expect(feedback.hidden).toBe(false);
+        expect(feedback.textContent).toBe('Saisie invalide pour Lia. Utilise -N, +N ou N.');
+        expect(hitPointsInput.classList.contains('dnd-field--invalid')).toBe(true);
+        expect(hitPointsInput.getAttribute('aria-invalid')).toBe('true');
+    });
+
     test('disables the next turn command when the round is complete', async () => {
         const encounter = new EncounterState();
         encounter.turnOrder = [

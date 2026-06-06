@@ -86,13 +86,13 @@
     --turn-order-scale: 0.97;
     --turn-order-accent: color-mix(in srgb, var(--accent) 72%, var(--border));
 
-    flex: 0 0 calc(8.5rem * var(--turn-order-scale));
+    flex: 0 0 calc(9.35rem * var(--turn-order-scale));
 
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 
-    min-height: calc(11rem * var(--turn-order-scale));
+    min-height: calc(13rem * var(--turn-order-scale));
     padding: calc(0.85rem * var(--turn-order-scale));
 
     background: color-mix(in srgb, var(--card) 92%, var(--turn-order-accent));
@@ -222,6 +222,46 @@
 
     color: var(--muted);
     font-size: 0.85rem;
+}
+
+.dnd-initiative-page .turn-order-item__hit-points-editor {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.dnd-initiative-page .turn-order-item__hit-points-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0.45rem 0.55rem;
+
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.55rem;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+}
+
+.dnd-initiative-page .turn-order-item__hit-points-input::placeholder {
+    color: color-mix(in srgb, var(--muted) 82%, transparent);
+}
+
+.dnd-initiative-page .turn-order-item__hit-points-apply {
+    flex: 0 0 auto;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.dnd-initiative-page .turn-order-item__hit-points-feedback {
+    margin: 0;
+    color: #8d1818;
+    font-size: 0.72rem;
+    line-height: 1.25;
+}
+
+.dnd-initiative-page .turn-order-item__hit-points-feedback[hidden] {
+    display: none !important;
 }
 
 .dnd-initiative-page .turn-order-item__badge {

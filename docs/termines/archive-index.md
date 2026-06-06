@@ -24,4 +24,5 @@ Ces documents restent utiles pour comprendre les décisions passées, mais l'ét
 - [Plan d'action Lighthouse](plans/lighthouse-remediation-plan.md)
 - [P8 - Cadrage technique de la persistance locale](plans/dnd-initiative-tracker-p8-cadrage.md)
 - [P7 - Commandes explicites de combat](plans/dnd-initiative-tracker-p7-commandes-explicites-combat.md)
+- [P10 - Modification directe des PV pendant le combat](plans/dnd-initiative-tracker-p10-modification-directe-pv-pendant-combat.md)
 - [PageSpeed et premier projet privé - note de clôture](plans/pagespeed-et-premier-projet-prive.md)

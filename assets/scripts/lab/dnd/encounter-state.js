@@ -58,7 +58,39 @@ export class EncounterState {
             return;
         }
 
-        this.monsters[index].currentHitPoints = Number(hitPoints || 0);
+        this.monsters[index].currentHitPoints = clampHitPoints(
+            hitPoints,
+            this.monsters[index].baseHitPoints,
+        );
+        this.syncTurnOrderHitPoints(this.monsters[index].id, this.monsters[index].currentHitPoints);
+    }
+
+    updateActorHitPoints(actorId, hitPoints) {
+        const actor = this.getActorById(actorId);
+
+        if (!actor) {
+            return null;
+        }
+
+        actor.currentHitPoints = clampHitPoints(hitPoints, actor.baseHitPoints);
+        this.syncTurnOrderHitPoints(actor.id, actor.currentHitPoints);
+
+        return {
+            actorId: actor.id,
+            actorName: actor.name,
+            currentHitPoints: actor.currentHitPoints,
+            baseHitPoints: actor.baseHitPoints,
+        };
+    }
+
+    adjustActorHitPoints(actorId, delta) {
+        const actor = this.getActorById(actorId);
+
+        if (!actor) {
+            return null;
+        }
+
+        return this.updateActorHitPoints(actor.id, actor.currentHitPoints + Number(delta || 0));
     }
 
     hasSelectedMonsters() {
@@ -285,6 +317,20 @@ export class EncounterState {
         const activeTurn = this.turnOrder.find(actor => !actor.done);
         this.activeTurnId = activeTurn?.id ?? null;
     }
+
+    getActorById(actorId) {
+        return this.monsters.find(monster => monster.id === actorId)
+            ?? this.players.find(player => player.id === actorId)
+            ?? null;
+    }
+
+    syncTurnOrderHitPoints(actorId, currentHitPoints) {
+        this.turnOrder.forEach(turn => {
+            if ((turn.actorId ?? turn.id) === actorId) {
+                turn.currentHitPoints = currentHitPoints;
+            }
+        });
+    }
 }
 
 // Compatibility wrappers kept while DOM panels migrate to the EncounterState API.
@@ -302,6 +348,14 @@ export function selectMonster(encounter, index, monsterSlug) {
 
 export function updateMonsterHitPoints(encounter, index, hitPoints) {
     encounter.updateMonsterHitPoints(index, hitPoints);
+}
+
+export function updateActorHitPoints(encounter, actorId, hitPoints) {
+    return encounter.updateActorHitPoints(actorId, hitPoints);
+}
+
+export function adjustActorHitPoints(encounter, actorId, delta) {
+    return encounter.adjustActorHitPoints(actorId, delta);
 }
 
 export function hasSelectedMonsters(encounter) {
@@ -456,4 +510,15 @@ function getInitiativeTieBreaker(actor) {
 
 function isKnownRule(ruleId) {
     return Object.values(RULES).some(rule => rule.id === ruleId);
+}
+
+function clampHitPoints(hitPoints, baseHitPoints) {
+    const maxHitPoints = Number(baseHitPoints || 0);
+    const normalizedHitPoints = Number(hitPoints || 0);
+
+    if (!Number.isFinite(normalizedHitPoints)) {
+        return 0;
+    }
+
+    return Math.max(0, Math.min(maxHitPoints, normalizedHitPoints));
 }

@@ -208,6 +208,32 @@
                 <span class="turn-order-item__hit-points"></span>
             </div>
 
+            <div class="turn-order-item__hit-points-editor">
+                <input
+                    type="text"
+                    class="turn-order-item__hit-points-input dnd-field"
+                    data-turn-hit-points-input
+                    inputmode="text"
+                    autocomplete="off"
+                    spellcheck="false"
+                    placeholder="-7, +5, 12"
+                >
+
+                <button
+                    type="button"
+                    class="turn-order-item__hit-points-apply dnd-icon-button"
+                    data-turn-hit-points-apply
+                    aria-label="Appliquer la modification des PV"
+                    title="Appliquer la modification des PV"
+                >
+                    <svg class="dnd-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <polyline points="5 13 9 17 19 7"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <p class="turn-order-item__hit-points-feedback" data-turn-hit-points-feedback hidden></p>
+
             <div class="turn-order-item__badge" hidden>À jouer</div>
         </li>
     </template>

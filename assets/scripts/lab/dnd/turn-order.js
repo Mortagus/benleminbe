@@ -1,6 +1,6 @@
 // DOM controller for the turn order panel.
-// It renders the already-built turn order and handles played state, focus,
-// keyboard movement, button movement, and drag and drop.
+// It renders the already-built turn order and handles played state, quick hit
+// point edits, focus, keyboard movement, button movement, and drag and drop.
 import {
     clearValidationState,
     showValidationErrors,
@@ -28,7 +28,7 @@ export class TurnOrderPanel {
         this.turnOrderPlaceholder = document.getElementById('turnOrderPlaceholder');
         this.turnOrderList = document.getElementById('turnOrderList');
         this.turnOrderLiveRegion = document.getElementById('turnOrderLiveRegion');
-        this.pendingFocusTurnId = null;
+        this.pendingFocusTarget = null;
     }
 
     start() {
@@ -75,12 +75,20 @@ export class TurnOrderPanel {
 
     rememberFocusTarget(options) {
         if (options.focusTurnId) {
-            this.pendingFocusTurnId = options.focusTurnId;
+            this.pendingFocusTarget = {
+                turnId: options.focusTurnId,
+                selector: options.focusHitPointsInput
+                    ? '[data-turn-hit-points-input]'
+                    : null,
+            };
             return;
         }
 
         if (options.focusFirst) {
-            this.pendingFocusTurnId = this.encounter.turnOrder[0]?.id ?? null;
+            this.pendingFocusTarget = {
+                turnId: this.encounter.turnOrder[0]?.id ?? null,
+                selector: null,
+            };
         }
     }
 
@@ -138,14 +146,21 @@ export class TurnOrderPanel {
             {
                 onToggleTurnDone: (turnId) => {
                     this.encounter.toggleTurnDone(turnId);
-                    this.pendingFocusTurnId = turnId;
+                    this.pendingFocusTarget = {
+                        turnId,
+                        selector: null,
+                    };
                     this.refresh();
                 },
                 onMoveTurn: (draggedTurnId, targetTurnId, placement) => {
                     this.encounter.moveTurn(draggedTurnId, targetTurnId, placement);
-                    this.pendingFocusTurnId = draggedTurnId;
+                    this.pendingFocusTarget = {
+                        turnId: draggedTurnId,
+                        selector: null,
+                    };
                     this.refresh();
                 },
+                onApplyHitPointsChange: (turnId, rawValue) => this.callbacks.onApplyHitPointsChange?.(turnId, rawValue),
                 onAnnounce: (message) => {
                     announceTurnOrderChange(this.turnOrderLiveRegion, message);
                 },
@@ -154,10 +169,20 @@ export class TurnOrderPanel {
     }
 
     restorePendingFocus() {
-        if (this.pendingFocusTurnId) {
-            focusTurnItem(this.turnOrderList, this.pendingFocusTurnId);
-            this.pendingFocusTurnId = null;
+        if (!this.pendingFocusTarget?.turnId) {
+            this.pendingFocusTarget = null;
+            return;
         }
+
+        const { turnId, selector } = this.pendingFocusTarget;
+
+        if (selector) {
+            focusTurnItemElement(this.turnOrderList, turnId, selector);
+        } else {
+            focusTurnItem(this.turnOrderList, turnId);
+        }
+
+        this.pendingFocusTarget = null;
     }
 
     showEncounterValidationErrors(validationResult) {
@@ -235,7 +260,7 @@ function populateTurnOrderItem(li, actor, options) {
     li.tabIndex = 0;
     li.dataset.actorId = actor.id;
     li.setAttribute('aria-label', actorDescription);
-    li.title = 'Entrée/Espace : joué. Flèches : déplacer.';
+    li.title = 'Entrée/Espace : joué. Flèches : déplacer. PV rapides : -7, +5 ou 12 puis Entrée.';
 
     const legendaryBadge = li.querySelector('.turn-order-item__legendary-badge');
     if (legendaryBadge) {
@@ -249,6 +274,7 @@ function populateTurnOrderItem(li, actor, options) {
     li.querySelector('.turn-order-item__initiative').textContent = `Init. ${formatInitiative(actor)}`;
     li.querySelector('.turn-order-item__armor-class').textContent = `CA ${actor.armorClass}`;
     li.querySelector('.turn-order-item__hit-points').textContent = `PV ${actor.currentHitPoints} / ${actor.baseHitPoints}`;
+    populateTurnOrderHitPointsEditor(li, actor);
 
     const badge = li.querySelector('.turn-order-item__badge');
     badge.hidden = !options.isActive;
@@ -278,6 +304,114 @@ function bindTurnOrderItemEvents(li, roundOrder, actor, index, callbacks) {
     bindTurnToggleEvents(li, actor, callbacks);
     bindTurnKeyboardEvents(li, roundOrder, actor, index, callbacks);
     bindTurnDragAndDropEvents(li, roundOrder, actor, callbacks);
+    bindTurnHitPointsEditor(li, actor, callbacks);
+}
+
+function bindTurnHitPointsEditor(li, actor, callbacks) {
+    const editor = li.querySelector('.turn-order-item__hit-points-editor');
+    const input = editor?.querySelector('[data-turn-hit-points-input]');
+    const applyButton = editor?.querySelector('[data-turn-hit-points-apply]');
+    const feedback = li.querySelector('[data-turn-hit-points-feedback]');
+
+    if (!editor || !input || !applyButton) {
+        return;
+    }
+
+    editor.addEventListener('click', event => {
+        event.stopPropagation();
+    });
+
+    input.value = '';
+    input.setAttribute('aria-label', `Modifier les PV de ${actor.name}`);
+    input.setAttribute('title', `Saisir -7, +5 ou 12 pour ${actor.name}`);
+    input.addEventListener('click', event => {
+        event.stopPropagation();
+    });
+    input.addEventListener('input', () => {
+        clearTurnHitPointsFeedback(input, feedback);
+    });
+    input.addEventListener('keydown', event => {
+        if (event.key !== 'Enter') {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        applyTurnHitPointsChange(actor, input, feedback, callbacks);
+    });
+
+    applyButton.setAttribute('aria-label', `Appliquer la modification des PV de ${actor.name}`);
+    applyButton.setAttribute('title', `Appliquer la modification des PV de ${actor.name}`);
+    applyButton.addEventListener('click', event => {
+        event.stopPropagation();
+        applyTurnHitPointsChange(actor, input, feedback, callbacks);
+    });
+}
+
+function populateTurnOrderHitPointsEditor(li, actor) {
+    const editor = li.querySelector('.turn-order-item__hit-points-editor');
+    const input = editor?.querySelector('[data-turn-hit-points-input]');
+    const feedback = li.querySelector('[data-turn-hit-points-feedback]');
+
+    if (input) {
+        input.value = '';
+        input.setAttribute('aria-describedby', `${actor.id}-turn-hit-points-feedback`);
+        input.removeAttribute('aria-invalid');
+        input.classList.remove('dnd-field--invalid');
+    }
+
+    if (feedback) {
+        feedback.id = `${actor.id}-turn-hit-points-feedback`;
+        feedback.hidden = true;
+        feedback.textContent = '';
+    }
+}
+
+function applyTurnHitPointsChange(actor, input, feedback, callbacks) {
+    const result = callbacks.onApplyHitPointsChange?.(actor.id, input.value);
+
+    if (!result) {
+        return;
+    }
+
+    if (!result.ok) {
+        showTurnHitPointsFeedback(input, feedback, result.message);
+        callbacks.onAnnounce?.(result.message);
+        input.focus();
+        return;
+    }
+
+    clearTurnHitPointsFeedback(input, feedback);
+    input.value = '';
+    callbacks.onAnnounce?.(result.message);
+}
+
+function showTurnHitPointsFeedback(input, feedback, message) {
+    if (input) {
+        input.classList.add('dnd-field--invalid');
+        input.setAttribute('aria-invalid', 'true');
+    }
+
+    if (!feedback) {
+        return;
+    }
+
+    feedback.textContent = message;
+    feedback.hidden = false;
+}
+
+function clearTurnHitPointsFeedback(input, feedback) {
+    if (input) {
+        input.classList.remove('dnd-field--invalid');
+        input.removeAttribute('aria-invalid');
+    }
+
+    if (!feedback) {
+        return;
+    }
+
+    feedback.textContent = '';
+    feedback.hidden = true;
 }
 
 function bindTurnToggleEvents(li, actor, callbacks) {
@@ -466,13 +600,24 @@ function focusTurnItem(turnOrderList, turnId) {
     turnItem?.focus();
 }
 
+function focusTurnItemElement(turnOrderList, turnId, selector) {
+    const turnItem = Array.from(turnOrderList.querySelectorAll('.turn-order-item'))
+        .find(item => item.dataset.actorId === turnId);
+
+    turnItem?.querySelector(selector)?.focus();
+}
+
 function announceTurnOrderChange(liveRegion, message) {
     if (!liveRegion) {
         return;
     }
 
     liveRegion.textContent = '';
-    window.requestAnimationFrame(() => {
+    const scheduleFrame = typeof globalThis.requestAnimationFrame === 'function'
+        ? globalThis.requestAnimationFrame.bind(globalThis)
+        : (callback) => globalThis.setTimeout(callback, 0);
+
+    scheduleFrame(() => {
         liveRegion.textContent = message;
     });
 }

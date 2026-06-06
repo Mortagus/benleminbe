@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { bestiarySample } from '../../../fixtures/dnd/bestiary-sample.js';
 import {
+    adjustActorHitPoints,
     buildRoundOrder,
     createEncounterState,
     createMonsterSlots,
@@ -11,6 +12,7 @@ import {
     selectMonster,
     setPlayers,
     setRuleActive,
+    updateActorHitPoints,
     toggleTurnDone,
 } from '../../../../assets/scripts/lab/dnd/encounter-state.js';
 
@@ -387,6 +389,83 @@ describe('encounter state', () => {
         expect(encounter.currentRound).toBe(1);
         expect(encounter.activeTurnId).toBe(null);
         expect(encounter.isRuleActive('skip-low-initiative')).toBe(false);
+    });
+
+    test('updates an actor hit points directly without changing combat flow state', () => {
+        const encounter = createTestEncounter();
+
+        setPlayers(encounter, [
+            createPlayer({
+                id: 'player-critical',
+                name: 'Lia',
+                initiative: 20,
+                roll: 20,
+                currentHitPoints: 13,
+                baseHitPoints: 20,
+            }),
+        ]);
+        buildRoundOrder(encounter);
+
+        const result = updateActorHitPoints(encounter, 'player-critical', 12);
+
+        expect(result).toMatchObject({
+            actorId: 'player-critical',
+            actorName: 'Lia',
+            currentHitPoints: 12,
+            baseHitPoints: 20,
+        });
+        expect(encounter.players[0].currentHitPoints).toBe(12);
+        expect(encounter.turnOrder.map(actor => actor.currentHitPoints)).toEqual([12, 12]);
+        expect(encounter.currentRound).toBe(1);
+        expect(encounter.activeTurnId).toBe('player-critical-turn-1');
+        expect(encounter.turnOrder.every(actor => actor.done)).toBe(false);
+    });
+
+    test('adjusts actor hit points through damage and healing with bounds', () => {
+        const encounter = createTestEncounter();
+
+        setPlayers(encounter, [
+            createPlayer({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+                roll: 18,
+                currentHitPoints: 4,
+                baseHitPoints: 20,
+            }),
+        ]);
+        buildRoundOrder(encounter);
+
+        const damageResult = adjustActorHitPoints(encounter, 'player-1', -7);
+        const healResult = adjustActorHitPoints(encounter, 'player-1', 99);
+
+        expect(damageResult).toMatchObject({
+            currentHitPoints: 0,
+            baseHitPoints: 20,
+        });
+        expect(healResult).toMatchObject({
+            currentHitPoints: 20,
+            baseHitPoints: 20,
+        });
+        expect(encounter.players[0].currentHitPoints).toBe(20);
+        expect(encounter.turnOrder[0].currentHitPoints).toBe(20);
+        expect(encounter.currentRound).toBe(1);
+        expect(encounter.activeTurnId).toBe('player-1');
+    });
+
+    test('keeps monster turn-order copies in sync when monster hit points change', () => {
+        const encounter = createTestEncounter();
+
+        createMonsterSlots(encounter, 1);
+        selectMonster(encounter, 0, 'acolyte');
+        rollMonsterInitiatives(encounter, () => 12);
+        buildRoundOrder(encounter);
+
+        encounter.updateMonsterHitPoints(0, 5);
+
+        expect(encounter.monsters[0].currentHitPoints).toBe(5);
+        expect(encounter.turnOrder[0].currentHitPoints).toBe(5);
+        expect(encounter.activeTurnId).toBe('acolyte-1');
     });
 });
 

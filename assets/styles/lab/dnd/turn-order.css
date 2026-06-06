@@ -264,6 +264,194 @@
     display: none !important;
 }
 
+.dnd-initiative-page .turn-order-item__combat-state {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.dnd-initiative-page .turn-order-item__state-summary,
+.dnd-initiative-page .turn-order-item__conditions-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.dnd-initiative-page .turn-order-item__conditions-toggle {
+    align-self: start;
+    width: fit-content;
+    padding: 0.42rem 0.68rem;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.dnd-initiative-page .turn-order-item__conditions-panel {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0.7rem 0.75rem;
+
+    background: color-mix(in srgb, var(--bg-soft) 72%, var(--card));
+    border: 1px solid color-mix(in srgb, var(--border) 75%, var(--accent));
+    border-radius: 0.75rem;
+}
+
+.dnd-initiative-page .turn-order-item__conditions-panel[hidden] {
+    display: none !important;
+}
+
+.dnd-initiative-page .turn-order-item__conditions-panel-grid {
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: 1fr;
+}
+
+.dnd-initiative-page .turn-order-item__field {
+    display: grid;
+    gap: 0.25rem;
+
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.dnd-initiative-page .turn-order-item__field--full-width {
+    grid-column: 1 / -1;
+}
+
+.dnd-initiative-page .turn-order-item__condition-input,
+.dnd-initiative-page .turn-order-item__conditions-panel select {
+    width: 100%;
+    min-width: 0;
+    padding: 0.42rem 0.55rem;
+
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.55rem;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+}
+
+.dnd-initiative-page .turn-order-item__condition-add {
+    place-self: end start;
+    padding: 0.45rem 0.75rem;
+}
+
+.dnd-initiative-page .turn-order-item__conditions-feedback {
+    margin: 0;
+    color: #8d1818;
+    font-size: 0.72rem;
+    line-height: 1.25;
+}
+
+.dnd-initiative-page .turn-order-item__conditions-feedback[hidden] {
+    display: none !important;
+}
+
+.dnd-initiative-page .turn-order-item__state-summary:empty,
+.dnd-initiative-page .turn-order-item__conditions-list:empty {
+    display: none;
+}
+
+.dnd-initiative-page .turn-order-item__combat-state-badge,
+.dnd-initiative-page .turn-order-item__condition-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+
+    width: fit-content;
+    padding: 0.2rem 0.5rem;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    text-transform: uppercase;
+
+    border-radius: 999px;
+}
+
+.dnd-initiative-page .turn-order-item__combat-state-badge {
+    color: var(--text);
+    background: color-mix(in srgb, var(--bg-soft) 82%, var(--card));
+    border: 1px solid var(--border);
+}
+
+.dnd-initiative-page .turn-order-item__combat-state-badge--condition {
+    color: #9a3412;
+    background: color-mix(in srgb, #fb923c 18%, var(--card));
+    border: 1px solid color-mix(in srgb, #fb923c 38%, var(--border));
+}
+
+.dnd-initiative-page .turn-order-item__combat-state-badge--unconscious {
+    color: #7c3aed;
+    background: color-mix(in srgb, #7c3aed 15%, var(--card));
+    border: 1px solid color-mix(in srgb, #7c3aed 38%, var(--border));
+}
+
+.dnd-initiative-page .turn-order-item__combat-state-badge--dead {
+    color: #b42318;
+    background: color-mix(in srgb, #b42318 14%, var(--card));
+    border: 1px solid color-mix(in srgb, #b42318 36%, var(--border));
+}
+
+.dnd-initiative-page .turn-order-item__combat-state-badge--out-of-combat {
+    color: #2563eb;
+    background: color-mix(in srgb, #2563eb 14%, var(--card));
+    border: 1px solid color-mix(in srgb, #2563eb 36%, var(--border));
+}
+
+.dnd-initiative-page .turn-order-item__combat-state-badge--zero-hit-points {
+    color: #b45309;
+    background: color-mix(in srgb, #f59e0b 15%, var(--card));
+    border: 1px solid color-mix(in srgb, #f59e0b 38%, var(--border));
+}
+
+.dnd-initiative-page .turn-order-item__condition-badge {
+    color: #9a3412;
+    background: color-mix(in srgb, #fdba74 24%, var(--card));
+    border: 1px solid color-mix(in srgb, #fdba74 42%, var(--border));
+}
+
+.dnd-initiative-page .turn-order-item__condition-label {
+    display: inline-flex;
+    align-items: center;
+}
+
+.dnd-initiative-page .turn-order-item__condition-remove {
+    width: 1.35rem;
+    height: 1.35rem;
+    padding: 0;
+
+    color: inherit;
+    font-size: 0.9rem;
+    line-height: 1;
+    background: transparent;
+    border-color: transparent;
+}
+
+.dnd-initiative-page .turn-order-item__condition-remove:hover,
+.dnd-initiative-page .turn-order-item__condition-remove:focus-visible {
+    background: color-mix(in srgb, currentcolor 12%, var(--card));
+    border-color: transparent;
+}
+
+.dnd-initiative-page .turn-order-item--zero-hit-points {
+    box-shadow: 0 0 0 1px color-mix(in srgb, #f59e0b 28%, transparent), 0 2px 6px var(--shadow);
+}
+
+.dnd-initiative-page .turn-order-item--combat-status-unconscious {
+    border-style: dashed;
+}
+
+.dnd-initiative-page .turn-order-item--combat-status-dead {
+    box-shadow: 0 0 0 1px color-mix(in srgb, #b42318 22%, transparent), 0 2px 6px var(--shadow);
+}
+
+.dnd-initiative-page .turn-order-item--combat-status-out-of-combat {
+    opacity: 0.94;
+}
+
 .dnd-initiative-page .turn-order-item__badge {
     margin-top: auto;
 

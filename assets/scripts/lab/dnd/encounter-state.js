@@ -3,6 +3,13 @@
 // as the business contract of the tool.
 import { rollD20 } from './initiative.js';
 import { bestiary } from './bestiary.js';
+import {
+    addConditionToActor,
+    decrementRoundConditions as decrementActorRoundConditions,
+    normalizeActorCombatState,
+    removeConditionFromActor,
+    setCombatStatusOnActor,
+} from './conditions.js';
 
 export const RULES = {
     skipLowInitiative: {
@@ -62,7 +69,7 @@ export class EncounterState {
             hitPoints,
             this.monsters[index].baseHitPoints,
         );
-        this.syncTurnOrderHitPoints(this.monsters[index].id, this.monsters[index].currentHitPoints);
+        this.syncTurnOrderActorState(this.monsters[index].id);
     }
 
     updateActorHitPoints(actorId, hitPoints) {
@@ -73,7 +80,7 @@ export class EncounterState {
         }
 
         actor.currentHitPoints = clampHitPoints(hitPoints, actor.baseHitPoints);
-        this.syncTurnOrderHitPoints(actor.id, actor.currentHitPoints);
+        this.syncTurnOrderActorState(actor.id);
 
         return {
             actorId: actor.id,
@@ -91,6 +98,72 @@ export class EncounterState {
         }
 
         return this.updateActorHitPoints(actor.id, actor.currentHitPoints + Number(delta || 0));
+    }
+
+    addCondition(actorId, payload) {
+        const actor = this.getActorById(actorId);
+
+        if (!actor) {
+            return null;
+        }
+
+        const condition = addConditionToActor(actor, payload);
+
+        if (!condition) {
+            return null;
+        }
+
+        this.syncTurnOrderActorState(actor.id);
+
+        return {
+            actorId: actor.id,
+            actorName: actor.name,
+            condition,
+        };
+    }
+
+    removeCondition(actorId, conditionId) {
+        const actor = this.getActorById(actorId);
+
+        if (!actor) {
+            return null;
+        }
+
+        const condition = removeConditionFromActor(actor, conditionId);
+
+        if (!condition) {
+            return null;
+        }
+
+        this.syncTurnOrderActorState(actor.id);
+
+        return {
+            actorId: actor.id,
+            actorName: actor.name,
+            condition,
+        };
+    }
+
+    setCombatStatus(actorId, status) {
+        const actor = this.getActorById(actorId);
+
+        if (!actor) {
+            return null;
+        }
+
+        const normalizedStatus = setCombatStatusOnActor(actor, status);
+
+        if (!normalizedStatus) {
+            return null;
+        }
+
+        this.syncTurnOrderActorState(actor.id);
+
+        return {
+            actorId: actor.id,
+            actorName: actor.name,
+            combatStatus: normalizedStatus,
+        };
     }
 
     hasSelectedMonsters() {
@@ -148,7 +221,17 @@ export class EncounterState {
     }
 
     setPlayers(players) {
-        this.players = players;
+        const existingPlayers = new Map(this.players.map(player => [player.id, player]));
+
+        this.players = players.map(player => normalizeActorCombatState({
+            ...player,
+            conditions: player.conditions ?? existingPlayers.get(player.id)?.conditions ?? [],
+            combatStatus: player.combatStatus ?? existingPlayers.get(player.id)?.combatStatus ?? 'normal',
+        }));
+
+        this.players.forEach(player => {
+            this.syncTurnOrderActorState(player.id);
+        });
     }
 
     buildRoundOrder() {
@@ -161,9 +244,10 @@ export class EncounterState {
             .filter(actor => !this.shouldSkipTurn(actor))
             .flatMap(actor => {
                 const turnCount = this.getTurnCount(actor);
+                const turnActor = normalizeActorCombatState(actor);
 
                 return Array.from({ length: turnCount }, (_, index) => ({
-                    ...actor,
+                    ...turnActor,
                     id: turnCount > 1 ? `${actor.id}-turn-${index + 1}` : actor.id,
                     actorId: actor.id,
                     done: false,
@@ -224,11 +308,18 @@ export class EncounterState {
 
     startNewRound() {
         if (!this.hasTurnOrder()) {
-            return;
+            return {
+                expiredConditions: [],
+            };
         }
 
         this.currentRound += 1;
+        const expiredConditions = this.decrementRoundConditions();
         this.resetTurnProgress();
+
+        return {
+            expiredConditions,
+        };
     }
 
     resetEncounter() {
@@ -324,11 +415,50 @@ export class EncounterState {
             ?? null;
     }
 
-    syncTurnOrderHitPoints(actorId, currentHitPoints) {
-        this.turnOrder.forEach(turn => {
-            if ((turn.actorId ?? turn.id) === actorId) {
-                turn.currentHitPoints = currentHitPoints;
+    syncTurnOrderHitPoints(actorId) {
+        this.syncTurnOrderActorState(actorId);
+    }
+
+    decrementRoundConditions() {
+        const expiredConditions = [];
+
+        [...this.monsters, ...this.players].forEach(actor => {
+            const expiredActorConditions = decrementActorRoundConditions(actor);
+
+            if (expiredActorConditions.length > 0) {
+                expiredConditions.push(...expiredActorConditions.map(condition => ({
+                    actorId: actor.id,
+                    actorName: actor.name,
+                    condition,
+                })));
             }
+
+            this.syncTurnOrderActorState(actor.id);
+        });
+
+        return expiredConditions;
+    }
+
+    syncTurnOrderActorState(actorId) {
+        const actor = this.getActorById(actorId);
+
+        if (!actor) {
+            return;
+        }
+
+        const synchronizedActor = normalizeActorCombatState(actor);
+
+        this.turnOrder.forEach(turn => {
+            if ((turn.actorId ?? turn.id) !== actorId) {
+                return;
+            }
+
+            Object.assign(turn, {
+                ...synchronizedActor,
+                id: turn.id,
+                actorId: actor.id,
+                done: turn.done,
+            });
         });
     }
 }
@@ -356,6 +486,22 @@ export function updateActorHitPoints(encounter, actorId, hitPoints) {
 
 export function adjustActorHitPoints(encounter, actorId, delta) {
     return encounter.adjustActorHitPoints(actorId, delta);
+}
+
+export function addCondition(encounter, actorId, payload) {
+    return encounter.addCondition(actorId, payload);
+}
+
+export function removeCondition(encounter, actorId, conditionId) {
+    return encounter.removeCondition(actorId, conditionId);
+}
+
+export function setCombatStatus(encounter, actorId, status) {
+    return encounter.setCombatStatus(actorId, status);
+}
+
+export function decrementRoundConditions(encounter) {
+    return encounter.decrementRoundConditions();
 }
 
 export function hasSelectedMonsters(encounter) {
@@ -437,6 +583,8 @@ function createEmptyMonster(index) {
         initiativeModifier: 0,
         roll: null,
         initiative: null,
+        conditions: [],
+        combatStatus: 'normal',
     };
 }
 
@@ -461,6 +609,8 @@ function createMonsterFromBestiaryEntry(monster, index) {
         initiativeModifier,
         roll: null,
         initiative: null,
+        conditions: [],
+        combatStatus: 'normal',
     };
 }
 
@@ -480,6 +630,8 @@ function getMonsterActors(encounter) {
             initiativeModifier: monster.initiativeModifier,
             isLegendary: monster.isLegendary === true,
             done: false,
+            conditions: monster.conditions ?? [],
+            combatStatus: monster.combatStatus ?? 'normal',
         }));
 }
 

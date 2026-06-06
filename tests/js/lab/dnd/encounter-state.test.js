@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { bestiarySample } from '../../../fixtures/dnd/bestiary-sample.js';
 import {
+    addCondition,
     adjustActorHitPoints,
     buildRoundOrder,
     createEncounterState,
@@ -11,6 +12,7 @@ import {
     rollMonsterInitiatives,
     selectMonster,
     setPlayers,
+    setCombatStatus,
     setRuleActive,
     updateActorHitPoints,
     toggleTurnDone,
@@ -391,6 +393,159 @@ describe('encounter state', () => {
         expect(encounter.isRuleActive('skip-low-initiative')).toBe(false);
     });
 
+    test('adds a condition to the actor and keeps turn-order copies synchronized', () => {
+        const encounter = createTestEncounter();
+
+        setPlayers(encounter, [
+            createPlayer({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+                roll: 18,
+                currentHitPoints: 13,
+                baseHitPoints: 20,
+            }),
+        ]);
+        buildRoundOrder(encounter);
+
+        const result = addCondition(encounter, 'player-1', {
+            slug: 'poisoned',
+            remainingRounds: 2,
+            note: 'Toxine',
+        });
+
+        expect(result).toMatchObject({
+            actorId: 'player-1',
+            actorName: 'Lia',
+            condition: {
+                slug: 'poisoned',
+                remainingRounds: 2,
+                note: 'Toxine',
+            },
+        });
+        expect(encounter.players[0].conditions).toHaveLength(1);
+        expect(encounter.players[0].conditions[0]).toMatchObject({
+            slug: 'poisoned',
+            remainingRounds: 2,
+        });
+        expect(encounter.turnOrder[0].conditions).toHaveLength(1);
+        expect(encounter.turnOrder[0].conditions[0]).toMatchObject({
+            slug: 'poisoned',
+            remainingRounds: 2,
+        });
+        expect(encounter.activeTurnId).toBe('player-1');
+    });
+
+    test('decrements round-based conditions only when a new round starts', () => {
+        const encounter = createTestEncounter();
+
+        setPlayers(encounter, [
+            createPlayer({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+                roll: 18,
+            }),
+        ]);
+        buildRoundOrder(encounter);
+        addCondition(encounter, 'player-1', {
+            slug: 'poisoned',
+            remainingRounds: 2,
+        });
+
+        const firstRound = encounter.startNewRound();
+
+        expect(firstRound.expiredConditions).toEqual([]);
+        expect(encounter.currentRound).toBe(2);
+        expect(encounter.players[0].conditions[0]).toMatchObject({
+            slug: 'poisoned',
+            remainingRounds: 1,
+        });
+        expect(encounter.turnOrder[0].conditions[0]).toMatchObject({
+            slug: 'poisoned',
+            remainingRounds: 1,
+        });
+
+        const secondRound = encounter.startNewRound();
+
+        expect(secondRound.expiredConditions).toHaveLength(1);
+        expect(secondRound.expiredConditions[0]).toMatchObject({
+            actorId: 'player-1',
+            actorName: 'Lia',
+        });
+        expect(encounter.currentRound).toBe(3);
+        expect(encounter.players[0].conditions).toEqual([]);
+        expect(encounter.turnOrder[0].conditions).toEqual([]);
+    });
+
+    test('does not decrement condition durations when advancing turns or resetting turn progress', () => {
+        const encounter = createTestEncounter();
+
+        setPlayers(encounter, [
+            createPlayer({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+                roll: 18,
+            }),
+            createPlayer({
+                id: 'player-2',
+                name: 'Borin',
+                initiative: 12,
+                roll: 12,
+            }),
+        ]);
+        buildRoundOrder(encounter);
+        addCondition(encounter, 'player-1', {
+            slug: 'poisoned',
+            remainingRounds: 2,
+        });
+
+        encounter.advanceToNextTurn();
+        expect(encounter.players[0].conditions[0].remainingRounds).toBe(2);
+        expect(encounter.turnOrder[0].conditions[0].remainingRounds).toBe(2);
+
+        encounter.resetTurnProgress();
+        expect(encounter.players[0].conditions[0].remainingRounds).toBe(2);
+        expect(encounter.turnOrder[0].conditions[0].remainingRounds).toBe(2);
+    });
+
+    test('updates combat status independently from hit points', () => {
+        const encounter = createTestEncounter();
+
+        setPlayers(encounter, [
+            createPlayer({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+                roll: 18,
+                currentHitPoints: 0,
+                baseHitPoints: 20,
+            }),
+        ]);
+        buildRoundOrder(encounter);
+
+        expect(encounter.players[0].combatStatus).toBe('normal');
+        expect(encounter.turnOrder[0].combatStatus).toBe('normal');
+
+        const setDeadResult = setCombatStatus(encounter, 'player-1', 'dead');
+
+        expect(setDeadResult).toMatchObject({
+            actorId: 'player-1',
+            actorName: 'Lia',
+            combatStatus: 'dead',
+        });
+        expect(encounter.players[0].combatStatus).toBe('dead');
+        expect(encounter.turnOrder[0].combatStatus).toBe('dead');
+
+        updateActorHitPoints(encounter, 'player-1', 12);
+
+        expect(encounter.players[0].combatStatus).toBe('dead');
+        expect(encounter.turnOrder[0].combatStatus).toBe('dead');
+        expect(encounter.players[0].currentHitPoints).toBe(12);
+        expect(encounter.turnOrder[0].currentHitPoints).toBe(12);
+    });
+
     test('updates an actor hit points directly without changing combat flow state', () => {
         const encounter = createTestEncounter();
 
@@ -480,6 +635,8 @@ function createPlayer(overrides = {}) {
         initiative: 10,
         roll: 10,
         initiativeModifier: 0,
+        conditions: [],
+        combatStatus: 'normal',
         ...overrides,
     };
 }

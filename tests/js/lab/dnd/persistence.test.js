@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { bestiarySample } from '../../../fixtures/dnd/bestiary-sample.js';
-import { adjustActorHitPoints, EncounterState } from '../../../../assets/scripts/lab/dnd/encounter-state.js';
+import {
+    adjustActorHitPoints,
+    EncounterState,
+} from '../../../../assets/scripts/lab/dnd/encounter-state.js';
 import {
     createEncounterSnapshotDto,
     ENCOUNTER_SNAPSHOT_VERSION,
@@ -111,6 +114,60 @@ describe('DnD encounter persistence', () => {
         const snapshot = JSON.parse(storage.getItem(DND_INITIATIVE_TRACKER_STORAGE_KEY));
 
         expect(snapshot.players[0].currentHitPoints).toBe(11);
+    });
+
+    test('saves conditions and combat status in the snapshot', () => {
+        const encounter = new EncounterState();
+        encounter.setPlayers([
+            {
+                id: 'player-1',
+                type: 'player',
+                name: 'Lia',
+                side: 'party',
+                armorClass: 15,
+                baseHitPoints: 20,
+                currentHitPoints: 18,
+                initiative: 12,
+                roll: 12,
+                initiativeModifier: 2,
+            },
+        ]);
+        encounter.buildRoundOrder();
+        encounter.addCondition('player-1', {
+            slug: 'poisoned',
+            remainingRounds: 2,
+            note: 'Toxine',
+        });
+        encounter.setCombatStatus('player-1', 'unconscious');
+
+        const storage = createLocalStorageMock();
+
+        globalThis.document = createPersistenceDocument();
+        globalThis.localStorage = storage;
+
+        const persistence = new EncounterPersistence(encounter, {
+            playersPanel: {
+                sync: vi.fn(),
+            },
+        });
+        persistence.start();
+        persistence.saveEncounter();
+
+        const snapshot = JSON.parse(storage.getItem(DND_INITIATIVE_TRACKER_STORAGE_KEY));
+
+        expect(snapshot.version).toBe(ENCOUNTER_SNAPSHOT_VERSION);
+        expect(snapshot.players[0]).toMatchObject({
+            conditions: [
+                {
+                    slug: 'poisoned',
+                    label: 'Empoisonné',
+                    remainingRounds: 2,
+                    level: null,
+                    note: 'Toxine',
+                },
+            ],
+            combatStatus: 'unconscious',
+        });
     });
 
     test('saves a reset encounter as an empty snapshot that preserves rules', () => {
@@ -243,6 +300,77 @@ describe('DnD encounter persistence', () => {
         expect(monstersRefresh).toHaveBeenCalledOnce();
         expect(turnOrderRefresh).toHaveBeenCalledOnce();
         expect(globalThis.document.getElementById('encounterRestoreModal').hidden).toBe(true);
+    });
+
+    test('restores older snapshots without conditions or combat status fields', () => {
+        const encounter = new EncounterState({ bestiary: bestiarySample });
+        const sourceEncounter = new EncounterState({ bestiary: bestiarySample });
+        sourceEncounter.setPlayers([
+            {
+                id: 'player-1',
+                type: 'player',
+                name: 'Lia',
+                side: 'party',
+                armorClass: 15,
+                baseHitPoints: 20,
+                currentHitPoints: 18,
+                initiative: 12,
+                roll: 12,
+                initiativeModifier: 2,
+                conditions: [
+                    {
+                        id: 'condition-1',
+                        slug: 'poisoned',
+                        label: 'Empoisonné',
+                        remainingRounds: 2,
+                        level: null,
+                        note: '',
+                    },
+                ],
+                combatStatus: 'unconscious',
+            },
+        ]);
+        sourceEncounter.buildRoundOrder();
+
+        const legacySnapshot = createEncounterSnapshotDto(sourceEncounter, {
+            savedAt: '2026-05-25T09:00:00.000Z',
+        });
+        legacySnapshot.version = 1;
+        delete legacySnapshot.players[0].conditions;
+        delete legacySnapshot.players[0].combatStatus;
+
+        const storage = createLocalStorageMock({
+            [DND_INITIATIVE_TRACKER_STORAGE_KEY]: JSON.stringify(legacySnapshot),
+        });
+        const playersHydrate = vi.fn();
+
+        globalThis.document = createPersistenceDocument();
+        globalThis.localStorage = storage;
+
+        const persistence = new EncounterPersistence(encounter, {
+            playersPanel: {
+                hydrateFromEncounter: playersHydrate,
+            },
+            turnOrderPanel: {
+                refresh: vi.fn(),
+            },
+        });
+        persistence.start();
+        globalThis.document.getElementById('encounterRestoreLoad').dispatchEvent({
+            type: 'click',
+        });
+
+        expect(encounter.players[0]).toMatchObject({
+            id: 'player-1',
+            conditions: [],
+            combatStatus: 'normal',
+        });
+        expect(encounter.turnOrder[0]).toMatchObject({
+            id: 'player-1',
+            conditions: [],
+            combatStatus: 'normal',
+        });
+        expect(playersHydrate).toHaveBeenCalledOnce();
     });
 
     test('resets the stored snapshot and returns the tracker to the blank state', () => {

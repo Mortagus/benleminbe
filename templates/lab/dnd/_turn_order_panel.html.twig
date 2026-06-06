@@ -234,6 +234,78 @@
 
             <p class="turn-order-item__hit-points-feedback" data-turn-hit-points-feedback hidden></p>
 
+            <div class="turn-order-item__combat-state">
+                <div class="turn-order-item__state-summary" data-turn-state-summary></div>
+
+                <button
+                    type="button"
+                    class="turn-order-item__conditions-toggle dnd-secondary-button"
+                    data-turn-conditions-toggle
+                    aria-expanded="false"
+                >
+                    Conditions
+                </button>
+            </div>
+
+            <div class="turn-order-item__conditions-panel" data-turn-conditions-panel hidden>
+                <div class="turn-order-item__conditions-panel-grid">
+                    <label class="turn-order-item__field">
+                        <span>Condition</span>
+                        <select data-turn-condition-select></select>
+                    </label>
+
+                    <label class="turn-order-item__field" data-turn-condition-rounds-wrapper>
+                        <span>Rounds</span>
+                        <input
+                            type="number"
+                            class="turn-order-item__condition-input"
+                            data-turn-condition-rounds
+                            min="1"
+                            placeholder="—"
+                        >
+                    </label>
+
+                    <label class="turn-order-item__field" data-turn-condition-level-wrapper hidden>
+                        <span>Niveau</span>
+                        <input
+                            type="number"
+                            class="turn-order-item__condition-input"
+                            data-turn-condition-level
+                            min="1"
+                            max="6"
+                            placeholder="1-6"
+                        >
+                    </label>
+
+                    <label class="turn-order-item__field turn-order-item__field--full-width">
+                        <span>Note</span>
+                        <input
+                            type="text"
+                            class="turn-order-item__condition-input"
+                            data-turn-condition-note
+                            placeholder="Optionnel"
+                        >
+                    </label>
+
+                    <label class="turn-order-item__field">
+                        <span>État</span>
+                        <select data-turn-combat-status-select></select>
+                    </label>
+
+                    <button
+                        type="button"
+                        class="dnd-secondary-button turn-order-item__condition-add"
+                        data-turn-condition-add
+                    >
+                        Ajouter
+                    </button>
+                </div>
+
+                <p class="turn-order-item__conditions-feedback" data-turn-conditions-feedback hidden></p>
+            </div>
+
+            <div class="turn-order-item__conditions-list" data-turn-conditions-list></div>
+
             <div class="turn-order-item__badge" hidden>À jouer</div>
         </li>
     </template>

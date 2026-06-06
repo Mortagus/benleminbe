@@ -265,6 +265,146 @@ describe('turn order rendering', () => {
         expect(onResetEncounter).toHaveBeenCalledOnce();
     });
 
+    test('renders combat states and opens the condition editor without toggling the turn', async () => {
+        const encounter = new EncounterState();
+        encounter.turnOrder = [
+            createTurn({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+                currentHitPoints: 13,
+                conditions: [
+                    {
+                        id: 'condition-1',
+                        slug: 'poisoned',
+                        label: 'Empoisonné',
+                        remainingRounds: 2,
+                        level: null,
+                        note: 'Toxine',
+                    },
+                ],
+                combatStatus: 'dead',
+            }),
+        ];
+
+        const onToggleTurnDone = vi.fn();
+
+        globalThis.document = createTurnOrderDocument();
+
+        const { TurnOrderPanel } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const panel = new TurnOrderPanel(encounter, {
+            onToggleTurnDone,
+        });
+        panel.start();
+        panel.refresh();
+
+        let turnItem = globalThis.document.getElementById('turnOrderList').children[0];
+        const summaryBadges = turnItem.querySelector('.turn-order-item__state-summary').children;
+        const conditionsToggle = turnItem.querySelector('[data-turn-conditions-toggle]');
+
+        expect(summaryBadges).toHaveLength(2);
+        expect(summaryBadges[0].textContent).toBe('Mort');
+        expect(summaryBadges[1].textContent).toBe('Empoisonné · 2r');
+        expect(conditionsToggle.textContent).toBe('Conditions (2)');
+
+        conditionsToggle.dispatchEvent({ type: 'click' });
+
+        turnItem = globalThis.document.getElementById('turnOrderList').children[0];
+        const openedConditionsToggle = turnItem.querySelector('[data-turn-conditions-toggle]');
+        const conditionsPanel = turnItem.querySelector('[data-turn-conditions-panel]');
+
+        expect(onToggleTurnDone).not.toHaveBeenCalled();
+        expect(conditionsPanel.hidden).toBe(false);
+        expect(openedConditionsToggle.getAttribute('aria-expanded')).toBe('true');
+        expect(turnItem.querySelector('[data-turn-condition-select]').children).toHaveLength(14);
+        expect(turnItem.querySelector('[data-turn-conditions-list]').children).toHaveLength(1);
+    });
+
+    test('applies condition changes and status changes without toggling the turn', async () => {
+        const encounter = new EncounterState();
+        encounter.turnOrder = [
+            createTurn({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+                currentHitPoints: 13,
+                conditions: [
+                    {
+                        id: 'condition-1',
+                        slug: 'poisoned',
+                        label: 'Empoisonné',
+                        remainingRounds: 2,
+                        level: null,
+                        note: '',
+                    },
+                ],
+                combatStatus: 'normal',
+            }),
+        ];
+
+        const onToggleTurnDone = vi.fn();
+        const onAddCondition = vi.fn(() => ({
+            ok: true,
+            message: 'Lia : Empoisonné · 2r ajouté.',
+        }));
+        const onRemoveCondition = vi.fn(() => ({
+            ok: true,
+            message: 'Lia : Empoisonné · 2r retiré.',
+        }));
+        const onSetCombatStatus = vi.fn(() => ({
+            ok: true,
+            message: 'Lia : Mort.',
+        }));
+
+        globalThis.document = createTurnOrderDocument();
+
+        const { TurnOrderPanel } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const panel = new TurnOrderPanel(encounter, {
+            onToggleTurnDone,
+            onAddCondition,
+            onRemoveCondition,
+            onSetCombatStatus,
+        });
+        panel.start();
+        panel.refresh();
+
+        let turnItem = globalThis.document.getElementById('turnOrderList').children[0];
+        const conditionsToggle = turnItem.querySelector('[data-turn-conditions-toggle]');
+
+        conditionsToggle.dispatchEvent({ type: 'click' });
+
+        turnItem = globalThis.document.getElementById('turnOrderList').children[0];
+        const conditionSelect = turnItem.querySelector('[data-turn-condition-select]');
+        const durationInput = turnItem.querySelector('[data-turn-condition-rounds]');
+        const noteInput = turnItem.querySelector('[data-turn-condition-note]');
+        const addButton = turnItem.querySelector('[data-turn-condition-add]');
+        const statusSelect = turnItem.querySelector('[data-turn-combat-status-select]');
+        const removeButton = turnItem.querySelector('[data-turn-condition-remove]');
+
+        conditionSelect.value = 'poisoned';
+        durationInput.value = '';
+        noteInput.value = 'Toxine';
+        addButton.dispatchEvent({ type: 'click' });
+
+        statusSelect.value = 'dead';
+        statusSelect.dispatchEvent({ type: 'change' });
+        removeButton.dispatchEvent({ type: 'click' });
+
+        expect(onToggleTurnDone).not.toHaveBeenCalled();
+        expect(onAddCondition).toHaveBeenCalledWith('player-1', {
+            slug: 'poisoned',
+            label: 'Empoisonné',
+            remainingRounds: null,
+            level: null,
+            note: 'Toxine',
+        });
+        expect(onRemoveCondition).toHaveBeenCalledWith('player-1', 'condition-1');
+        expect(onSetCombatStatus).toHaveBeenCalledWith('player-1', 'dead');
+        expect(durationInput.value).toBe('');
+        expect(noteInput.value).toBe('');
+        expect(turnItem.querySelector('[data-turn-conditions-feedback]').hidden).toBe(true);
+    });
+
     test('renders quick hit points controls and applies them without toggling the turn', async () => {
         const encounter = new EncounterState();
         encounter.turnOrder = [

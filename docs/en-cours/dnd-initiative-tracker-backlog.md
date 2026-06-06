@@ -10,6 +10,33 @@ Documents descriptifs associés :
 - [dnd-bestiary-pipeline.md](../lab/dnd-bestiary-pipeline.md)
 - [dnd-dom-contracts.md](../lab/dnd-dom-contracts.md)
 
+## Note De Reprise - 2026-06-06 - P19 Livré
+
+La gestion légère des conditions et des états de combat `P19` est désormais livrée.
+
+Travail livré :
+
+- ajout d'un catalogue de conditions D&D courantes et d'états de combat séparés ;
+- affichage compact des conditions et de l'état vital directement sur les cartes de l'ordre du tour ;
+- ajout, retrait manuel et durée en rounds pour les conditions temporaires ;
+- état de combat manuel indépendant des PV, sans automatisme de règles ;
+- décrément automatique des conditions temporaires au changement de round uniquement ;
+- persistance locale cohérente avec les snapshots déjà existants ;
+- tests Vitest pour le parsing, les mutations métier, la persistance et l'intégration UI.
+
+Vérification passée pendant la passe :
+
+```bash
+make check
+```
+
+État de reprise recommandé :
+
+- poursuivre avec `P20` : marqueurs binaires de combat ;
+- poursuivre avec `P34` : jet de constitution des monstres ;
+- garder `P7`, `P8`, `P10` et `P19` comme bases historiques des fonctionnalités déjà livrées ;
+- remettre `P22` en attente, tant que l'export JSON n'est pas explicitement demandé.
+
 ## Note De Reprise - 2026-06-06 - P10 Livré
 
 La modification directe des PV `P10` est désormais livrée.
@@ -30,10 +57,9 @@ make check
 
 État de reprise recommandé :
 
-- poursuivre avec `P19` : conditions ;
 - poursuivre avec `P20` : marqueurs binaires de combat ;
 - poursuivre avec `P34` : jet de constitution des monstres ;
-- garder `P8` et `P7` comme bases historiques des fonctionnalités déjà livrées ;
+- garder `P7`, `P8`, `P10` et `P19` comme bases historiques des fonctionnalités déjà livrées ;
 - remettre `P22` en attente, tant que l'export JSON n'est pas explicitement demandé.
 
 ## Note De Reprise - 2026-05-26 - P8 Livré
@@ -60,9 +86,8 @@ make check
 
 État de reprise recommandé :
 
-- poursuivre avec `P19` : conditions ;
 - garder `P8` comme base historique de la persistance locale ;
-- considérer `P19`, `P20` et `P34` comme les prochains chantiers de combat ;
+- considérer `P20` et `P34` comme les prochains chantiers de combat ;
 - remettre `P22` en attente, tant que l'export JSON n'est pas explicitement demandé.
 
 ## Note De Reprise - 2026-06-06 - P7 Livré
@@ -85,9 +110,9 @@ make check
 
 État de reprise recommandé :
 
-- poursuivre avec `P19` : conditions ;
+- poursuivre avec `P20` : marqueurs binaires de combat ;
 - garder `P7` comme base historique des commandes de combat ;
-- considérer `P19`, `P20` et `P34` comme les prochains chantiers de combat ;
+- considérer `P20` et `P34` comme les prochains chantiers de combat ;
 - remettre `P22` en attente, tant que l'export JSON n'est pas explicitement demandé.
 
 ## Note De Reprise - 2026-05-25 - Repriorisation Fonctionnelle
@@ -101,10 +126,9 @@ Nouveaux points ajoutés :
 
 Nouvel ordre fonctionnel recommandé :
 
-1. `P19` : conditions.
-2. `P20` : marqueurs binaires de combat.
-3. `P34` : jet de constitution des monstres.
-4. `P22` : import/export JSON d'une rencontre.
+1. `P20` : marqueurs binaires de combat.
+2. `P34` : jet de constitution des monstres.
+3. `P22` : import/export JSON d'une rencontre.
 
 Les points `P8`, `P31`, `P15` et `P25` sont maintenant considérés comme implémentés et passent en observation terrain plutôt qu'en priorité de reprise.
 
@@ -133,7 +157,7 @@ make check
 
 État de reprise recommandé :
 
-- poursuivre avec `P19` ;
+- poursuivre avec `P20` ;
 - garder le module audio disponible pour de futurs événements sonores, sans ajouter de toggle UI pour le moment.
 
 ## Note De Reprise - 2026-05-25 - P15 Monstres
@@ -161,7 +185,7 @@ make check
 
 État de reprise recommandé :
 
-- `P19` est la prochaine priorité fonctionnelle ;
+- `P20` est la prochaine priorité fonctionnelle ;
 - garder les filtres avancés, favoris ou presets de monstres pour une future extension si l'usage réel le demande.
 
 ## Note De Reprise - 2026-05-25 - P8 Persistance
@@ -381,7 +405,7 @@ Objectif de reprise recommande :
 - stabiliser l'outil pour un usage reel pendant une session de jeu ;
 - conserver l'approche front-end JavaScript vanilla actuelle ;
 - commencer par la sauvegarde locale de rencontre (`P8`) avant les fonctions de combat plus avancees ;
-- preparer ensuite les PV modifiables pendant le combat (`P10`), les conditions (`P19`) et les marqueurs binaires de combat (`P20`).
+- preparer ensuite les PV modifiables pendant le combat (`P10`) et les marqueurs binaires de combat (`P20`).
 
 Premiere action recommandee :
 
@@ -427,7 +451,7 @@ Les points d'architecture, de modèle de données, de tests et de contrats techn
 | 18              | P25 | Réalisé           | Fait                  | UX                         | Différenciation visuelle des types d'acteurs             | Distinguer joueurs, alliés, ennemis, boss ou monstres légendaires via un champ `side` côté joueurs et des accents visuels sur les cartes de l'ordre du tour.                      | Base en place; l'état `done` reste lisible sans écraser le code couleur du camp.                                                  |
 | 19              | P7  | Haute             | Fait                  | Fonctionnalité / UX        | Commandes explicites de pilotage du combat               | Ajouter acteur suivant, nouveau round, réinitialisation des tours de ce round et remise à zéro de la rencontre.                                                                   | S'appuie sur le modèle de rencontre et fiabilise désormais le pilotage du combat ; base utile pour conditions, journal et durées. |
 | 20              | P10 | Haute             | Réalisé               | Fonctionnalité / UX        | Modification directe des PV pendant le combat            | Modifier les PV depuis l'ordre du tour et accepter des saisies rapides de dégâts/soins comme `-7` ou `+5`.                                                                        | Préparer sans imposer immédiatement les statuts inconscient/mort.                                                                 |
-| 21              | P19 | Haute             | À faire               | Fonctionnalité / Règles    | Gestion des conditions                                   | Ajouter/retrouver des conditions, les afficher visuellement et suivre leur durée en rounds.                                                                                       | Dépend idéalement de commandes de round fiables, désormais livrées, mais peut être cadré après le socle de combat.                |
+| 21              | P19 | Haute             | Fait                  | Fonctionnalité / Règles    | Gestion des conditions et des états de combat            | Ajouter/retrouver des conditions, les afficher visuellement, distinguer les états vitaux et suivre leur durée en rounds.                                                          | Le socle de combat est désormais en place ; la suite peut porter sur les marqueurs binaires et le journal.                        |
 | 22              | P20 | Haute             | À faire               | Fonctionnalité             | Marqueurs binaires de combat                             | Suivre concentration, réaction utilisée, inspiration, avantage et désavantage via toggles visuels.                                                                                | À commencer sans automatisme de règles ; peut partager l'UI des conditions.                                                       |
 | 23              | P34 | Moyenne           | À faire               | Fonctionnalité / MJ        | Jet de constitution des monstres                         | Permettre au MJ de lancer rapidement un jet de Constitution ou un jet de sauvegarde de Constitution pour un monstre, comme mini-outil d'assistance en combat.                     | Utilitaire de combat à prévoir après les bases du tracker; utile pour les effets ponctuels et les vérifications rapides.          |
 | 24              | P14 | Moyenne           | À faire               | UX                         | Retours d'état utiles au Maître du Jeu                   | Afficher des messages courts : aucun monstre sélectionné, initiatives non lancées, joueur incomplet, acteur marqué joué.                                                          | Peut être livré par petites touches sans attendre les grosses fonctionnalités.                                                    |

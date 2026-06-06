@@ -25,4 +25,5 @@ Ces documents restent utiles pour comprendre les décisions passées, mais l'ét
 - [P8 - Cadrage technique de la persistance locale](plans/dnd-initiative-tracker-p8-cadrage.md)
 - [P7 - Commandes explicites de combat](plans/dnd-initiative-tracker-p7-commandes-explicites-combat.md)
 - [P10 - Modification directe des PV pendant le combat](plans/dnd-initiative-tracker-p10-modification-directe-pv-pendant-combat.md)
+- [P19 - Gestion des conditions et des états de combat](plans/dnd-initiative-tracker-p19-gestion-conditions-et-etats-combat.md)
 - [PageSpeed et premier projet privé - note de clôture](plans/pagespeed-et-premier-projet-prive.md)

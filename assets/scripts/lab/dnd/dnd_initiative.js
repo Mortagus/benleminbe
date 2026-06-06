@@ -22,6 +22,10 @@ import {
     describeInvalidHitPointsChange,
     parseHitPointsChange,
 } from './hit-points.js';
+import {
+    formatCombatStatusLabel,
+    formatConditionLabel,
+} from './conditions.js';
 
 import {
     focusFirstInvalidField,
@@ -49,6 +53,9 @@ class DndInitiativeTrackerApp {
             onResetTurnProgress: () => this.resetTurnProgress(),
             onResetEncounter: () => this.resetEncounter(),
             onApplyHitPointsChange: (turnId, rawValue) => this.applyTurnHitPointsChange(turnId, rawValue),
+            onAddCondition: (turnId, payload) => this.applyTurnConditionChange(turnId, payload),
+            onRemoveCondition: (turnId, conditionId) => this.removeTurnCondition(turnId, conditionId),
+            onSetCombatStatus: (turnId, status) => this.setTurnCombatStatus(turnId, status),
         });
         this.turnOrderPanel.start();
 
@@ -165,8 +172,11 @@ class DndInitiativeTrackerApp {
     }
 
     startNewRound() {
-        this.encounter.startNewRound();
+        const result = this.encounter.startNewRound();
         this.turnOrderPanel?.refresh?.({ focusFirst: true });
+        if (result?.expiredConditions?.length > 0) {
+            this.turnOrderPanel?.announce?.(describeExpiredConditions(result.expiredConditions));
+        }
         this.persistence?.saveEncounter();
     }
 
@@ -189,8 +199,102 @@ class DndInitiativeTrackerApp {
         this.monstersPanel?.refresh?.();
         this.playersPanel?.hydrateFromEncounter?.();
         this.rulesPanel?.sync?.();
+        this.turnOrderPanel?.closeCombatStateEditor?.();
         this.turnOrderPanel?.refresh?.();
         this.persistence?.saveEncounter();
+    }
+
+    applyTurnConditionChange(turnId, payload) {
+        const turn = this.encounter.turnOrder.find(actor => actor.id === turnId);
+
+        if (!turn) {
+            return {
+                ok: false,
+                message: 'Acteur introuvable pour la gestion des conditions.',
+            };
+        }
+
+        const result = this.encounter.addCondition(turn.actorId ?? turn.id, payload);
+
+        if (!result) {
+            return {
+                ok: false,
+                message: 'Impossible d’ajouter cette condition.',
+            };
+        }
+
+        this.turnOrderPanel?.refresh?.({
+            focusTurnId: turn.id,
+            focusSelector: '[data-turn-condition-select]',
+        });
+        this.persistence?.saveEncounter();
+
+        return {
+            ok: true,
+            message: `${result.actorName} : ${formatConditionLabel(result.condition)} ajouté.`,
+        };
+    }
+
+    removeTurnCondition(turnId, conditionId) {
+        const turn = this.encounter.turnOrder.find(actor => actor.id === turnId);
+
+        if (!turn) {
+            return {
+                ok: false,
+                message: 'Acteur introuvable pour la gestion des conditions.',
+            };
+        }
+
+        const result = this.encounter.removeCondition(turn.actorId ?? turn.id, conditionId);
+
+        if (!result) {
+            return {
+                ok: false,
+                message: 'Impossible de retirer cette condition.',
+            };
+        }
+
+        this.turnOrderPanel?.refresh?.({
+            focusTurnId: turn.id,
+            focusSelector: '[data-turn-condition-select]',
+        });
+        this.persistence?.saveEncounter();
+
+        return {
+            ok: true,
+            message: `${result.actorName} : ${formatConditionLabel(result.condition)} retiré.`,
+        };
+    }
+
+    setTurnCombatStatus(turnId, status) {
+        const turn = this.encounter.turnOrder.find(actor => actor.id === turnId);
+
+        if (!turn) {
+            return {
+                ok: false,
+                message: 'Acteur introuvable pour la gestion de l’état de combat.',
+            };
+        }
+
+        const result = this.encounter.setCombatStatus(turn.actorId ?? turn.id, status);
+
+        if (!result) {
+            return {
+                ok: false,
+                message: 'État de combat invalide.',
+            };
+        }
+
+        this.turnOrderPanel?.refresh?.({
+            focusTurnId: turn.id,
+            focusSelector: '[data-turn-combat-status-select]',
+        });
+        this.persistence?.saveEncounter();
+
+        return {
+            ok: true,
+            message: `${result.actorName} : ${formatCombatStatusLabel(result.combatStatus)}.`,
+        };
     }
 
     applyTurnHitPointsChange(turnId, rawValue) {
@@ -254,3 +358,10 @@ class DndInitiativeTrackerApp {
 }
 
 new DndInitiativeTrackerApp().start();
+
+function describeExpiredConditions(expiredConditions) {
+    const parts = expiredConditions.map(({ actorName, condition }) => `${formatConditionLabel(condition)} sur ${actorName}`);
+    const prefix = parts.length > 1 ? `${parts.length} conditions expirées` : 'Condition expirée';
+
+    return `${prefix} : ${parts.join(', ')}.`;
+}

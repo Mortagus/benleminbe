@@ -187,6 +187,77 @@ export function createTurnOrderTemplate() {
     hitPointsFeedback.hidden = true;
     item.appendChild(hitPointsFeedback);
 
+    const combatState = new TestElement('div', ['turn-order-item__combat-state']);
+    const stateSummary = new TestElement('div', ['turn-order-item__state-summary']);
+    stateSummary.dataset.turnStateSummary = '';
+    combatState.appendChild(stateSummary);
+
+    const conditionsToggle = new TestElement('button', ['turn-order-item__conditions-toggle', 'dnd-secondary-button']);
+    conditionsToggle.dataset.turnConditionsToggle = '';
+    conditionsToggle.setAttribute('aria-expanded', 'false');
+    conditionsToggle.textContent = 'Conditions';
+    combatState.appendChild(conditionsToggle);
+    item.appendChild(combatState);
+
+    const conditionsPanel = new TestElement('div', ['turn-order-item__conditions-panel']);
+    conditionsPanel.dataset.turnConditionsPanel = '';
+    conditionsPanel.hidden = true;
+
+    const conditionsGrid = new TestElement('div', ['turn-order-item__conditions-panel-grid']);
+
+    const conditionField = new TestElement('label', ['turn-order-item__field']);
+    conditionField.appendChild(new TestElement('span'));
+    const conditionSelect = createSelect('');
+    conditionSelect.dataset.turnConditionSelect = '';
+    conditionField.appendChild(conditionSelect);
+    conditionsGrid.appendChild(conditionField);
+
+    const roundsField = new TestElement('label', ['turn-order-item__field']);
+    roundsField.dataset.turnConditionRoundsWrapper = '';
+    roundsField.appendChild(new TestElement('span'));
+    const roundsInput = createInput();
+    roundsInput.dataset.turnConditionRounds = '';
+    roundsField.appendChild(roundsInput);
+    conditionsGrid.appendChild(roundsField);
+
+    const levelField = new TestElement('label', ['turn-order-item__field']);
+    levelField.dataset.turnConditionLevelWrapper = '';
+    levelField.hidden = true;
+    levelField.appendChild(new TestElement('span'));
+    const levelInput = createInput();
+    levelInput.dataset.turnConditionLevel = '';
+    levelField.appendChild(levelInput);
+    conditionsGrid.appendChild(levelField);
+
+    const noteField = new TestElement('label', ['turn-order-item__field', 'turn-order-item__field--full-width']);
+    noteField.appendChild(new TestElement('span'));
+    const noteInput = createInput();
+    noteInput.dataset.turnConditionNote = '';
+    noteField.appendChild(noteInput);
+    conditionsGrid.appendChild(noteField);
+
+    const statusField = new TestElement('label', ['turn-order-item__field']);
+    statusField.appendChild(new TestElement('span'));
+    const statusSelect = createSelect('normal');
+    statusSelect.dataset.turnCombatStatusSelect = '';
+    statusField.appendChild(statusSelect);
+    conditionsGrid.appendChild(statusField);
+
+    const addConditionButton = new TestElement('button', ['dnd-secondary-button', 'turn-order-item__condition-add']);
+    addConditionButton.dataset.turnConditionAdd = '';
+    conditionsGrid.appendChild(addConditionButton);
+
+    conditionsPanel.appendChild(conditionsGrid);
+    const conditionsFeedback = new TestElement('p', ['turn-order-item__conditions-feedback']);
+    conditionsFeedback.dataset.turnConditionsFeedback = '';
+    conditionsFeedback.hidden = true;
+    conditionsPanel.appendChild(conditionsFeedback);
+    item.appendChild(conditionsPanel);
+
+    const conditionsList = new TestElement('div', ['turn-order-item__conditions-list']);
+    conditionsList.dataset.turnConditionsList = '';
+    item.appendChild(conditionsList);
+
     const badge = new TestElement('div', ['turn-order-item__badge']);
     badge.hidden = true;
     item.appendChild(badge);

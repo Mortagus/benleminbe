@@ -2,7 +2,12 @@
 // This file contains the persistable structures and pure conversion helpers.
 // Browser storage wiring should live in persistence.js once localStorage is implemented.
 
-export const ENCOUNTER_SNAPSHOT_VERSION = 2;
+import {
+    normalizeCombatStatus,
+    normalizeConditionList,
+} from './conditions.js';
+
+export const ENCOUNTER_SNAPSHOT_VERSION = 3;
 export const LEGACY_ENCOUNTER_SNAPSHOT_VERSION = 1;
 export const PLAYER_SIDE_VALUES = ['party', 'ally', 'hostile', 'neutral'];
 
@@ -73,6 +78,8 @@ export function restoreEncounterFromSnapshot(encounter, snapshot) {
  * @property {number} currentHitPoints
  * @property {string|null} alignment
  * @property {boolean} isLegendary
+ * @property {ConditionDto[]} conditions
+ * @property {'normal'|'unconscious'|'dead'|'out_of_combat'} combatStatus
  * @property {Object<string, {score: number, modifier: number}>} abilities
  * @property {number} initiativeModifier
  * @property {number|null} roll
@@ -92,6 +99,8 @@ export function createEncounterMonsterDto(monster) {
         currentHitPoints: normalizeNumber(monster.currentHitPoints),
         alignment: monster.alignment ?? null,
         isLegendary: monster.isLegendary === true,
+        conditions: createConditionDtoList(monster.conditions),
+        combatStatus: normalizeCombatStatus(monster.combatStatus),
         abilities: cloneAbilities(monster.abilities),
         initiativeModifier: normalizeNumber(monster.initiativeModifier),
         roll: normalizeNullableNumber(monster.roll),
@@ -113,6 +122,8 @@ export function createRuntimeMonsterFromDto(monster) {
         currentHitPoints: normalizeNumber(monster.currentHitPoints),
         alignment: monster.alignment ?? null,
         isLegendary: monster.isLegendary === true,
+        conditions: normalizeConditionList(monster.conditions),
+        combatStatus: normalizeCombatStatus(monster.combatStatus),
         abilities: cloneAbilities(monster.abilities),
         initiativeModifier: normalizeNumber(monster.initiativeModifier),
         roll: normalizeNullableNumber(monster.roll),
@@ -145,6 +156,8 @@ export function createRuntimeMonsterFromDto(monster) {
  * @property {PlayerStoryDto} story
  * @property {PlayerSourceDto} source
  * @property {PlayerImportDataDto|null} importData
+ * @property {ConditionDto[]} conditions
+ * @property {'normal'|'unconscious'|'dead'|'out_of_combat'} combatStatus
  */
 export function createEncounterPlayerDto(player) {
     const name = normalizeNullableText(
@@ -184,6 +197,8 @@ export function createEncounterPlayerDto(player) {
         story,
         source,
         importData,
+        conditions: createConditionDtoList(player.conditions),
+        combatStatus: normalizeCombatStatus(player.combatStatus),
     };
 }
 
@@ -222,6 +237,8 @@ export function createRuntimePlayerFromDto(player) {
         story,
         source,
         importData,
+        conditions: normalizeConditionList(player.conditions),
+        combatStatus: normalizeCombatStatus(player.combatStatus),
         race: identity.race,
         className: identity.className,
         classPath: identity.classPath,
@@ -464,6 +481,17 @@ function createMonsterTurnActor(monster) {
 
 function getFirstPendingTurnId(turnOrder) {
     return turnOrder.find(turn => !turn.done)?.id ?? null;
+}
+
+function createConditionDtoList(conditions) {
+    return normalizeConditionList(conditions).map(condition => ({
+        id: String(condition.id),
+        slug: String(condition.slug),
+        label: String(condition.label),
+        remainingRounds: condition.remainingRounds,
+        level: condition.level,
+        note: condition.note,
+    }));
 }
 
 function normalizeNullableText(value) {

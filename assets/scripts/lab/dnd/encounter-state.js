@@ -65,6 +65,18 @@ export class EncounterState {
         return this.monsters.some(monster => monster.slug !== null);
     }
 
+    hasTurnOrder() {
+        return this.turnOrder.length > 0;
+    }
+
+    getActiveTurn() {
+        return this.turnOrder.find(actor => !actor.done) ?? null;
+    }
+
+    isRoundComplete() {
+        return this.hasTurnOrder() && this.turnOrder.every(actor => actor.done);
+    }
+
     rollMonsterInitiatives(roll = rollD20) {
         this.monsters = this.monsters.map(monster => {
             if (monster.slug === null) {
@@ -142,6 +154,57 @@ export class EncounterState {
 
         turn.done = !turn.done;
         this.refreshActiveTurn();
+    }
+
+    advanceToNextTurn() {
+        if (!this.hasTurnOrder()) {
+            return {
+                status: 'empty',
+                activeTurnId: null,
+            };
+        }
+
+        const activeTurn = this.getActiveTurn();
+
+        if (activeTurn) {
+            activeTurn.done = true;
+        }
+
+        this.refreshActiveTurn();
+
+        return {
+            status: this.activeTurnId === null ? 'round-complete' : 'advanced',
+            activeTurnId: this.activeTurnId,
+        };
+    }
+
+    resetTurnProgress() {
+        if (!this.hasTurnOrder()) {
+            this.activeTurnId = null;
+            return;
+        }
+
+        this.turnOrder.forEach(turn => {
+            turn.done = false;
+        });
+        this.refreshActiveTurn();
+    }
+
+    startNewRound() {
+        if (!this.hasTurnOrder()) {
+            return;
+        }
+
+        this.currentRound += 1;
+        this.resetTurnProgress();
+    }
+
+    resetEncounter() {
+        this.monsters = [];
+        this.players = [];
+        this.turnOrder = [];
+        this.currentRound = 1;
+        this.activeTurnId = null;
     }
 
     moveTurn(draggedTurnId, targetTurnId, placement = 'before') {
@@ -245,6 +308,18 @@ export function hasSelectedMonsters(encounter) {
     return encounter.hasSelectedMonsters();
 }
 
+export function hasTurnOrder(encounter) {
+    return encounter.hasTurnOrder();
+}
+
+export function getActiveTurn(encounter) {
+    return encounter.getActiveTurn();
+}
+
+export function isRoundComplete(encounter) {
+    return encounter.isRoundComplete();
+}
+
 export function rollMonsterInitiatives(encounter, roll = rollD20) {
     encounter.rollMonsterInitiatives(roll);
 }
@@ -259,6 +334,22 @@ export function buildRoundOrder(encounter) {
 
 export function toggleTurnDone(encounter, turnId) {
     encounter.toggleTurnDone(turnId);
+}
+
+export function advanceToNextTurn(encounter) {
+    return encounter.advanceToNextTurn();
+}
+
+export function resetTurnProgress(encounter) {
+    encounter.resetTurnProgress();
+}
+
+export function startNewRound(encounter) {
+    encounter.startNewRound();
+}
+
+export function resetEncounter(encounter) {
+    encounter.resetEncounter();
 }
 
 export function moveTurn(encounter, draggedTurnId, targetTurnId, placement = 'before') {

@@ -9,6 +9,79 @@
     list-style: none;
 }
 
+.dnd-initiative-page .turn-order-combat-controls {
+    display: grid;
+    gap: 0.85rem;
+
+    margin: 1rem 0 0.6rem;
+    padding: 1rem 1rem 0.95rem;
+
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--bg-soft) 92%, transparent) 0%, transparent 100%),
+        color-mix(in srgb, var(--card) 94%, var(--border));
+    border: 1px solid color-mix(in srgb, var(--border) 70%, var(--accent));
+    border-radius: 1rem;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 6%);
+}
+
+.dnd-initiative-page .turn-order-combat-status {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.dnd-initiative-page .turn-order-combat-status__round {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.dnd-initiative-page .turn-order-combat-status__turn {
+    margin: 0;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+.dnd-initiative-page .turn-order-combat-status__turn--ended {
+    color: #b42318;
+}
+
+.dnd-initiative-page .turn-order-combat-status__turn--empty {
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.dnd-initiative-page .turn-order-combat-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.dnd-initiative-page .turn-order-combat-button {
+    padding: 0.55rem 0.9rem;
+}
+
+.dnd-initiative-page .turn-order-combat-button--primary {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.dnd-initiative-page .turn-order-combat-button--danger {
+    border-color: color-mix(in srgb, #b42318 60%, var(--border));
+    background: linear-gradient(180deg, color-mix(in srgb, #b42318 88%, white) 0%, #b42318 100%);
+    color: #fff;
+}
+
+.dnd-initiative-page .turn-order-combat-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+}
+
 .dnd-initiative-page .turn-order-item {
     --turn-order-scale: 0.97;
     --turn-order-accent: color-mix(in srgb, var(--accent) 72%, var(--border));

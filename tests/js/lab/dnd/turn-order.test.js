@@ -212,6 +212,90 @@ describe('turn order rendering', () => {
 
         expect(onGenerateTurnOrder).toHaveBeenCalledOnce();
     });
+
+    test('renders combat controls and reports explicit combat commands', async () => {
+        const encounter = new EncounterState();
+        encounter.turnOrder = [
+            createTurn({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+            }),
+            createTurn({
+                id: 'player-2',
+                name: 'Borin',
+                initiative: 12,
+            }),
+        ];
+        encounter.currentRound = 3;
+
+        const onAdvanceTurn = vi.fn();
+        const onStartNewRound = vi.fn();
+        const onResetTurnProgress = vi.fn();
+        const onResetEncounter = vi.fn();
+
+        globalThis.document = createTurnOrderDocument();
+
+        const { TurnOrderPanel } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const panel = new TurnOrderPanel(encounter, {
+            onAdvanceTurn,
+            onStartNewRound,
+            onResetTurnProgress,
+            onResetEncounter,
+        });
+        panel.start();
+        panel.refresh();
+
+        expect(globalThis.document.getElementById('combatRoundStatus').textContent).toBe('Round 3');
+        expect(globalThis.document.getElementById('combatTurnStatus').textContent)
+            .toBe('Acteur actif : Lia');
+        expect(globalThis.document.getElementById('combatNextTurn').disabled).toBe(false);
+        expect(globalThis.document.getElementById('combatStartNewRound').disabled).toBe(false);
+        expect(globalThis.document.getElementById('combatResetTurnProgress').disabled).toBe(false);
+        expect(globalThis.document.getElementById('resetEncounter').disabled).toBe(false);
+
+        globalThis.document.getElementById('combatNextTurn').dispatchEvent({ type: 'click' });
+        globalThis.document.getElementById('combatStartNewRound').dispatchEvent({ type: 'click' });
+        globalThis.document.getElementById('combatResetTurnProgress').dispatchEvent({ type: 'click' });
+        globalThis.document.getElementById('resetEncounter').dispatchEvent({ type: 'click' });
+
+        expect(onAdvanceTurn).toHaveBeenCalledOnce();
+        expect(onStartNewRound).toHaveBeenCalledOnce();
+        expect(onResetTurnProgress).toHaveBeenCalledOnce();
+        expect(onResetEncounter).toHaveBeenCalledOnce();
+    });
+
+    test('disables the next turn command when the round is complete', async () => {
+        const encounter = new EncounterState();
+        encounter.turnOrder = [
+            createTurn({
+                id: 'player-1',
+                name: 'Lia',
+                initiative: 18,
+                done: true,
+            }),
+            createTurn({
+                id: 'player-2',
+                name: 'Borin',
+                initiative: 12,
+                done: true,
+            }),
+        ];
+        encounter.currentRound = 2;
+
+        globalThis.document = createTurnOrderDocument();
+
+        const { TurnOrderPanel } = await import('../../../../assets/scripts/lab/dnd/turn-order.js');
+        const panel = new TurnOrderPanel(encounter);
+        panel.start();
+        panel.refresh();
+
+        expect(globalThis.document.getElementById('combatTurnStatus').textContent)
+            .toBe('Round terminé. Cliquer sur Nouveau round pour repartir.');
+        expect(globalThis.document.getElementById('combatNextTurn').disabled).toBe(true);
+        expect(globalThis.document.getElementById('combatStartNewRound').disabled).toBe(false);
+        expect(globalThis.document.getElementById('combatResetTurnProgress').disabled).toBe(false);
+    });
 });
 
 function createTurn(overrides = {}) {
@@ -236,6 +320,12 @@ function createTurnOrderDocument() {
     const turnOrderValidationSummary = new TestElement('div', ['dnd-validation-summary']);
     const keyboardHelpButton = new TestElement('button');
     const keyboardHelp = new TestElement('div');
+    const combatRoundStatus = new TestElement('p');
+    const combatTurnStatus = new TestElement('p');
+    const combatNextTurn = new TestElement('button');
+    const combatStartNewRound = new TestElement('button');
+    const combatResetTurnProgress = new TestElement('button');
+    const resetEncounter = new TestElement('button');
     const turnOrderPlaceholder = new TestElement('div');
     const turnOrderList = new TestElement('ol');
     const turnOrderLiveRegion = new TestElement('div');
@@ -246,6 +336,12 @@ function createTurnOrderDocument() {
             turnOrderValidationSummary,
             toggleTurnOrderKeyboardHelp: keyboardHelpButton,
             turnOrderKeyboardHelp: keyboardHelp,
+            combatRoundStatus,
+            combatTurnStatus,
+            combatNextTurn,
+            combatStartNewRound,
+            combatResetTurnProgress,
+            resetEncounter,
             turnOrderPlaceholder,
             turnOrderList,
             turnOrderLiveRegion,

@@ -287,6 +287,107 @@ describe('encounter state', () => {
         expect(encounter.turnOrder.map(actor => actor.id)).toEqual(['player-1', 'player-2', 'player-3']);
         expect(encounter.activeTurnId).toBe('player-1');
     });
+
+    test('advances to the next actor and marks the current turn as done', () => {
+        const encounter = createTestEncounter();
+
+        setPlayers(encounter, [
+            createPlayer({ id: 'player-1', name: 'Lia', initiative: 18, roll: 18 }),
+            createPlayer({ id: 'player-2', name: 'Borin', initiative: 12, roll: 12 }),
+        ]);
+        buildRoundOrder(encounter);
+
+        const result = encounter.advanceToNextTurn();
+
+        expect(result).toMatchObject({
+            status: 'advanced',
+            activeTurnId: 'player-2',
+        });
+        expect(encounter.turnOrder.map(actor => actor.done)).toEqual([true, false]);
+        expect(encounter.activeTurnId).toBe('player-2');
+    });
+
+    test('marks the round complete when the last actor is advanced', () => {
+        const encounter = createTestEncounter();
+
+        setPlayers(encounter, [
+            createPlayer({ id: 'player-1', name: 'Lia', initiative: 18, roll: 18 }),
+        ]);
+        buildRoundOrder(encounter);
+
+        const result = encounter.advanceToNextTurn();
+
+        expect(result).toMatchObject({
+            status: 'round-complete',
+            activeTurnId: null,
+        });
+        expect(encounter.turnOrder[0].done).toBe(true);
+        expect(encounter.isRoundComplete()).toBe(true);
+        expect(encounter.activeTurnId).toBe(null);
+    });
+
+    test('starts a new round without changing the manual order', () => {
+        const encounter = createTestEncounter();
+
+        setPlayers(encounter, [
+            createPlayer({ id: 'player-1', name: 'Lia', initiative: 18, roll: 18 }),
+            createPlayer({ id: 'player-2', name: 'Borin', initiative: 12, roll: 12 }),
+        ]);
+        buildRoundOrder(encounter);
+        encounter.moveTurn('player-2', 'player-1', 'before');
+        encounter.turnOrder[0].done = true;
+        encounter.turnOrder[1].done = true;
+        encounter.currentRound = 3;
+        encounter.activeTurnId = null;
+
+        encounter.startNewRound();
+
+        expect(encounter.currentRound).toBe(4);
+        expect(encounter.turnOrder.map(actor => actor.id)).toEqual(['player-2', 'player-1']);
+        expect(encounter.turnOrder.every(actor => actor.done)).toBe(false);
+        expect(encounter.activeTurnId).toBe('player-2');
+    });
+
+    test('resets only the turn progress without changing the current round', () => {
+        const encounter = createTestEncounter();
+
+        setPlayers(encounter, [
+            createPlayer({ id: 'player-1', name: 'Lia', initiative: 18, roll: 18 }),
+            createPlayer({ id: 'player-2', name: 'Borin', initiative: 12, roll: 12 }),
+        ]);
+        buildRoundOrder(encounter);
+        encounter.advanceToNextTurn();
+        encounter.currentRound = 5;
+
+        encounter.resetTurnProgress();
+
+        expect(encounter.currentRound).toBe(5);
+        expect(encounter.turnOrder.every(actor => actor.done)).toBe(false);
+        expect(encounter.activeTurnId).toBe('player-1');
+    });
+
+    test('resets the encounter state while preserving rules', () => {
+        const encounter = createTestEncounter();
+
+        setRuleActive(encounter, 'skip-low-initiative', false);
+        createMonsterSlots(encounter, 1);
+        selectMonster(encounter, 0, 'acolyte');
+        setPlayers(encounter, [
+            createPlayer({ id: 'player-1', name: 'Lia', initiative: 18, roll: 18 }),
+        ]);
+        buildRoundOrder(encounter);
+        encounter.advanceToNextTurn();
+        encounter.currentRound = 4;
+
+        encounter.resetEncounter();
+
+        expect(encounter.monsters).toEqual([]);
+        expect(encounter.players).toEqual([]);
+        expect(encounter.turnOrder).toEqual([]);
+        expect(encounter.currentRound).toBe(1);
+        expect(encounter.activeTurnId).toBe(null);
+        expect(encounter.isRuleActive('skip-low-initiative')).toBe(false);
+    });
 });
 
 function createPlayer(overrides = {}) {

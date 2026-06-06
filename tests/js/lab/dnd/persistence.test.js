@@ -76,6 +76,59 @@ describe('DnD encounter persistence', () => {
         expect(globalThis.document.getElementById('restoreEncounterSnapshot').disabled).toBe(false);
     });
 
+    test('saves a reset encounter as an empty snapshot that preserves rules', () => {
+        const encounter = new EncounterState();
+        encounter.setRuleActive('skip-low-initiative', false);
+        encounter.monsters = [
+            {
+                id: 'monster-1',
+                slug: 'acolyte',
+                name: 'Acolyte 1',
+                side: 'hostile',
+                armorClass: 12,
+                currentHitPoints: 9,
+                baseHitPoints: 9,
+                initiative: 14,
+                roll: 12,
+                initiativeModifier: 2,
+            },
+        ];
+        encounter.setPlayers([
+            {
+                id: 'player-1',
+                type: 'player',
+                name: 'Lia',
+                side: 'party',
+                armorClass: 15,
+                baseHitPoints: 20,
+                currentHitPoints: 18,
+                initiative: 12,
+                roll: 12,
+                initiativeModifier: 2,
+            },
+        ]);
+        encounter.buildRoundOrder();
+        encounter.resetEncounter();
+
+        const storage = createLocalStorageMock();
+
+        globalThis.document = createPersistenceDocument();
+        globalThis.localStorage = storage;
+
+        const persistence = new EncounterPersistence(encounter);
+        persistence.start();
+        persistence.saveEncounter();
+
+        const snapshot = JSON.parse(storage.getItem(DND_INITIATIVE_TRACKER_STORAGE_KEY));
+
+        expect(snapshot.monsters).toEqual([]);
+        expect(snapshot.players).toEqual([]);
+        expect(snapshot.turnOrder).toEqual([]);
+        expect(snapshot.currentRound).toBe(1);
+        expect(snapshot.activeTurnId).toBe(null);
+        expect(snapshot.rules['skip-low-initiative']).toBe(false);
+    });
+
     test('prompts for restore and hydrates the encounter from the stored snapshot', () => {
         const encounter = new EncounterState({ bestiary: bestiarySample });
         const sourceEncounter = new EncounterState({ bestiary: bestiarySample });

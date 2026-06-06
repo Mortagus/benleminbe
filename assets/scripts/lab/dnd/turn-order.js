@@ -19,6 +19,12 @@ export class TurnOrderPanel {
         this.turnOrderValidationSummary = document.getElementById('turnOrderValidationSummary');
         this.turnOrderKeyboardHelpButton = document.getElementById('toggleTurnOrderKeyboardHelp');
         this.turnOrderKeyboardHelp = document.getElementById('turnOrderKeyboardHelp');
+        this.combatRoundStatus = document.getElementById('combatRoundStatus');
+        this.combatTurnStatus = document.getElementById('combatTurnStatus');
+        this.combatNextTurnButton = document.getElementById('combatNextTurn');
+        this.combatStartNewRoundButton = document.getElementById('combatStartNewRound');
+        this.combatResetTurnProgressButton = document.getElementById('combatResetTurnProgress');
+        this.combatResetEncounterButton = document.getElementById('resetEncounter');
         this.turnOrderPlaceholder = document.getElementById('turnOrderPlaceholder');
         this.turnOrderList = document.getElementById('turnOrderList');
         this.turnOrderLiveRegion = document.getElementById('turnOrderLiveRegion');
@@ -27,12 +33,32 @@ export class TurnOrderPanel {
 
     start() {
         this.bindGenerateTurnOrderButton();
+        this.bindCombatControlButtons();
         bindKeyboardHelp(this.turnOrderKeyboardHelpButton, this.turnOrderKeyboardHelp);
+        this.renderCombatControls();
     }
 
     bindGenerateTurnOrderButton() {
-        this.generateTurnOrderButton.addEventListener('click', () => {
+        this.generateTurnOrderButton?.addEventListener('click', () => {
             this.callbacks.onGenerateTurnOrder?.();
+        });
+    }
+
+    bindCombatControlButtons() {
+        this.combatNextTurnButton?.addEventListener('click', () => {
+            this.callbacks.onAdvanceTurn?.();
+        });
+
+        this.combatStartNewRoundButton?.addEventListener('click', () => {
+            this.callbacks.onStartNewRound?.();
+        });
+
+        this.combatResetTurnProgressButton?.addEventListener('click', () => {
+            this.callbacks.onResetTurnProgress?.();
+        });
+
+        this.combatResetEncounterButton?.addEventListener('click', () => {
+            this.callbacks.onResetEncounter?.();
         });
     }
 
@@ -42,13 +68,65 @@ export class TurnOrderPanel {
 
     refresh(options = {}) {
         this.rememberFocusTarget(options);
+        this.renderCombatControls();
         this.renderTurnOrder();
         this.restorePendingFocus();
     }
 
     rememberFocusTarget(options) {
+        if (options.focusTurnId) {
+            this.pendingFocusTurnId = options.focusTurnId;
+            return;
+        }
+
         if (options.focusFirst) {
             this.pendingFocusTurnId = this.encounter.turnOrder[0]?.id ?? null;
+        }
+    }
+
+    renderCombatControls() {
+        const hasTurnOrder = this.encounter.hasTurnOrder?.() ?? this.encounter.turnOrder.length > 0;
+        const isRoundComplete = this.encounter.isRoundComplete?.() ?? (
+            hasTurnOrder && this.encounter.turnOrder.every(actor => actor.done)
+        );
+        const activeTurn = this.encounter.getActiveTurn?.() ?? this.encounter.turnOrder.find(actor => !actor.done) ?? null;
+        const hasEncounterContent = hasTurnOrder || this.encounter.monsters.length > 0 || this.encounter.players.length > 0;
+
+        if (this.combatRoundStatus) {
+            this.combatRoundStatus.textContent = `Round ${this.encounter.currentRound}`;
+        }
+
+        if (this.combatTurnStatus) {
+            this.combatTurnStatus.classList.remove(
+                'turn-order-combat-status__turn--ended',
+                'turn-order-combat-status__turn--empty',
+            );
+
+            if (!hasTurnOrder) {
+                this.combatTurnStatus.textContent = 'Aucun ordre du tour généré.';
+                this.combatTurnStatus.classList.add('turn-order-combat-status__turn--empty');
+            } else if (isRoundComplete) {
+                this.combatTurnStatus.textContent = 'Round terminé. Cliquer sur Nouveau round pour repartir.';
+                this.combatTurnStatus.classList.add('turn-order-combat-status__turn--ended');
+            } else {
+                this.combatTurnStatus.textContent = `Acteur actif : ${activeTurn?.name ?? 'Inconnu'}`;
+            }
+        }
+
+        if (this.combatNextTurnButton) {
+            this.combatNextTurnButton.disabled = !hasTurnOrder || isRoundComplete;
+        }
+
+        if (this.combatStartNewRoundButton) {
+            this.combatStartNewRoundButton.disabled = !hasTurnOrder;
+        }
+
+        if (this.combatResetTurnProgressButton) {
+            this.combatResetTurnProgressButton.disabled = !hasTurnOrder;
+        }
+
+        if (this.combatResetEncounterButton) {
+            this.combatResetEncounterButton.disabled = !hasEncounterContent;
         }
     }
 

@@ -37,6 +37,49 @@
         </ul>
     </div>
 
+    <div class="turn-order-combat-controls">
+        <div class="turn-order-combat-status">
+            <p id="combatRoundStatus" class="turn-order-combat-status__round">Round 1</p>
+            <p
+                id="combatTurnStatus"
+                class="turn-order-combat-status__turn"
+                aria-live="polite"
+                aria-atomic="true"
+            >
+                Aucun ordre du tour généré.
+            </p>
+        </div>
+
+        <div class="turn-order-combat-actions">
+            <button
+                id="combatNextTurn"
+                type="button"
+                class="dnd-secondary-button turn-order-combat-button turn-order-combat-button--primary"
+                disabled
+            >
+                Acteur suivant
+            </button>
+
+            <button
+                id="combatStartNewRound"
+                type="button"
+                class="dnd-secondary-button turn-order-combat-button"
+                disabled
+            >
+                Nouveau round
+            </button>
+
+            <button
+                id="combatResetTurnProgress"
+                type="button"
+                class="dnd-secondary-button turn-order-combat-button"
+                disabled
+            >
+                Réinitialiser les tours de ce round
+            </button>
+        </div>
+    </div>
+
     <div id="turnOrderPlaceholder" class="dnd-placeholder">
         <p>Aucun ordre généré.</p>
     </div>

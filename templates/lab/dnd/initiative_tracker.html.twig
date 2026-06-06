@@ -9,12 +9,31 @@
 {% block body %}
     <main class="lab-initiative-page dnd-initiative-page">
         <section class="content-section">
-            <header class="dnd-page-header">
-                <h1>D&D Initiative Tracker</h1>
+            <header class="dnd-page-header dnd-page-header--with-action">
+                <div class="dnd-page-header__content">
+                    <h1>D&D Initiative Tracker</h1>
 
-                <p>
-                    Préparer une rencontre, lancer l’initiative et suivre l’ordre du tour.
-                </p>
+                    <p>
+                        Préparer une rencontre, lancer l’initiative et suivre l’ordre du tour.
+                    </p>
+                </div>
+
+                <div class="dnd-page-header__actions">
+                    <p id="resetEncounterWarning" class="dnd-page-header__warning">
+                        Action globale : réinitialise monstres, joueurs, ordre du tour, round et état joué.
+                    </p>
+
+                    <button
+                        id="resetEncounter"
+                        type="button"
+                        class="dnd-secondary-button dnd-secondary-button--danger"
+                        aria-describedby="resetEncounterWarning"
+                        title="Action globale sur l’ensemble de l’outil"
+                        disabled
+                    >
+                        Réinitialiser la rencontre
+                    </button>
+                </div>
             </header>
 
             <div class="dnd-layout">

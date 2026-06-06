@@ -69,6 +69,12 @@
     border-color: var(--border);
 }
 
+.dnd-initiative-page .dnd-secondary-button--danger {
+    border-color: color-mix(in srgb, #b42318 60%, var(--border));
+    background: linear-gradient(180deg, color-mix(in srgb, #b42318 88%, white) 0%, #b42318 100%);
+    color: #fff;
+}
+
 .dnd-initiative-page .dnd-toolbar__actions button:disabled {
     cursor: not-allowed;
     opacity: 0.55;

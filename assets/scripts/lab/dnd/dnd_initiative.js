@@ -38,6 +38,10 @@ class DndInitiativeTrackerApp {
     start() {
         this.turnOrderPanel = new TurnOrderPanel(this.encounter, {
             onGenerateTurnOrder: () => this.generateTurnOrder(),
+            onAdvanceTurn: () => this.advanceCombatTurn(),
+            onStartNewRound: () => this.startNewRound(),
+            onResetTurnProgress: () => this.resetTurnProgress(),
+            onResetEncounter: () => this.resetEncounter(),
         });
         this.turnOrderPanel.start();
 
@@ -134,6 +138,51 @@ class DndInitiativeTrackerApp {
         this.encounter.buildRoundOrder();
 
         this.turnOrderPanel.refresh({ focusFirst: true });
+        this.persistence?.saveEncounter();
+    }
+
+    advanceCombatTurn() {
+        const result = this.encounter.advanceToNextTurn();
+
+        if (result.status === 'empty') {
+            this.turnOrderPanel?.refresh?.();
+            return;
+        }
+
+        this.turnOrderPanel?.refresh?.(
+            result.activeTurnId
+                ? { focusTurnId: result.activeTurnId }
+                : {},
+        );
+        this.persistence?.saveEncounter();
+    }
+
+    startNewRound() {
+        this.encounter.startNewRound();
+        this.turnOrderPanel?.refresh?.({ focusFirst: true });
+        this.persistence?.saveEncounter();
+    }
+
+    resetTurnProgress() {
+        this.encounter.resetTurnProgress();
+        this.turnOrderPanel?.refresh?.({ focusFirst: true });
+        this.persistence?.saveEncounter();
+    }
+
+    resetEncounter() {
+        const shouldReset = typeof globalThis.confirm === 'function'
+            ? globalThis.confirm('Réinitialiser la rencontre ? Cette action effacera les acteurs et l’ordre du tour.')
+            : true;
+
+        if (!shouldReset) {
+            return;
+        }
+
+        this.encounter.resetEncounter();
+        this.monstersPanel?.refresh?.();
+        this.playersPanel?.hydrateFromEncounter?.();
+        this.rulesPanel?.sync?.();
+        this.turnOrderPanel?.refresh?.();
         this.persistence?.saveEncounter();
     }
 }

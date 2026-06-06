@@ -1,6 +1,8 @@
 # P7 - Commandes Explicites De Combat
 
-Date de mise à jour : 2026-05-26
+Date de mise à jour : 2026-06-06
+
+Statut : livré le 2026-06-06. Ce document conserve le cadrage initial et les décisions fonctionnelles de `P7` à titre historique.
 
 ## Objectif
 

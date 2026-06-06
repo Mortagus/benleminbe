@@ -5,12 +5,38 @@
 }
 
 .dnd-initiative-page .dnd-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+
     margin-bottom: 1.5rem;
+}
+
+.dnd-initiative-page .dnd-page-header__content {
+    max-width: 48rem;
 }
 
 .dnd-initiative-page .dnd-page-header p {
     max-width: 48rem;
     color: var(--muted);
+}
+
+.dnd-initiative-page .dnd-page-header__actions {
+    display: grid;
+    justify-items: end;
+    gap: 0.6rem;
+    max-width: 22rem;
+}
+
+.dnd-initiative-page .dnd-page-header__warning {
+    max-width: none;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    text-align: right;
 }
 
 .dnd-initiative-page .dnd-layout {

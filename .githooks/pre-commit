@@ -5,7 +5,8 @@ repo_root="$(git rev-parse --show-toplevel)"
 cd "$repo_root"
 
 echo "Running pre-commit checks..."
-if make check; then
-    echo "Recompiling assets after successful checks..."
-    make cc
-fi
+make check
+#if make check; then
+#    echo "Recompiling assets after successful checks..."
+#    make cc
+#fi

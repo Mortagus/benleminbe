@@ -13,7 +13,7 @@ Verification locale de reference. Elle couvre:
 - les fichiers YAML ;
 - les templates Twig ;
 - le conteneur Symfony ;
-- le format Markdown ;
+- le format Markdown, avec diff affiché en cas d'ecart ;
 - les fichiers CSS ;
 - les fichiers JavaScript ;
 - les tests JavaScript.

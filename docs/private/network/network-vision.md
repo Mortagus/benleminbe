@@ -76,7 +76,7 @@ Etat fonctionnel actuel :
 - export et import JSON des plateformes via la page de liste ;
 - creation et edition des contacts ;
 - ajout d'interactions sur les fiches contact ;
-- preparation rapide d'un contact avec message suggere, canal recommande et marquage local du suivi ;
+- preparation rapide d'un contact avec prompt de redaction copiable, canal recommande et marquage local du suivi ;
 - import vCard du telephone et CSV LinkedIn via l'interface privee ;
 - persistance relationnelle active avec tables, migration et seed initial des plateformes depuis un snapshot JSON versionne ;
 - tests fonctionnels PHPUnit / WebTestCase en place pour les parcours principaux, dont l'import.

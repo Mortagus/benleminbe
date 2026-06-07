@@ -21,7 +21,7 @@ export function setupContactPreparationModal(document, clipboard = navigator.cli
     const category = modal.querySelector('[data-contact-preparation-category]');
     const recommendedChannel = modal.querySelector('[data-contact-preparation-recommended-channel]');
     const subjectInput = modal.querySelector('[data-contact-preparation-subject]');
-    const messageInput = modal.querySelector('[data-contact-preparation-message]');
+    const promptInput = modal.querySelector('[data-contact-preparation-prompt]');
     const copyButton = modal.querySelector('[data-contact-preparation-copy]');
     const feedback = modal.querySelector('[data-contact-preparation-feedback]');
     const linkedinLink = modal.querySelector('[data-contact-preparation-linkedin]');
@@ -70,7 +70,7 @@ export function setupContactPreparationModal(document, clipboard = navigator.cli
     const sanitizeTel = value => (value || '').replace(/[^0-9+]/g, '');
 
     const updateEmailLink = () => {
-        if (!emailLink || !subjectInput || !messageInput) {
+        if (!emailLink || !subjectInput) {
             return;
         }
 
@@ -81,8 +81,9 @@ export function setupContactPreparationModal(document, clipboard = navigator.cli
         }
 
         const subject = subjectInput.value.trim();
-        const body = messageInput.value.trim();
-        const href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const href = subject !== ''
+            ? `mailto:${email}?subject=${encodeURIComponent(subject)}`
+            : `mailto:${email}`;
         setChannelLink(emailLink, href, false);
     };
 
@@ -115,8 +116,8 @@ export function setupContactPreparationModal(document, clipboard = navigator.cli
             subjectInput.value = payload.subject || '';
         }
 
-        if (messageInput) {
-            messageInput.value = payload.message || '';
+        if (promptInput) {
+            promptInput.value = payload.prompt || '';
         }
 
         if (linkedinLink) {
@@ -168,7 +169,7 @@ export function setupContactPreparationModal(document, clipboard = navigator.cli
         modal.hidden = false;
         html.classList.add('private-modal-is-open');
 
-        (subjectInput || messageInput || modal).focus?.();
+        (promptInput || subjectInput || modal).focus?.();
     };
 
     const closeModal = () => {
@@ -208,20 +209,19 @@ export function setupContactPreparationModal(document, clipboard = navigator.cli
     });
 
     copyButton?.addEventListener('click', async () => {
-        if (!messageInput?.value) {
+        if (!promptInput?.value) {
             return;
         }
 
         try {
-            await copyText(messageInput.value, clipboard);
-            setFeedback('Message copié.');
+            await copyText(promptInput.value, clipboard);
+            setFeedback('Prompt copié.');
         } catch {
             setFeedback('Copie indisponible.');
         }
     });
 
     subjectInput?.addEventListener('input', updateEmailLink);
-    messageInput?.addEventListener('input', updateEmailLink);
 
     updateEmailLink();
 }

@@ -610,6 +610,13 @@ final class ContactService
     private function decorateContact(Contact $contact): array
     {
         $roleClassification = $this->roleClassifier->classify($contact->getRole());
+        $lastInteraction = $contact->getInteractions()->first();
+        $lastInteractionData = $lastInteraction instanceof Interaction ? $this->decorateLastInteraction($lastInteraction) : [
+            'last_interaction_at' => '',
+            'last_interaction_at_label' => '',
+            'last_interaction_channel' => '',
+            'last_interaction_summary' => '',
+        ];
 
         return [
             'id' => $contact->getId(),
@@ -634,7 +641,9 @@ final class ContactService
             'relationship_status' => $contact->getRelationshipStatus()->value,
             'relationship_status_label' => $contact->getRelationshipStatusLabel(),
             'last_contact_at' => $this->formatDate($contact->getLastContactAt()),
+            'last_contact_at_label' => $this->formatDisplayDate($contact->getLastContactAt()),
             'next_action_at' => $this->formatDate($contact->getNextActionAt()),
+            'next_action_at_label' => $this->formatDisplayDate($contact->getNextActionAt()),
             'next_action' => $contact->getNextAction() ?? '',
             'notes' => $contact->getNotes() ?? '',
             'tags' => array_values($contact->getTags()),
@@ -651,6 +660,19 @@ final class ContactService
                 'main_channel' => $contact->getMainChannel() ?? '',
                 'emails' => $contact->getEmails(),
                 'phones' => $contact->getPhones(),
+                'priority_label' => $contact->getPriorityLabel(),
+                'relationship_status_label' => $contact->getRelationshipStatusLabel(),
+                'last_contact_at' => $this->formatDate($contact->getLastContactAt()),
+                'last_contact_at_label' => $this->formatDisplayDate($contact->getLastContactAt()),
+                'next_action' => $contact->getNextAction() ?? '',
+                'next_action_at' => $this->formatDate($contact->getNextActionAt()),
+                'next_action_at_label' => $this->formatDisplayDate($contact->getNextActionAt()),
+                'notes' => $contact->getNotes() ?? '',
+                'source' => $contact->getSource() ?? '',
+                'last_interaction_at' => $lastInteractionData['last_interaction_at'],
+                'last_interaction_at_label' => $lastInteractionData['last_interaction_at_label'],
+                'last_interaction_channel' => $lastInteractionData['last_interaction_channel'],
+                'last_interaction_summary' => $lastInteractionData['last_interaction_summary'],
             ]),
         ];
     }
@@ -1034,6 +1056,24 @@ final class ContactService
     private function formatDateTime(?DateTimeImmutable $value): ?string
     {
         return $value !== null ? $value->format(DATE_ATOM) : null;
+    }
+
+    private function formatDisplayDate(?DateTimeImmutable $value): ?string
+    {
+        return $value !== null ? $value->format('d/m/Y') : null;
+    }
+
+    /**
+     * @return array{last_interaction_at: string, last_interaction_at_label: string, last_interaction_channel: string, last_interaction_summary: string}
+     */
+    private function decorateLastInteraction(Interaction $interaction): array
+    {
+        return [
+            'last_interaction_at' => $this->formatDate($interaction->getDate()) ?? '',
+            'last_interaction_at_label' => $this->formatDisplayDate($interaction->getDate()) ?? '',
+            'last_interaction_channel' => $interaction->getChannel() ?? '',
+            'last_interaction_summary' => $interaction->getSummary() ?? ($interaction->getResult() ?? ''),
+        ];
     }
 
     private function now(): string

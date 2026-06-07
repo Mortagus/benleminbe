@@ -160,13 +160,6 @@ final class NetworkWebTest extends NetworkWebTestCase
             'priority' => 'haute',
             'relationship_status' => 'prioritaire',
         ]);
-        $neverContactedLowPriority = $repository->saveContact([
-            'display_name' => 'Bruno Relance',
-            'organization' => 'Beta Studio',
-            'role' => 'Senior Symfony Developer',
-            'priority' => 'basse',
-            'relationship_status' => 'a_relancer',
-        ]);
         $excludedBusinessContact = $repository->saveContact([
             'display_name' => 'Eve Business',
             'organization' => 'Epsilon Group',
@@ -177,7 +170,7 @@ final class NetworkWebTest extends NetworkWebTestCase
         $olderContact = $repository->saveContact([
             'display_name' => 'Claire Ancienne',
             'organization' => 'Gamma Lab',
-            'role' => 'Tech Lead',
+            'role' => 'Recruteuse',
             'priority' => 'moyenne',
             'relationship_status' => 'a_relancer',
         ]);
@@ -209,28 +202,24 @@ final class NetworkWebTest extends NetworkWebTestCase
         $client->request('GET', '/private/network');
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorExists(sprintf('a.private-list-item--clickable[href="%s"]', sprintf('/private/network/contacts/%s', $neverContactedHighPriority['id'])));
-        self::assertSelectorExists(sprintf('a.private-list-item--clickable[href="%s"]', sprintf('/private/network/contacts/%s', $neverContactedLowPriority['id'])));
-        self::assertSelectorExists(sprintf('a.private-list-item--clickable[href="%s"]', sprintf('/private/network/contacts/%s', $olderContact['id'])));
-        self::assertSelectorExists(sprintf('a.private-list-item--clickable[href="%s"]', sprintf('/private/network/contacts/%s', $newerContact['id'])));
         self::assertStringNotContainsString('Sans Entreprise', $client->getResponse()->getContent());
         self::assertStringNotContainsString($excludedBusinessContact['display_name'], $client->getResponse()->getContent());
 
         $section = $client->getCrawler()->filterXPath("//section[contains(@class, 'private-section-card')][.//h2[normalize-space()='Contacts prioritaires']]");
         self::assertCount(1, $section);
 
-        $names = $section->first()->filter('a.private-list-item--clickable strong')->each(static fn (Crawler $node): string => trim($node->text('')));
+        $clickableContacts = $section->first()->filter('a.private-list-item--clickable');
+        self::assertCount(3, $clickableContacts);
+
+        $names = $clickableContacts->filter('strong')->each(static fn (Crawler $node): string => trim($node->text('')));
 
         self::assertSame([
             'Alice Prioritaire',
-            'Bruno Relance',
             'Claire Ancienne',
             'David Récente',
         ], $names);
         self::assertSelectorTextContains('body', 'Recruteuse · Alpha Agency');
-        self::assertSelectorTextContains('body', 'Senior Symfony Developer · Beta Studio');
-        self::assertSelectorTextContains('body', 'Beta Studio');
-        self::assertSelectorTextContains('body', 'Tech Lead · Gamma Lab');
+        self::assertSelectorTextContains('body', 'Recruteuse · Gamma Lab');
         self::assertSelectorTextContains('body', 'Gamma Lab');
         self::assertSelectorTextContains('body', 'Talent Acquisition Specialist · Delta Works');
         self::assertSelectorTextContains('body', 'Delta Works');
@@ -403,6 +392,7 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertSelectorExists('[data-contact-preparation-modal]');
         self::assertSelectorExists('[data-contact-preparation-open]');
         self::assertSelectorTextContains('body', 'Préparer un contact');
+        self::assertSelectorTextContains('body', 'Prompt de rédaction');
     }
 
     public function testMarkContactedActionUpdatesTheContactStatus(): void

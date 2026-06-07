@@ -92,21 +92,22 @@
             </section>
 
             <section class="private-contact-preparation__editor">
-                <label class="private-form__field">
-                    <span>Objet</span>
-                    <input class="private-input" type="text" data-contact-preparation-subject>
-                </label>
+                <p class="private-muted">
+                    Copie ce prompt dans ChatGPT ou dans un autre assistant pour générer un message final adapté au contact.
+                </p>
+
+                <input type="hidden" data-contact-preparation-subject>
 
                 <label class="private-form__field">
-                    <span>Message</span>
-                    <textarea class="private-input" rows="10" data-contact-preparation-message></textarea>
+                    <span>Prompt de rédaction</span>
+                    <textarea class="private-input" rows="16" data-contact-preparation-prompt></textarea>
                 </label>
 
                 <p class="private-contact-preparation__feedback" hidden data-contact-preparation-feedback></p>
             </section>
 
             <div class="private-contact-preparation__actions">
-                <button class="private-link-button" type="button" data-contact-preparation-copy>Copier le message</button>
+                <button class="private-link-button" type="button" data-contact-preparation-copy>Copier le prompt</button>
 
                 <form
                     class="private-contact-preparation__mark-form private-inline-form"

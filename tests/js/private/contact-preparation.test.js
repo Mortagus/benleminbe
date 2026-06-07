@@ -35,11 +35,14 @@ describe('private contact preparation modal', () => {
         expect(modal.querySelector('[data-contact-preparation-category]').textContent).toBe('Recrutement / RH');
         expect(modal.querySelector('[data-contact-preparation-recommended-channel]').textContent).toBe('LinkedIn');
         expect(modal.querySelector('[data-contact-preparation-subject]').value).toBe('Disponibilité freelance - développement web backend');
-        expect(modal.querySelector('[data-contact-preparation-message]').value).toContain('Bonjour Anne,');
+        expect(modal.querySelector('[data-contact-preparation-prompt]').value).toContain('Tu es un assistant spécialisé');
+        expect(modal.querySelector('[data-contact-preparation-prompt]').value).toContain('Nom : Anne Example');
+        expect(modal.querySelector('[data-contact-preparation-prompt]').value).toContain('Dernière interaction connue : 01/06/2026 — Message envoyé via LinkedIn — canal : LinkedIn');
         expect(modal.querySelector('[data-contact-preparation-linkedin]').hidden).toBe(false);
         expect(modal.querySelector('[data-contact-preparation-linkedin]').getAttribute('href')).toBe('https://www.linkedin.com/in/anne-example');
         expect(modal.querySelector('[data-contact-preparation-email]').hidden).toBe(false);
         expect(modal.querySelector('[data-contact-preparation-email]').getAttribute('href')).toContain('mailto:anne@example.com');
+        expect(modal.querySelector('[data-contact-preparation-email]').getAttribute('href')).toContain('subject=Disponibilit%C3%A9%20freelance%20-%20d%C3%A9veloppement%20web%20backend');
         expect(modal.querySelector('[data-contact-preparation-phone]').getAttribute('href')).toBe('tel:+32475258941');
         expect(modal.querySelector('[data-contact-preparation-mark-form]').getAttribute('action')).toContain('/contacts/contact-1/mark-contacted');
 
@@ -50,7 +53,7 @@ describe('private contact preparation modal', () => {
         expect(openButton.wasFocused).toBe(true);
     });
 
-    test('copies the editable message and shows feedback', async () => {
+    test('copies the prompt and shows feedback', async () => {
         const html = new TestElement('html');
         const modal = createModal();
         const openButton = createOpenButton();
@@ -69,15 +72,14 @@ describe('private contact preparation modal', () => {
         setupContactPreparationModal(document, clipboard, windowObject);
         openButton.click();
 
-        const messageInput = modal.querySelector('[data-contact-preparation-message]');
-        messageInput.value = 'Message ajusté';
-        messageInput.dispatchEvent({ type: 'input' });
+        const promptInput = modal.querySelector('[data-contact-preparation-prompt]');
+        promptInput.value = 'Prompt ajusté';
         modal.querySelector('[data-contact-preparation-copy]').click();
 
         await Promise.resolve();
 
-        expect(clipboard.writeText).toHaveBeenCalledWith('Message ajusté');
-        expect(modal.querySelector('[data-contact-preparation-feedback]').textContent).toBe('Message copié.');
+        expect(clipboard.writeText).toHaveBeenCalledWith('Prompt ajusté');
+        expect(modal.querySelector('[data-contact-preparation-feedback]').textContent).toBe('Prompt copié.');
     });
 });
 
@@ -94,7 +96,40 @@ function createOpenButton() {
         emails: ['anne@example.com'],
         phones: ['+32 475 25 89 41'],
         subject: 'Disponibilité freelance - développement web backend',
-        message: 'Bonjour Anne,\n\nJe me permets de vous recontacter.',
+        prompt: [
+            'Tu es un assistant spécialisé dans la rédaction de messages professionnels courts, humains et efficaces.',
+            '',
+            'Je souhaite contacter la personne suivante :',
+            '',
+            'Contact :',
+            '- Nom : Anne Example',
+            '- Entreprise : Acme',
+            '- Rôle / fonction : Talent Acquisition Specialist',
+            '- Canal prévu : LinkedIn',
+            '- Langue supposée du contact : inconnue',
+            '- Contexte connu : Contactée lors du salon des freelances. | source : LinkedIn',
+            '- Dernière interaction connue : 01/06/2026 — Message envoyé via LinkedIn — canal : LinkedIn',
+            '- Statut de la relation : À relancer',
+            '- Dernier contact enregistré : 01/06/2026',
+            '- Prochaine action éventuelle : Relancer dans une semaine (08/06/2026)',
+            '- Priorité : Haute',
+            '- Profil : https://www.linkedin.com/in/anne-example',
+            '- Source : LinkedIn',
+            '',
+            'À propos de moi :',
+            '- Je m’appelle Benjamin Lemin.',
+            '- Je suis développeur web senior freelance.',
+        ].join('\n'),
+        last_contact_at_label: '01/06/2026',
+        notes: 'Contactée lors du salon des freelances.',
+        source: 'LinkedIn',
+        last_interaction_at_label: '01/06/2026',
+        last_interaction_summary: 'Message envoyé via LinkedIn',
+        last_interaction_channel: 'LinkedIn',
+        next_action: 'Relancer dans une semaine',
+        next_action_at_label: '08/06/2026',
+        priority_label: 'Haute',
+        relationship_status_label: 'À relancer',
         recommended_channel: 'linkedin',
         recommended_channel_label: 'LinkedIn',
         token: 'csrf-token',
@@ -156,9 +191,9 @@ function createModal() {
     subject.dataset.contactPreparationSubject = '';
     modal.appendChild(subject);
 
-    const message = new TestElement('textarea');
-    message.dataset.contactPreparationMessage = '';
-    modal.appendChild(message);
+    const prompt = new TestElement('textarea');
+    prompt.dataset.contactPreparationPrompt = '';
+    modal.appendChild(prompt);
 
     const feedback = new TestElement('p');
     feedback.dataset.contactPreparationFeedback = '';

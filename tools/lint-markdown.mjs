@@ -38,10 +38,18 @@ for (const file of markdownFiles) {
 
     hasFailures = true;
     const classification = classifyMarkdownDiff(source, formatted);
-    if (classification !== null) {
-        console.error(`\n[hint] ${classification}`);
+    const diffText = await renderUnifiedDiff(file, formatted);
+    const changedLineSummary = summarizeHunkRangesFromUnifiedDiff(
+        file,
+        diffText,
+    );
+    if (changedLineSummary !== null) {
+        console.error(`\n[hint] ${changedLineSummary}`);
     }
-    await printDiff(file, source, formatted);
+    if (classification !== null) {
+        console.error(`[hint] ${classification}`);
+    }
+    process.stderr.write(diffText);
 }
 
 if (hasFailures) {
@@ -76,13 +84,11 @@ function formatPrettierError(error) {
     return String(error);
 }
 
-async function printDiff(file, source, formatted) {
+async function renderUnifiedDiff(file, formatted) {
     const tempDir = await mkdtemp(path.join(tmpdir(), "lint-markdown-"));
     const formattedFile = path.join(tempDir, path.basename(file));
 
     await writeFile(formattedFile, formatted, "utf8");
-
-    console.error(`\n${path.relative(rootDir, file)}`);
 
     const diffResult = spawnSync(
         "diff",
@@ -100,13 +106,11 @@ async function printDiff(file, source, formatted) {
         },
     );
 
-    if (diffResult.stdout) {
-        process.stderr.write(diffResult.stdout);
-    }
-
     if (diffResult.stderr) {
         process.stderr.write(diffResult.stderr);
     }
+
+    return `\n${path.relative(rootDir, file)}\n${diffResult.stdout ?? ""}`;
 }
 
 function classifyMarkdownDiff(source, formatted) {
@@ -145,4 +149,29 @@ function classifyMarkdownDiff(source, formatted) {
 
 function isMarkdownTableLine(line) {
     return /^\s*\|.*\|\s*$/.test(line);
+}
+
+function summarizeHunkRangesFromUnifiedDiff(file, diffText) {
+    const lines = diffText.split("\n");
+    const ranges = [];
+
+    for (const line of lines) {
+        const hunkMatch = line.match(
+            /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/,
+        );
+        if (hunkMatch === null) {
+            continue;
+        }
+
+        const start = Number.parseInt(hunkMatch[1], 10);
+        const length = Number.parseInt(hunkMatch[2] ?? "1", 10);
+        const end = start + Math.max(length - 1, 0);
+        ranges.push(start === end ? String(start) : `${start}-${end}`);
+    }
+
+    if (ranges.length === 0) {
+        return null;
+    }
+
+    return `Zones touchées dans ${path.relative(rootDir, file)}: ${ranges.join(", ")}`;
 }

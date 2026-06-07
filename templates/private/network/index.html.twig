@@ -163,9 +163,14 @@
                             <article class="private-list-item">
                                 <div>
                                     <strong>{{ interaction.summary ?: 'Interaction sans résumé' }}</strong>
-                                    <div class="private-muted">{{ interaction.channel ?: 'Canal non précisé' }}</div>
+                                    <div class="private-muted">{{ interaction.contact_label }}</div>
                                 </div>
-                                <span class="private-muted">{{ interaction.date|date('d/m/Y') }}</span>
+                                <div class="private-list-item__meta">
+                                    <span class="private-badge">{{ interaction.date|date('d/m/Y') }}</span>
+                                    {% if interaction.channel %}
+                                        <span class="private-badge private-badge--secondary">{{ interaction.channel }}</span>
+                                    {% endif %}
+                                </div>
                             </article>
                         {% endfor %}
                     </div>

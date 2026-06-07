@@ -213,6 +213,7 @@ Role :
 Contenu minimum :
 
 - synthese des priorites ;
+- bloc d'activite recente avec contexte lisible sur le contact, son entreprise et son role si disponibles ;
 - raccourcis vers la liste des contacts ;
 - raccourcis vers les plateformes ;
 - bouton d'ajout rapide.

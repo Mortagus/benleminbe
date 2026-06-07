@@ -69,6 +69,7 @@ Ce projet est maintenant un premier socle prive concret, branche sur Doctrine et
 Etat fonctionnel actuel :
 
 - dashboard prive `/private/network` en place ;
+- le bloc "Activite recente" du dashboard affiche maintenant le contact concerne, son entreprise et son role quand ces informations existent, avec des fallback propres quand elles manquent ;
 - pages de listing et de fiche pour les plateformes et les contacts ;
 - creation et edition des plateformes ;
 - export et import JSON des plateformes via la page de liste ;

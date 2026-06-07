@@ -618,9 +618,15 @@ final class ContactService
      */
     private function decorateInteraction(Interaction $interaction): array
     {
+        $contact = $interaction->getContact();
+
         return [
             'id' => $interaction->getId(),
-            'contact_id' => $interaction->getContact()?->getId() ?? '',
+            'contact_id' => $contact?->getId() ?? '',
+            'contact_display_name' => $contact?->getDisplayName() ?? '',
+            'contact_organization' => $contact?->getOrganization() ?? '',
+            'contact_role' => $contact?->getRole() ?? '',
+            'contact_label' => $this->buildInteractionContactLabel($contact),
             'date' => $this->formatDate($interaction->getDate()),
             'channel' => $interaction->getChannel() ?? '',
             'summary' => $interaction->getSummary() ?? '',
@@ -629,6 +635,30 @@ final class ContactService
             'next_action_at' => $this->formatDate($interaction->getNextActionAt()),
             'created_at' => $this->formatDateTime($interaction->getCreatedAt()),
         ];
+    }
+
+    private function buildInteractionContactLabel(?Contact $contact): string
+    {
+        if (!$contact instanceof Contact) {
+            return 'Contact non renseigné';
+        }
+
+        $displayName = trim($contact->getDisplayName());
+        if ($displayName === '') {
+            return 'Contact non renseigné';
+        }
+
+        $organization = trim((string) $contact->getOrganization());
+        if ($organization === '') {
+            return sprintf('%s · Entreprise non renseignée', $displayName);
+        }
+
+        $role = trim((string) $contact->getRole());
+        if ($role !== '') {
+            return sprintf('%s · %s chez %s', $displayName, $role, $organization);
+        }
+
+        return sprintf('%s · %s', $displayName, $organization);
     }
 
     /**

@@ -95,6 +95,59 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertSelectorTextContains('h1', 'Import');
     }
 
+    public function testDashboardRecentInteractionsShowContactContextAndChannel(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $withRole = $repository->saveContact([
+            'display_name' => 'Lara Dupont',
+            'organization' => 'Example Agency',
+            'role' => 'Recruteuse',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $withoutRole = $repository->saveContact([
+            'display_name' => 'Nina Martin',
+            'organization' => 'Example Studio',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $withoutOrganization = $repository->saveContact([
+            'display_name' => 'Marc Petit',
+            'role' => 'Consultant',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+
+        $repository->addInteraction($withRole['id'], [
+            'date' => '2026-06-01',
+            'channel' => 'LinkedIn',
+            'summary' => 'Message envoyé via la messagerie LinkedIn',
+        ]);
+        $repository->addInteraction($withoutRole['id'], [
+            'date' => '2026-05-31',
+            'channel' => 'Email',
+            'summary' => 'Relance envoyée par email',
+        ]);
+        $repository->addInteraction($withoutOrganization['id'], [
+            'date' => '2026-05-30',
+            'channel' => 'Appel',
+            'summary' => 'Premier contact téléphonique',
+        ]);
+
+        $client->request('GET', '/private/network');
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Activité récente', $client->getResponse()->getContent());
+        self::assertSelectorTextContains('body', 'Message envoyé via la messagerie LinkedIn');
+        self::assertSelectorTextContains('body', '01/06/2026');
+        self::assertSelectorTextContains('body', 'Lara Dupont · Recruteuse chez Example Agency');
+        self::assertSelectorTextContains('body', 'LinkedIn');
+        self::assertSelectorTextContains('body', 'Nina Martin · Example Studio');
+        self::assertSelectorTextContains('body', 'Marc Petit · Entreprise non renseignée');
+    }
+
     public function testContactsListingPaginatesWithNumberedNavigation(): void
     {
         $client = $this->createAuthenticatedClient();

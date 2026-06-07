@@ -15,6 +15,12 @@ final class ContactRoleClassifier
     public const CATEGORY_IT_OPS_SECURITY_INFRA = 'it_ops_security_infra';
     public const CATEGORY_OTHER = 'other';
     public const CATEGORY_TO_REVIEW = 'to_review';
+    /**
+     * @var list<string>
+     */
+    public const PRIORITY_DASHBOARD_CATEGORIES = [
+        self::CATEGORY_RECRUITMENT_HR,
+    ];
 
     /**
      * @var array<string, string>
@@ -47,6 +53,10 @@ final class ContactRoleClassifier
             'terms' => [
                 'talent acquisition',
                 'recruiter',
+                'recruiters',
+                'recruteur',
+                'recruteuse',
+                'recrutrice',
                 'recruitment',
                 'recruiting',
                 'headhunter',

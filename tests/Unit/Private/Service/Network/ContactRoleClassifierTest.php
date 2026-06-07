@@ -27,6 +27,13 @@ final class ContactRoleClassifierTest extends TestCase
             'recruitment_keywords:talent acquisition',
         ];
 
+        yield 'recruitment french feminine' => [
+            'Recruteuse',
+            ContactRoleClassifier::CATEGORY_RECRUITMENT_HR,
+            'Recrutement / RH',
+            'recruitment_keywords:recruteuse',
+        ];
+
         yield 'technical' => [
             'Senior Symfony Developer',
             ContactRoleClassifier::CATEGORY_DEVELOPER_TECHNICAL,

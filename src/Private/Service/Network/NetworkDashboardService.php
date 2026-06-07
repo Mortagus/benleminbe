@@ -26,7 +26,7 @@ final class NetworkDashboardService
     {
         $platforms = $this->platformService->listPlatforms();
         $contacts = $this->contactService->listContacts();
-        $priorityContacts = $this->contactService->getPriorityContacts(8);
+        $priorityContacts = $this->contactService->getPriorityContacts(8, ContactRoleClassifier::PRIORITY_DASHBOARD_CATEGORIES);
         $interactions = $this->contactService->getRecentInteractions(9999);
         $imports = $this->contactService->getRecentImports(9999);
 

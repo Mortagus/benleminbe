@@ -273,7 +273,7 @@ Role :
 
 ### Flux 2 - Reprendre Une Relance
 
-1. filtrer les contacts prioritaires ayant une organisation ;
+1. filtrer les contacts prioritaires ayant une organisation et appartenant aux categories recrutement/RH ou developpement/technique ;
 2. mettre en avant les contacts jamais contactes ;
 3. trier ensuite les contacts deja contactes par anciennete du dernier contact ;
 4. utiliser la priorite comme critere secondaire ou tertiaire quand elle existe ;

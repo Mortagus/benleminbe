@@ -69,7 +69,7 @@ Ce projet est maintenant un premier socle prive concret, branche sur Doctrine et
 Etat fonctionnel actuel :
 
 - dashboard prive `/private/network` en place ;
-- le bloc "Contacts prioritaires" affiche uniquement des contacts avec organisation, en mettant d'abord les contacts jamais contactes puis les plus anciens, avec la priorite comme critere secondaire ;
+- le bloc "Contacts prioritaires" affiche uniquement des contacts avec organisation appartenant aux categories recrutement/RH et developpement/technique, en mettant d'abord les contacts jamais contactes puis les plus anciens, avec la priorite comme critere secondaire ;
 - le bloc "Activite recente" du dashboard affiche maintenant le contact concerne, son entreprise et son role quand ces informations existent, avec des fallback propres quand elles manquent ;
 - pages de listing et de fiche pour les plateformes et les contacts ;
 - creation et edition des plateformes ;

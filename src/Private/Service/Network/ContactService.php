@@ -373,11 +373,26 @@ final class ContactService
     /**
      * @return list<array<string, mixed>>
      */
-    public function getPriorityContacts(int $limit = 8): array
+    /**
+     * @param list<string> $roleCategories
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function getPriorityContacts(int $limit = 8, array $roleCategories = []): array
     {
         $contacts = array_values(array_filter(
             $this->decorateContacts($this->loadContacts()),
-            fn (array $contact): bool => $this->contactHasOrganization($contact),
+            function (array $contact) use ($roleCategories): bool {
+                if (!$this->contactHasOrganization($contact)) {
+                    return false;
+                }
+
+                if ($roleCategories === []) {
+                    return true;
+                }
+
+                return in_array((string) ($contact['role_category'] ?? ''), $roleCategories, true);
+            },
         ));
 
         usort($contacts, function (array $left, array $right): int {

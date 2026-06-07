@@ -99,6 +99,7 @@ final class ContactMessageSuggestionBuilder
             '- Je m’appelle Benjamin Lemin.',
             '- Je suis développeur web senior freelance.',
             '- J’ai plus de 15 ans d’expérience.',
+            '- Je possède un site web: https://benlemin.be',
             '- Je suis spécialisé en PHP, Symfony, Drupal et applications web métier.',
             '- J’interviens surtout sur de la reprise d’existant, de la maintenance évolutive, de l’amélioration de systèmes existants et des projets nécessitant une bonne compréhension du contexte.',
             '- Je recherche des missions freelance à temps partiel.',

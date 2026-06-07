@@ -37,6 +37,10 @@ for (const file of markdownFiles) {
     }
 
     hasFailures = true;
+    const classification = classifyMarkdownDiff(source, formatted);
+    if (classification !== null) {
+        console.error(`\n[hint] ${classification}`);
+    }
     await printDiff(file, source, formatted);
 }
 
@@ -103,4 +107,42 @@ async function printDiff(file, source, formatted) {
     if (diffResult.stderr) {
         process.stderr.write(diffResult.stderr);
     }
+}
+
+function classifyMarkdownDiff(source, formatted) {
+    const sourceLines = source.split("\n");
+    const formattedLines = formatted.split("\n");
+    const changedPairs = [];
+    const maxLines = Math.max(sourceLines.length, formattedLines.length);
+
+    for (let index = 0; index < maxLines; ++index) {
+        const sourceLine = sourceLines[index] ?? "";
+        const formattedLine = formattedLines[index] ?? "";
+
+        if (sourceLine === formattedLine) {
+            continue;
+        }
+
+        changedPairs.push([sourceLine, formattedLine]);
+    }
+
+    if (changedPairs.length === 0) {
+        return null;
+    }
+
+    if (
+        changedPairs.every(
+            ([sourceLine, formattedLine]) =>
+                isMarkdownTableLine(sourceLine) &&
+                isMarkdownTableLine(formattedLine),
+        )
+    ) {
+        return "Prettier a seulement réaligné un ou plusieurs tableaux Markdown. Le contenu n'est pas en erreur, c'est la mise en forme du tableau qui change.";
+    }
+
+    return null;
+}
+
+function isMarkdownTableLine(line) {
+    return /^\s*\|.*\|\s*$/.test(line);
 }

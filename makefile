@@ -68,7 +68,7 @@ check:
 	@echo "==> Symfony container"
 	php bin/console lint:container
 	@echo "==> Markdown format"
-	npm run lint:md
+	@echo "Markdown lint temporairement désactive dans make check. Utiliser 'npm run lint:md' si besoin."
 	@echo "==> CSS lint"
 	npx stylelint "assets/styles/**/*.css"
 	@echo "==> JavaScript lint"

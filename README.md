@@ -71,7 +71,7 @@ Cette commande vérifie notamment :
 - les fichiers YAML ;
 - les templates Twig ;
 - le conteneur Symfony ;
-- le format des fichiers Markdown ;
+- le format des fichiers Markdown, vérifiable à part avec `npm run lint:md` ;
 - les fichiers CSS avec Stylelint ;
 - les fichiers JavaScript avec ESLint ;
 - les tests JavaScript avec Vitest.

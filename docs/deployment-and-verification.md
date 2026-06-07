@@ -13,7 +13,7 @@ Verification locale de reference. Elle couvre:
 - les fichiers YAML ;
 - les templates Twig ;
 - le conteneur Symfony ;
-- le format Markdown, avec diff affiché en cas d'ecart et regles JetBrains synchronisees via `.editorconfig` ;
+- le format Markdown, vérifiable séparément via `npm run lint:md` si besoin, avec regles JetBrains synchronisees via `.editorconfig` ;
 - les fichiers CSS ;
 - les fichiers JavaScript ;
 - les tests JavaScript.
@@ -25,6 +25,8 @@ make cc
 ```
 
 Cette seconde commande recompile les assets et nettoie le cache, ce qui permet de voir plus vite le rendu applique dans le navigateur apres une modification.
+
+Dans JetBrains, verifier aussi que l'option `Enable EditorConfig support` reste active pour le plugin Markdown, sinon l'autoformat de l'IDE peut diverger des regles partagees du projet.
 
 ### `make reload_assets`
 

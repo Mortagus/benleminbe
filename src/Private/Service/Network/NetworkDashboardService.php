@@ -26,6 +26,7 @@ final class NetworkDashboardService
     {
         $platforms = $this->platformService->listPlatforms();
         $contacts = $this->contactService->listContacts();
+        $priorityContacts = $this->contactService->getPriorityContacts(8);
         $interactions = $this->contactService->getRecentInteractions(9999);
         $imports = $this->contactService->getRecentImports(9999);
 
@@ -38,7 +39,7 @@ final class NetworkDashboardService
                 'contacts_to_followup' => count(array_filter($contacts, static fn (array $contact): bool => in_array($contact['relationship_status'], ['prioritaire', 'a_relancer'], true))),
             ],
             'platforms' => array_slice($platforms, 0, 6),
-            'contacts' => array_slice($contacts, 0, 8),
+            'contacts' => $priorityContacts,
             'organizations' => array_slice($this->contactService->getOrganizationsSummary(), 0, 6),
             'recent_interactions' => array_slice($interactions, 0, 5),
             'recent_imports' => array_slice($imports, 0, 5),

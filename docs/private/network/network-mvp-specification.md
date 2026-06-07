@@ -273,12 +273,14 @@ Role :
 
 ### Flux 2 - Reprendre Une Relance
 
-1. filtrer les contacts prioritaires ;
-2. trier par dernier contact ;
-3. ouvrir la fiche contact ;
-4. verifier le contexte ;
-5. noter la prochaine action ;
-6. planifier la relance.
+1. filtrer les contacts prioritaires ayant une organisation ;
+2. mettre en avant les contacts jamais contactes ;
+3. trier ensuite les contacts deja contactes par anciennete du dernier contact ;
+4. utiliser la priorite comme critere secondaire ou tertiaire quand elle existe ;
+5. ouvrir la fiche contact ;
+6. verifier le contexte ;
+7. noter la prochaine action ;
+8. planifier la relance.
 
 ### Flux 3 - Gerer Une Plateforme
 

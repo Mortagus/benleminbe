@@ -100,13 +100,17 @@
                 {% if contacts is not empty %}
                     <div class="private-list-stack">
                         {% for contact in contacts %}
-                            <article class="private-list-item">
+                            <a
+                                class="private-list-item private-list-item--clickable"
+                                href="{{ path('app_private_network_contact_show', { id: contact.id }) }}"
+                            >
                                 <div>
                                     <strong>{{ contact.display_name }}</strong>
                                     <div class="private-muted">
-                                        {{ contact.organization ?: 'Sans entreprise renseignée' }}
                                         {% if contact.role %}
-                                            · {{ contact.role }}
+                                            {{ contact.role }} · {{ contact.organization }}
+                                        {% else %}
+                                            {{ contact.organization }}
                                         {% endif %}
                                     </div>
                                 </div>
@@ -114,7 +118,7 @@
                                     <span class="private-badge private-badge--secondary">{{ contact.priority_label }}</span>
                                     <span class="private-badge">{{ contact.relationship_status_label }}</span>
                                 </div>
-                            </article>
+                            </a>
                         {% endfor %}
                     </div>
                 {% else %}

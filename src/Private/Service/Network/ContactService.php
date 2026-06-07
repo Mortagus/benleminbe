@@ -373,6 +373,43 @@ final class ContactService
     /**
      * @return list<array<string, mixed>>
      */
+    public function getPriorityContacts(int $limit = 8): array
+    {
+        $contacts = array_values(array_filter(
+            $this->decorateContacts($this->loadContacts()),
+            fn (array $contact): bool => $this->contactHasOrganization($contact),
+        ));
+
+        usort($contacts, function (array $left, array $right): int {
+            $leftDate = $left['last_contact_at'] ?? null;
+            $rightDate = $right['last_contact_at'] ?? null;
+
+            if ($leftDate === null && $rightDate !== null) {
+                return -1;
+            }
+
+            if ($leftDate !== null && $rightDate === null) {
+                return 1;
+            }
+
+            if ($leftDate !== null && $rightDate !== null && $leftDate !== $rightDate) {
+                return strcmp((string) $leftDate, (string) $rightDate);
+            }
+
+            $priorityDiff = $this->mergeRules->priorityWeight((string) ($right['priority'] ?? '')) <=> $this->mergeRules->priorityWeight((string) ($left['priority'] ?? ''));
+            if ($priorityDiff !== 0) {
+                return $priorityDiff;
+            }
+
+            return strcasecmp((string) ($left['display_name'] ?? ''), (string) ($right['display_name'] ?? ''));
+        });
+
+        return array_slice($contacts, 0, max(0, $limit));
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function listInteractionsForContact(string $contactId): array
     {
         $interactions = array_values(array_filter(

@@ -148,6 +148,80 @@ final class NetworkWebTest extends NetworkWebTestCase
         self::assertSelectorTextContains('body', 'Marc Petit · Entreprise non renseignée');
     }
 
+    public function testDashboardPriorityContactsExcludeMissingOrganizationsAndSortByRecency(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $repository = self::getContainer()->get(NetworkRepository::class);
+
+        $neverContactedHighPriority = $repository->saveContact([
+            'display_name' => 'Alice Prioritaire',
+            'organization' => 'Alpha Agency',
+            'role' => 'Recruteuse',
+            'priority' => 'haute',
+            'relationship_status' => 'prioritaire',
+        ]);
+        $neverContactedLowPriority = $repository->saveContact([
+            'display_name' => 'Bruno Relance',
+            'organization' => 'Beta Studio',
+            'priority' => 'basse',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $olderContact = $repository->saveContact([
+            'display_name' => 'Claire Ancienne',
+            'organization' => 'Gamma Lab',
+            'priority' => 'moyenne',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $newerContact = $repository->saveContact([
+            'display_name' => 'David Récente',
+            'organization' => 'Delta Works',
+            'priority' => 'haute',
+            'relationship_status' => 'a_relancer',
+        ]);
+        $repository->saveContact([
+            'display_name' => 'Sans Entreprise',
+            'role' => 'Consultant',
+            'priority' => 'haute',
+            'relationship_status' => 'prioritaire',
+        ]);
+
+        $repository->addInteraction($olderContact['id'], [
+            'date' => '2025-01-15',
+            'channel' => 'Email',
+            'summary' => 'Premier échange',
+        ]);
+        $repository->addInteraction($newerContact['id'], [
+            'date' => '2025-06-02',
+            'channel' => 'LinkedIn',
+            'summary' => 'Relance envoyée',
+        ]);
+
+        $client->request('GET', '/private/network');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists(sprintf('a.private-list-item--clickable[href="%s"]', sprintf('/private/network/contacts/%s', $neverContactedHighPriority['id'])));
+        self::assertSelectorExists(sprintf('a.private-list-item--clickable[href="%s"]', sprintf('/private/network/contacts/%s', $neverContactedLowPriority['id'])));
+        self::assertSelectorExists(sprintf('a.private-list-item--clickable[href="%s"]', sprintf('/private/network/contacts/%s', $olderContact['id'])));
+        self::assertSelectorExists(sprintf('a.private-list-item--clickable[href="%s"]', sprintf('/private/network/contacts/%s', $newerContact['id'])));
+        self::assertStringNotContainsString('Sans Entreprise', $client->getResponse()->getContent());
+
+        $section = $client->getCrawler()->filterXPath("//section[contains(@class, 'private-section-card')][.//h2[normalize-space()='Contacts prioritaires']]");
+        self::assertCount(1, $section);
+
+        $names = $section->first()->filter('a.private-list-item--clickable strong')->each(static fn (Crawler $node): string => trim($node->text('')));
+
+        self::assertSame([
+            'Alice Prioritaire',
+            'Bruno Relance',
+            'Claire Ancienne',
+            'David Récente',
+        ], $names);
+        self::assertSelectorTextContains('body', 'Recruteuse · Alpha Agency');
+        self::assertSelectorTextContains('body', 'Beta Studio');
+        self::assertSelectorTextContains('body', 'Gamma Lab');
+        self::assertSelectorTextContains('body', 'Delta Works');
+    }
+
     public function testContactsListingPaginatesWithNumberedNavigation(): void
     {
         $client = $this->createAuthenticatedClient();

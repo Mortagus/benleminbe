@@ -113,121 +113,6 @@
                 </a>
             </div>
 
-            <article class="simon-audio" data-simon-audio>
-                <div class="simon-audio__header">
-                    <p class="eyebrow">{{ 'simon.audio.eyebrow'|trans }}</p>
-
-                    <h2>{{ 'simon.audio.title'|trans }}</h2>
-                </div>
-
-                <div class="simon-audio__control">
-                    <label class="simon-audio__volume-label" for="simon-volume">
-                        {{ 'simon.audio.volume_label'|trans }}
-                    </label>
-
-                    <input
-                        id="simon-volume"
-                        type="range"
-                        min="0"
-                        max="100"
-                        step="1"
-                        value="75"
-                        data-simon-volume
-                    >
-
-                    <output class="simon-audio__value" data-simon-volume-value for="simon-volume">
-                        {{ 'simon.audio.volume_value'|trans({ volume: 75 }) }}
-                    </output>
-                </div>
-
-                <div class="simon-audio__palette">
-                    <label class="simon-audio__palette-label" for="simon-audio-palette">
-                        {{ 'simon.audio.palette.label'|trans }}
-                    </label>
-
-                    <select
-                        id="simon-audio-palette"
-                        class="simon-audio__palette-select"
-                        data-simon-audio-palette
-                        aria-describedby="simon-audio-palette-description simon-audio-palette-feedback"
-                    >
-                        <option value="classic" data-description="{{ 'simon.audio.palettes.classic.description'|trans }}">
-                            {{ 'simon.audio.palettes.classic.label'|trans }}
-                        </option>
-                        <option value="arcade" data-description="{{ 'simon.audio.palettes.arcade.description'|trans }}">
-                            {{ 'simon.audio.palettes.arcade.label'|trans }}
-                        </option>
-                        <option value="crystal" data-description="{{ 'simon.audio.palettes.crystal.description'|trans }}">
-                            {{ 'simon.audio.palettes.crystal.label'|trans }}
-                        </option>
-                        <option value="synthwave" data-description="{{ 'simon.audio.palettes.synthwave.description'|trans }}">
-                            {{ 'simon.audio.palettes.synthwave.label'|trans }}
-                        </option>
-                        <option value="percussion" data-description="{{ 'simon.audio.palettes.percussion.description'|trans }}">
-                            {{ 'simon.audio.palettes.percussion.label'|trans }}
-                        </option>
-                    </select>
-
-                    <p id="simon-audio-palette-description" class="simon-audio__palette-description" data-simon-audio-palette-description>
-                        {{ 'simon.audio.palettes.classic.description'|trans }}
-                    </p>
-
-                    <button
-                        type="button"
-                        class="button button-secondary simon-audio__preview"
-                        data-simon-audio-palette-preview
-                        aria-describedby="simon-audio-palette-description simon-audio-palette-feedback"
-                    >
-                        {{ 'simon.audio.palette.preview'|trans }}
-                    </button>
-
-                    <p id="simon-audio-palette-feedback" class="simon-audio__palette-feedback" data-simon-audio-palette-feedback aria-live="polite">
-                        {{ 'simon.audio.palette.active'|trans({ label: 'simon.audio.palettes.classic.label'|trans }) }}
-                    </p>
-                </div>
-
-                <div class="simon-audio__note-set">
-                    <label class="simon-audio__palette-label" for="simon-audio-note-set">
-                        {{ 'simon.audio.note_set.label'|trans }}
-                    </label>
-
-                    <select
-                        id="simon-audio-note-set"
-                        class="simon-audio__palette-select"
-                        data-simon-audio-note-set
-                        aria-describedby="simon-audio-note-set-description simon-audio-note-set-feedback"
-                    >
-                        <option value="major" data-description="{{ 'simon.audio.note_sets.major.description'|trans }}">
-                            {{ 'simon.audio.note_sets.major.label'|trans }}
-                        </option>
-                        <option value="minor" data-description="{{ 'simon.audio.note_sets.minor.description'|trans }}">
-                            {{ 'simon.audio.note_sets.minor.label'|trans }}
-                        </option>
-                        <option value="pentatonic" data-description="{{ 'simon.audio.note_sets.pentatonic.description'|trans }}">
-                            {{ 'simon.audio.note_sets.pentatonic.label'|trans }}
-                        </option>
-                        <option value="dorian" data-description="{{ 'simon.audio.note_sets.dorian.description'|trans }}">
-                            {{ 'simon.audio.note_sets.dorian.label'|trans }}
-                        </option>
-                        <option value="blues" data-description="{{ 'simon.audio.note_sets.blues.description'|trans }}">
-                            {{ 'simon.audio.note_sets.blues.label'|trans }}
-                        </option>
-                    </select>
-
-                    <p id="simon-audio-note-set-description" class="simon-audio__palette-description" data-simon-audio-note-set-description>
-                        {{ 'simon.audio.note_sets.major.description'|trans }}
-                    </p>
-
-                    <p id="simon-audio-note-set-feedback" class="simon-audio__palette-feedback" data-simon-audio-note-set-feedback aria-live="polite">
-                        {{ 'simon.audio.note_set.active'|trans({ label: 'simon.audio.note_sets.major.label'|trans }) }}
-                    </p>
-                </div>
-
-                <p class="simon-audio__status" data-simon-audio-feedback aria-live="polite">
-                    {{ 'simon.audio.active'|trans({ volume: 75 }) }}
-                </p>
-            </article>
-
             <p class="simon-hero__note">
                 {{ 'simon.sound.note'|trans|highlight_keywords }}
             </p>
@@ -235,6 +120,8 @@
 
         <section class="content-section" aria-labelledby="simon-board-title">
             <div class="card simon-shell">
+                <h2 id="simon-board-title" class="simon-sr-only">{{ 'simon.instructions.title'|trans }}</h2>
+
                 <div class="simon-stats" aria-label="{{ 'simon.metrics.label'|trans }}">
                     <article class="simon-stat">
                         <span>{{ 'simon.metrics.status'|trans }}</span>
@@ -325,122 +212,291 @@
                     </div>
 
                     <aside class="simon-sidebar">
-                        <article class="simon-card">
-                            <p class="eyebrow">{{ 'simon.instructions.eyebrow'|trans }}</p>
+                        <details class="simon-disclosure simon-disclosure--audio">
+                            <summary class="simon-disclosure__summary">
+                                <span class="simon-disclosure__text">
+                                    <span class="eyebrow">{{ 'simon.audio.eyebrow'|trans }}</span>
+                                    <span class="simon-disclosure__title">{{ 'simon.audio.title'|trans }}</span>
+                                </span>
 
-                            <h2 id="simon-board-title">{{ 'simon.instructions.title'|trans }}</h2>
+                                <span class="simon-disclosure__state simon-disclosure__state--closed">
+                                    {{ 'simon.panel.open'|trans }}
+                                </span>
+                                <span class="simon-disclosure__state simon-disclosure__state--open">
+                                    {{ 'simon.panel.close'|trans }}
+                                </span>
+                            </summary>
 
-                            <p id="simon-board-help">
-                                {{ 'simon.instructions.intro'|trans|highlight_keywords }}
-                            </p>
+                            <article class="simon-card simon-disclosure__content" data-simon-audio>
+                                <div class="simon-audio__header">
+                                    <p class="eyebrow">{{ 'simon.audio.eyebrow'|trans }}</p>
 
-                            <ul class="simon-shortcuts">
-                                <li>
-                                    <span data-simon-keyboard-key="top-left">{{ 'simon.keyboard.default_keys.top_left'|trans }}</span>
-                                    <span class="simon-shortcuts__zone">{{ 'simon.board.pads.top_left.label'|trans }}</span>
-                                </li>
-                                <li>
-                                    <span data-simon-keyboard-key="top-right">{{ 'simon.keyboard.default_keys.top_right'|trans }}</span>
-                                    <span class="simon-shortcuts__zone">{{ 'simon.board.pads.top_right.label'|trans }}</span>
-                                </li>
-                                <li>
-                                    <span data-simon-keyboard-key="bottom-left">{{ 'simon.keyboard.default_keys.bottom_left'|trans }}</span>
-                                    <span class="simon-shortcuts__zone">{{ 'simon.board.pads.bottom_left.label'|trans }}</span>
-                                </li>
-                                <li>
-                                    <span data-simon-keyboard-key="bottom-right">{{ 'simon.keyboard.default_keys.bottom_right'|trans }}</span>
-                                    <span class="simon-shortcuts__zone">{{ 'simon.board.pads.bottom_right.label'|trans }}</span>
-                                </li>
-                            </ul>
+                                    <h3>{{ 'simon.audio.title'|trans }}</h3>
+                                </div>
 
-                            <p id="simon-board-note" class="simon-note">
-                                {{ 'simon.instructions.note'|trans|highlight_keywords }}
-                            </p>
-                        </article>
+                                <div class="simon-audio__control">
+                                    <label class="simon-audio__volume-label" for="simon-volume">
+                                        {{ 'simon.audio.volume_label'|trans }}
+                                    </label>
 
-                        <article class="simon-card simon-keyboard">
-                            <p class="eyebrow">{{ 'simon.keyboard.eyebrow'|trans }}</p>
+                                    <input
+                                        id="simon-volume"
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        step="1"
+                                        value="75"
+                                        data-simon-volume
+                                    >
 
-                            <h3>{{ 'simon.keyboard.title'|trans }}</h3>
+                                    <output class="simon-audio__value" data-simon-volume-value for="simon-volume">
+                                        {{ 'simon.audio.volume_value'|trans({ volume: 75 }) }}
+                                    </output>
+                                </div>
 
-                            <p>{{ 'simon.keyboard.intro'|trans|highlight_keywords }}</p>
+                                <div class="simon-audio__palette">
+                                    <label class="simon-audio__palette-label" for="simon-audio-palette">
+                                        {{ 'simon.audio.palette.label'|trans }}
+                                    </label>
 
-                            <p class="simon-keyboard__summary" data-simon-keyboard-summary>
-                                {{ 'simon.keyboard.summary_default'|trans }}
-                            </p>
+                                    <select
+                                        id="simon-audio-palette"
+                                        class="simon-audio__palette-select"
+                                        data-simon-audio-palette
+                                        aria-describedby="simon-audio-palette-description simon-audio-palette-feedback"
+                                    >
+                                        <option value="classic" data-description="{{ 'simon.audio.palettes.classic.description'|trans }}">
+                                            {{ 'simon.audio.palettes.classic.label'|trans }}
+                                        </option>
+                                        <option value="arcade" data-description="{{ 'simon.audio.palettes.arcade.description'|trans }}">
+                                            {{ 'simon.audio.palettes.arcade.label'|trans }}
+                                        </option>
+                                        <option value="crystal" data-description="{{ 'simon.audio.palettes.crystal.description'|trans }}">
+                                            {{ 'simon.audio.palettes.crystal.label'|trans }}
+                                        </option>
+                                        <option value="synthwave" data-description="{{ 'simon.audio.palettes.synthwave.description'|trans }}">
+                                            {{ 'simon.audio.palettes.synthwave.label'|trans }}
+                                        </option>
+                                        <option value="percussion" data-description="{{ 'simon.audio.palettes.percussion.description'|trans }}">
+                                            {{ 'simon.audio.palettes.percussion.label'|trans }}
+                                        </option>
+                                    </select>
 
-                            <ul class="simon-keyboard__map" aria-label="{{ 'simon.keyboard.summary_label'|trans }}">
-                                <li class="simon-keyboard__row" data-simon-keyboard-row="top-left">
-                                    <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.top_left'|trans }}</span>
-                                    <strong class="simon-keyboard__binding" data-simon-keyboard-key="top-left">A</strong>
+                                    <p id="simon-audio-palette-description" class="simon-audio__palette-description" data-simon-audio-palette-description>
+                                        {{ 'simon.audio.palettes.classic.description'|trans }}
+                                    </p>
+
                                     <button
                                         type="button"
-                                        class="button button-secondary simon-keyboard__edit"
-                                        data-simon-keyboard-edit="top-left"
+                                        class="button button-secondary simon-audio__preview"
+                                        data-simon-audio-palette-preview
+                                        aria-describedby="simon-audio-palette-description simon-audio-palette-feedback"
                                     >
-                                        {{ 'simon.keyboard.actions.edit'|trans }}
+                                        {{ 'simon.audio.palette.preview'|trans }}
                                     </button>
-                                </li>
 
-                                <li class="simon-keyboard__row" data-simon-keyboard-row="top-right">
-                                    <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.top_right'|trans }}</span>
-                                    <strong class="simon-keyboard__binding" data-simon-keyboard-key="top-right">Z</strong>
-                                    <button
-                                        type="button"
-                                        class="button button-secondary simon-keyboard__edit"
-                                        data-simon-keyboard-edit="top-right"
+                                    <p id="simon-audio-palette-feedback" class="simon-audio__palette-feedback" data-simon-audio-palette-feedback aria-live="polite">
+                                        {{ 'simon.audio.palette.active'|trans({ label: 'simon.audio.palettes.classic.label'|trans }) }}
+                                    </p>
+                                </div>
+
+                                <div class="simon-audio__note-set">
+                                    <label class="simon-audio__palette-label" for="simon-audio-note-set">
+                                        {{ 'simon.audio.note_set.label'|trans }}
+                                    </label>
+
+                                    <select
+                                        id="simon-audio-note-set"
+                                        class="simon-audio__palette-select"
+                                        data-simon-audio-note-set
+                                        aria-describedby="simon-audio-note-set-description simon-audio-note-set-feedback"
                                     >
-                                        {{ 'simon.keyboard.actions.edit'|trans }}
+                                        <option value="major" data-description="{{ 'simon.audio.note_sets.major.description'|trans }}">
+                                            {{ 'simon.audio.note_sets.major.label'|trans }}
+                                        </option>
+                                        <option value="minor" data-description="{{ 'simon.audio.note_sets.minor.description'|trans }}">
+                                            {{ 'simon.audio.note_sets.minor.label'|trans }}
+                                        </option>
+                                        <option value="pentatonic" data-description="{{ 'simon.audio.note_sets.pentatonic.description'|trans }}">
+                                            {{ 'simon.audio.note_sets.pentatonic.label'|trans }}
+                                        </option>
+                                        <option value="dorian" data-description="{{ 'simon.audio.note_sets.dorian.description'|trans }}">
+                                            {{ 'simon.audio.note_sets.dorian.label'|trans }}
+                                        </option>
+                                        <option value="blues" data-description="{{ 'simon.audio.note_sets.blues.description'|trans }}">
+                                            {{ 'simon.audio.note_sets.blues.label'|trans }}
+                                        </option>
+                                    </select>
+
+                                    <p id="simon-audio-note-set-description" class="simon-audio__palette-description" data-simon-audio-note-set-description>
+                                        {{ 'simon.audio.note_sets.major.description'|trans }}
+                                    </p>
+
+                                    <p id="simon-audio-note-set-feedback" class="simon-audio__palette-feedback" data-simon-audio-note-set-feedback aria-live="polite">
+                                        {{ 'simon.audio.note_set.active'|trans({ label: 'simon.audio.note_sets.major.label'|trans }) }}
+                                    </p>
+                                </div>
+
+                                <p class="simon-audio__status" data-simon-audio-feedback aria-live="polite">
+                                    {{ 'simon.audio.active'|trans({ volume: 75 }) }}
+                                </p>
+                            </article>
+                        </details>
+
+                        <details class="simon-disclosure simon-disclosure--instructions">
+                            <summary class="simon-disclosure__summary">
+                                <span class="simon-disclosure__text">
+                                    <span class="eyebrow">{{ 'simon.instructions.eyebrow'|trans }}</span>
+                                    <span class="simon-disclosure__title">{{ 'simon.instructions.title'|trans }}</span>
+                                </span>
+
+                                <span class="simon-disclosure__state simon-disclosure__state--closed">
+                                    {{ 'simon.panel.open'|trans }}
+                                </span>
+                                <span class="simon-disclosure__state simon-disclosure__state--open">
+                                    {{ 'simon.panel.close'|trans }}
+                                </span>
+                            </summary>
+
+                            <article class="simon-card simon-disclosure__content">
+                                <h3>{{ 'simon.instructions.title'|trans }}</h3>
+
+                                <p id="simon-board-help">
+                                    {{ 'simon.instructions.intro'|trans|highlight_keywords }}
+                                </p>
+
+                                <ul class="simon-shortcuts">
+                                    <li>
+                                        <span data-simon-keyboard-key="top-left">{{ 'simon.keyboard.default_keys.top_left'|trans }}</span>
+                                        <span class="simon-shortcuts__zone">{{ 'simon.board.pads.top_left.label'|trans }}</span>
+                                    </li>
+                                    <li>
+                                        <span data-simon-keyboard-key="top-right">{{ 'simon.keyboard.default_keys.top_right'|trans }}</span>
+                                        <span class="simon-shortcuts__zone">{{ 'simon.board.pads.top_right.label'|trans }}</span>
+                                    </li>
+                                    <li>
+                                        <span data-simon-keyboard-key="bottom-left">{{ 'simon.keyboard.default_keys.bottom_left'|trans }}</span>
+                                        <span class="simon-shortcuts__zone">{{ 'simon.board.pads.bottom_left.label'|trans }}</span>
+                                    </li>
+                                    <li>
+                                        <span data-simon-keyboard-key="bottom-right">{{ 'simon.keyboard.default_keys.bottom_right'|trans }}</span>
+                                        <span class="simon-shortcuts__zone">{{ 'simon.board.pads.bottom_right.label'|trans }}</span>
+                                    </li>
+                                </ul>
+
+                                <p id="simon-board-note" class="simon-note">
+                                    {{ 'simon.instructions.note'|trans|highlight_keywords }}
+                                </p>
+                            </article>
+                        </details>
+
+                        <details class="simon-disclosure simon-disclosure--keyboard">
+                            <summary class="simon-disclosure__summary">
+                                <span class="simon-disclosure__text">
+                                    <span class="eyebrow">{{ 'simon.keyboard.eyebrow'|trans }}</span>
+                                    <span class="simon-disclosure__title">{{ 'simon.keyboard.title'|trans }}</span>
+                                </span>
+
+                                <span class="simon-disclosure__state simon-disclosure__state--closed">
+                                    {{ 'simon.panel.open'|trans }}
+                                </span>
+                                <span class="simon-disclosure__state simon-disclosure__state--open">
+                                    {{ 'simon.panel.close'|trans }}
+                                </span>
+                            </summary>
+
+                            <article class="simon-card simon-keyboard simon-disclosure__content">
+                                <p>{{ 'simon.keyboard.intro'|trans|highlight_keywords }}</p>
+
+                                <p class="simon-keyboard__summary" data-simon-keyboard-summary>
+                                    {{ 'simon.keyboard.summary_default'|trans }}
+                                </p>
+
+                                <ul class="simon-keyboard__map" aria-label="{{ 'simon.keyboard.summary_label'|trans }}">
+                                    <li class="simon-keyboard__row" data-simon-keyboard-row="top-left">
+                                        <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.top_left'|trans }}</span>
+                                        <strong class="simon-keyboard__binding" data-simon-keyboard-key="top-left">A</strong>
+                                        <button
+                                            type="button"
+                                            class="button button-secondary simon-keyboard__edit"
+                                            data-simon-keyboard-edit="top-left"
+                                        >
+                                            {{ 'simon.keyboard.actions.edit'|trans }}
+                                        </button>
+                                    </li>
+
+                                    <li class="simon-keyboard__row" data-simon-keyboard-row="top-right">
+                                        <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.top_right'|trans }}</span>
+                                        <strong class="simon-keyboard__binding" data-simon-keyboard-key="top-right">Z</strong>
+                                        <button
+                                            type="button"
+                                            class="button button-secondary simon-keyboard__edit"
+                                            data-simon-keyboard-edit="top-right"
+                                        >
+                                            {{ 'simon.keyboard.actions.edit'|trans }}
+                                        </button>
+                                    </li>
+
+                                    <li class="simon-keyboard__row" data-simon-keyboard-row="bottom-left">
+                                        <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.bottom_left'|trans }}</span>
+                                        <strong class="simon-keyboard__binding" data-simon-keyboard-key="bottom-left">Q</strong>
+                                        <button
+                                            type="button"
+                                            class="button button-secondary simon-keyboard__edit"
+                                            data-simon-keyboard-edit="bottom-left"
+                                        >
+                                            {{ 'simon.keyboard.actions.edit'|trans }}
+                                        </button>
+                                    </li>
+
+                                    <li class="simon-keyboard__row" data-simon-keyboard-row="bottom-right">
+                                        <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.bottom_right'|trans }}</span>
+                                        <strong class="simon-keyboard__binding" data-simon-keyboard-key="bottom-right">S</strong>
+                                        <button
+                                            type="button"
+                                            class="button button-secondary simon-keyboard__edit"
+                                            data-simon-keyboard-edit="bottom-right"
+                                        >
+                                            {{ 'simon.keyboard.actions.edit'|trans }}
+                                        </button>
+                                    </li>
+                                </ul>
+
+                                <p class="simon-keyboard__feedback" data-simon-keyboard-feedback aria-live="polite">
+                                    {{ 'simon.keyboard.idle'|trans }}
+                                </p>
+
+                                <div class="simon-keyboard__actions">
+                                    <button type="button" class="button button-secondary" data-simon-keyboard-reset>
+                                        {{ 'simon.keyboard.actions.reset'|trans }}
                                     </button>
-                                </li>
+                                </div>
+                            </article>
+                        </details>
 
-                                <li class="simon-keyboard__row" data-simon-keyboard-row="bottom-left">
-                                    <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.bottom_left'|trans }}</span>
-                                    <strong class="simon-keyboard__binding" data-simon-keyboard-key="bottom-left">Q</strong>
-                                    <button
-                                        type="button"
-                                        class="button button-secondary simon-keyboard__edit"
-                                        data-simon-keyboard-edit="bottom-left"
-                                    >
-                                        {{ 'simon.keyboard.actions.edit'|trans }}
-                                    </button>
-                                </li>
+                        <details class="simon-disclosure simon-disclosure--rules">
+                            <summary class="simon-disclosure__summary">
+                                <span class="simon-disclosure__text">
+                                    <span class="eyebrow">{{ 'simon.rules.eyebrow'|trans }}</span>
+                                    <span class="simon-disclosure__title">{{ 'simon.rules.title'|trans }}</span>
+                                </span>
 
-                                <li class="simon-keyboard__row" data-simon-keyboard-row="bottom-right">
-                                    <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.bottom_right'|trans }}</span>
-                                    <strong class="simon-keyboard__binding" data-simon-keyboard-key="bottom-right">S</strong>
-                                    <button
-                                        type="button"
-                                        class="button button-secondary simon-keyboard__edit"
-                                        data-simon-keyboard-edit="bottom-right"
-                                    >
-                                        {{ 'simon.keyboard.actions.edit'|trans }}
-                                    </button>
-                                </li>
-                            </ul>
+                                <span class="simon-disclosure__state simon-disclosure__state--closed">
+                                    {{ 'simon.panel.open'|trans }}
+                                </span>
+                                <span class="simon-disclosure__state simon-disclosure__state--open">
+                                    {{ 'simon.panel.close'|trans }}
+                                </span>
+                            </summary>
 
-                            <p class="simon-keyboard__feedback" data-simon-keyboard-feedback aria-live="polite">
-                                {{ 'simon.keyboard.idle'|trans }}
-                            </p>
-
-                            <div class="simon-keyboard__actions">
-                                <button type="button" class="button button-secondary" data-simon-keyboard-reset>
-                                    {{ 'simon.keyboard.actions.reset'|trans }}
-                                </button>
-                            </div>
-                        </article>
-
-                        <article class="simon-card">
-                            <p class="eyebrow">{{ 'simon.rules.eyebrow'|trans }}</p>
-
-                            <h3>{{ 'simon.rules.title'|trans }}</h3>
-
-                            <ol class="simon-rules">
-                                <li>{{ 'simon.rules.step_1'|trans|highlight_keywords }}</li>
-                                <li>{{ 'simon.rules.step_2'|trans|highlight_keywords }}</li>
-                                <li>{{ 'simon.rules.step_3'|trans|highlight_keywords }}</li>
-                            </ol>
-                        </article>
+                            <article class="simon-card simon-disclosure__content">
+                                <ol class="simon-rules">
+                                    <li>{{ 'simon.rules.step_1'|trans|highlight_keywords }}</li>
+                                    <li>{{ 'simon.rules.step_2'|trans|highlight_keywords }}</li>
+                                    <li>{{ 'simon.rules.step_3'|trans|highlight_keywords }}</li>
+                                </ol>
+                            </article>
+                        </details>
                     </aside>
                 </div>
             </div>

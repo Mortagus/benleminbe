@@ -75,6 +75,10 @@ simon:
         off: "Son coupé"
         note: "Le son démarre uniquement après une interaction explicite, comme l’exige le navigateur."
 
+    panel:
+        open: "Ouvrir"
+        close: "Fermer"
+
     audio:
         eyebrow: "Audio"
         title: "Son et volume"

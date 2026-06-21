@@ -75,6 +75,10 @@ simon:
         off: "Sound off"
         note: "Audio only starts after an explicit user interaction, as required by the browser."
 
+    panel:
+        open: "Open"
+        close: "Close"
+
     audio:
         eyebrow: "Audio"
         title: "Sound and volume"

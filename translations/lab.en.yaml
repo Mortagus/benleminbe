@@ -98,27 +98,50 @@ simon:
         pads:
             top_left:
                 label: "Top left"
-                aria: "Top-left zone, key 1"
+                aria: "Top-left zone, key A"
             top_right:
                 label: "Top right"
-                aria: "Top-right zone, key 2"
+                aria: "Top-right zone, key Z"
             bottom_left:
                 label: "Bottom left"
-                aria: "Bottom-left zone, key 3"
+                aria: "Bottom-left zone, key Q"
             bottom_right:
                 label: "Bottom right"
-                aria: "Bottom-right zone, key 4"
+                aria: "Bottom-right zone, key S"
 
     instructions:
         eyebrow: "Controls"
         title: "How to play"
-        intro: "Click the colored zones, tap them on touch devices, or use the keyboard."
-        note: "Keys 1, 2, 3 and 4 map directly to the four zones."
-        keys:
-            1: "1: top left"
-            2: "2: top right"
-            3: "3: bottom left"
-            4: "4: bottom right"
+        intro: "Click the colored zones, tap them on touch devices, or use the keyboard. The mapping shown below can be customized."
+        note: "A, Z, Q and S are the default mapping. The active setup is shown below."
+
+    keyboard:
+        default_keys:
+            top_left: "A"
+            top_right: "Z"
+            bottom_left: "Q"
+            bottom_right: "S"
+        eyebrow: "Keyboard"
+        title: "Configurable keys"
+        intro: "Adjust the keys used for each of the four zones."
+        summary_label: "Active keyboard mapping"
+        summary_default: "Active mapping: A / Z / Q / S"
+        idle: "Click Modify to change a key."
+        summary: "Active mapping: {bindings}"
+        capture: "Press a key for {zone}."
+        applied: "{zone}: {key}"
+        duplicate: "{key} is already used by {zone}."
+        invalid: "This key cannot be used."
+        reset: "Keys reset: A / Z / Q / S"
+        actions:
+            edit: "Modify"
+            reset: "Reset keys"
+        zones:
+            top_left: "Top left"
+            top_right: "Top right"
+            bottom_left: "Bottom left"
+            bottom_right: "Bottom right"
+        pad_aria: "Zone {zone}, key {key}"
 
     rules:
         eyebrow: "Rules"

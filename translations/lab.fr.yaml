@@ -98,27 +98,50 @@ simon:
         pads:
             top_left:
                 label: "Haut gauche"
-                aria: "Zone en haut à gauche, touche 1"
+                aria: "Zone en haut à gauche, touche A"
             top_right:
                 label: "Haut droite"
-                aria: "Zone en haut à droite, touche 2"
+                aria: "Zone en haut à droite, touche Z"
             bottom_left:
                 label: "Bas gauche"
-                aria: "Zone en bas à gauche, touche 3"
+                aria: "Zone en bas à gauche, touche Q"
             bottom_right:
                 label: "Bas droite"
-                aria: "Zone en bas à droite, touche 4"
+                aria: "Zone en bas à droite, touche S"
 
     instructions:
         eyebrow: "Contrôles"
         title: "Comment jouer"
-        intro: "Clique les zones colorées, touche les boutons du clavier ou utilise la souris et le tactile."
-        note: "Les touches 1, 2, 3 et 4 correspondent respectivement aux quatre zones."
-        keys:
-            1: "1 : haut gauche"
-            2: "2 : haut droite"
-            3: "3 : bas gauche"
-            4: "4 : bas droite"
+        intro: "Clique les zones colorées, touche les boutons du clavier ou utilise la souris et le tactile. Le mapping affiché ci-dessous est modifiable."
+        note: "A, Z, Q et S sont le mapping par défaut. Le réglage actif est affiché ci-dessous."
+
+    keyboard:
+        default_keys:
+            top_left: "A"
+            top_right: "Z"
+            bottom_left: "Q"
+            bottom_right: "S"
+        eyebrow: "Clavier"
+        title: "Touches configurables"
+        intro: "Ajuste les touches utilisées pour chacune des quatre zones."
+        summary_label: "Configuration active du clavier"
+        summary_default: "Configuration active : A / Z / Q / S"
+        idle: "Clique sur Modifier pour changer une touche."
+        summary: "Configuration active : {bindings}"
+        capture: "Appuie sur une touche pour {zone}."
+        applied: "{zone} : {key}"
+        duplicate: "{key} est déjà utilisée par {zone}."
+        invalid: "Cette touche ne peut pas être utilisée."
+        reset: "Touches réinitialisées : A / Z / Q / S"
+        actions:
+            edit: "Modifier"
+            reset: "Réinitialiser les touches"
+        zones:
+            top_left: "Haut gauche"
+            top_right: "Haut droite"
+            bottom_left: "Bas gauche"
+            bottom_right: "Bas droite"
+        pad_aria: "Zone {zone}, touche {key}"
 
     rules:
         eyebrow: "Règles"

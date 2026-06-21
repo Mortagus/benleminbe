@@ -368,6 +368,23 @@
     line-height: 1.7;
 }
 
+.simon-shortcuts li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: baseline;
+}
+
+.simon-shortcuts [data-simon-keyboard-key] {
+    min-width: 1.3rem;
+    color: var(--text);
+    font-weight: 800;
+}
+
+.simon-shortcuts__zone {
+    color: var(--muted);
+}
+
 .simon-shortcuts li + li,
 .simon-rules li + li {
     margin-top: 0.5rem;
@@ -383,6 +400,88 @@
     padding-left: 1.2rem;
     color: var(--muted);
     line-height: 1.7;
+}
+
+.simon-keyboard {
+    gap: 1rem;
+}
+
+.simon-keyboard__summary {
+    margin: 0;
+    color: var(--accent-text);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.simon-keyboard__map {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.simon-keyboard__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--card);
+}
+
+.simon-page[data-simon-keyboard-capture-zone] .simon-keyboard__row[data-simon-keyboard-row] {
+    opacity: 0.65;
+}
+
+.simon-page[data-simon-keyboard-capture-zone="top-left"] .simon-keyboard__row[data-simon-keyboard-row="top-left"],
+.simon-page[data-simon-keyboard-capture-zone="top-right"] .simon-keyboard__row[data-simon-keyboard-row="top-right"],
+.simon-page[data-simon-keyboard-capture-zone="bottom-left"] .simon-keyboard__row[data-simon-keyboard-row="bottom-left"],
+.simon-page[data-simon-keyboard-capture-zone="bottom-right"] .simon-keyboard__row[data-simon-keyboard-row="bottom-right"] {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--accent) 32%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.simon-keyboard__zone {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.simon-keyboard__binding {
+    justify-self: end;
+    min-width: 1.5rem;
+    color: var(--text);
+    font-size: 1.1rem;
+}
+
+.simon-keyboard__edit {
+    min-width: 8.2rem;
+}
+
+.simon-keyboard__edit[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, var(--card));
+}
+
+.simon-keyboard__feedback {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    background: var(--bg-soft);
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.simon-keyboard__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .simon-page .button {
@@ -419,6 +518,16 @@
 
     .simon-page .button {
         min-width: 0;
+        width: 100%;
+    }
+
+    .simon-keyboard__row {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .simon-keyboard__edit {
+        min-width: 0;
+        grid-column: 1 / -1;
         width: 100%;
     }
 }

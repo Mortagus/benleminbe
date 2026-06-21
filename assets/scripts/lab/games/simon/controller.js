@@ -1,6 +1,12 @@
 import { SimonAudio } from './audio.js';
 import { SimonGame, SIMON_PHASE } from './game.js';
 import {
+    describeSimonKeyboardBindings,
+    SIMON_KEYBOARD_ZONES,
+    SimonKeyboardSettings,
+    isSimonKeyboardModifierShortcut,
+} from './keyboard.js';
+import {
     loadSimonBestScore,
     saveSimonBestScore,
 } from './storage.js';
@@ -19,6 +25,9 @@ export class SimonGameController {
             bestScore: loadSimonBestScore(this.storage),
         });
         this.audio = options.audio ?? new SimonAudio();
+        this.keyboard = options.keyboard ?? new SimonKeyboardSettings({
+            storage: this.storage,
+        });
         this.sessionId = 0;
         this.activePadIndex = null;
         this.soundEnabled = true;
@@ -45,6 +54,21 @@ export class SimonGameController {
             void this.toggleSound();
         });
 
+        this.elements.keyboardResetButton?.addEventListener('click', () => {
+            this.resetKeyboardBindings();
+        });
+
+        this.elements.keyboardEditButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const zoneId = button.dataset.simonKeyboardEdit;
+                if (!zoneId) {
+                    return;
+                }
+
+                this.beginKeyboardCapture(zoneId);
+            });
+        });
+
         this.elements.padButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const index = Number.parseInt(button.dataset.simonPad ?? '', 10);
@@ -67,8 +91,25 @@ export class SimonGameController {
         const bestScore = this.root.querySelector('[data-simon-best]');
         const board = this.root.querySelector('[data-simon-board]');
         const padButtons = Array.from(this.root.querySelectorAll('[data-simon-pad]'));
+        const keyboardFeedback = this.root.querySelector('[data-simon-keyboard-feedback]');
+        const keyboardResetButton = this.root.querySelector('[data-simon-keyboard-reset]');
+        const keyboardEditButtons = Array.from(this.root.querySelectorAll('[data-simon-keyboard-edit]'));
+        const keyboardBindingValues = Array.from(this.root.querySelectorAll('[data-simon-keyboard-key]'));
+        const keyboardPadBindings = Array.from(this.root.querySelectorAll('[data-simon-keyboard-zone]'));
 
-        if (!startButton || !soundButton || !statusText || !currentLevel || !bestScore || !board || padButtons.length !== 4) {
+        if (
+            !startButton
+            || !soundButton
+            || !statusText
+            || !currentLevel
+            || !bestScore
+            || !board
+            || padButtons.length !== 4
+            || !keyboardFeedback
+            || !keyboardResetButton
+            || keyboardEditButtons.length !== SIMON_KEYBOARD_ZONES.length
+            || keyboardPadBindings.length !== SIMON_KEYBOARD_ZONES.length
+        ) {
             return null;
         }
 
@@ -80,6 +121,11 @@ export class SimonGameController {
             bestScore,
             board,
             padButtons,
+            keyboardFeedback,
+            keyboardResetButton,
+            keyboardEditButtons,
+            keyboardBindingValues,
+            keyboardPadBindings,
         };
     }
 
@@ -101,6 +147,28 @@ export class SimonGameController {
                     success: config.labels?.status?.success ?? 'Manche réussie',
                     failure: config.labels?.status?.failure ?? 'Défaite',
                 },
+                keyboard: {
+                    title: config.keyboard?.title ?? 'Touches configurables',
+                    intro: config.keyboard?.intro ?? 'Choisis les touches du clavier pour chacune des quatre zones.',
+                    summary: config.keyboard?.summary ?? 'Configuration active : {bindings}',
+                    idle: config.keyboard?.idle ?? 'Clique sur Modifier pour changer une touche.',
+                    capture: config.keyboard?.capture ?? 'Appuie sur une touche pour {zone}.',
+                    applied: config.keyboard?.applied ?? '{zone} : {key}',
+                    duplicate: config.keyboard?.duplicate ?? '{key} est déjà utilisée par {zone}.',
+                    invalid: config.keyboard?.invalid ?? 'Cette touche ne peut pas être utilisée.',
+                    reset: config.keyboard?.reset ?? 'Touches réinitialisées : A / Z / Q / S',
+                    actions: {
+                        edit: config.keyboard?.actions?.edit ?? 'Modifier',
+                        reset: config.keyboard?.actions?.reset ?? 'Réinitialiser les touches',
+                    },
+                    zones: {
+                        'top-left': config.keyboard?.zones?.['top-left'] ?? 'Haut gauche',
+                        'top-right': config.keyboard?.zones?.['top-right'] ?? 'Haut droite',
+                        'bottom-left': config.keyboard?.zones?.['bottom-left'] ?? 'Bas gauche',
+                        'bottom-right': config.keyboard?.zones?.['bottom-right'] ?? 'Bas droite',
+                    },
+                    padAria: config.keyboard?.padAria ?? 'Zone {zone}, touche {key}',
+                },
             };
         } catch {
             return {
@@ -116,6 +184,28 @@ export class SimonGameController {
                     success: 'Manche réussie',
                     failure: 'Défaite',
                 },
+                keyboard: {
+                    title: 'Touches configurables',
+                    intro: 'Choisis les touches du clavier pour chacune des quatre zones.',
+                    summary: 'Configuration active : {bindings}',
+                    idle: 'Clique sur Modifier pour changer une touche.',
+                    capture: 'Appuie sur une touche pour {zone}.',
+                    applied: '{zone} : {key}',
+                    duplicate: '{key} est déjà utilisée par {zone}.',
+                    invalid: 'Cette touche ne peut pas être utilisée.',
+                    reset: 'Touches réinitialisées : A / Z / Q / S',
+                    actions: {
+                        edit: 'Modifier',
+                        reset: 'Réinitialiser les touches',
+                    },
+                    zones: {
+                        'top-left': 'Haut gauche',
+                        'top-right': 'Haut droite',
+                        'bottom-left': 'Bas gauche',
+                        'bottom-right': 'Bas droite',
+                    },
+                    padAria: 'Zone {zone}, touche {key}',
+                },
             };
         }
     }
@@ -124,6 +214,7 @@ export class SimonGameController {
         this.cancelSession();
         const sessionId = this.sessionId;
         this.audio.setEnabled(this.soundEnabled);
+        this.keyboard.cancelCapture();
 
         this.game.startNewGame();
         this.clearActivePads();
@@ -263,24 +354,26 @@ export class SimonGameController {
     }
 
     handleKeydown(event) {
-        if (event.defaultPrevented || event.repeat || this.game.phase !== SIMON_PHASE.PLAYER) {
+        if (event.defaultPrevented) {
             return;
         }
 
-        if (event.altKey || event.ctrlKey || event.metaKey) {
+        if (this.keyboard.isCapturing()) {
+            this.handleKeyboardCapture(event);
             return;
         }
 
-        const keyToStep = {
-            1: 0,
-            2: 1,
-            3: 2,
-            4: 3,
-        };
+        if (event.repeat || this.game.phase !== SIMON_PHASE.PLAYER) {
+            return;
+        }
 
-        const step = keyToStep[event.key];
+        if (this.isInteractiveKeyboardTarget(event.target) || isSimonKeyboardModifierShortcut(event)) {
+            return;
+        }
 
-        if (typeof step !== 'number') {
+        const step = this.keyboard.resolvePadIndexForKey(event.key);
+
+        if (step === null) {
             return;
         }
 
@@ -296,6 +389,7 @@ export class SimonGameController {
         this.setStartButtonLabel(this.config.labels.start);
         this.setSoundButtonLabel(this.soundEnabled);
         this.setPadsDisabled(true);
+        this.renderKeyboardState();
     }
 
     renderScores() {
@@ -334,6 +428,7 @@ export class SimonGameController {
         this.setGamePhase(SIMON_PHASE.PREPARATION);
         this.renderStatus(this.config.labels.preparation);
         this.setPadsDisabled(true);
+        this.renderKeyboardState();
     }
 
     setActivePad(step, active) {
@@ -362,6 +457,141 @@ export class SimonGameController {
 
         button.classList.remove('is-active');
         button.removeAttribute('data-active');
+    }
+
+    beginKeyboardCapture(zoneId) {
+        if (!this.keyboard.startCapture(zoneId)) {
+            return;
+        }
+
+        this.renderKeyboardState();
+    }
+
+    handleKeyboardCapture(event) {
+        if (event.repeat) {
+            event.preventDefault();
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation?.();
+
+        if (isSimonKeyboardModifierShortcut(event)) {
+            this.renderKeyboardFeedback(this.config.keyboard.invalid);
+            return;
+        }
+
+        const result = this.keyboard.applyCapturedKey(event.key);
+
+        if (result.status === 'invalid') {
+            this.renderKeyboardFeedback(this.config.keyboard.invalid);
+            return;
+        }
+
+        if (result.status === 'duplicate') {
+            this.renderKeyboardFeedback(
+                formatSimonKeyboardTemplate(this.config.keyboard.duplicate, {
+                    key: result.key,
+                    zone: this.config.keyboard.zones[result.zoneId] ?? result.zoneId,
+                }),
+            );
+            return;
+        }
+
+        if (result.status === 'applied') {
+            this.renderKeyboardState();
+            this.renderKeyboardFeedback(
+                formatSimonKeyboardTemplate(this.config.keyboard.applied, {
+                    key: result.key,
+                    zone: this.config.keyboard.zones[result.zoneId] ?? result.zoneId,
+                }),
+            );
+        }
+    }
+
+    resetKeyboardBindings() {
+        this.keyboard.resetToDefault();
+        this.renderKeyboardState();
+        this.renderKeyboardFeedback(this.config.keyboard.reset);
+    }
+
+    renderKeyboardState() {
+        const bindings = this.keyboard.getBindings();
+        const summary = describeSimonKeyboardBindings(bindings);
+        const captureZone = this.keyboard.getCapturingZone();
+
+        if (captureZone) {
+            this.root.dataset.simonKeyboardCaptureZone = captureZone;
+        } else {
+            delete this.root.dataset.simonKeyboardCaptureZone;
+        }
+
+        this.elements.keyboardEditButtons.forEach(button => {
+            const zoneId = button.dataset.simonKeyboardEdit;
+            const isCapturingZone = captureZone === zoneId;
+
+            button.setAttribute('aria-pressed', String(isCapturingZone));
+            button.textContent = this.config.keyboard.actions.edit;
+        });
+
+        this.elements.keyboardBindingValues.forEach(bindingElement => {
+            const zoneId = bindingElement.dataset.simonKeyboardKey;
+
+            if (!zoneId) {
+                return;
+            }
+
+            const key = bindings[zoneId] ?? '';
+            bindingElement.textContent = key;
+        });
+
+        this.elements.keyboardPadBindings.forEach(button => {
+            const zoneId = button.dataset.simonKeyboardZone;
+
+            if (!zoneId) {
+                return;
+            }
+
+            const key = bindings[zoneId] ?? '';
+            const zoneLabel = this.config.keyboard.zones[zoneId] ?? zoneId;
+            const label = formatSimonKeyboardTemplate(this.config.keyboard.padAria, {
+                zone: zoneLabel,
+                key,
+            });
+
+            button.setAttribute('aria-label', label);
+            button.setAttribute('aria-keyshortcuts', key);
+        });
+
+        this.root.querySelectorAll('[data-simon-keyboard-summary]').forEach(summaryElement => {
+            summaryElement.textContent = formatSimonKeyboardTemplate(this.config.keyboard.summary, {
+                bindings: summary,
+            });
+        });
+
+        this.elements.keyboardFeedback.textContent = captureZone
+            ? formatSimonKeyboardTemplate(this.config.keyboard.capture, {
+                zone: this.config.keyboard.zones[captureZone] ?? captureZone,
+            })
+            : this.config.keyboard.idle;
+    }
+
+    renderKeyboardFeedback(message) {
+        this.elements.keyboardFeedback.textContent = message;
+    }
+
+    isInteractiveKeyboardTarget(target) {
+        if (!target) {
+            return false;
+        }
+
+        if (typeof target.closest === 'function') {
+            return Boolean(target.closest('button, input, select, textarea, [contenteditable="true"], [role="button"], [role="textbox"]'));
+        }
+
+        const tagName = typeof target.tagName === 'string' ? target.tagName.toLowerCase() : '';
+
+        return ['button', 'input', 'select', 'textarea'].includes(tagName);
     }
 
     clearActivePads() {
@@ -431,4 +661,8 @@ function wait(duration) {
     return new Promise(resolve => {
         globalThis.setTimeout(resolve, duration);
     });
+}
+
+function formatSimonKeyboardTemplate(template, values) {
+    return template.replace(/\{([a-zA-Z0-9_-]+)\}/g, (_, token) => String(values[token] ?? ''));
 }

@@ -25,6 +25,28 @@
                     success: 'simon.status.success'|trans,
                     failure: 'simon.status.failure'|trans,
                 },
+                keyboard: {
+                    title: 'simon.keyboard.title'|trans,
+                    intro: 'simon.keyboard.intro'|trans,
+                    summary: 'simon.keyboard.summary'|trans,
+                    idle: 'simon.keyboard.idle'|trans,
+                    capture: 'simon.keyboard.capture'|trans,
+                    applied: 'simon.keyboard.applied'|trans,
+                    duplicate: 'simon.keyboard.duplicate'|trans,
+                    invalid: 'simon.keyboard.invalid'|trans,
+                    reset: 'simon.keyboard.reset'|trans,
+                    actions: {
+                        edit: 'simon.keyboard.actions.edit'|trans,
+                        reset: 'simon.keyboard.actions.reset'|trans,
+                    },
+                    zones: {
+                        'top-left': 'simon.keyboard.zones.top_left'|trans,
+                        'top-right': 'simon.keyboard.zones.top_right'|trans,
+                        'bottom-left': 'simon.keyboard.zones.bottom_left'|trans,
+                        'bottom-right': 'simon.keyboard.zones.bottom_right'|trans,
+                    },
+                    padAria: 'simon.keyboard.pad_aria'|trans,
+                },
             },
         }|json_encode|e('html_attr') }}"
     >
@@ -94,12 +116,12 @@
                                 type="button"
                                 class="simon-pad simon-pad--top-left"
                                 data-simon-pad="0"
-                                data-simon-key="1"
-                                aria-keyshortcuts="1"
+                                data-simon-keyboard-zone="top-left"
+                                aria-keyshortcuts="{{ 'simon.keyboard.default_keys.top_left'|trans }}"
                                 aria-label="{{ 'simon.board.pads.top_left.aria'|trans }}"
                             >
                                 <span class="simon-pad__content">
-                                    <span class="simon-pad__key">1</span>
+                                    <span class="simon-pad__key" data-simon-keyboard-key="top-left">{{ 'simon.keyboard.default_keys.top_left'|trans }}</span>
                                     <span class="simon-pad__label">{{ 'simon.board.pads.top_left.label'|trans }}</span>
                                 </span>
                             </button>
@@ -108,12 +130,12 @@
                                 type="button"
                                 class="simon-pad simon-pad--top-right"
                                 data-simon-pad="1"
-                                data-simon-key="2"
-                                aria-keyshortcuts="2"
+                                data-simon-keyboard-zone="top-right"
+                                aria-keyshortcuts="{{ 'simon.keyboard.default_keys.top_right'|trans }}"
                                 aria-label="{{ 'simon.board.pads.top_right.aria'|trans }}"
                             >
                                 <span class="simon-pad__content">
-                                    <span class="simon-pad__key">2</span>
+                                    <span class="simon-pad__key" data-simon-keyboard-key="top-right">{{ 'simon.keyboard.default_keys.top_right'|trans }}</span>
                                     <span class="simon-pad__label">{{ 'simon.board.pads.top_right.label'|trans }}</span>
                                 </span>
                             </button>
@@ -122,12 +144,12 @@
                                 type="button"
                                 class="simon-pad simon-pad--bottom-left"
                                 data-simon-pad="2"
-                                data-simon-key="3"
-                                aria-keyshortcuts="3"
+                                data-simon-keyboard-zone="bottom-left"
+                                aria-keyshortcuts="{{ 'simon.keyboard.default_keys.bottom_left'|trans }}"
                                 aria-label="{{ 'simon.board.pads.bottom_left.aria'|trans }}"
                             >
                                 <span class="simon-pad__content">
-                                    <span class="simon-pad__key">3</span>
+                                    <span class="simon-pad__key" data-simon-keyboard-key="bottom-left">{{ 'simon.keyboard.default_keys.bottom_left'|trans }}</span>
                                     <span class="simon-pad__label">{{ 'simon.board.pads.bottom_left.label'|trans }}</span>
                                 </span>
                             </button>
@@ -136,12 +158,12 @@
                                 type="button"
                                 class="simon-pad simon-pad--bottom-right"
                                 data-simon-pad="3"
-                                data-simon-key="4"
-                                aria-keyshortcuts="4"
+                                data-simon-keyboard-zone="bottom-right"
+                                aria-keyshortcuts="{{ 'simon.keyboard.default_keys.bottom_right'|trans }}"
                                 aria-label="{{ 'simon.board.pads.bottom_right.aria'|trans }}"
                             >
                                 <span class="simon-pad__content">
-                                    <span class="simon-pad__key">4</span>
+                                    <span class="simon-pad__key" data-simon-keyboard-key="bottom-right">{{ 'simon.keyboard.default_keys.bottom_right'|trans }}</span>
                                     <span class="simon-pad__label">{{ 'simon.board.pads.bottom_right.label'|trans }}</span>
                                 </span>
                             </button>
@@ -165,15 +187,99 @@
                             </p>
 
                             <ul class="simon-shortcuts">
-                                <li>{{ 'simon.instructions.keys.1'|trans }}</li>
-                                <li>{{ 'simon.instructions.keys.2'|trans }}</li>
-                                <li>{{ 'simon.instructions.keys.3'|trans }}</li>
-                                <li>{{ 'simon.instructions.keys.4'|trans }}</li>
+                                <li>
+                                    <span data-simon-keyboard-key="top-left">{{ 'simon.keyboard.default_keys.top_left'|trans }}</span>
+                                    <span class="simon-shortcuts__zone">{{ 'simon.board.pads.top_left.label'|trans }}</span>
+                                </li>
+                                <li>
+                                    <span data-simon-keyboard-key="top-right">{{ 'simon.keyboard.default_keys.top_right'|trans }}</span>
+                                    <span class="simon-shortcuts__zone">{{ 'simon.board.pads.top_right.label'|trans }}</span>
+                                </li>
+                                <li>
+                                    <span data-simon-keyboard-key="bottom-left">{{ 'simon.keyboard.default_keys.bottom_left'|trans }}</span>
+                                    <span class="simon-shortcuts__zone">{{ 'simon.board.pads.bottom_left.label'|trans }}</span>
+                                </li>
+                                <li>
+                                    <span data-simon-keyboard-key="bottom-right">{{ 'simon.keyboard.default_keys.bottom_right'|trans }}</span>
+                                    <span class="simon-shortcuts__zone">{{ 'simon.board.pads.bottom_right.label'|trans }}</span>
+                                </li>
                             </ul>
 
                             <p id="simon-board-note" class="simon-note">
                                 {{ 'simon.instructions.note'|trans|highlight_keywords }}
                             </p>
+                        </article>
+
+                        <article class="simon-card simon-keyboard">
+                            <p class="eyebrow">{{ 'simon.keyboard.eyebrow'|trans }}</p>
+
+                            <h3>{{ 'simon.keyboard.title'|trans }}</h3>
+
+                            <p>{{ 'simon.keyboard.intro'|trans|highlight_keywords }}</p>
+
+                            <p class="simon-keyboard__summary" data-simon-keyboard-summary>
+                                {{ 'simon.keyboard.summary_default'|trans }}
+                            </p>
+
+                            <ul class="simon-keyboard__map" aria-label="{{ 'simon.keyboard.summary_label'|trans }}">
+                                <li class="simon-keyboard__row" data-simon-keyboard-row="top-left">
+                                    <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.top_left'|trans }}</span>
+                                    <strong class="simon-keyboard__binding" data-simon-keyboard-key="top-left">A</strong>
+                                    <button
+                                        type="button"
+                                        class="button button-secondary simon-keyboard__edit"
+                                        data-simon-keyboard-edit="top-left"
+                                    >
+                                        {{ 'simon.keyboard.actions.edit'|trans }}
+                                    </button>
+                                </li>
+
+                                <li class="simon-keyboard__row" data-simon-keyboard-row="top-right">
+                                    <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.top_right'|trans }}</span>
+                                    <strong class="simon-keyboard__binding" data-simon-keyboard-key="top-right">Z</strong>
+                                    <button
+                                        type="button"
+                                        class="button button-secondary simon-keyboard__edit"
+                                        data-simon-keyboard-edit="top-right"
+                                    >
+                                        {{ 'simon.keyboard.actions.edit'|trans }}
+                                    </button>
+                                </li>
+
+                                <li class="simon-keyboard__row" data-simon-keyboard-row="bottom-left">
+                                    <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.bottom_left'|trans }}</span>
+                                    <strong class="simon-keyboard__binding" data-simon-keyboard-key="bottom-left">Q</strong>
+                                    <button
+                                        type="button"
+                                        class="button button-secondary simon-keyboard__edit"
+                                        data-simon-keyboard-edit="bottom-left"
+                                    >
+                                        {{ 'simon.keyboard.actions.edit'|trans }}
+                                    </button>
+                                </li>
+
+                                <li class="simon-keyboard__row" data-simon-keyboard-row="bottom-right">
+                                    <span class="simon-keyboard__zone">{{ 'simon.keyboard.zones.bottom_right'|trans }}</span>
+                                    <strong class="simon-keyboard__binding" data-simon-keyboard-key="bottom-right">S</strong>
+                                    <button
+                                        type="button"
+                                        class="button button-secondary simon-keyboard__edit"
+                                        data-simon-keyboard-edit="bottom-right"
+                                    >
+                                        {{ 'simon.keyboard.actions.edit'|trans }}
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <p class="simon-keyboard__feedback" data-simon-keyboard-feedback aria-live="polite">
+                                {{ 'simon.keyboard.idle'|trans }}
+                            </p>
+
+                            <div class="simon-keyboard__actions">
+                                <button type="button" class="button button-secondary" data-simon-keyboard-reset>
+                                    {{ 'simon.keyboard.actions.reset'|trans }}
+                                </button>
+                            </div>
                         </article>
 
                         <article class="simon-card">

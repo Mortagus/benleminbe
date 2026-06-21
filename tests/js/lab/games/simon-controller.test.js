@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { SimonGameController } from '../../../../assets/scripts/lab/games/simon/controller.js';
 import { SimonGame, SIMON_PHASE } from '../../../../assets/scripts/lab/games/simon/game.js';
+import { SIMON_DEFAULT_KEYBOARD_BINDINGS, SIMON_KEYBOARD_STORAGE_KEY } from '../../../../assets/scripts/lab/games/simon/keyboard.js';
 import { TestElement } from '../dnd/dom-test-helpers.js';
 
 describe('Simon game controller keyboard handling', () => {
@@ -15,31 +16,95 @@ describe('Simon game controller keyboard handling', () => {
         globalThis.document = createDocumentDouble();
         globalThis.matchMedia = () => ({ matches: false });
 
-        const controller = new SimonGameController(createRoot());
+        const controller = createController();
         controller.game = new SimonGame();
         controller.game.phase = SIMON_PHASE.PLAYER;
         controller.handlePlayerInput = vi.fn();
 
-        controller.handleKeydown(createKeyboardEvent({ key: '1', repeat: true }));
+        controller.handleKeydown(createKeyboardEvent({ key: 'S', repeat: true }));
 
         expect(controller.handlePlayerInput).not.toHaveBeenCalled();
     });
 
-    test('maps shortcut keys to Simon pads when the game is active', () => {
+    test('maps the default keyboard shortcuts to Simon pads when the game is active', () => {
         globalThis.document = createDocumentDouble();
         globalThis.matchMedia = () => ({ matches: false });
 
-        const controller = new SimonGameController(createRoot());
+        const controller = createController();
         controller.game = new SimonGame();
         controller.game.phase = SIMON_PHASE.PLAYER;
         controller.handlePlayerInput = vi.fn();
-        const event = createKeyboardEvent({ key: '4' });
+        const event = createKeyboardEvent({ key: 'S' });
 
         controller.handleKeydown(event);
 
         expect(event.preventDefault).toHaveBeenCalledOnce();
         expect(controller.handlePlayerInput).toHaveBeenCalledWith(3);
     });
+
+    test('ignores shortcuts while the keyboard mapping is being edited', () => {
+        globalThis.document = createDocumentDouble();
+        globalThis.matchMedia = () => ({ matches: false });
+
+        const controller = createController();
+        controller.start();
+        controller.game = new SimonGame();
+        controller.game.phase = SIMON_PHASE.PLAYER;
+        controller.handlePlayerInput = vi.fn();
+
+        controller.elements.keyboardEditButtons[0].click();
+
+        const event = createKeyboardEvent({ key: 'M' });
+        controller.handleKeydown(event);
+
+        expect(event.preventDefault).toHaveBeenCalledOnce();
+        expect(event.stopPropagation).toHaveBeenCalledOnce();
+        expect(controller.handlePlayerInput).not.toHaveBeenCalled();
+        expect(controller.keyboard.getBinding('top-left')).toBe('M');
+        expect(controller.root.dataset.simonKeyboardCaptureZone).toBeUndefined();
+        expect(controller.elements.keyboardBindingValues[0].textContent).toBe('M');
+        expect(controller.elements.keyboardFeedback.textContent).toBe('Haut gauche : M');
+    });
+
+    test('rejects modifier shortcuts while the keyboard mapping is being edited', () => {
+        globalThis.document = createDocumentDouble();
+        globalThis.matchMedia = () => ({ matches: false });
+
+        const controller = createController();
+        controller.start();
+        controller.elements.keyboardEditButtons[0].click();
+
+        const event = createKeyboardEvent({ key: 'M', ctrlKey: true });
+        controller.handleKeydown(event);
+
+        expect(event.preventDefault).toHaveBeenCalledOnce();
+        expect(controller.keyboard.getBinding('top-left')).toBe(SIMON_DEFAULT_KEYBOARD_BINDINGS['top-left']);
+        expect(controller.keyboard.isCapturing()).toBe(true);
+        expect(controller.elements.keyboardFeedback.textContent).toBe('Cette touche ne peut pas être utilisée.');
+    });
+
+    test.each(['button', 'input', 'select', 'textarea'])(
+        'ignores shortcuts when the focus is inside an interactive %s',
+        (tagName) => {
+            globalThis.document = createDocumentDouble();
+            globalThis.matchMedia = () => ({ matches: false });
+
+            const controller = createController();
+            controller.game = new SimonGame();
+            controller.game.phase = SIMON_PHASE.PLAYER;
+            controller.handlePlayerInput = vi.fn();
+
+            const event = createKeyboardEvent({
+                key: 'S',
+                target: new TestElement(tagName),
+            });
+
+            controller.handleKeydown(event);
+
+            expect(event.preventDefault).not.toHaveBeenCalled();
+            expect(controller.handlePlayerInput).not.toHaveBeenCalled();
+        },
+    );
 
     test('runs a preparation phase before showing the sequence and unlocking the player turn', async () => {
         vi.useFakeTimers();
@@ -53,7 +118,7 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.elements.statusText.textContent).toBe('Prépare-toi…');
         expect(controller.elements.padButtons.every(button => button.disabled)).toBe(true);
 
-        const preparationEvent = createKeyboardEvent({ key: '1' });
+        const preparationEvent = createKeyboardEvent({ key: 'S' });
         controller.handleKeydown(preparationEvent);
 
         expect(preparationEvent.preventDefault).not.toHaveBeenCalled();
@@ -69,7 +134,7 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.elements.statusText.textContent).toBe('Observe la séquence');
         expect(controller.elements.padButtons.every(button => button.disabled)).toBe(true);
 
-        const demoEvent = createKeyboardEvent({ key: '1' });
+        const demoEvent = createKeyboardEvent({ key: 'S' });
         controller.handleKeydown(demoEvent);
 
         expect(demoEvent.preventDefault).not.toHaveBeenCalled();
@@ -164,45 +229,87 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.elements.statusText.textContent).toBe('À toi de jouer');
         expect(controller.elements.padButtons.every(button => button.disabled)).toBe(false);
     });
+
+    test('resets the keyboard mapping from the reset button', () => {
+        globalThis.document = createDocumentDouble();
+        globalThis.matchMedia = () => ({ matches: false });
+
+        const storage = createLocalStorageMock();
+        const controller = createController([0.1], storage);
+        controller.start();
+        controller.elements.keyboardEditButtons[0].click();
+        controller.handleKeydown(createKeyboardEvent({ key: 'M' }));
+
+        expect(controller.keyboard.getBinding('top-left')).toBe('M');
+
+        controller.elements.keyboardResetButton.click();
+
+        expect(controller.keyboard.getBindings()).toEqual(SIMON_DEFAULT_KEYBOARD_BINDINGS);
+        expect(controller.elements.keyboardFeedback.textContent).toBe('Touches réinitialisées : A / Z / Q / S');
+        expect(JSON.parse(storage.getItem(SIMON_KEYBOARD_STORAGE_KEY))).toEqual({
+            version: 1,
+            bindings: SIMON_DEFAULT_KEYBOARD_BINDINGS,
+        });
+    });
 });
 
-function createController(randomValues = [0.1]) {
+function createController(randomValues = [0.1], storage = createLocalStorageMock()) {
     return new SimonGameController(createRoot(), {
         random: createRandomSequence(randomValues),
         audio: createAudioMock(),
-        storage: createLocalStorageMock(),
+        storage,
     });
 }
 
 function createRoot() {
-    const startButton = new TestElement('button');
-    const soundButton = new TestElement('button');
-    const status = new TestElement('strong');
-    const level = new TestElement('strong');
-    const best = new TestElement('strong');
-    const board = new TestElement('div');
-    const pads = [0, 1, 2, 3].map(index => {
-        const pad = new TestElement('button');
-        pad.dataset.simonPad = String(index);
-        return pad;
-    });
+    const startButton = createElement('button', 'simonStart');
+    const soundButton = createElement('button', 'simonSound');
+    const statusText = createElement('strong', 'simonStatus');
+    const currentLevel = createElement('strong', 'simonLevel');
+    const bestScore = createElement('strong', 'simonBest');
+    const board = createElement('div', 'simonBoard');
+    const keyboardFeedback = createElement('p', 'simonKeyboardFeedback', 'Clique sur Modifier pour changer une touche.');
+    const keyboardResetButton = createElement('button', 'simonKeyboardReset', 'Réinitialiser les touches');
+    const keyboardSummary = createElement('p', 'simonKeyboardSummary', 'Configuration active : A / Z / Q / S');
+    const keyboardPads = createKeyboardPads();
+    const keyboardEditButtons = createKeyboardEditButtons();
 
     return {
         dataset: {
             simonConfig: JSON.stringify({
                 labels: {
-                    start: 'Start',
-                    restart: 'Restart',
-                    soundOn: 'Sound on',
-                    soundOff: 'Sound off',
+                    start: 'Nouvelle partie',
+                    restart: 'Recommencer',
+                    soundOn: 'Son activé',
+                    soundOff: 'Son coupé',
                     status: {
-                        idle: 'Idle',
+                        idle: 'En attente',
                         preparation: 'Prépare-toi…',
                         demo: 'Observe la séquence',
                         player: 'À toi de jouer',
                         success: 'Bien joué !',
                         failure: 'Partie terminée',
                     },
+                },
+                keyboard: {
+                    zones: {
+                        'top-left': 'Haut gauche',
+                        'top-right': 'Haut droite',
+                        'bottom-left': 'Bas gauche',
+                        'bottom-right': 'Bas droite',
+                    },
+                    summary: 'Configuration active : {bindings}',
+                    idle: 'Clique sur Modifier pour changer une touche.',
+                    capture: 'Appuie sur une touche pour {zone}.',
+                    applied: '{zone} : {key}',
+                    duplicate: '{key} est déjà utilisée par {zone}.',
+                    invalid: 'Cette touche ne peut pas être utilisée.',
+                    reset: 'Touches réinitialisées : A / Z / Q / S',
+                    actions: {
+                        edit: 'Modifier',
+                        reset: 'Réinitialiser les touches',
+                    },
+                    padAria: 'Zone {zone}, touche {key}',
                 },
             }),
         },
@@ -213,19 +320,94 @@ function createRoot() {
                 case '[data-simon-sound]':
                     return soundButton;
                 case '[data-simon-status]':
-                    return status;
+                    return statusText;
                 case '[data-simon-level]':
-                    return level;
+                    return currentLevel;
                 case '[data-simon-best]':
-                    return best;
+                    return bestScore;
                 case '[data-simon-board]':
                     return board;
+                case '[data-simon-keyboard-feedback]':
+                    return keyboardFeedback;
+                case '[data-simon-keyboard-reset]':
+                    return keyboardResetButton;
                 default:
                     return null;
             }
         },
-        querySelectorAll: selector => selector === '[data-simon-pad]' ? pads : [],
+        querySelectorAll: selector => {
+            switch (selector) {
+                case '[data-simon-pad]':
+                    return keyboardPads.map(item => item.pad);
+                case '[data-simon-keyboard-edit]':
+                    return keyboardEditButtons.map(item => item.button);
+                case '[data-simon-keyboard-key]':
+                    return [
+                        ...keyboardPads.map(item => item.key),
+                        ...keyboardEditButtons.map(item => item.binding),
+                    ];
+                case '[data-simon-keyboard-zone]':
+                    return keyboardPads.map(item => item.pad);
+                case '[data-simon-keyboard-summary]':
+                    return [keyboardSummary];
+                default:
+                    return [];
+            }
+        },
     };
+}
+
+function createElement(tagName, dataKey = null, textContent = '') {
+    const element = new TestElement(tagName);
+
+    if (dataKey) {
+        element.dataset[dataKey] = '';
+    }
+
+    element.textContent = textContent;
+
+    return element;
+}
+
+function createKeyboardPads() {
+    return [
+        ['top-left', 0, 'A'],
+        ['top-right', 1, 'Z'],
+        ['bottom-left', 2, 'Q'],
+        ['bottom-right', 3, 'S'],
+    ].map(([zoneId, index, key]) => {
+        const pad = createElement('button', null);
+        pad.dataset.simonPad = String(index);
+        pad.dataset.simonKeyboardZone = zoneId;
+
+        const keyElement = createElement('span', 'simonKeyboardKey', key);
+        keyElement.dataset.simonKeyboardKey = zoneId;
+
+        return {
+            pad,
+            key: keyElement,
+        };
+    });
+}
+
+function createKeyboardEditButtons() {
+    return [
+        ['top-left', 'A'],
+        ['top-right', 'Z'],
+        ['bottom-left', 'Q'],
+        ['bottom-right', 'S'],
+    ].map(([zoneId, key]) => {
+        const button = createElement('button', 'simonKeyboardEdit', 'Modifier');
+        button.dataset.simonKeyboardEdit = zoneId;
+
+        const binding = createElement('strong', 'simonKeyboardKey', key);
+        binding.dataset.simonKeyboardKey = zoneId;
+
+        return {
+            button,
+            binding,
+        };
+    });
 }
 
 function createDocumentDouble() {
@@ -234,15 +416,17 @@ function createDocumentDouble() {
     };
 }
 
-function createKeyboardEvent({ key, repeat = false }) {
+function createKeyboardEvent({ key, repeat = false, target = null, altKey = false, ctrlKey = false, metaKey = false }) {
     return {
         key,
         repeat,
-        altKey: false,
-        ctrlKey: false,
-        metaKey: false,
+        target,
+        altKey,
+        ctrlKey,
+        metaKey,
         defaultPrevented: false,
         preventDefault: vi.fn(),
+        stopPropagation: vi.fn(),
     };
 }
 

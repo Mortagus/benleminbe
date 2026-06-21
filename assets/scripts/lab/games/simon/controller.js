@@ -68,6 +68,18 @@ export class SimonGameController {
             this.handleAudioVolumeInput();
         });
 
+        this.elements.audioPaletteSelect?.addEventListener('change', () => {
+            this.handleAudioPaletteChange();
+        });
+
+        this.elements.audioNoteSetSelect?.addEventListener('change', () => {
+            this.handleAudioNoteSetChange();
+        });
+
+        this.elements.audioPalettePreview?.addEventListener('click', () => {
+            void this.handleAudioPalettePreview();
+        });
+
         this.elements.keyboardResetButton?.addEventListener('click', () => {
             this.resetKeyboardBindings();
         });
@@ -113,6 +125,13 @@ export class SimonGameController {
         const audioVolumeInput = this.root.querySelector('[data-simon-volume]');
         const audioVolumeValue = this.root.querySelector('[data-simon-volume-value]');
         const audioFeedback = this.root.querySelector('[data-simon-audio-feedback]');
+        const audioPaletteSelect = this.root.querySelector('[data-simon-audio-palette]');
+        const audioPaletteDescription = this.root.querySelector('[data-simon-audio-palette-description]');
+        const audioPalettePreview = this.root.querySelector('[data-simon-audio-palette-preview]');
+        const audioPaletteFeedback = this.root.querySelector('[data-simon-audio-palette-feedback]');
+        const audioNoteSetSelect = this.root.querySelector('[data-simon-audio-note-set]');
+        const audioNoteSetDescription = this.root.querySelector('[data-simon-audio-note-set-description]');
+        const audioNoteSetFeedback = this.root.querySelector('[data-simon-audio-note-set-feedback]');
 
         if (
             !startButton
@@ -120,6 +139,13 @@ export class SimonGameController {
             || !audioVolumeInput
             || !audioVolumeValue
             || !audioFeedback
+            || !audioPaletteSelect
+            || !audioPaletteDescription
+            || !audioPalettePreview
+            || !audioPaletteFeedback
+            || !audioNoteSetSelect
+            || !audioNoteSetDescription
+            || !audioNoteSetFeedback
             || !statusText
             || !currentLevel
             || !bestScore
@@ -139,6 +165,13 @@ export class SimonGameController {
             audioVolumeInput,
             audioVolumeValue,
             audioFeedback,
+            audioPaletteSelect,
+            audioPaletteDescription,
+            audioPalettePreview,
+            audioPaletteFeedback,
+            audioNoteSetSelect,
+            audioNoteSetDescription,
+            audioNoteSetFeedback,
             statusText,
             currentLevel,
             bestScore,
@@ -178,6 +211,16 @@ export class SimonGameController {
                     active: config.audio?.active ?? 'Son activé à {volume} %.',
                     muted: config.audio?.muted ?? 'Son coupé. Volume mémorisé : {volume} %.',
                     unavailable: config.audio?.unavailable ?? 'Le son n’est pas disponible dans ce navigateur.',
+                    paletteLabel: config.audio?.paletteLabel ?? 'Style sonore',
+                    paletteDescription: config.audio?.paletteDescription ?? 'Choisis une ambiance audio pour les sons du Simon.',
+                    palettePreview: config.audio?.palettePreview ?? 'Écouter un aperçu',
+                    palettePreviewing: config.audio?.palettePreviewing ?? 'Aperçu en cours…',
+                    paletteMuted: config.audio?.paletteMuted ?? 'Active le son pour écouter un aperçu.',
+                    paletteUnavailable: config.audio?.paletteUnavailable ?? 'L’aperçu n’est pas disponible dans ce navigateur.',
+                    paletteActive: config.audio?.paletteActive ?? 'Palette active',
+                    noteSetLabel: config.audio?.noteSetLabel ?? 'Jeu de notes',
+                    noteSetDescription: config.audio?.noteSetDescription ?? 'Choisis une gamme fixe pour les 4 notes du Simon.',
+                    noteSetActive: config.audio?.noteSetActive ?? 'Jeu de notes actif : {label}.',
                 },
                 keyboard: {
                     title: config.keyboard?.title ?? 'Touches configurables',
@@ -224,6 +267,16 @@ export class SimonGameController {
                     active: 'Son activé à {volume} %.',
                     muted: 'Son coupé. Volume mémorisé : {volume} %.',
                     unavailable: 'Le son n’est pas disponible dans ce navigateur.',
+                    paletteLabel: 'Style sonore',
+                    paletteDescription: 'Choisis une ambiance audio pour les sons du Simon.',
+                    palettePreview: 'Écouter un aperçu',
+                    palettePreviewing: 'Aperçu en cours…',
+                    paletteMuted: 'Active le son pour écouter un aperçu.',
+                    paletteUnavailable: 'L’aperçu n’est pas disponible dans ce navigateur.',
+                    paletteActive: 'Palette active',
+                    noteSetLabel: 'Jeu de notes',
+                    noteSetDescription: 'Choisis une gamme fixe pour les 4 notes du Simon.',
+                    noteSetActive: 'Jeu de notes actif : {label}.',
                 },
                 keyboard: {
                     title: 'Touches configurables',
@@ -571,17 +624,38 @@ export class SimonGameController {
             this.audio.setVolume(this.audioVolume);
         }
 
+        if (typeof this.audio.setPalette === 'function') {
+            this.audio.setPalette(this.audioPreferences.getPalette());
+        }
+
+        if (typeof this.audio.setNoteSet === 'function') {
+            this.audio.setNoteSet(this.audioPreferences.getNoteSet());
+        }
+
         this.renderAudioState();
     }
 
     renderAudioState() {
         const muted = !this.soundEnabled;
         const volume = this.audioVolume;
+        const previewing = typeof this.audio.isPreviewing === 'function'
+            ? this.audio.isPreviewing()
+            : false;
+        this.elements.audioPaletteSelect.value = this.audioPreferences.getPalette();
+        const paletteLabel = this.getSelectedAudioPaletteLabel();
+        const paletteDescription = this.getSelectedAudioPaletteDescription();
+        const palettePreviewDisabled = muted || !this.audioAvailable;
 
         if (muted) {
             this.root.dataset.simonAudioMuted = 'true';
         } else {
             delete this.root.dataset.simonAudioMuted;
+        }
+
+        if (previewing) {
+            this.root.dataset.simonAudioPreviewing = 'true';
+        } else {
+            delete this.root.dataset.simonAudioPreviewing;
         }
 
         this.elements.soundButton.disabled = !this.audioAvailable;
@@ -610,6 +684,127 @@ export class SimonGameController {
                 volume: String(volume),
             })
             : this.config.audio.unavailable;
+
+        this.elements.audioPaletteSelect.disabled = !this.audioAvailable;
+        this.elements.audioPaletteSelect.setAttribute('aria-disabled', String(!this.audioAvailable));
+        this.elements.audioPaletteDescription.textContent = paletteDescription;
+        this.elements.audioPalettePreview.disabled = palettePreviewDisabled;
+        this.elements.audioPalettePreview.setAttribute('aria-disabled', String(palettePreviewDisabled));
+        this.elements.audioPalettePreview.setAttribute(
+            'aria-label',
+            !this.audioAvailable
+                ? this.config.audio.paletteUnavailable
+                : muted
+                    ? this.config.audio.paletteMuted
+                    : previewing ? this.config.audio.palettePreviewing : this.config.audio.palettePreview,
+        );
+        this.elements.audioPalettePreview.setAttribute(
+            'title',
+            !this.audioAvailable
+                ? this.config.audio.paletteUnavailable
+                : muted
+                    ? this.config.audio.paletteMuted
+                    : previewing ? this.config.audio.palettePreviewing : this.config.audio.palettePreview,
+        );
+        this.elements.audioPaletteFeedback.textContent = !this.audioAvailable
+            ? this.config.audio.paletteUnavailable
+            : muted
+                ? this.config.audio.paletteMuted
+                : previewing
+                    ? this.config.audio.palettePreviewing
+                    : formatSimonKeyboardTemplate(this.config.audio.paletteActive, {
+                        label: paletteLabel,
+                    });
+
+        this.elements.audioNoteSetSelect.value = this.audioPreferences.getNoteSet();
+        this.elements.audioNoteSetSelect.disabled = !this.audioAvailable;
+        this.elements.audioNoteSetSelect.setAttribute('aria-disabled', String(!this.audioAvailable));
+        this.elements.audioNoteSetDescription.textContent = this.getSelectedAudioNoteSetDescription();
+        this.elements.audioNoteSetFeedback.textContent = !this.audioAvailable
+            ? this.config.audio.unavailable
+            : formatSimonKeyboardTemplate(this.config.audio.noteSetActive, {
+                label: this.getSelectedAudioNoteSetLabel(),
+            });
+    }
+
+    handleAudioPaletteChange() {
+        this.audioPreferences.setPalette(this.elements.audioPaletteSelect.value);
+        this.applyAudioPreferences();
+    }
+
+    handleAudioNoteSetChange() {
+        this.audioPreferences.setNoteSet(this.elements.audioNoteSetSelect.value);
+        this.applyAudioPreferences();
+    }
+
+    async handleAudioPalettePreview() {
+        if (!this.audioAvailable || this.audioPreferences.isMuted()) {
+            this.renderAudioState();
+            return;
+        }
+
+        if (typeof this.audio.cancelPreview === 'function') {
+            this.audio.cancelPreview();
+        }
+
+        this.renderAudioState();
+
+        if (typeof this.audio.unlock === 'function') {
+            await this.audio.unlock();
+        }
+
+        const previewPromise = typeof this.audio.playPalettePreview === 'function'
+            ? this.audio.playPalettePreview()
+            : Promise.resolve();
+        this.renderAudioState();
+
+        try {
+            await previewPromise;
+        } finally {
+            this.renderAudioState();
+        }
+    }
+
+    getSelectedAudioPaletteDescription() {
+        const select = this.elements.audioPaletteSelect;
+        const selectedOption = select?.selectedOptions?.[0]
+            ?? Array.from(select?.options ?? []).find(option => option.value === select?.value)
+            ?? null;
+
+        return selectedOption?.dataset?.description
+            ?? this.config.audio.paletteDescription;
+    }
+
+    getSelectedAudioPaletteLabel() {
+        const select = this.elements.audioPaletteSelect;
+        const selectedOption = select?.selectedOptions?.[0]
+            ?? Array.from(select?.options ?? []).find(option => option.value === select?.value)
+            ?? null;
+
+        return selectedOption?.textContent?.trim()
+            ?? select?.value
+            ?? '';
+    }
+
+    getSelectedAudioNoteSetDescription() {
+        const select = this.elements.audioNoteSetSelect;
+        const selectedOption = select?.selectedOptions?.[0]
+            ?? Array.from(select?.options ?? []).find(option => option.value === select?.value)
+            ?? null;
+
+        return selectedOption?.dataset?.description
+            ?? this.config.audio.noteSetDescription;
+    }
+
+    getSelectedAudioNoteSetLabel() {
+        const select = this.elements.audioNoteSetSelect;
+        const selectedOption = select?.selectedOptions?.[0]
+            ?? Array.from(select?.options ?? []).find(option => option.value === select?.value)
+            ?? null;
+
+        return selectedOption?.textContent?.trim()
+            ?? select?.value
+            ?? '';
     }
 
     renderKeyboardState() {

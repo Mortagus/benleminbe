@@ -85,6 +85,50 @@ simon:
         active: "Son activé à {volume} %."
         muted: "Son coupé. Volume mémorisé : {volume} %."
         unavailable: "Le son n’est pas disponible dans ce navigateur."
+        palette:
+            label: "Style sonore"
+            description: "Choisis une ambiance audio pour les sons du Simon."
+            preview: "Écouter un aperçu"
+            previewing: "Aperçu en cours…"
+            muted: "Active le son pour écouter un aperçu."
+            unavailable: "L’aperçu n’est pas disponible dans ce navigateur."
+            active: "Palette active : {label}."
+        note_set:
+            label: "Jeu de notes"
+            description: "Choisis une gamme fixe pour les 4 notes du Simon."
+            active: "Jeu de notes actif : {label}."
+        palettes:
+            classic:
+                label: "Classique"
+                description: "Sons simples, ronds et lisibles."
+            arcade:
+                label: "Arcade"
+                description: "Sons courts, francs, légèrement rétro."
+            crystal:
+                label: "Cristal"
+                description: "Sons plus brillants et légers."
+            synthwave:
+                label: "Synthwave"
+                description: "Sons électroniques plus riches."
+            percussion:
+                label: "Percussions"
+                description: "Sons courts et plus rythmiques."
+        note_sets:
+            major:
+                label: "Majeur"
+                description: "Notes claires et lumineuses, très lisibles."
+            minor:
+                label: "Mineur"
+                description: "Tonalité plus douce et légèrement plus sombre."
+            pentatonic:
+                label: "Pentatonique"
+                description: "Quatre notes très stables, faciles à distinguer."
+            dorian:
+                label: "Dorien"
+                description: "Couleur modale simple, un peu plus nerveuse."
+            blues:
+                label: "Blues"
+                description: "Notes légèrement plus tendues et expressives."
 
     metrics:
         label: "Résumé de la partie"

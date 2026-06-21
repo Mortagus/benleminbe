@@ -35,7 +35,8 @@
     align-items: center;
 }
 
-.simon-hero__audio {
+.simon-hero__audio,
+.simon-audio {
     display: grid;
     gap: 0.85rem;
     max-width: 28rem;
@@ -64,6 +65,57 @@
     grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 0.85rem;
     align-items: center;
+}
+
+.simon-audio__palette,
+.simon-audio__note-set {
+    display: grid;
+    gap: 0.55rem;
+    padding-top: 0.15rem;
+}
+
+.simon-audio__palette-label {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.simon-audio__palette-select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+    color: var(--text);
+    font: inherit;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.simon-audio__palette-select:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.simon-audio__palette-description,
+.simon-audio__palette-feedback {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.simon-audio__palette-feedback {
+    padding: 0.7rem 0.85rem;
+    border-radius: 14px;
+    background: var(--bg-soft);
+}
+
+.simon-page[data-simon-audio-previewing="true"] .simon-audio {
+    border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent), var(--link-card-shadow);
 }
 
 .simon-audio__volume-label {
@@ -611,6 +663,11 @@
     .simon-hero__audio {
         width: 100%;
         max-width: none;
+    }
+
+    .simon-audio__palette-select,
+    .simon-audio__preview {
+        width: 100%;
     }
 
     .simon-audio__control {

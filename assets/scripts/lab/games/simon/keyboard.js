@@ -1,4 +1,13 @@
-export const SIMON_KEYBOARD_STORAGE_KEY = 'benleminbe-lab-simon-keyboard-bindings';
+import {
+    loadSimonPreferences,
+    normalizeSimonKeyboardKey,
+    SIMON_DEFAULT_KEYBOARD_BINDINGS,
+    SIMON_PREFERENCES_STORAGE_KEY,
+    validateSimonKeyboardBindings,
+    updateSimonPreferences,
+} from './preferences.js';
+
+export const SIMON_KEYBOARD_STORAGE_KEY = SIMON_PREFERENCES_STORAGE_KEY;
 
 export const SIMON_KEYBOARD_ZONES = Object.freeze([
     Object.freeze({
@@ -22,21 +31,6 @@ export const SIMON_KEYBOARD_ZONES = Object.freeze([
         labelKey: 'bottom_right',
     }),
 ]);
-
-export const SIMON_DEFAULT_KEYBOARD_BINDINGS = Object.freeze({
-    'top-left': 'A',
-    'top-right': 'Z',
-    'bottom-left': 'Q',
-    'bottom-right': 'S',
-});
-
-const SIMON_KEYBOARD_VERSION = 1;
-const SIMON_KEYBOARD_ZONE_ALIASES = Object.freeze({
-    'top-left': ['top-left', 'topLeft', 'top_left'],
-    'top-right': ['top-right', 'topRight', 'top_right'],
-    'bottom-left': ['bottom-left', 'bottomLeft', 'bottom_left'],
-    'bottom-right': ['bottom-right', 'bottomRight', 'bottom_right'],
-});
 
 export class SimonKeyboardSettings {
     constructor({ storage = globalThis.localStorage ?? null, bindings = null } = {}) {
@@ -186,113 +180,35 @@ export class SimonKeyboardSettings {
 }
 
 export function loadSimonKeyboardBindings(storage = globalThis.localStorage ?? null) {
-    if (!storage) {
-        return { ...SIMON_DEFAULT_KEYBOARD_BINDINGS };
-    }
-
-    try {
-        const rawValue = storage.getItem(SIMON_KEYBOARD_STORAGE_KEY);
-
-        if (rawValue === null) {
-            return { ...SIMON_DEFAULT_KEYBOARD_BINDINGS };
-        }
-
-        const parsedValue = JSON.parse(rawValue);
-        const bindings = coerceSimonKeyboardBindings(parsedValue);
-
-        if (bindings) {
-            return bindings;
-        }
-
-        storage.removeItem?.(SIMON_KEYBOARD_STORAGE_KEY);
-
-        return { ...SIMON_DEFAULT_KEYBOARD_BINDINGS };
-    } catch {
-        storage.removeItem?.(SIMON_KEYBOARD_STORAGE_KEY);
-
-        return { ...SIMON_DEFAULT_KEYBOARD_BINDINGS };
-    }
+    return { ...loadSimonPreferences(storage).keyboard.bindings };
 }
 
 export function saveSimonKeyboardBindings(bindings, storage = globalThis.localStorage ?? null) {
-    if (!storage) {
-        return false;
-    }
-
     const normalizedBindings = validateSimonKeyboardBindings(bindings);
 
     if (!normalizedBindings) {
         return false;
     }
 
-    try {
-        storage.setItem(
-            SIMON_KEYBOARD_STORAGE_KEY,
-            JSON.stringify({
-                version: SIMON_KEYBOARD_VERSION,
-                bindings: normalizedBindings,
-            }),
-        );
+    const result = updateSimonPreferences({
+        keyboard: {
+            bindings: normalizedBindings,
+        },
+    }, storage);
 
-        return true;
-    } catch {
-        return false;
-    }
+    return result.saved;
 }
 
 export function resetSimonKeyboardBindings(storage = globalThis.localStorage ?? null) {
     const bindings = { ...SIMON_DEFAULT_KEYBOARD_BINDINGS };
 
-    saveSimonKeyboardBindings(bindings, storage);
+    updateSimonPreferences({
+        keyboard: {
+            bindings,
+        },
+    }, storage);
 
     return bindings;
-}
-
-export function validateSimonKeyboardBindings(bindings) {
-    if (!bindings || typeof bindings !== 'object' || Array.isArray(bindings)) {
-        return null;
-    }
-
-    const normalizedBindings = {};
-
-    for (const zone of SIMON_KEYBOARD_ZONES) {
-        const rawKey = readBindingForZone(bindings, zone.id);
-        const key = normalizeSimonKeyboardKey(rawKey);
-
-        if (!key || hasDuplicateBinding(normalizedBindings, key)) {
-            return null;
-        }
-
-        normalizedBindings[zone.id] = key;
-    }
-
-    return normalizedBindings;
-}
-
-export function normalizeSimonKeyboardKey(rawKey) {
-    if (typeof rawKey !== 'string' || rawKey.length === 0) {
-        return null;
-    }
-
-    if (rawKey.length !== 1) {
-        return null;
-    }
-
-    if (rawKey === ' ' || rawKey === '\t' || rawKey === '\n' || rawKey === '\r' || rawKey === '\u00A0') {
-        return null;
-    }
-
-    const normalizedKey = rawKey.toUpperCase();
-
-    return normalizedKey.trim() === '' ? null : normalizedKey;
-}
-
-export function isSimonKeyboardModifierShortcut(event) {
-    return Boolean(event.altKey || event.ctrlKey || event.metaKey);
-}
-
-export function isSimonKeyboardDisallowedKey(rawKey) {
-    return normalizeSimonKeyboardKey(rawKey) === null;
 }
 
 export function describeSimonKeyboardBindings(bindings) {
@@ -301,50 +217,12 @@ export function describeSimonKeyboardBindings(bindings) {
     return SIMON_KEYBOARD_ZONES.map(zone => normalizedBindings[zone.id]).join(' / ');
 }
 
-function coerceSimonKeyboardBindings(value) {
-    if (!value || typeof value !== 'object') {
-        return null;
-    }
-
-    if (Array.isArray(value)) {
-        return coerceSimonKeyboardArrayBindings(value);
-    }
-
-    if (value.version === SIMON_KEYBOARD_VERSION && value.bindings) {
-        return validateSimonKeyboardBindings(value.bindings);
-    }
-
-    if (value.bindings && typeof value.bindings === 'object') {
-        return validateSimonKeyboardBindings(value.bindings);
-    }
-
-    return validateSimonKeyboardBindings(value);
+export function isSimonKeyboardModifierShortcut(event) {
+    return Boolean(event.altKey || event.ctrlKey || event.metaKey);
 }
 
-function coerceSimonKeyboardArrayBindings(values) {
-    if (values.length < SIMON_KEYBOARD_ZONES.length) {
-        return null;
-    }
-
-    const bindings = {};
-
-    SIMON_KEYBOARD_ZONES.forEach((zone, index) => {
-        bindings[zone.id] = values[index];
-    });
-
-    return validateSimonKeyboardBindings(bindings);
-}
-
-function readBindingForZone(bindings, zoneId) {
-    const aliases = SIMON_KEYBOARD_ZONE_ALIASES[zoneId] ?? [zoneId];
-
-    for (const alias of aliases) {
-        if (alias in bindings) {
-            return bindings[alias];
-        }
-    }
-
-    return null;
+export function isSimonKeyboardDisallowedKey(rawKey) {
+    return normalizeSimonKeyboardKey(rawKey) === null;
 }
 
 function buildKeyToZoneIndex(bindings) {
@@ -365,6 +243,8 @@ function isSimonKeyboardZone(zoneId) {
     return SIMON_KEYBOARD_ZONES.some(zone => zone.id === zoneId);
 }
 
-function hasDuplicateBinding(bindings, key) {
-    return Object.values(bindings).includes(key);
-}
+export {
+    SIMON_DEFAULT_KEYBOARD_BINDINGS,
+    normalizeSimonKeyboardKey,
+    validateSimonKeyboardBindings,
+};

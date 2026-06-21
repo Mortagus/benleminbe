@@ -85,6 +85,50 @@ simon:
         active: "Sound enabled at {volume} %."
         muted: "Sound muted. Stored volume: {volume} %."
         unavailable: "Sound is not available in this browser."
+        palette:
+            label: "Sound style"
+            description: "Choose an audio mood for Simon's sounds."
+            preview: "Listen to a preview"
+            previewing: "Preview in progress..."
+            muted: "Enable sound to listen to a preview."
+            unavailable: "Preview is not available in this browser."
+            active: "Active palette: {label}."
+        note_set:
+            label: "Note set"
+            description: "Choose a fixed scale for Simon's 4 notes."
+            active: "Active note set: {label}."
+        palettes:
+            classic:
+                label: "Classic"
+                description: "Simple, round and readable sounds."
+            arcade:
+                label: "Arcade"
+                description: "Short, punchy, slightly retro sounds."
+            crystal:
+                label: "Crystal"
+                description: "Brighter and lighter sounds."
+            synthwave:
+                label: "Synthwave"
+                description: "Richer electronic sounds."
+            percussion:
+                label: "Percussion"
+                description: "Shorter and more rhythmic sounds."
+        note_sets:
+            major:
+                label: "Major"
+                description: "Clear, bright and easy to read notes."
+            minor:
+                label: "Minor"
+                description: "Softer and slightly darker notes."
+            pentatonic:
+                label: "Pentatonic"
+                description: "Four very stable notes, easy to distinguish."
+            dorian:
+                label: "Dorian"
+                description: "A simple modal color, a bit more tense."
+            blues:
+                label: "Blues"
+                description: "Slightly grittier and more expressive notes."
 
     metrics:
         label: "Game summary"

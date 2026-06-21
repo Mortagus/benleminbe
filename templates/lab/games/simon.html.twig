@@ -33,6 +33,16 @@
                     active: 'simon.audio.active'|trans,
                     muted: 'simon.audio.muted'|trans,
                     unavailable: 'simon.audio.unavailable'|trans,
+                    paletteLabel: 'simon.audio.palette.label'|trans,
+                    paletteDescription: 'simon.audio.palette.description'|trans,
+                    palettePreview: 'simon.audio.palette.preview'|trans,
+                    palettePreviewing: 'simon.audio.palette.previewing'|trans,
+                    paletteMuted: 'simon.audio.palette.muted'|trans,
+                    paletteUnavailable: 'simon.audio.palette.unavailable'|trans,
+                    paletteActive: 'simon.audio.palette.active'|trans,
+                    noteSetLabel: 'simon.audio.note_set.label'|trans,
+                    noteSetDescription: 'simon.audio.note_set.description'|trans,
+                    noteSetActive: 'simon.audio.note_set.active'|trans,
                 },
                 keyboard: {
                     title: 'simon.keyboard.title'|trans,
@@ -128,6 +138,89 @@
                     <output class="simon-audio__value" data-simon-volume-value for="simon-volume">
                         {{ 'simon.audio.volume_value'|trans({ volume: 75 }) }}
                     </output>
+                </div>
+
+                <div class="simon-audio__palette">
+                    <label class="simon-audio__palette-label" for="simon-audio-palette">
+                        {{ 'simon.audio.palette.label'|trans }}
+                    </label>
+
+                    <select
+                        id="simon-audio-palette"
+                        class="simon-audio__palette-select"
+                        data-simon-audio-palette
+                        aria-describedby="simon-audio-palette-description simon-audio-palette-feedback"
+                    >
+                        <option value="classic" data-description="{{ 'simon.audio.palettes.classic.description'|trans }}">
+                            {{ 'simon.audio.palettes.classic.label'|trans }}
+                        </option>
+                        <option value="arcade" data-description="{{ 'simon.audio.palettes.arcade.description'|trans }}">
+                            {{ 'simon.audio.palettes.arcade.label'|trans }}
+                        </option>
+                        <option value="crystal" data-description="{{ 'simon.audio.palettes.crystal.description'|trans }}">
+                            {{ 'simon.audio.palettes.crystal.label'|trans }}
+                        </option>
+                        <option value="synthwave" data-description="{{ 'simon.audio.palettes.synthwave.description'|trans }}">
+                            {{ 'simon.audio.palettes.synthwave.label'|trans }}
+                        </option>
+                        <option value="percussion" data-description="{{ 'simon.audio.palettes.percussion.description'|trans }}">
+                            {{ 'simon.audio.palettes.percussion.label'|trans }}
+                        </option>
+                    </select>
+
+                    <p id="simon-audio-palette-description" class="simon-audio__palette-description" data-simon-audio-palette-description>
+                        {{ 'simon.audio.palettes.classic.description'|trans }}
+                    </p>
+
+                    <button
+                        type="button"
+                        class="button button-secondary simon-audio__preview"
+                        data-simon-audio-palette-preview
+                        aria-describedby="simon-audio-palette-description simon-audio-palette-feedback"
+                    >
+                        {{ 'simon.audio.palette.preview'|trans }}
+                    </button>
+
+                    <p id="simon-audio-palette-feedback" class="simon-audio__palette-feedback" data-simon-audio-palette-feedback aria-live="polite">
+                        {{ 'simon.audio.palette.active'|trans({ label: 'simon.audio.palettes.classic.label'|trans }) }}
+                    </p>
+                </div>
+
+                <div class="simon-audio__note-set">
+                    <label class="simon-audio__palette-label" for="simon-audio-note-set">
+                        {{ 'simon.audio.note_set.label'|trans }}
+                    </label>
+
+                    <select
+                        id="simon-audio-note-set"
+                        class="simon-audio__palette-select"
+                        data-simon-audio-note-set
+                        aria-describedby="simon-audio-note-set-description simon-audio-note-set-feedback"
+                    >
+                        <option value="major" data-description="{{ 'simon.audio.note_sets.major.description'|trans }}">
+                            {{ 'simon.audio.note_sets.major.label'|trans }}
+                        </option>
+                        <option value="minor" data-description="{{ 'simon.audio.note_sets.minor.description'|trans }}">
+                            {{ 'simon.audio.note_sets.minor.label'|trans }}
+                        </option>
+                        <option value="pentatonic" data-description="{{ 'simon.audio.note_sets.pentatonic.description'|trans }}">
+                            {{ 'simon.audio.note_sets.pentatonic.label'|trans }}
+                        </option>
+                        <option value="dorian" data-description="{{ 'simon.audio.note_sets.dorian.description'|trans }}">
+                            {{ 'simon.audio.note_sets.dorian.label'|trans }}
+                        </option>
+                        <option value="blues" data-description="{{ 'simon.audio.note_sets.blues.description'|trans }}">
+                            {{ 'simon.audio.note_sets.blues.label'|trans }}
+                        </option>
+                    </select>
+
+                    <p id="simon-audio-note-set-description" class="simon-audio__palette-description" data-simon-audio-note-set-description>
+                        {{ 'simon.audio.note_sets.major.description'|trans }}
+                    </p>
+
+                    <p id="simon-audio-note-set-feedback" class="simon-audio__palette-feedback" data-simon-audio-note-set-feedback aria-live="polite">
+                        {{ 'simon.audio.note_set.active'|trans({ label: 'simon.audio.note_sets.major.label'|trans }) }}
+                    </p>
                 </div>
 
                 <p class="simon-audio__status" data-simon-audio-feedback aria-live="polite">

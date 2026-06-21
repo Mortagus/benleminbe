@@ -3,6 +3,9 @@ import { SimonGameController } from '../../../../assets/scripts/lab/games/simon/
 import { SimonGame, SIMON_PHASE } from '../../../../assets/scripts/lab/games/simon/game.js';
 import { SIMON_DEFAULT_KEYBOARD_BINDINGS, SIMON_KEYBOARD_STORAGE_KEY } from '../../../../assets/scripts/lab/games/simon/keyboard.js';
 import { TestElement } from '../dnd/dom-test-helpers.js';
+import {
+    SIMON_DEFAULT_AUDIO_PREFERENCES,
+} from '../../../../assets/scripts/lab/games/simon/preferences.js';
 
 describe('Simon game controller keyboard handling', () => {
     afterEach(() => {
@@ -54,8 +57,17 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.elements.audioVolumeInput.value).toBe('75');
         expect(controller.elements.audioVolumeValue.textContent).toBe('75 %');
         expect(controller.elements.audioFeedback.textContent).toBe('Son activé à 75 %.');
+        expect(controller.elements.audioPaletteSelect.value).toBe('classic');
+        expect(controller.elements.audioPaletteDescription.textContent).toBe('Sons simples, ronds et lisibles.');
+        expect(controller.elements.audioPaletteFeedback.textContent).toBe('Palette active : Classique.');
+        expect(controller.elements.audioPalettePreview.disabled).toBe(false);
+        expect(controller.elements.audioNoteSetSelect.value).toBe('major');
+        expect(controller.elements.audioNoteSetDescription.textContent).toBe('Notes claires et lumineuses, très lisibles.');
+        expect(controller.elements.audioNoteSetFeedback.textContent).toBe('Jeu de notes actif : Majeur.');
         expect(controller.audio.setEnabled).toHaveBeenCalledWith(true);
         expect(controller.audio.setVolume).toHaveBeenCalledWith(75);
+        expect(controller.audio.setPalette).toHaveBeenCalledWith('classic');
+        expect(controller.audio.setNoteSet).toHaveBeenCalledWith('major');
 
         controller.elements.soundButton.click();
         await Promise.resolve();
@@ -66,6 +78,9 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.audio.setEnabled).toHaveBeenLastCalledWith(false);
         expect(controller.audio.setVolume).toHaveBeenLastCalledWith(75);
         expect(controller.elements.audioFeedback.textContent).toBe('Son coupé. Volume mémorisé : 75 %.');
+        expect(controller.elements.audioPaletteFeedback.textContent).toBe('Active le son pour écouter un aperçu.');
+        expect(controller.elements.audioPalettePreview.disabled).toBe(true);
+        expect(controller.elements.audioNoteSetFeedback.textContent).toBe('Jeu de notes actif : Majeur.');
 
         controller.elements.audioVolumeInput.value = '55';
         controller.elements.audioVolumeInput.dispatchEvent({ type: 'input' });
@@ -84,11 +99,86 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.audio.setEnabled).toHaveBeenLastCalledWith(true);
         expect(controller.audio.setVolume).toHaveBeenLastCalledWith(55);
         expect(controller.elements.audioFeedback.textContent).toBe('Son activé à 55 %.');
-        expect(JSON.parse(controller.storage.getItem('benleminbe-lab-simon-audio-preferences'))).toEqual({
+        expect(controller.elements.audioPaletteFeedback.textContent).toBe('Palette active : Classique.');
+        expect(JSON.parse(controller.storage.getItem(SIMON_KEYBOARD_STORAGE_KEY))).toEqual({
             version: 1,
-            muted: false,
-            volume: 55,
+            keyboard: {
+                bindings: SIMON_DEFAULT_KEYBOARD_BINDINGS,
+            },
+            audio: {
+                muted: false,
+                volume: 55,
+                palette: 'classic',
+                noteSet: 'major',
+            },
         });
+    });
+
+    test('persists a note set change and updates the audio engine immediately', () => {
+        globalThis.document = createDocumentDouble();
+        globalThis.matchMedia = () => ({ matches: false });
+
+        const controller = createController([0.1], createLocalStorageMock());
+        controller.start();
+
+        controller.elements.audioNoteSetSelect.value = 'blues';
+        controller.elements.audioNoteSetSelect.dispatchEvent({ type: 'change' });
+
+        expect(controller.audioPreferences.getNoteSet()).toBe('blues');
+        expect(controller.audio.setNoteSet).toHaveBeenLastCalledWith('blues');
+        expect(controller.elements.audioNoteSetDescription.textContent).toBe('Notes légèrement plus tendues et expressives.');
+        expect(controller.elements.audioNoteSetFeedback.textContent).toBe('Jeu de notes actif : Blues.');
+        expect(JSON.parse(controller.storage.getItem(SIMON_KEYBOARD_STORAGE_KEY))).toEqual({
+            version: 1,
+            keyboard: {
+                bindings: SIMON_DEFAULT_KEYBOARD_BINDINGS,
+            },
+            audio: {
+                muted: false,
+                volume: 75,
+                palette: 'classic',
+                noteSet: 'blues',
+            },
+        });
+    });
+
+    test('persists a palette change and plays a preview without changing the game state', async () => {
+        globalThis.document = createDocumentDouble();
+        globalThis.matchMedia = () => ({ matches: false });
+
+        const audio = createAudioMock({
+            playPalettePreview: vi.fn(() => Promise.resolve()),
+        });
+        const controller = createController([0.1], createLocalStorageMock(), audio);
+        controller.start();
+
+        controller.elements.audioPaletteSelect.value = 'arcade';
+        controller.elements.audioPaletteSelect.dispatchEvent({ type: 'change' });
+
+        expect(controller.audioPreferences.getPalette()).toBe('arcade');
+        expect(controller.audio.setPalette).toHaveBeenLastCalledWith('arcade');
+        expect(controller.elements.audioPaletteDescription.textContent).toBe('Sons courts, francs, légèrement rétro.');
+        expect(JSON.parse(controller.storage.getItem(SIMON_KEYBOARD_STORAGE_KEY))).toEqual({
+            version: 1,
+            keyboard: {
+                bindings: SIMON_DEFAULT_KEYBOARD_BINDINGS,
+            },
+            audio: {
+                muted: false,
+                volume: 75,
+                palette: 'arcade',
+                noteSet: 'major',
+            },
+        });
+
+        controller.elements.audioPalettePreview.click();
+        await Promise.resolve();
+        await Promise.resolve();
+
+        expect(audio.unlock).toHaveBeenCalled();
+        expect(audio.playPalettePreview).toHaveBeenCalledOnce();
+        expect(controller.game.phase).toBe(SIMON_PHASE.IDLE);
+        expect(controller.root.dataset.simonAudioPreviewing).toBeUndefined();
     });
 
     test('disables the audio controls when Web Audio is unavailable', () => {
@@ -312,7 +402,10 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.elements.keyboardFeedback.textContent).toBe('Touches réinitialisées : A / Z / Q / S');
         expect(JSON.parse(storage.getItem(SIMON_KEYBOARD_STORAGE_KEY))).toEqual({
             version: 1,
-            bindings: SIMON_DEFAULT_KEYBOARD_BINDINGS,
+            keyboard: {
+                bindings: SIMON_DEFAULT_KEYBOARD_BINDINGS,
+            },
+            audio: SIMON_DEFAULT_AUDIO_PREFERENCES,
         });
     });
 });
@@ -336,6 +429,13 @@ function createRoot() {
     audioVolumeInput.value = '75';
     const audioVolumeValue = createElement('output', 'simonVolumeValue', '75 %');
     const audioFeedback = createElement('p', 'simonAudioFeedback', 'Son activé à 75 %.');
+    const audioPaletteSelect = createAudioPaletteSelect();
+    const audioPaletteDescription = createElement('p', 'simonAudioPaletteDescription', 'Sons simples, ronds et lisibles.');
+    const audioPalettePreview = createElement('button', 'simonAudioPalettePreview', 'Écouter un aperçu');
+    const audioPaletteFeedback = createElement('p', 'simonAudioPaletteFeedback', 'Palette active : Classique.');
+    const audioNoteSetSelect = createAudioNoteSetSelect();
+    const audioNoteSetDescription = createElement('p', 'simonAudioNoteSetDescription', 'Notes claires et lumineuses, très lisibles.');
+    const audioNoteSetFeedback = createElement('p', 'simonAudioNoteSetFeedback', 'Jeu de notes actif : Majeur.');
     const keyboardFeedback = createElement('p', 'simonKeyboardFeedback', 'Clique sur Modifier pour changer une touche.');
     const keyboardResetButton = createElement('button', 'simonKeyboardReset', 'Réinitialiser les touches');
     const keyboardSummary = createElement('p', 'simonKeyboardSummary', 'Configuration active : A / Z / Q / S');
@@ -367,6 +467,16 @@ function createRoot() {
                     active: 'Son activé à {volume} %.',
                     muted: 'Son coupé. Volume mémorisé : {volume} %.',
                     unavailable: 'Le son n’est pas disponible dans ce navigateur.',
+                    paletteLabel: 'Style sonore',
+                    paletteDescription: 'Choisis une ambiance audio pour les sons du Simon.',
+                    palettePreview: 'Écouter un aperçu',
+                    palettePreviewing: 'Aperçu en cours…',
+                    paletteMuted: 'Active le son pour écouter un aperçu.',
+                    paletteUnavailable: 'L’aperçu n’est pas disponible dans ce navigateur.',
+                    paletteActive: 'Palette active : {label}.',
+                    noteSetLabel: 'Jeu de notes',
+                    noteSetDescription: 'Choisis une gamme fixe pour les 4 notes du Simon.',
+                    noteSetActive: 'Jeu de notes actif : {label}.',
                 },
                 keyboard: {
                     zones: {
@@ -414,6 +524,20 @@ function createRoot() {
                     return audioVolumeValue;
                 case '[data-simon-audio-feedback]':
                     return audioFeedback;
+                case '[data-simon-audio-palette]':
+                    return audioPaletteSelect;
+                case '[data-simon-audio-palette-description]':
+                    return audioPaletteDescription;
+                case '[data-simon-audio-palette-preview]':
+                    return audioPalettePreview;
+                case '[data-simon-audio-palette-feedback]':
+                    return audioPaletteFeedback;
+                case '[data-simon-audio-note-set]':
+                    return audioNoteSetSelect;
+                case '[data-simon-audio-note-set-description]':
+                    return audioNoteSetDescription;
+                case '[data-simon-audio-note-set-feedback]':
+                    return audioNoteSetFeedback;
                 default:
                     return null;
             }
@@ -493,6 +617,54 @@ function createKeyboardEditButtons() {
     });
 }
 
+function createAudioPaletteSelect() {
+    const select = createElement('select', 'simonAudioPalette');
+    select.value = 'classic';
+    select.options = [
+        createAudioPaletteOption('classic', 'Classique', 'Sons simples, ronds et lisibles.'),
+        createAudioPaletteOption('arcade', 'Arcade', 'Sons courts, francs, légèrement rétro.'),
+        createAudioPaletteOption('crystal', 'Cristal', 'Sons plus brillants et légers.'),
+        createAudioPaletteOption('synthwave', 'Synthwave', 'Sons électroniques plus riches.'),
+        createAudioPaletteOption('percussion', 'Percussions', 'Sons courts et plus rythmiques.'),
+    ];
+
+    return select;
+}
+
+function createAudioPaletteOption(value, textContent, description) {
+    return {
+        value,
+        textContent,
+        dataset: {
+            description,
+        },
+    };
+}
+
+function createAudioNoteSetSelect() {
+    const select = createElement('select', 'simonAudioNoteSet');
+    select.value = 'major';
+    select.options = [
+        createAudioNoteSetOption('major', 'Majeur', 'Notes claires et lumineuses, très lisibles.'),
+        createAudioNoteSetOption('minor', 'Mineur', 'Tonalité plus douce et légèrement plus sombre.'),
+        createAudioNoteSetOption('pentatonic', 'Pentatonique', 'Quatre notes très stables, faciles à distinguer.'),
+        createAudioNoteSetOption('dorian', 'Dorien', 'Couleur modale simple, un peu plus nerveuse.'),
+        createAudioNoteSetOption('blues', 'Blues', 'Notes légèrement plus tendues et expressives.'),
+    ];
+
+    return select;
+}
+
+function createAudioNoteSetOption(value, textContent, description) {
+    return {
+        value,
+        textContent,
+        dataset: {
+            description,
+        },
+    };
+}
+
 function createDocumentDouble() {
     return {
         addEventListener: vi.fn(),
@@ -521,7 +693,11 @@ function createAudioMock(overrides = {}) {
         playError: vi.fn(),
         setVolume: vi.fn(),
         setEnabled: vi.fn(),
+        setPalette: vi.fn(),
+        setNoteSet: vi.fn(),
         unlock: vi.fn(() => Promise.resolve(true)),
+        playPalettePreview: vi.fn(() => Promise.resolve()),
+        isPreviewing: vi.fn(() => false),
         isSupported: () => true,
         ...overrides,
     };

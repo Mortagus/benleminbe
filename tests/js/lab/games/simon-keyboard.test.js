@@ -11,6 +11,10 @@ import {
     SIMON_KEYBOARD_STORAGE_KEY,
     validateSimonKeyboardBindings,
 } from '../../../../assets/scripts/lab/games/simon/keyboard.js';
+import {
+    SIMON_DEFAULT_AUDIO_PREFERENCES,
+    SIMON_LEGACY_KEYBOARD_STORAGE_KEY,
+} from '../../../../assets/scripts/lab/games/simon/preferences.js';
 
 describe('Simon keyboard bindings', () => {
     test('uses the AZQS mapping by default', () => {
@@ -64,12 +68,15 @@ describe('Simon keyboard bindings', () => {
         const stored = JSON.parse(storage.getItem(SIMON_KEYBOARD_STORAGE_KEY));
         expect(stored).toEqual({
             version: 1,
-            bindings: {
-                'top-left': 'M',
-                'top-right': 'Z',
-                'bottom-left': 'Q',
-                'bottom-right': 'S',
+            keyboard: {
+                bindings: {
+                    'top-left': 'M',
+                    'top-right': 'Z',
+                    'bottom-left': 'Q',
+                    'bottom-right': 'S',
+                },
             },
+            audio: SIMON_DEFAULT_AUDIO_PREFERENCES,
         });
 
         expect(loadSimonKeyboardBindings(storage)).toEqual({
@@ -84,7 +91,7 @@ describe('Simon keyboard bindings', () => {
         const storage = createLocalStorageMock();
 
         storage.setItem(
-            SIMON_KEYBOARD_STORAGE_KEY,
+            SIMON_LEGACY_KEYBOARD_STORAGE_KEY,
             JSON.stringify(['M', 'P', 'L', 'K']),
         );
 
@@ -93,6 +100,18 @@ describe('Simon keyboard bindings', () => {
             'top-right': 'P',
             'bottom-left': 'L',
             'bottom-right': 'K',
+        });
+        expect(JSON.parse(storage.getItem(SIMON_KEYBOARD_STORAGE_KEY))).toEqual({
+            version: 1,
+            keyboard: {
+                bindings: {
+                    'top-left': 'M',
+                    'top-right': 'P',
+                    'bottom-left': 'L',
+                    'bottom-right': 'K',
+                },
+            },
+            audio: SIMON_DEFAULT_AUDIO_PREFERENCES,
         });
     });
 
@@ -108,17 +127,20 @@ describe('Simon keyboard bindings', () => {
             SIMON_KEYBOARD_STORAGE_KEY,
             JSON.stringify({
                 version: 1,
-                bindings: {
-                    'top-left': 'A',
-                    'top-right': 'A',
-                    'bottom-left': 'Q',
-                    'bottom-right': 'S',
+                keyboard: {
+                    bindings: {
+                        'top-left': 'A',
+                        'top-right': 'A',
+                        'bottom-left': 'Q',
+                        'bottom-right': 'S',
+                    },
                 },
+                audio: SIMON_DEFAULT_AUDIO_PREFERENCES,
             }),
         );
 
         expect(loadSimonKeyboardBindings(storage)).toEqual(SIMON_DEFAULT_KEYBOARD_BINDINGS);
-        expect(storage.getItem(SIMON_KEYBOARD_STORAGE_KEY)).toBeNull();
+        expect(storage.getItem(SIMON_KEYBOARD_STORAGE_KEY)).not.toBeNull();
     });
 
     test('resets to the default mapping', () => {

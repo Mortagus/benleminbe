@@ -69,5 +69,40 @@
                 </div>
             </div>
         </section>
+
+        <section class="content-section" aria-labelledby="lab-games-title">
+            <div class="card lab-panel">
+                <div class="lab-panel__intro">
+                    <p class="eyebrow">{{ 'games.eyebrow'|trans }}</p>
+
+                    <h2 id="lab-games-title">{{ 'games.title'|trans }}</h2>
+
+                    <p>{{ 'games.intro'|trans|highlight_keywords }}</p>
+                </div>
+
+                <div class="lab-game-grid">
+                    <article class="lab-game-card lab-game-card--featured">
+                        <p class="lab-game-card__eyebrow">{{ 'games.featured.label'|trans }}</p>
+
+                        <h3>{{ 'games.featured.title'|trans }}</h3>
+
+                        <p>{{ 'games.featured.description'|trans|highlight_keywords }}</p>
+
+                        <ul class="lab-game-card__meta" aria-label="{{ 'games.featured.meta_label'|trans }}">
+                            <li>{{ 'games.featured.meta.1'|trans }}</li>
+                            <li>{{ 'games.featured.meta.2'|trans }}</li>
+                            <li>{{ 'games.featured.meta.3'|trans }}</li>
+                            <li>{{ 'games.featured.meta.4'|trans }}</li>
+                        </ul>
+
+                        <div class="lab-game-card__actions">
+                            <a href="{{ path('app_lab_game_simon') }}" class="button">
+                                {{ 'games.featured.action'|trans }}
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
     </main>
 {% endblock %}

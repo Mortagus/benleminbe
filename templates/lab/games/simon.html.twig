@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'lab' %}
+
+{% block title %}{{ 'simon.meta.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'simon.meta.description'|trans }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_lab', 'page_lab_game_simon']) }}{% endblock %}
+
+{% block body %}
+    <main
+        class="simon-page"
+        data-simon-page
+        data-simon-config="{{ {
+            labels: {
+                start: 'simon.actions.start'|trans,
+                restart: 'simon.actions.restart'|trans,
+                soundOn: 'simon.sound.on'|trans,
+                soundOff: 'simon.sound.off'|trans,
+                status: {
+                    idle: 'simon.status.idle'|trans,
+                    demo: 'simon.status.demo'|trans,
+                    player: 'simon.status.player'|trans,
+                    success: 'simon.status.success'|trans,
+                    failure: 'simon.status.failure'|trans,
+                },
+            },
+        }|json_encode|e('html_attr') }}"
+    >
+        <header class="simon-hero">
+            <div class="simon-hero__copy">
+                <p class="eyebrow">{{ 'simon.hero.eyebrow'|trans }}</p>
+
+                <h1>{{ 'simon.hero.title'|trans }}</h1>
+
+                <p class="simon-hero__intro">
+                    {{ 'simon.hero.intro'|trans|highlight_keywords }}
+                </p>
+            </div>
+
+            <div class="simon-hero__actions">
+                <button type="button" class="button" data-simon-start>
+                    {{ 'simon.actions.start'|trans }}
+                </button>
+
+                <button
+                    type="button"
+                    class="button button-secondary"
+                    data-simon-sound
+                    aria-pressed="true"
+                >
+                    {{ 'simon.sound.on'|trans }}
+                </button>
+
+                <a class="button button-secondary" href="{{ path('app_lab_index') }}">
+                    {{ 'simon.actions.back'|trans }}
+                </a>
+            </div>
+
+            <p class="simon-hero__note">
+                {{ 'simon.sound.note'|trans|highlight_keywords }}
+            </p>
+        </header>
+
+        <section class="content-section" aria-labelledby="simon-board-title">
+            <div class="card simon-shell">
+                <div class="simon-stats" aria-label="{{ 'simon.metrics.label'|trans }}">
+                    <article class="simon-stat">
+                        <span>{{ 'simon.metrics.status'|trans }}</span>
+                        <strong data-simon-status aria-live="polite">{{ 'simon.status.idle'|trans }}</strong>
+                    </article>
+
+                    <article class="simon-stat">
+                        <span>{{ 'simon.metrics.level'|trans }}</span>
+                        <strong data-simon-level>0</strong>
+                    </article>
+
+                    <article class="simon-stat">
+                        <span>{{ 'simon.metrics.best'|trans }}</span>
+                        <strong data-simon-best>0</strong>
+                    </article>
+                </div>
+
+                <div class="simon-layout">
+                    <div class="simon-stage">
+                        <div
+                            class="simon-board"
+                            data-simon-board
+                            aria-label="{{ 'simon.board.label'|trans }}"
+                            aria-describedby="simon-board-title simon-board-help simon-board-note"
+                        >
+                            <button
+                                type="button"
+                                class="simon-pad simon-pad--top-left"
+                                data-simon-pad="0"
+                                data-simon-key="1"
+                                aria-keyshortcuts="1"
+                                aria-label="{{ 'simon.board.pads.top_left.aria'|trans }}"
+                            >
+                                <span class="simon-pad__content">
+                                    <span class="simon-pad__key">1</span>
+                                    <span class="simon-pad__label">{{ 'simon.board.pads.top_left.label'|trans }}</span>
+                                </span>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="simon-pad simon-pad--top-right"
+                                data-simon-pad="1"
+                                data-simon-key="2"
+                                aria-keyshortcuts="2"
+                                aria-label="{{ 'simon.board.pads.top_right.aria'|trans }}"
+                            >
+                                <span class="simon-pad__content">
+                                    <span class="simon-pad__key">2</span>
+                                    <span class="simon-pad__label">{{ 'simon.board.pads.top_right.label'|trans }}</span>
+                                </span>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="simon-pad simon-pad--bottom-left"
+                                data-simon-pad="2"
+                                data-simon-key="3"
+                                aria-keyshortcuts="3"
+                                aria-label="{{ 'simon.board.pads.bottom_left.aria'|trans }}"
+                            >
+                                <span class="simon-pad__content">
+                                    <span class="simon-pad__key">3</span>
+                                    <span class="simon-pad__label">{{ 'simon.board.pads.bottom_left.label'|trans }}</span>
+                                </span>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="simon-pad simon-pad--bottom-right"
+                                data-simon-pad="3"
+                                data-simon-key="4"
+                                aria-keyshortcuts="4"
+                                aria-label="{{ 'simon.board.pads.bottom_right.aria'|trans }}"
+                            >
+                                <span class="simon-pad__content">
+                                    <span class="simon-pad__key">4</span>
+                                    <span class="simon-pad__label">{{ 'simon.board.pads.bottom_right.label'|trans }}</span>
+                                </span>
+                            </button>
+
+                            <div class="simon-board__core" aria-hidden="true">
+                                <span class="simon-board__eyebrow">{{ 'simon.board.core.eyebrow'|trans }}</span>
+                                <strong class="simon-board__title">{{ 'simon.board.core.title'|trans }}</strong>
+                                <p class="simon-board__status">{{ 'simon.board.core.description'|trans }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <aside class="simon-sidebar">
+                        <article class="simon-card">
+                            <p class="eyebrow">{{ 'simon.instructions.eyebrow'|trans }}</p>
+
+                            <h2 id="simon-board-title">{{ 'simon.instructions.title'|trans }}</h2>
+
+                            <p id="simon-board-help">
+                                {{ 'simon.instructions.intro'|trans|highlight_keywords }}
+                            </p>
+
+                            <ul class="simon-shortcuts">
+                                <li>{{ 'simon.instructions.keys.1'|trans }}</li>
+                                <li>{{ 'simon.instructions.keys.2'|trans }}</li>
+                                <li>{{ 'simon.instructions.keys.3'|trans }}</li>
+                                <li>{{ 'simon.instructions.keys.4'|trans }}</li>
+                            </ul>
+
+                            <p id="simon-board-note" class="simon-note">
+                                {{ 'simon.instructions.note'|trans|highlight_keywords }}
+                            </p>
+                        </article>
+
+                        <article class="simon-card">
+                            <p class="eyebrow">{{ 'simon.rules.eyebrow'|trans }}</p>
+
+                            <h3>{{ 'simon.rules.title'|trans }}</h3>
+
+                            <ol class="simon-rules">
+                                <li>{{ 'simon.rules.step_1'|trans|highlight_keywords }}</li>
+                                <li>{{ 'simon.rules.step_2'|trans|highlight_keywords }}</li>
+                                <li>{{ 'simon.rules.step_3'|trans|highlight_keywords }}</li>
+                            </ol>
+                        </article>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

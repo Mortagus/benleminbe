@@ -28,6 +28,12 @@ final class LabController extends AbstractController
         return $this->render('lab/dnd/initiative_tracker.html.twig');
     }
 
+    #[Route(path: '/game-simon', name: 'game_simon', methods: ['GET'])]
+    public function gameSimon(): Response
+    {
+        return $this->render('lab/games/simon.html.twig');
+    }
+
     #[Route(path: '/dnd-initiative/import-player', name: 'dnd_player_import', methods: ['POST'])]
     public function importPlayerXml(Request $request, PlayerXmlImportParser $playerXmlImportParser): JsonResponse
     {

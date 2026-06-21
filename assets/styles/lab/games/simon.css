@@ -1,0 +1,385 @@
+.simon-page {
+    width: min(100% - 2rem, 76rem);
+    margin-inline: auto;
+    padding-block: 4rem 5rem;
+    display: grid;
+    gap: 2rem;
+}
+
+.simon-hero {
+    max-width: 58rem;
+    display: grid;
+    gap: 1rem;
+}
+
+.simon-hero h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+}
+
+.simon-hero__intro {
+    max-width: 46rem;
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 1.75;
+}
+
+.simon-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.simon-hero__note {
+    max-width: 46rem;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.simon-shell {
+    display: grid;
+    gap: 1.5rem;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 28px;
+    background:
+        radial-gradient(circle at top, color-mix(in srgb, var(--accent) 9%, transparent), transparent 45%),
+        linear-gradient(180deg, color-mix(in srgb, var(--card) 96%, transparent), var(--card));
+    box-shadow: 0 18px 48px var(--shadow);
+}
+
+.simon-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.simon-stat {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1rem 1.05rem;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--card);
+    box-shadow: 0 16px 40px var(--shadow);
+}
+
+.simon-stat span {
+    color: var(--accent-text);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.simon-stat strong {
+    color: var(--text);
+    font-size: 1.55rem;
+    line-height: 1.1;
+}
+
+.simon-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(19rem, 0.8fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.simon-stage {
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    border-radius: 30px;
+    background:
+        radial-gradient(circle at top, rgb(255 255 255 / 8%), transparent 52%),
+        linear-gradient(145deg, #1b1712, #100f0d);
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 8%),
+        0 20px 40px rgb(0 0 0 / 18%);
+}
+
+.simon-board {
+    position: relative;
+    width: min(100%, 34rem);
+    aspect-ratio: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+    padding: 0.85rem;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--bg-soft) 28%, #000 72%), #1a1712 72%),
+        linear-gradient(145deg, #201b16, #13110e);
+    box-shadow:
+        inset 0 0 0 1px rgb(255 255 255 / 4%),
+        inset 0 14px 24px rgb(255 255 255 / 5%),
+        0 20px 50px rgb(0 0 0 / 28%);
+    overflow: hidden;
+}
+
+.simon-pad {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    cursor: pointer;
+    color: #fff;
+    user-select: none;
+    transition:
+        transform 150ms ease,
+        filter 150ms ease,
+        box-shadow 150ms ease;
+    outline-offset: 4px;
+}
+
+.simon-pad::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    border: 1px solid rgb(255 255 255 / 8%);
+    box-shadow:
+        inset 0 18px 26px rgb(255 255 255 / 12%),
+        inset 0 -18px 28px rgb(0 0 0 / 28%);
+
+    transition:
+        opacity 150ms ease,
+        transform 150ms ease,
+        filter 150ms ease;
+}
+
+.simon-pad--top-left::before {
+    background: linear-gradient(160deg, #8ef0b0, #1a8b52);
+    border-start-start-radius: 100%;
+}
+
+.simon-pad--top-right::before {
+    background: linear-gradient(160deg, #ff8f8f, #c52b2b);
+    border-start-end-radius: 100%;
+}
+
+.simon-pad--bottom-left::before {
+    background: linear-gradient(160deg, #ffe58f, #d19a0a);
+    border-end-start-radius: 100%;
+}
+
+.simon-pad--bottom-right::before {
+    background: linear-gradient(160deg, #99cbff, #245cbc);
+    border-end-end-radius: 100%;
+}
+
+.simon-pad:hover,
+.simon-pad:focus-visible,
+.simon-pad.is-active {
+    transform: translateY(-1px);
+    z-index: 1;
+}
+
+.simon-pad:hover::before,
+.simon-pad:focus-visible::before,
+.simon-pad.is-active::before {
+    filter: brightness(1.08) saturate(1.05);
+}
+
+.simon-pad.is-active::before {
+    transform: scale(0.97);
+}
+
+.simon-pad:disabled {
+    cursor: not-allowed;
+}
+
+.simon-pad:focus-visible {
+    outline: 3px solid var(--accent);
+}
+
+.simon-pad__content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.25rem;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 1.2rem;
+    text-align: center;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+}
+
+.simon-pad__key {
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.simon-pad__label {
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.simon-board__core {
+    position: absolute;
+    inset: 31%;
+    z-index: 2;
+    pointer-events: none;
+    display: grid;
+    place-items: center;
+    gap: 0.35rem;
+    padding: 1rem;
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at top, rgb(255 255 255 / 14%), transparent 46%),
+        linear-gradient(180deg, color-mix(in srgb, var(--card) 82%, #000 18%), color-mix(in srgb, var(--bg-soft) 60%, #000 40%));
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 12%),
+        0 10px 24px rgb(0 0 0 / 22%);
+    text-align: center;
+}
+
+.simon-board__eyebrow {
+    color: var(--accent-text);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.simon-board__title {
+    color: var(--text);
+    font-size: 1.05rem;
+    line-height: 1.1;
+}
+
+.simon-board__status {
+    max-width: 9rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.45;
+}
+
+.simon-sidebar {
+    display: grid;
+    gap: 1rem;
+}
+
+.simon-card {
+    display: grid;
+    gap: 0.85rem;
+    height: 100%;
+    padding: 1.25rem 1.3rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 18px;
+    background: var(--link-card-bg);
+    box-shadow: var(--link-card-shadow);
+}
+
+.simon-card h2,
+.simon-card h3 {
+    margin: 0;
+    color: var(--text);
+    line-height: 1.25;
+}
+
+.simon-card h2 {
+    font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+}
+
+.simon-card h3 {
+    font-size: 1.25rem;
+}
+
+.simon-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.simon-shortcuts,
+.simon-rules {
+    margin: 0;
+}
+
+.simon-shortcuts {
+    display: grid;
+    gap: 0.35rem;
+    list-style: none;
+    padding-left: 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.simon-shortcuts li + li,
+.simon-rules li + li {
+    margin-top: 0.5rem;
+}
+
+.simon-note {
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    background: var(--bg-soft);
+}
+
+.simon-rules {
+    padding-left: 1.2rem;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.simon-page .button {
+    min-width: 10rem;
+}
+
+@media (width <= 960px) {
+    .simon-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (width <= 760px) {
+    .simon-page {
+        width: min(100% - 1rem, 76rem);
+        padding-block: 2rem 3rem;
+    }
+
+    .simon-shell {
+        padding: 1.25rem;
+    }
+
+    .simon-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .simon-stage {
+        padding: 0.8rem;
+    }
+
+    .simon-pad__content {
+        padding: 0.9rem;
+    }
+
+    .simon-page .button {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .simon-pad,
+    .simon-pad::before {
+        transition: none;
+    }
+}

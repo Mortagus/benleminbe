@@ -38,3 +38,90 @@ tools:
             3: "Symfony / Twig"
             4: "D&D"
         action: "Open the tracker"
+
+games:
+    eyebrow: "Home-made games"
+    title: "Playable games and prototypes"
+    intro: "The Lab also hosts home-made games, designed to stay simple, quick to load and easy to evolve."
+    featured:
+        label: "First game"
+        title: "Simon"
+        description: "A first memory game in progress, with a simple interface, direct interactions and a pace suited to the browser."
+        meta_label: "Game metadata"
+        meta:
+            1: "Public game"
+            2: "Vanilla JavaScript"
+            3: "Interactive interface"
+            4: "Home-made prototype"
+        action: "Launch Simon"
+
+simon:
+    meta:
+        title: "Simon"
+        description: "A public memory game inspired by Simon, integrated into the benlemin.be Lab."
+
+    hero:
+        eyebrow: "Memory game"
+        title: "Simon"
+        intro: "Repeat the color sequence and last as long as you can. Each round adds one more step."
+
+    actions:
+        start: "Start a game"
+        restart: "Restart"
+        back: "Back to the Lab"
+
+    sound:
+        on: "Sound on"
+        off: "Sound off"
+        note: "Audio only starts after an explicit user interaction, as required by the browser."
+
+    metrics:
+        label: "Game summary"
+        status: "State"
+        level: "Level"
+        best: "Best score"
+
+    status:
+        idle: "Waiting"
+        demo: "Demo"
+        player: "Player turn"
+        success: "Round cleared"
+        failure: "Game over"
+
+    board:
+        label: "Simon play area"
+        core:
+            eyebrow: "Simon"
+            title: "Sequence"
+            description: "Watch the demo, then replay the sequence."
+        pads:
+            top_left:
+                label: "Top left"
+                aria: "Top-left zone, key 1"
+            top_right:
+                label: "Top right"
+                aria: "Top-right zone, key 2"
+            bottom_left:
+                label: "Bottom left"
+                aria: "Bottom-left zone, key 3"
+            bottom_right:
+                label: "Bottom right"
+                aria: "Bottom-right zone, key 4"
+
+    instructions:
+        eyebrow: "Controls"
+        title: "How to play"
+        intro: "Click the colored zones, tap them on touch devices, or use the keyboard."
+        note: "Keys 1, 2, 3 and 4 map directly to the four zones."
+        keys:
+            1: "1: top left"
+            2: "2: top right"
+            3: "3: bottom left"
+            4: "4: bottom right"
+
+    rules:
+        eyebrow: "Rules"
+        title: "V1 behavior"
+        step_1: "A random sequence starts with a single step."
+        step_2: "Each successful round adds one more step."
+        step_3: "Any mistake ends the game immediately."

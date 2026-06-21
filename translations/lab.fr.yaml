@@ -38,3 +38,90 @@ tools:
             3: "Symfony / Twig"
             4: "D&D"
         action: "Ouvrir le tracker"
+
+games:
+    eyebrow: "Jeux maison"
+    title: "Jeux et prototypes jouables"
+    intro: "Le Lab accueille aussi des jeux faits maison, pensés pour rester simples, rapides à charger et faciles à faire évoluer."
+    featured:
+        label: "Premier jeu"
+        title: "Simon"
+        description: "Un premier jeu de mémoire en préparation, avec une interface simple, des interactions directes et un rythme adapté au navigateur."
+        meta_label: "Métadonnées du jeu"
+        meta:
+            1: "Jeu public"
+            2: "JavaScript vanilla"
+            3: "Interface interactive"
+            4: "Prototype maison"
+        action: "Lancer Simon"
+
+simon:
+    meta:
+        title: "Simon"
+        description: "Jeu de mémoire public inspiré du Simon, intégré au Lab de benlemin.be."
+
+    hero:
+        eyebrow: "Jeu de mémoire"
+        title: "Simon"
+        intro: "Reproduis la séquence de couleurs et tiens le plus longtemps possible. Chaque manche ajoute une étape de plus."
+
+    actions:
+        start: "Démarrer une partie"
+        restart: "Recommencer"
+        back: "Retour au Lab"
+
+    sound:
+        on: "Son activé"
+        off: "Son coupé"
+        note: "Le son démarre uniquement après une interaction explicite, comme l’exige le navigateur."
+
+    metrics:
+        label: "Résumé de la partie"
+        status: "État"
+        level: "Niveau"
+        best: "Meilleur score"
+
+    status:
+        idle: "En attente"
+        demo: "Démonstration"
+        player: "Tour du joueur"
+        success: "Manche réussie"
+        failure: "Défaite"
+
+    board:
+        label: "Zone de jeu Simon"
+        core:
+            eyebrow: "Simon"
+            title: "Séquence"
+            description: "Observe la démonstration, puis rejoue la séquence."
+        pads:
+            top_left:
+                label: "Haut gauche"
+                aria: "Zone en haut à gauche, touche 1"
+            top_right:
+                label: "Haut droite"
+                aria: "Zone en haut à droite, touche 2"
+            bottom_left:
+                label: "Bas gauche"
+                aria: "Zone en bas à gauche, touche 3"
+            bottom_right:
+                label: "Bas droite"
+                aria: "Zone en bas à droite, touche 4"
+
+    instructions:
+        eyebrow: "Contrôles"
+        title: "Comment jouer"
+        intro: "Clique les zones colorées, touche les boutons du clavier ou utilise la souris et le tactile."
+        note: "Les touches 1, 2, 3 et 4 correspondent respectivement aux quatre zones."
+        keys:
+            1: "1 : haut gauche"
+            2: "2 : haut droite"
+            3: "3 : bas gauche"
+            4: "4 : bas droite"
+
+    rules:
+        eyebrow: "Règles"
+        title: "Fonctionnement de la V1"
+        step_1: "Une séquence aléatoire commence avec une seule étape."
+        step_2: "Après chaque manche réussie, une nouvelle étape est ajoutée."
+        step_3: "Une erreur termine immédiatement la partie."

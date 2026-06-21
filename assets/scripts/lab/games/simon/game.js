@@ -1,5 +1,6 @@
 export const SIMON_PHASE = Object.freeze({
     IDLE: 'idle',
+    PREPARATION: 'preparation',
     DEMO: 'demo',
     PLAYER: 'player',
     SUCCESS: 'success',
@@ -17,7 +18,7 @@ export class SimonGame {
         this.sequence = [this.generateStep()];
         this.level = 1;
         this.playerIndex = 0;
-        this.phase = SIMON_PHASE.DEMO;
+        this.phase = SIMON_PHASE.PREPARATION;
         return this.snapshot();
     }
 
@@ -86,7 +87,7 @@ export class SimonGame {
         this.sequence = [...this.sequence, this.generateStep()];
         this.level = this.sequence.length;
         this.playerIndex = 0;
-        this.phase = SIMON_PHASE.DEMO;
+        this.phase = SIMON_PHASE.PREPARATION;
 
         return this.snapshot();
     }

@@ -124,6 +124,52 @@
     overflow: hidden;
 }
 
+.simon-board::after {
+    content: "";
+
+    position: absolute;
+    inset: 0.75rem;
+    z-index: 1;
+    pointer-events: none;
+    border: 1px solid transparent;
+    border-radius: inherit;
+    opacity: 0;
+    transition:
+        opacity 180ms ease,
+        transform 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.simon-page[data-simon-phase="preparation"] .simon-stage {
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 8%),
+        0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
+        0 24px 46px rgb(0 0 0 / 20%);
+}
+
+.simon-page[data-simon-phase="preparation"] .simon-board::after {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
+        0 0 0 0 rgb(255 255 255 / 0%);
+    transform: scale(0.985);
+    animation: simon-preparation-pulse 900ms ease-out 1;
+}
+
+.simon-page[data-simon-phase="demo"] .simon-board::after {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--accent) 20%, transparent);
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--accent) 14%, transparent),
+        0 0 0 12px color-mix(in srgb, var(--accent) 4%, transparent);
+}
+
+.simon-page[data-simon-phase="player"] .simon-board::after {
+    opacity: 0;
+}
+
 .simon-pad {
     position: relative;
     display: grid;
@@ -379,7 +425,29 @@
 
 @media (prefers-reduced-motion: reduce) {
     .simon-pad,
-    .simon-pad::before {
+    .simon-pad::before,
+    .simon-board::after {
         transition: none;
+    }
+
+    .simon-page[data-simon-phase="preparation"] .simon-board::after {
+        animation: none;
+    }
+}
+
+@keyframes simon-preparation-pulse {
+    0% {
+        opacity: 0.35;
+        transform: scale(0.97);
+    }
+
+    60% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0.85;
+        transform: scale(0.985);
     }
 }

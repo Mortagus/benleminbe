@@ -83,10 +83,11 @@ simon:
 
     status:
         idle: "En attente"
-        demo: "Démonstration"
-        player: "Tour du joueur"
-        success: "Manche réussie"
-        failure: "Défaite"
+        preparation: "Prépare-toi…"
+        demo: "Observe la séquence"
+        player: "À toi de jouer"
+        success: "Bien joué !"
+        failure: "Partie terminée"
 
     board:
         label: "Zone de jeu Simon"

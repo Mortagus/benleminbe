@@ -5,6 +5,7 @@ import { TestElement } from '../dnd/dom-test-helpers.js';
 
 describe('Simon game controller keyboard handling', () => {
     afterEach(() => {
+        vi.useRealTimers();
         delete globalThis.document;
         delete globalThis.localStorage;
         delete globalThis.matchMedia;
@@ -40,50 +41,138 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.handlePlayerInput).toHaveBeenCalledWith(3);
     });
 
-    test('cancels pending round-complete updates after a restart', async () => {
+    test('runs a preparation phase before showing the sequence and unlocking the player turn', async () => {
         vi.useFakeTimers();
         globalThis.document = createDocumentDouble();
         globalThis.matchMedia = () => ({ matches: false });
 
-        try {
-            const controller = new SimonGameController(createRoot());
-            controller.game = new SimonGame({ random: () => 0.1 });
-            controller.game.sequence = [0];
-            controller.game.level = 1;
-            controller.game.phase = SIMON_PHASE.PLAYER;
-            controller.renderScores = vi.fn();
-            controller.renderStatus = vi.fn();
-            controller.setActivePad = vi.fn();
-            controller.setPadsDisabled = vi.fn();
-            controller.persistBestScore = vi.fn();
-            controller.setStartButtonLabel = vi.fn();
-            controller.playCurrentRound = vi.fn();
-            controller.audio = {
-                playPad: vi.fn(),
-                playSuccess: vi.fn(),
-                playError: vi.fn(),
-                setEnabled: vi.fn(),
-                unlock: vi.fn(),
-            };
+        const controller = createController([0.1]);
+        const startPromise = controller.startNewGame();
 
-            const pendingRound = controller.handlePlayerInput(0);
+        expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.PREPARATION);
+        expect(controller.elements.statusText.textContent).toBe('Prépare-toi…');
+        expect(controller.elements.padButtons.every(button => button.disabled)).toBe(true);
 
-            controller.cancelSession();
+        const preparationEvent = createKeyboardEvent({ key: '1' });
+        controller.handleKeydown(preparationEvent);
 
-            await vi.advanceTimersByTimeAsync(controller.timing.activePadDuration + 1);
-            await pendingRound;
+        expect(preparationEvent.preventDefault).not.toHaveBeenCalled();
+        expect(controller.game.playerIndex).toBe(0);
 
-            expect(controller.setActivePad).toHaveBeenCalledWith(0, true);
-            expect(controller.setActivePad).not.toHaveBeenCalledWith(0, false);
-            expect(controller.renderStatus).not.toHaveBeenCalledWith(controller.config.labels.success);
-            expect(controller.persistBestScore).not.toHaveBeenCalled();
-            expect(controller.setPadsDisabled).not.toHaveBeenCalledWith(true);
-            expect(controller.playCurrentRound).not.toHaveBeenCalled();
-        } finally {
-            vi.useRealTimers();
-        }
+        await Promise.resolve();
+
+        expect(controller.audio.playStart).toHaveBeenCalledOnce();
+
+        await vi.advanceTimersByTimeAsync(controller.timing.initialPreparationDelay);
+
+        expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.DEMO);
+        expect(controller.elements.statusText.textContent).toBe('Observe la séquence');
+        expect(controller.elements.padButtons.every(button => button.disabled)).toBe(true);
+
+        const demoEvent = createKeyboardEvent({ key: '1' });
+        controller.handleKeydown(demoEvent);
+
+        expect(demoEvent.preventDefault).not.toHaveBeenCalled();
+        expect(controller.game.playerIndex).toBe(0);
+
+        await vi.advanceTimersByTimeAsync(
+            controller.timing.demoLeadInDelay + controller.timing.flashDuration + controller.timing.gapDuration,
+        );
+
+        await startPromise;
+
+        expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.PLAYER);
+        expect(controller.elements.statusText.textContent).toBe('À toi de jouer');
+        expect(controller.elements.padButtons.every(button => button.disabled)).toBe(false);
+    });
+
+    test('cancels a pending preparation when a new game restarts', async () => {
+        vi.useFakeTimers();
+        globalThis.document = createDocumentDouble();
+        globalThis.matchMedia = () => ({ matches: false });
+
+        const controller = createController([0.1, 0.9]);
+        const activePadSpy = vi.spyOn(controller, 'setActivePad');
+        const firstStart = controller.startNewGame();
+
+        await vi.advanceTimersByTimeAsync(controller.timing.initialPreparationDelay / 2);
+
+        const secondStart = controller.startNewGame();
+
+        await vi.advanceTimersByTimeAsync(
+            controller.timing.initialPreparationDelay
+                + controller.timing.demoLeadInDelay
+                + controller.timing.flashDuration
+                + controller.timing.gapDuration,
+        );
+
+        await Promise.all([firstStart, secondStart]);
+
+        expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.PLAYER);
+        expect(controller.elements.statusText.textContent).toBe('À toi de jouer');
+        expect(activePadSpy).toHaveBeenCalledWith(3, true);
+        expect(activePadSpy).not.toHaveBeenCalledWith(0, true);
+    });
+
+    test('reuses the same preparation flow for the next round after a success', async () => {
+        vi.useFakeTimers();
+        globalThis.document = createDocumentDouble();
+        globalThis.matchMedia = () => ({ matches: false });
+
+        const controller = createController([0.1, 0.9]);
+        const startPromise = controller.startNewGame();
+
+        await vi.advanceTimersByTimeAsync(
+            controller.timing.initialPreparationDelay
+                + controller.timing.demoLeadInDelay
+                + controller.timing.flashDuration
+                + controller.timing.gapDuration,
+        );
+
+        await startPromise;
+
+        const roundCompletePromise = controller.handlePlayerInput(0);
+
+        expect(controller.game.phase).toBe(SIMON_PHASE.SUCCESS);
+
+        await vi.advanceTimersByTimeAsync(controller.timing.activePadDuration);
+
+        expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.SUCCESS);
+        expect(controller.elements.statusText.textContent).toBe('Bien joué !');
+        expect(controller.elements.padButtons.every(button => button.disabled)).toBe(true);
+
+        await vi.advanceTimersByTimeAsync(controller.timing.successDelay);
+
+        await Promise.resolve();
+
+        expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.PREPARATION);
+        expect(controller.elements.statusText.textContent).toBe('Prépare-toi…');
+        expect(controller.game.level).toBe(2);
+
+        await vi.advanceTimersByTimeAsync(controller.timing.nextPreparationDelay);
+
+        await Promise.resolve();
+
+        expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.DEMO);
+        expect(controller.elements.statusText.textContent).toBe('Observe la séquence');
+
+        await vi.runAllTimersAsync();
+
+        await roundCompletePromise;
+
+        expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.PLAYER);
+        expect(controller.elements.statusText.textContent).toBe('À toi de jouer');
+        expect(controller.elements.padButtons.every(button => button.disabled)).toBe(false);
     });
 });
+
+function createController(randomValues = [0.1]) {
+    return new SimonGameController(createRoot(), {
+        random: createRandomSequence(randomValues),
+        audio: createAudioMock(),
+        storage: createLocalStorageMock(),
+    });
+}
 
 function createRoot() {
     const startButton = new TestElement('button');
@@ -108,10 +197,11 @@ function createRoot() {
                     soundOff: 'Sound off',
                     status: {
                         idle: 'Idle',
-                        demo: 'Demo',
-                        player: 'Player turn',
-                        success: 'Success',
-                        failure: 'Failure',
+                        preparation: 'Prépare-toi…',
+                        demo: 'Observe la séquence',
+                        player: 'À toi de jouer',
+                        success: 'Bien joué !',
+                        failure: 'Partie terminée',
                     },
                 },
             }),
@@ -153,5 +243,39 @@ function createKeyboardEvent({ key, repeat = false }) {
         metaKey: false,
         defaultPrevented: false,
         preventDefault: vi.fn(),
+    };
+}
+
+function createAudioMock() {
+    return {
+        playPad: vi.fn(),
+        playStart: vi.fn(),
+        playSuccess: vi.fn(),
+        playError: vi.fn(),
+        setEnabled: vi.fn(),
+        unlock: vi.fn(),
+    };
+}
+
+function createRandomSequence(values) {
+    let index = 0;
+
+    return () => values[index++] ?? values[values.length - 1] ?? 0;
+}
+
+function createLocalStorageMock() {
+    const entries = new Map();
+
+    return {
+        getItem: key => entries.get(key) ?? null,
+        setItem: (key, value) => {
+            entries.set(key, String(value));
+        },
+        removeItem: key => {
+            entries.delete(key);
+        },
+        clear: () => {
+            entries.clear();
+        },
     };
 }

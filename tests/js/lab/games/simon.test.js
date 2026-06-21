@@ -6,7 +6,7 @@ import {
 } from '../../../../assets/scripts/lab/games/simon/storage.js';
 
 describe('Simon game logic', () => {
-    test('starts a game with one random step and enters demo mode', () => {
+    test('starts a game with one random step and enters preparation mode', () => {
         const game = new SimonGame({
             random: () => 0.24,
         });
@@ -16,10 +16,10 @@ describe('Simon game logic', () => {
         expect(game.sequence).toEqual([0]);
         expect(game.level).toBe(1);
         expect(game.playerIndex).toBe(0);
-        expect(game.phase).toBe(SIMON_PHASE.DEMO);
+        expect(game.phase).toBe(SIMON_PHASE.PREPARATION);
     });
 
-    test('accepts a correct sequence and updates the best score on round complete', () => {
+    test('accepts a correct sequence and prepares the next round on round complete', () => {
         const game = new SimonGame({
             random: createRandomSequence([0.1, 0.9]),
         });
@@ -40,7 +40,7 @@ describe('Simon game logic', () => {
         expect(game.sequence).toEqual([0, 3]);
         expect(game.level).toBe(2);
         expect(game.playerIndex).toBe(0);
-        expect(game.phase).toBe(SIMON_PHASE.DEMO);
+        expect(game.phase).toBe(SIMON_PHASE.PREPARATION);
     });
 
     test('validates each player step immediately', () => {

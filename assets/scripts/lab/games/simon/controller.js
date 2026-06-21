@@ -11,23 +11,7 @@ export class SimonGameController {
         this.random = options.random ?? Math.random;
         this.storage = options.storage ?? globalThis.localStorage ?? null;
         this.motionReduced = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
-        this.timing = this.motionReduced
-            ? {
-                introDelay: 120,
-                flashDuration: 160,
-                gapDuration: 60,
-                successDelay: 320,
-                failureDelay: 380,
-                activePadDuration: 120,
-            }
-            : {
-                introDelay: 420,
-                flashDuration: 280,
-                gapDuration: 120,
-                successDelay: 620,
-                failureDelay: 640,
-                activePadDuration: 160,
-            };
+        this.timing = this.createTiming();
 
         this.config = this.readConfig();
         this.game = new SimonGame({
@@ -111,6 +95,7 @@ export class SimonGameController {
                     soundOn: config.labels?.soundOn ?? 'Son activé',
                     soundOff: config.labels?.soundOff ?? 'Son coupé',
                     idle: config.labels?.status?.idle ?? 'En attente',
+                    preparation: config.labels?.status?.preparation ?? 'Prépare-toi…',
                     demo: config.labels?.status?.demo ?? 'Démonstration',
                     player: config.labels?.status?.player ?? 'Tour du joueur',
                     success: config.labels?.status?.success ?? 'Manche réussie',
@@ -125,6 +110,7 @@ export class SimonGameController {
                     soundOn: 'Son activé',
                     soundOff: 'Son coupé',
                     idle: 'En attente',
+                    preparation: 'Prépare-toi…',
                     demo: 'Démonstration',
                     player: 'Tour du joueur',
                     success: 'Manche réussie',
@@ -136,25 +122,34 @@ export class SimonGameController {
 
     async startNewGame() {
         this.cancelSession();
+        const sessionId = this.sessionId;
         this.audio.setEnabled(this.soundEnabled);
+
+        this.game.startNewGame();
+        this.clearActivePads();
+        this.renderScores();
+        this.setStartButtonLabel(this.config.labels.start);
+        this.setPreparationState();
 
         if (this.soundEnabled) {
             await this.audio.unlock();
         }
 
-        this.game.startNewGame();
-        this.clearActivePads();
-        this.renderScores();
-        this.renderStatus(this.config.labels.demo);
-        this.setStartButtonLabel(this.config.labels.start);
-        this.setPadsDisabled(true);
         void this.audio.playStart();
 
-        await this.playCurrentRound(this.sessionId);
+        await this.playRoundSequence(sessionId, this.timing.initialPreparationDelay);
     }
 
-    async playCurrentRound(sessionId) {
-        await wait(this.timing.introDelay);
+    async playRoundSequence(sessionId, preparationDelay) {
+        await wait(preparationDelay);
+
+        if (this.isSessionStale(sessionId)) {
+            return;
+        }
+
+        this.setGamePhase(SIMON_PHASE.DEMO);
+        this.renderStatus(this.config.labels.demo);
+        await wait(this.timing.demoLeadInDelay);
 
         if (this.isSessionStale(sessionId)) {
             return;
@@ -165,11 +160,16 @@ export class SimonGameController {
                 return;
             }
 
-            await this.flashPad(step, sessionId);
+            this.setActivePad(step, true);
+            void this.audio.playPad(step);
+
+            await wait(this.timing.flashDuration);
 
             if (this.isSessionStale(sessionId)) {
                 return;
             }
+
+            this.setActivePad(step, false);
 
             await wait(this.timing.gapDuration);
         }
@@ -179,21 +179,9 @@ export class SimonGameController {
         }
 
         this.game.beginPlayerTurn();
+        this.setGamePhase(SIMON_PHASE.PLAYER);
         this.renderStatus(this.config.labels.player);
         this.setPadsDisabled(false);
-    }
-
-    async flashPad(step, sessionId) {
-        this.setActivePad(step, true);
-        void this.audio.playPad(step);
-
-        await wait(this.timing.flashDuration);
-
-        if (this.isSessionStale(sessionId)) {
-            return;
-        }
-
-        this.setActivePad(step, false);
     }
 
     async handlePlayerInput(step) {
@@ -229,6 +217,7 @@ export class SimonGameController {
             }
 
             this.setActivePad(step, false);
+            this.setGamePhase(SIMON_PHASE.SUCCESS);
             this.renderStatus(this.config.labels.success);
             this.persistBestScore();
             this.setPadsDisabled(true);
@@ -242,13 +231,14 @@ export class SimonGameController {
 
             this.game.prepareNextRound();
             this.renderScores();
-            this.renderStatus(this.config.labels.demo);
-            await this.playCurrentRound(this.sessionId);
+            this.setPreparationState();
+            await this.playRoundSequence(sessionId, this.timing.nextPreparationDelay);
             return;
         }
 
         if (result.status === 'failure') {
             this.setActivePad(step, false);
+            this.setGamePhase(SIMON_PHASE.FAILURE);
             this.renderStatus(this.config.labels.failure);
             this.setPadsDisabled(true);
             this.setStartButtonLabel(this.config.labels.restart);
@@ -301,6 +291,7 @@ export class SimonGameController {
     renderIdleState() {
         this.clearActivePads();
         this.renderScores();
+        this.setGamePhase(SIMON_PHASE.IDLE);
         this.renderStatus(this.config.labels.idle);
         this.setStartButtonLabel(this.config.labels.start);
         this.setSoundButtonLabel(this.soundEnabled);
@@ -332,6 +323,17 @@ export class SimonGameController {
             button.disabled = disabled;
             button.setAttribute('aria-disabled', String(disabled));
         });
+    }
+
+    setGamePhase(phase) {
+        this.root.dataset.simonPhase = phase;
+    }
+
+    setPreparationState() {
+        this.clearActivePads();
+        this.setGamePhase(SIMON_PHASE.PREPARATION);
+        this.renderStatus(this.config.labels.preparation);
+        this.setPadsDisabled(true);
     }
 
     setActivePad(step, active) {
@@ -385,6 +387,32 @@ export class SimonGameController {
 
     isSessionStale(sessionId) {
         return sessionId !== this.sessionId;
+    }
+
+    createTiming() {
+        if (this.motionReduced) {
+            return {
+                initialPreparationDelay: 240,
+                nextPreparationDelay: 180,
+                demoLeadInDelay: 120,
+                flashDuration: 160,
+                gapDuration: 60,
+                activePadDuration: 120,
+                successDelay: 320,
+                failureDelay: 380,
+            };
+        }
+
+        return {
+            initialPreparationDelay: 950,
+            nextPreparationDelay: 700,
+            demoLeadInDelay: 420,
+            flashDuration: 280,
+            gapDuration: 120,
+            activePadDuration: 160,
+            successDelay: 620,
+            failureDelay: 640,
+        };
     }
 }
 

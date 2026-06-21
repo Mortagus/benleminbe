@@ -83,9 +83,10 @@ simon:
 
     status:
         idle: "Waiting"
-        demo: "Demo"
-        player: "Player turn"
-        success: "Round cleared"
+        preparation: "Get ready..."
+        demo: "Watch the sequence"
+        player: "Your turn"
+        success: "Well done!"
         failure: "Game over"
 
     board:

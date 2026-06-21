@@ -1,4 +1,7 @@
 import { SimonAudio } from './audio.js';
+import {
+    SimonAudioPreferences,
+} from './audio-preferences.js';
 import { SimonGame, SIMON_PHASE } from './game.js';
 import {
     describeSimonKeyboardBindings,
@@ -25,12 +28,19 @@ export class SimonGameController {
             bestScore: loadSimonBestScore(this.storage),
         });
         this.audio = options.audio ?? new SimonAudio();
+        this.audioPreferences = options.audioPreferences ?? new SimonAudioPreferences({
+            storage: this.storage,
+        });
         this.keyboard = options.keyboard ?? new SimonKeyboardSettings({
             storage: this.storage,
         });
+        this.audioAvailable = typeof this.audio.isSupported === 'function'
+            ? this.audio.isSupported()
+            : true;
+        this.soundEnabled = !this.audioPreferences.isMuted();
+        this.audioVolume = this.audioPreferences.getVolume();
         this.sessionId = 0;
         this.activePadIndex = null;
-        this.soundEnabled = true;
         this.elements = this.findElements();
         this.boundHandleKeydown = event => this.handleKeydown(event);
     }
@@ -41,7 +51,7 @@ export class SimonGameController {
         }
 
         this.bindEvents();
-        this.audio.setEnabled(this.soundEnabled);
+        this.applyAudioPreferences();
         this.renderIdleState();
     }
 
@@ -52,6 +62,10 @@ export class SimonGameController {
 
         this.elements.soundButton?.addEventListener('click', () => {
             void this.toggleSound();
+        });
+
+        this.elements.audioVolumeInput?.addEventListener('input', () => {
+            this.handleAudioVolumeInput();
         });
 
         this.elements.keyboardResetButton?.addEventListener('click', () => {
@@ -96,10 +110,16 @@ export class SimonGameController {
         const keyboardEditButtons = Array.from(this.root.querySelectorAll('[data-simon-keyboard-edit]'));
         const keyboardBindingValues = Array.from(this.root.querySelectorAll('[data-simon-keyboard-key]'));
         const keyboardPadBindings = Array.from(this.root.querySelectorAll('[data-simon-keyboard-zone]'));
+        const audioVolumeInput = this.root.querySelector('[data-simon-volume]');
+        const audioVolumeValue = this.root.querySelector('[data-simon-volume-value]');
+        const audioFeedback = this.root.querySelector('[data-simon-audio-feedback]');
 
         if (
             !startButton
             || !soundButton
+            || !audioVolumeInput
+            || !audioVolumeValue
+            || !audioFeedback
             || !statusText
             || !currentLevel
             || !bestScore
@@ -116,6 +136,9 @@ export class SimonGameController {
         return {
             startButton,
             soundButton,
+            audioVolumeInput,
+            audioVolumeValue,
+            audioFeedback,
             statusText,
             currentLevel,
             bestScore,
@@ -138,14 +161,23 @@ export class SimonGameController {
                 labels: {
                     start: config.labels?.start ?? 'Nouvelle partie',
                     restart: config.labels?.restart ?? 'Recommencer',
-                    soundOn: config.labels?.soundOn ?? 'Son activé',
-                    soundOff: config.labels?.soundOff ?? 'Son coupé',
                     idle: config.labels?.status?.idle ?? 'En attente',
                     preparation: config.labels?.status?.preparation ?? 'Prépare-toi…',
                     demo: config.labels?.status?.demo ?? 'Démonstration',
                     player: config.labels?.status?.player ?? 'Tour du joueur',
                     success: config.labels?.status?.success ?? 'Manche réussie',
                     failure: config.labels?.status?.failure ?? 'Défaite',
+                },
+                audio: {
+                    eyebrow: config.audio?.eyebrow ?? 'Audio',
+                    title: config.audio?.title ?? 'Son et volume',
+                    toggleOn: config.audio?.toggleOn ?? 'Couper le son',
+                    toggleOff: config.audio?.toggleOff ?? 'Activer le son',
+                    volumeLabel: config.audio?.volumeLabel ?? 'Volume',
+                    volumeValue: config.audio?.volumeValue ?? '{volume} %',
+                    active: config.audio?.active ?? 'Son activé à {volume} %.',
+                    muted: config.audio?.muted ?? 'Son coupé. Volume mémorisé : {volume} %.',
+                    unavailable: config.audio?.unavailable ?? 'Le son n’est pas disponible dans ce navigateur.',
                 },
                 keyboard: {
                     title: config.keyboard?.title ?? 'Touches configurables',
@@ -175,14 +207,23 @@ export class SimonGameController {
                 labels: {
                     start: 'Nouvelle partie',
                     restart: 'Recommencer',
-                    soundOn: 'Son activé',
-                    soundOff: 'Son coupé',
                     idle: 'En attente',
                     preparation: 'Prépare-toi…',
                     demo: 'Démonstration',
                     player: 'Tour du joueur',
                     success: 'Manche réussie',
                     failure: 'Défaite',
+                },
+                audio: {
+                    eyebrow: 'Audio',
+                    title: 'Son et volume',
+                    toggleOn: 'Couper le son',
+                    toggleOff: 'Activer le son',
+                    volumeLabel: 'Volume',
+                    volumeValue: '{volume} %',
+                    active: 'Son activé à {volume} %.',
+                    muted: 'Son coupé. Volume mémorisé : {volume} %.',
+                    unavailable: 'Le son n’est pas disponible dans ce navigateur.',
                 },
                 keyboard: {
                     title: 'Touches configurables',
@@ -213,8 +254,8 @@ export class SimonGameController {
     async startNewGame() {
         this.cancelSession();
         const sessionId = this.sessionId;
-        this.audio.setEnabled(this.soundEnabled);
         this.keyboard.cancelCapture();
+        this.applyAudioPreferences();
 
         this.game.startNewGame();
         this.clearActivePads();
@@ -222,7 +263,7 @@ export class SimonGameController {
         this.setStartButtonLabel(this.config.labels.start);
         this.setPreparationState();
 
-        if (this.soundEnabled) {
+        if (this.soundEnabled && this.audioAvailable) {
             await this.audio.unlock();
         }
 
@@ -344,13 +385,22 @@ export class SimonGameController {
     }
 
     async toggleSound() {
-        this.soundEnabled = !this.soundEnabled;
-        this.audio.setEnabled(this.soundEnabled);
-        this.setSoundButtonLabel(this.soundEnabled);
+        if (!this.audioAvailable) {
+            this.renderAudioState();
+            return;
+        }
+
+        this.audioPreferences.toggleMuted();
+        this.applyAudioPreferences();
 
         if (this.soundEnabled) {
             await this.audio.unlock();
         }
+    }
+
+    handleAudioVolumeInput() {
+        this.audioPreferences.setVolume(this.elements.audioVolumeInput.value);
+        this.applyAudioPreferences();
     }
 
     handleKeydown(event) {
@@ -387,8 +437,8 @@ export class SimonGameController {
         this.setGamePhase(SIMON_PHASE.IDLE);
         this.renderStatus(this.config.labels.idle);
         this.setStartButtonLabel(this.config.labels.start);
-        this.setSoundButtonLabel(this.soundEnabled);
         this.setPadsDisabled(true);
+        this.renderAudioState();
         this.renderKeyboardState();
     }
 
@@ -403,13 +453,6 @@ export class SimonGameController {
 
     setStartButtonLabel(label) {
         this.elements.startButton.textContent = label;
-    }
-
-    setSoundButtonLabel(enabled) {
-        this.elements.soundButton.textContent = enabled
-            ? this.config.labels.soundOn
-            : this.config.labels.soundOff;
-        this.elements.soundButton.setAttribute('aria-pressed', String(enabled));
     }
 
     setPadsDisabled(disabled) {
@@ -428,6 +471,7 @@ export class SimonGameController {
         this.setGamePhase(SIMON_PHASE.PREPARATION);
         this.renderStatus(this.config.labels.preparation);
         this.setPadsDisabled(true);
+        this.renderAudioState();
         this.renderKeyboardState();
     }
 
@@ -513,6 +557,59 @@ export class SimonGameController {
         this.keyboard.resetToDefault();
         this.renderKeyboardState();
         this.renderKeyboardFeedback(this.config.keyboard.reset);
+    }
+
+    applyAudioPreferences() {
+        this.soundEnabled = !this.audioPreferences.isMuted();
+        this.audioVolume = this.audioPreferences.getVolume();
+
+        if (typeof this.audio.setEnabled === 'function') {
+            this.audio.setEnabled(this.soundEnabled && this.audioAvailable);
+        }
+
+        if (typeof this.audio.setVolume === 'function') {
+            this.audio.setVolume(this.audioVolume);
+        }
+
+        this.renderAudioState();
+    }
+
+    renderAudioState() {
+        const muted = !this.soundEnabled;
+        const volume = this.audioVolume;
+
+        if (muted) {
+            this.root.dataset.simonAudioMuted = 'true';
+        } else {
+            delete this.root.dataset.simonAudioMuted;
+        }
+
+        this.elements.soundButton.disabled = !this.audioAvailable;
+        this.elements.soundButton.setAttribute('aria-disabled', String(!this.audioAvailable));
+        this.elements.soundButton.setAttribute('aria-pressed', String(!muted));
+        this.elements.soundButton.setAttribute(
+            'aria-label',
+            muted ? this.config.audio.toggleOff : this.config.audio.toggleOn,
+        );
+        this.elements.soundButton.setAttribute(
+            'title',
+            muted ? this.config.audio.toggleOff : this.config.audio.toggleOn,
+        );
+
+        this.elements.audioVolumeInput.disabled = !this.audioAvailable;
+        this.elements.audioVolumeInput.value = String(volume);
+        this.elements.audioVolumeInput.setAttribute('aria-valuetext', formatSimonKeyboardTemplate(this.config.audio.volumeValue, {
+            volume: String(volume),
+        }));
+        this.elements.audioVolumeValue.textContent = formatSimonKeyboardTemplate(this.config.audio.volumeValue, {
+            volume: String(volume),
+        });
+
+        this.elements.audioFeedback.textContent = this.audioAvailable
+            ? formatSimonKeyboardTemplate(muted ? this.config.audio.muted : this.config.audio.active, {
+                volume: String(volume),
+            })
+            : this.config.audio.unavailable;
     }
 
     renderKeyboardState() {

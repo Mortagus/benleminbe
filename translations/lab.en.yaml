@@ -75,6 +75,17 @@ simon:
         off: "Sound off"
         note: "Audio only starts after an explicit user interaction, as required by the browser."
 
+    audio:
+        eyebrow: "Audio"
+        title: "Sound and volume"
+        toggle_on: "Mute sound"
+        toggle_off: "Enable sound"
+        volume_label: "Volume"
+        volume_value: "{volume} %"
+        active: "Sound enabled at {volume} %."
+        muted: "Sound muted. Stored volume: {volume} %."
+        unavailable: "Sound is not available in this browser."
+
     metrics:
         label: "Game summary"
         status: "State"

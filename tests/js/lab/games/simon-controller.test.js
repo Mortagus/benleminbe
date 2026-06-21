@@ -42,6 +42,70 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.handlePlayerInput).toHaveBeenCalledWith(3);
     });
 
+    test('renders the default audio state and keeps volume changes separate from mute', async () => {
+        globalThis.document = createDocumentDouble();
+        globalThis.matchMedia = () => ({ matches: false });
+
+        const controller = createController();
+        controller.start();
+
+        expect(controller.elements.soundButton.getAttribute('aria-label')).toBe('Couper le son');
+        expect(controller.elements.soundButton.getAttribute('aria-pressed')).toBe('true');
+        expect(controller.elements.audioVolumeInput.value).toBe('75');
+        expect(controller.elements.audioVolumeValue.textContent).toBe('75 %');
+        expect(controller.elements.audioFeedback.textContent).toBe('Son activé à 75 %.');
+        expect(controller.audio.setEnabled).toHaveBeenCalledWith(true);
+        expect(controller.audio.setVolume).toHaveBeenCalledWith(75);
+
+        controller.elements.soundButton.click();
+        await Promise.resolve();
+
+        expect(controller.elements.soundButton.getAttribute('aria-label')).toBe('Activer le son');
+        expect(controller.elements.soundButton.getAttribute('aria-pressed')).toBe('false');
+        expect(controller.root.dataset.simonAudioMuted).toBe('true');
+        expect(controller.audio.setEnabled).toHaveBeenLastCalledWith(false);
+        expect(controller.audio.setVolume).toHaveBeenLastCalledWith(75);
+        expect(controller.elements.audioFeedback.textContent).toBe('Son coupé. Volume mémorisé : 75 %.');
+
+        controller.elements.audioVolumeInput.value = '55';
+        controller.elements.audioVolumeInput.dispatchEvent({ type: 'input' });
+
+        expect(controller.elements.audioVolumeValue.textContent).toBe('55 %');
+        expect(controller.audio.setVolume).toHaveBeenLastCalledWith(55);
+        expect(controller.elements.audioFeedback.textContent).toBe('Son coupé. Volume mémorisé : 55 %.');
+        expect(controller.root.dataset.simonAudioMuted).toBe('true');
+
+        controller.elements.soundButton.click();
+        await Promise.resolve();
+
+        expect(controller.elements.soundButton.getAttribute('aria-label')).toBe('Couper le son');
+        expect(controller.elements.soundButton.getAttribute('aria-pressed')).toBe('true');
+        expect(controller.root.dataset.simonAudioMuted).toBeUndefined();
+        expect(controller.audio.setEnabled).toHaveBeenLastCalledWith(true);
+        expect(controller.audio.setVolume).toHaveBeenLastCalledWith(55);
+        expect(controller.elements.audioFeedback.textContent).toBe('Son activé à 55 %.');
+        expect(JSON.parse(controller.storage.getItem('benleminbe-lab-simon-audio-preferences'))).toEqual({
+            version: 1,
+            muted: false,
+            volume: 55,
+        });
+    });
+
+    test('disables the audio controls when Web Audio is unavailable', () => {
+        globalThis.document = createDocumentDouble();
+        globalThis.matchMedia = () => ({ matches: false });
+
+        const controller = createController([0.1], createLocalStorageMock(), {
+            isSupported: () => false,
+            unlock: vi.fn(),
+        });
+        controller.start();
+
+        expect(controller.elements.soundButton.disabled).toBe(true);
+        expect(controller.elements.audioVolumeInput.disabled).toBe(true);
+        expect(controller.elements.audioFeedback.textContent).toBe('Le son n’est pas disponible dans ce navigateur.');
+    });
+
     test('ignores shortcuts while the keyboard mapping is being edited', () => {
         globalThis.document = createDocumentDouble();
         globalThis.matchMedia = () => ({ matches: false });
@@ -253,10 +317,10 @@ describe('Simon game controller keyboard handling', () => {
     });
 });
 
-function createController(randomValues = [0.1], storage = createLocalStorageMock()) {
+function createController(randomValues = [0.1], storage = createLocalStorageMock(), audioOverrides = {}) {
     return new SimonGameController(createRoot(), {
         random: createRandomSequence(randomValues),
-        audio: createAudioMock(),
+        audio: createAudioMock(audioOverrides),
         storage,
     });
 }
@@ -268,6 +332,10 @@ function createRoot() {
     const currentLevel = createElement('strong', 'simonLevel');
     const bestScore = createElement('strong', 'simonBest');
     const board = createElement('div', 'simonBoard');
+    const audioVolumeInput = createElement('input', 'simonVolume');
+    audioVolumeInput.value = '75';
+    const audioVolumeValue = createElement('output', 'simonVolumeValue', '75 %');
+    const audioFeedback = createElement('p', 'simonAudioFeedback', 'Son activé à 75 %.');
     const keyboardFeedback = createElement('p', 'simonKeyboardFeedback', 'Clique sur Modifier pour changer une touche.');
     const keyboardResetButton = createElement('button', 'simonKeyboardReset', 'Réinitialiser les touches');
     const keyboardSummary = createElement('p', 'simonKeyboardSummary', 'Configuration active : A / Z / Q / S');
@@ -280,8 +348,6 @@ function createRoot() {
                 labels: {
                     start: 'Nouvelle partie',
                     restart: 'Recommencer',
-                    soundOn: 'Son activé',
-                    soundOff: 'Son coupé',
                     status: {
                         idle: 'En attente',
                         preparation: 'Prépare-toi…',
@@ -290,6 +356,17 @@ function createRoot() {
                         success: 'Bien joué !',
                         failure: 'Partie terminée',
                     },
+                },
+                audio: {
+                    eyebrow: 'Audio',
+                    title: 'Son et volume',
+                    toggleOn: 'Couper le son',
+                    toggleOff: 'Activer le son',
+                    volumeLabel: 'Volume',
+                    volumeValue: '{volume} %',
+                    active: 'Son activé à {volume} %.',
+                    muted: 'Son coupé. Volume mémorisé : {volume} %.',
+                    unavailable: 'Le son n’est pas disponible dans ce navigateur.',
                 },
                 keyboard: {
                     zones: {
@@ -331,6 +408,12 @@ function createRoot() {
                     return keyboardFeedback;
                 case '[data-simon-keyboard-reset]':
                     return keyboardResetButton;
+                case '[data-simon-volume]':
+                    return audioVolumeInput;
+                case '[data-simon-volume-value]':
+                    return audioVolumeValue;
+                case '[data-simon-audio-feedback]':
+                    return audioFeedback;
                 default:
                     return null;
             }
@@ -430,14 +513,17 @@ function createKeyboardEvent({ key, repeat = false, target = null, altKey = fals
     };
 }
 
-function createAudioMock() {
+function createAudioMock(overrides = {}) {
     return {
         playPad: vi.fn(),
         playStart: vi.fn(),
         playSuccess: vi.fn(),
         playError: vi.fn(),
+        setVolume: vi.fn(),
         setEnabled: vi.fn(),
-        unlock: vi.fn(),
+        unlock: vi.fn(() => Promise.resolve(true)),
+        isSupported: () => true,
+        ...overrides,
     };
 }
 

@@ -1,15 +1,25 @@
+import {
+    normalizeSimonAudioVolume,
+    SIMON_DEFAULT_AUDIO_PREFERENCES,
+} from './audio-preferences.js';
+
 const PAD_FREQUENCIES = [246.94, 329.63, 392.0, 523.25];
 const START_PATTERN = [261.63, 329.63];
 const SUCCESS_PATTERN = [392.0, 523.25, 659.25];
 const ERROR_PATTERN = [220.0, 174.61];
+const MAX_TONE_VOLUME = 0.12;
 
 export class SimonAudio {
-    constructor({ contextFactory = createAudioContext, volume = 0.08 } = {}) {
+    constructor({ contextFactory = createAudioContext, volume = SIMON_DEFAULT_AUDIO_PREFERENCES.volume } = {}) {
         this.contextFactory = contextFactory;
-        this.volume = volume;
+        this.volume = normalizeSimonAudioVolume(volume);
         this.enabled = true;
         this.context = null;
         this.unlocked = false;
+    }
+
+    isSupported() {
+        return Boolean(getAudioContextClass());
     }
 
     setEnabled(enabled) {
@@ -18,6 +28,19 @@ export class SimonAudio {
         if (!enabled) {
             this.unlocked = false;
         }
+    }
+
+    setVolume(volume) {
+        this.volume = normalizeSimonAudioVolume(volume);
+        return this.volume;
+    }
+
+    getVolume() {
+        return this.volume;
+    }
+
+    isEnabled() {
+        return this.enabled;
     }
 
     async unlock() {
@@ -79,7 +102,7 @@ export class SimonAudio {
         const currentTime = this.context.currentTime;
         const attack = 0.008;
         const release = 0.05;
-        const toneVolume = this.volume * volumeMultiplier;
+        const toneVolume = (this.volume / 100) * MAX_TONE_VOLUME * volumeMultiplier;
 
         oscillator.type = type;
         oscillator.frequency.value = frequency;
@@ -104,14 +127,18 @@ export class SimonAudio {
     }
 
     canPlay() {
-        return this.enabled && this.unlocked && this.context;
+        return this.enabled && this.unlocked && this.context && this.volume > 0;
     }
 }
 
 function createAudioContext() {
-    const AudioContextClass = globalThis.AudioContext ?? globalThis.webkitAudioContext ?? null;
+    const AudioContextClass = getAudioContextClass();
 
     return AudioContextClass ? new AudioContextClass() : null;
+}
+
+function getAudioContextClass() {
+    return globalThis.AudioContext ?? globalThis.webkitAudioContext ?? null;
 }
 
 function delay(duration) {

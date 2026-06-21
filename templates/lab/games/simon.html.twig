@@ -15,8 +15,6 @@
             labels: {
                 start: 'simon.actions.start'|trans,
                 restart: 'simon.actions.restart'|trans,
-                soundOn: 'simon.sound.on'|trans,
-                soundOff: 'simon.sound.off'|trans,
                 status: {
                     idle: 'simon.status.idle'|trans,
                     preparation: 'simon.status.preparation'|trans,
@@ -24,6 +22,17 @@
                     player: 'simon.status.player'|trans,
                     success: 'simon.status.success'|trans,
                     failure: 'simon.status.failure'|trans,
+                },
+                audio: {
+                    eyebrow: 'simon.audio.eyebrow'|trans,
+                    title: 'simon.audio.title'|trans,
+                    toggleOn: 'simon.audio.toggle_on'|trans,
+                    toggleOff: 'simon.audio.toggle_off'|trans,
+                    volumeLabel: 'simon.audio.volume_label'|trans,
+                    volumeValue: 'simon.audio.volume_value'|trans,
+                    active: 'simon.audio.active'|trans,
+                    muted: 'simon.audio.muted'|trans,
+                    unavailable: 'simon.audio.unavailable'|trans,
                 },
                 keyboard: {
                     title: 'simon.keyboard.title'|trans,
@@ -68,17 +77,63 @@
 
                 <button
                     type="button"
-                    class="button button-secondary"
+                    class="button button-secondary simon-audio__toggle"
                     data-simon-sound
                     aria-pressed="true"
+                    aria-label="{{ 'simon.audio.toggle_on'|trans }}"
+                    title="{{ 'simon.audio.toggle_on'|trans }}"
                 >
-                    {{ 'simon.sound.on'|trans }}
+                    <span class="simon-audio__icon simon-audio__icon--on" data-simon-sound-icon="on" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                            <path d="M5 10v4h4l5 4V6l-5 4H5z" fill="currentColor"/>
+                            <path d="M16.5 8.5a4 4 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+
+                    <span class="simon-audio__icon simon-audio__icon--off" data-simon-sound-icon="off" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                            <path d="M5 10v4h4l5 4V6l-5 4H5z" fill="currentColor"/>
+                            <path d="M16 8l5 5m0-5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </span>
                 </button>
 
                 <a class="button button-secondary" href="{{ path('app_lab_index') }}">
                     {{ 'simon.actions.back'|trans }}
                 </a>
             </div>
+
+            <article class="simon-audio" data-simon-audio>
+                <div class="simon-audio__header">
+                    <p class="eyebrow">{{ 'simon.audio.eyebrow'|trans }}</p>
+
+                    <h2>{{ 'simon.audio.title'|trans }}</h2>
+                </div>
+
+                <div class="simon-audio__control">
+                    <label class="simon-audio__volume-label" for="simon-volume">
+                        {{ 'simon.audio.volume_label'|trans }}
+                    </label>
+
+                    <input
+                        id="simon-volume"
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="1"
+                        value="75"
+                        data-simon-volume
+                    >
+
+                    <output class="simon-audio__value" data-simon-volume-value for="simon-volume">
+                        {{ 'simon.audio.volume_value'|trans({ volume: 75 }) }}
+                    </output>
+                </div>
+
+                <p class="simon-audio__status" data-simon-audio-feedback aria-live="polite">
+                    {{ 'simon.audio.active'|trans({ volume: 75 }) }}
+                </p>
+            </article>
 
             <p class="simon-hero__note">
                 {{ 'simon.sound.note'|trans|highlight_keywords }}

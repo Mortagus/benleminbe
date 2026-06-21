@@ -75,6 +75,17 @@ simon:
         off: "Son coupé"
         note: "Le son démarre uniquement après une interaction explicite, comme l’exige le navigateur."
 
+    audio:
+        eyebrow: "Audio"
+        title: "Son et volume"
+        toggle_on: "Couper le son"
+        toggle_off: "Activer le son"
+        volume_label: "Volume"
+        volume_value: "{volume} %"
+        active: "Son activé à {volume} %."
+        muted: "Son coupé. Volume mémorisé : {volume} %."
+        unavailable: "Le son n’est pas disponible dans ce navigateur."
+
     metrics:
         label: "Résumé de la partie"
         status: "État"

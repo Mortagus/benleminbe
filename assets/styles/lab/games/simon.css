@@ -35,6 +35,93 @@
     align-items: center;
 }
 
+.simon-hero__audio {
+    display: grid;
+    gap: 0.85rem;
+    max-width: 28rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 18px;
+    background: var(--link-card-bg);
+    box-shadow: var(--link-card-shadow);
+}
+
+.simon-audio__header,
+.simon-audio__control {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.simon-audio__header h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 1.2rem;
+    line-height: 1.2;
+}
+
+.simon-audio__control {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.85rem;
+    align-items: center;
+}
+
+.simon-audio__volume-label {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.simon-audio__control input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+}
+
+.simon-audio__value {
+    min-width: 4rem;
+    color: var(--text);
+    font-weight: 800;
+    text-align: right;
+}
+
+.simon-audio__status {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.simon-hero__actions .simon-audio__toggle {
+    min-width: 0;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+}
+
+.simon-audio__toggle .simon-audio__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.simon-audio__toggle .simon-audio__icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.simon-page[data-simon-audio-muted="true"] .simon-audio__icon--on,
+.simon-page:not([data-simon-audio-muted="true"]) .simon-audio__icon--off {
+    display: none;
+}
+
+.simon-page[data-simon-audio-muted="true"] .simon-audio__toggle {
+    border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
+    background: color-mix(in srgb, var(--accent) 6%, var(--card));
+}
+
 .simon-hero__note {
     max-width: 46rem;
     margin: 0;
@@ -519,6 +606,20 @@
     .simon-page .button {
         min-width: 0;
         width: 100%;
+    }
+
+    .simon-hero__audio {
+        width: 100%;
+        max-width: none;
+    }
+
+    .simon-audio__control {
+        grid-template-columns: 1fr;
+    }
+
+    .simon-audio__value {
+        min-width: 0;
+        text-align: left;
     }
 
     .simon-keyboard__row {

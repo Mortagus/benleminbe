@@ -86,6 +86,10 @@ simon:
         toggle_off: "Enable sound"
         volume_label: "Volume"
         volume_value: "{volume} %"
+        note_duration_label: "Note duration"
+        note_duration_value: "{value} %"
+        reverb_label: "Reverb"
+        reverb_value: "{value} %"
         active: "Sound enabled at {volume} %."
         muted: "Sound muted. Stored volume: {volume} %."
         unavailable: "Sound is not available in this browser."
@@ -167,6 +171,9 @@ simon:
             bottom_right:
                 label: "Bottom right"
                 aria: "Bottom-right zone, key S"
+
+    stage:
+        label: "Game stage"
 
     instructions:
         eyebrow: "Controls"

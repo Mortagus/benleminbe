@@ -1,5 +1,7 @@
 import {
     normalizeSimonAudioVolume,
+    normalizeSimonAudioNoteDuration,
+    normalizeSimonAudioReverb,
     SIMON_DEFAULT_AUDIO_PREFERENCES,
 } from './audio-preferences.js';
 import {
@@ -13,6 +15,9 @@ import {
 
 const MAX_TONE_VOLUME = 0.12;
 const PATTERN_GAP = 40;
+const REVERB_WET_MIX = 0.28;
+const REVERB_IMPULSE_DURATION = 1.2;
+const REVERB_IMPULSE_DECAY = 2.6;
 
 export class SimonAudio {
     constructor({
@@ -20,14 +25,19 @@ export class SimonAudio {
         volume = SIMON_DEFAULT_AUDIO_PREFERENCES.volume,
         palette = SIMON_DEFAULT_AUDIO_PREFERENCES.palette,
         noteSet = SIMON_DEFAULT_AUDIO_PREFERENCES.noteSet,
+        noteDuration = SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration,
+        reverb = SIMON_DEFAULT_AUDIO_PREFERENCES.reverb,
     } = {}) {
         this.contextFactory = contextFactory;
         this.volume = normalizeSimonAudioVolume(volume);
         this.paletteId = normalizeSimonSoundPaletteId(palette);
         this.noteSetId = normalizeSimonSoundNoteSetId(noteSet);
+        this.noteDuration = normalizeSimonAudioNoteDuration(noteDuration);
+        this.reverb = normalizeSimonAudioReverb(reverb);
         this.enabled = true;
         this.context = null;
         this.unlocked = false;
+        this.outputGraph = null;
         this.previewToken = 0;
         this.previewing = false;
         this.previewNodes = new Set();
@@ -81,6 +91,18 @@ export class SimonAudio {
         return this.noteSetId;
     }
 
+    setNoteDuration(noteDuration) {
+        this.noteDuration = normalizeSimonAudioNoteDuration(noteDuration);
+        return this.noteDuration;
+    }
+
+    setReverb(reverb) {
+        this.reverb = normalizeSimonAudioReverb(reverb);
+        this.syncOutputMix();
+
+        return this.reverb;
+    }
+
     getPalette() {
         return this.paletteId;
     }
@@ -91,6 +113,14 @@ export class SimonAudio {
 
     getNoteSet() {
         return this.noteSetId;
+    }
+
+    getNoteDuration() {
+        return this.noteDuration;
+    }
+
+    getReverb() {
+        return this.reverb;
     }
 
     getNoteSetConfig() {
@@ -129,6 +159,7 @@ export class SimonAudio {
         }
 
         this.unlocked = true;
+        this.ensureOutputGraph();
 
         return true;
     }
@@ -244,20 +275,27 @@ export class SimonAudio {
             return Promise.resolve();
         }
 
+        this.ensureOutputGraph();
+
         const oscillator = this.context.createOscillator();
         const gain = this.context.createGain();
         const currentTime = this.context.currentTime;
         const toneVolume = (this.volume / 100) * MAX_TONE_VOLUME * volumeMultiplier;
+        const effectiveDuration = Math.max(0.01, duration * (this.noteDuration / 100));
 
         oscillator.type = type;
         oscillator.frequency.value = frequency;
 
         gain.gain.setValueAtTime(0.0001, currentTime);
         gain.gain.linearRampToValueAtTime(toneVolume, currentTime + attack);
-        gain.gain.linearRampToValueAtTime(0.0001, currentTime + duration);
+        gain.gain.linearRampToValueAtTime(0.0001, currentTime + effectiveDuration);
 
         oscillator.connect(gain);
-        gain.connect(this.context.destination);
+        gain.connect(this.outputGraph?.dryGain ?? this.context.destination);
+
+        if (this.outputGraph?.convolver) {
+            gain.connect(this.outputGraph.convolver);
+        }
 
         return new Promise(resolve => {
             let settled = false;
@@ -298,7 +336,7 @@ export class SimonAudio {
             oscillator.onended = settle;
 
             oscillator.start(currentTime);
-            oscillator.stop(currentTime + duration + release);
+            oscillator.stop(currentTime + effectiveDuration + release);
         });
     }
 
@@ -336,6 +374,53 @@ export class SimonAudio {
 
         this.previewNodes.clear();
     }
+
+    ensureOutputGraph() {
+        if (!this.context || this.outputGraph) {
+            return this.outputGraph;
+        }
+
+        const dryGain = this.context.createGain();
+        const wetGain = this.context.createGain();
+
+        dryGain.connect(this.context.destination);
+        wetGain.connect(this.context.destination);
+
+        let convolver = null;
+
+        if (typeof this.context.createConvolver === 'function' && typeof this.context.createBuffer === 'function') {
+            try {
+                convolver = this.context.createConvolver();
+                convolver.buffer = createReverbImpulseResponse(this.context);
+                convolver.connect(wetGain);
+            } catch {
+                convolver = null;
+            }
+        }
+
+        this.outputGraph = {
+            dryGain,
+            wetGain,
+            convolver,
+        };
+
+        this.syncOutputMix();
+
+        return this.outputGraph;
+    }
+
+    syncOutputMix() {
+        if (!this.outputGraph) {
+            return;
+        }
+
+        const wetMix = this.outputGraph.convolver
+            ? Math.min(REVERB_WET_MIX, (this.reverb / 100) * REVERB_WET_MIX)
+            : 0;
+
+        this.outputGraph.dryGain.gain.value = 1 - wetMix;
+        this.outputGraph.wetGain.gain.value = wetMix;
+    }
 }
 
 function createAudioContext() {
@@ -352,4 +437,21 @@ function delay(duration) {
     return new Promise(resolve => {
         globalThis.setTimeout(resolve, duration);
     });
+}
+
+function createReverbImpulseResponse(context) {
+    const sampleRate = context.sampleRate ?? 44100;
+    const length = Math.max(1, Math.floor(sampleRate * REVERB_IMPULSE_DURATION));
+    const buffer = context.createBuffer(2, length, sampleRate);
+
+    for (let channelIndex = 0; channelIndex < buffer.numberOfChannels; channelIndex += 1) {
+        const channel = buffer.getChannelData(channelIndex);
+
+        for (let sampleIndex = 0; sampleIndex < length; sampleIndex += 1) {
+            const decay = Math.pow(1 - (sampleIndex / length), REVERB_IMPULSE_DECAY);
+            channel[sampleIndex] = (Math.random() * 2 - 1) * decay;
+        }
+    }
+
+    return buffer;
 }

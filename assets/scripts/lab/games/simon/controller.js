@@ -68,6 +68,14 @@ export class SimonGameController {
             this.handleAudioVolumeInput();
         });
 
+        this.elements.audioNoteDurationInput?.addEventListener('input', () => {
+            this.handleAudioNoteDurationInput();
+        });
+
+        this.elements.audioReverbInput?.addEventListener('input', () => {
+            this.handleAudioReverbInput();
+        });
+
         this.elements.audioPaletteSelect?.addEventListener('change', () => {
             this.handleAudioPaletteChange();
         });
@@ -115,6 +123,7 @@ export class SimonGameController {
         const statusText = this.root.querySelector('[data-simon-status]');
         const currentLevel = this.root.querySelector('[data-simon-level]');
         const bestScore = this.root.querySelector('[data-simon-best]');
+        const stage = this.root.querySelector('[data-simon-stage]');
         const board = this.root.querySelector('[data-simon-board]');
         const padButtons = Array.from(this.root.querySelectorAll('[data-simon-pad]'));
         const keyboardFeedback = this.root.querySelector('[data-simon-keyboard-feedback]');
@@ -125,6 +134,10 @@ export class SimonGameController {
         const audioVolumeInput = this.root.querySelector('[data-simon-volume]');
         const audioVolumeValue = this.root.querySelector('[data-simon-volume-value]');
         const audioFeedback = this.root.querySelector('[data-simon-audio-feedback]');
+        const audioNoteDurationInput = this.root.querySelector('[data-simon-note-duration]');
+        const audioNoteDurationValue = this.root.querySelector('[data-simon-note-duration-value]');
+        const audioReverbInput = this.root.querySelector('[data-simon-reverb]');
+        const audioReverbValue = this.root.querySelector('[data-simon-reverb-value]');
         const audioPaletteSelect = this.root.querySelector('[data-simon-audio-palette]');
         const audioPaletteDescription = this.root.querySelector('[data-simon-audio-palette-description]');
         const audioPalettePreview = this.root.querySelector('[data-simon-audio-palette-preview]');
@@ -139,6 +152,10 @@ export class SimonGameController {
             || !audioVolumeInput
             || !audioVolumeValue
             || !audioFeedback
+            || !audioNoteDurationInput
+            || !audioNoteDurationValue
+            || !audioReverbInput
+            || !audioReverbValue
             || !audioPaletteSelect
             || !audioPaletteDescription
             || !audioPalettePreview
@@ -149,6 +166,7 @@ export class SimonGameController {
             || !statusText
             || !currentLevel
             || !bestScore
+            || !stage
             || !board
             || padButtons.length !== 4
             || !keyboardFeedback
@@ -165,6 +183,10 @@ export class SimonGameController {
             audioVolumeInput,
             audioVolumeValue,
             audioFeedback,
+            audioNoteDurationInput,
+            audioNoteDurationValue,
+            audioReverbInput,
+            audioReverbValue,
             audioPaletteSelect,
             audioPaletteDescription,
             audioPalettePreview,
@@ -175,6 +197,7 @@ export class SimonGameController {
             statusText,
             currentLevel,
             bestScore,
+            stage,
             board,
             padButtons,
             keyboardFeedback,
@@ -208,6 +231,10 @@ export class SimonGameController {
                     toggleOff: config.audio?.toggleOff ?? 'Activer le son',
                     volumeLabel: config.audio?.volumeLabel ?? 'Volume',
                     volumeValue: config.audio?.volumeValue ?? '{volume} %',
+                    noteDurationLabel: config.audio?.noteDurationLabel ?? 'Durée des notes',
+                    noteDurationValue: config.audio?.noteDurationValue ?? '{value} %',
+                    reverbLabel: config.audio?.reverbLabel ?? 'Réverbération',
+                    reverbValue: config.audio?.reverbValue ?? '{value} %',
                     active: config.audio?.active ?? 'Son activé à {volume} %.',
                     muted: config.audio?.muted ?? 'Son coupé. Volume mémorisé : {volume} %.',
                     unavailable: config.audio?.unavailable ?? 'Le son n’est pas disponible dans ce navigateur.',
@@ -264,6 +291,10 @@ export class SimonGameController {
                     toggleOff: 'Activer le son',
                     volumeLabel: 'Volume',
                     volumeValue: '{volume} %',
+                    noteDurationLabel: 'Durée des notes',
+                    noteDurationValue: '{value} %',
+                    reverbLabel: 'Réverbération',
+                    reverbValue: '{value} %',
                     active: 'Son activé à {volume} %.',
                     muted: 'Son coupé. Volume mémorisé : {volume} %.',
                     unavailable: 'Le son n’est pas disponible dans ce navigateur.',
@@ -315,6 +346,7 @@ export class SimonGameController {
         this.renderScores();
         this.setStartButtonLabel(this.config.labels.start);
         this.setPreparationState();
+        this.focusGameStage();
 
         if (this.soundEnabled && this.audioAvailable) {
             await this.audio.unlock();
@@ -453,6 +485,16 @@ export class SimonGameController {
 
     handleAudioVolumeInput() {
         this.audioPreferences.setVolume(this.elements.audioVolumeInput.value);
+        this.applyAudioPreferences();
+    }
+
+    handleAudioNoteDurationInput() {
+        this.audioPreferences.setNoteDuration(this.elements.audioNoteDurationInput.value);
+        this.applyAudioPreferences();
+    }
+
+    handleAudioReverbInput() {
+        this.audioPreferences.setReverb(this.elements.audioReverbInput.value);
         this.applyAudioPreferences();
     }
 
@@ -632,12 +674,22 @@ export class SimonGameController {
             this.audio.setNoteSet(this.audioPreferences.getNoteSet());
         }
 
+        if (typeof this.audio.setNoteDuration === 'function') {
+            this.audio.setNoteDuration(this.audioPreferences.getNoteDuration());
+        }
+
+        if (typeof this.audio.setReverb === 'function') {
+            this.audio.setReverb(this.audioPreferences.getReverb());
+        }
+
         this.renderAudioState();
     }
 
     renderAudioState() {
         const muted = !this.soundEnabled;
         const volume = this.audioVolume;
+        const noteDuration = this.audioPreferences.getNoteDuration();
+        const reverb = this.audioPreferences.getReverb();
         const previewing = typeof this.audio.isPreviewing === 'function'
             ? this.audio.isPreviewing()
             : false;
@@ -677,6 +729,24 @@ export class SimonGameController {
         }));
         this.elements.audioVolumeValue.textContent = formatSimonKeyboardTemplate(this.config.audio.volumeValue, {
             volume: String(volume),
+        });
+
+        this.elements.audioNoteDurationInput.disabled = !this.audioAvailable;
+        this.elements.audioNoteDurationInput.value = String(noteDuration);
+        this.elements.audioNoteDurationInput.setAttribute('aria-valuetext', formatSimonKeyboardTemplate(this.config.audio.noteDurationValue, {
+            value: String(noteDuration),
+        }));
+        this.elements.audioNoteDurationValue.textContent = formatSimonKeyboardTemplate(this.config.audio.noteDurationValue, {
+            value: String(noteDuration),
+        });
+
+        this.elements.audioReverbInput.disabled = !this.audioAvailable;
+        this.elements.audioReverbInput.value = String(reverb);
+        this.elements.audioReverbInput.setAttribute('aria-valuetext', formatSimonKeyboardTemplate(this.config.audio.reverbValue, {
+            value: String(reverb),
+        }));
+        this.elements.audioReverbValue.textContent = formatSimonKeyboardTemplate(this.config.audio.reverbValue, {
+            value: String(reverb),
         });
 
         this.elements.audioFeedback.textContent = this.audioAvailable
@@ -935,6 +1005,18 @@ export class SimonGameController {
             successDelay: 620,
             failureDelay: 640,
         };
+    }
+
+    focusGameStage() {
+        if (!this.elements?.stage || typeof this.elements.stage.focus !== 'function') {
+            return;
+        }
+
+        try {
+            this.elements.stage.focus({ preventScroll: true });
+        } catch {
+            this.elements.stage.focus();
+        }
     }
 }
 

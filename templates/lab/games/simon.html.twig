@@ -30,6 +30,10 @@
                     toggleOff: 'simon.audio.toggle_off'|trans,
                     volumeLabel: 'simon.audio.volume_label'|trans,
                     volumeValue: 'simon.audio.volume_value'|trans,
+                    noteDurationLabel: 'simon.audio.note_duration_label'|trans,
+                    noteDurationValue: 'simon.audio.note_duration_value'|trans,
+                    reverbLabel: 'simon.audio.reverb_label'|trans,
+                    reverbValue: 'simon.audio.reverb_value'|trans,
                     active: 'simon.audio.active'|trans,
                     muted: 'simon.audio.muted'|trans,
                     unavailable: 'simon.audio.unavailable'|trans,
@@ -140,7 +144,12 @@
                 </div>
 
                 <div class="simon-layout">
-                    <div class="simon-stage">
+                    <div
+                        class="simon-stage"
+                        data-simon-stage
+                        tabindex="-1"
+                        aria-label="{{ 'simon.stage.label'|trans }}"
+                    >
                         <div
                             class="simon-board"
                             data-simon-board
@@ -251,6 +260,46 @@
 
                                     <output class="simon-audio__value" data-simon-volume-value for="simon-volume">
                                         {{ 'simon.audio.volume_value'|trans({ volume: 75 }) }}
+                                    </output>
+                                </div>
+
+                                <div class="simon-audio__control">
+                                    <label class="simon-audio__volume-label" for="simon-note-duration">
+                                        {{ 'simon.audio.note_duration_label'|trans }}
+                                    </label>
+
+                                    <input
+                                        id="simon-note-duration"
+                                        type="range"
+                                        min="50"
+                                        max="160"
+                                        step="1"
+                                        value="100"
+                                        data-simon-note-duration
+                                    >
+
+                                    <output class="simon-audio__value" data-simon-note-duration-value for="simon-note-duration">
+                                        {{ 'simon.audio.note_duration_value'|trans({ value: 100 }) }}
+                                    </output>
+                                </div>
+
+                                <div class="simon-audio__control">
+                                    <label class="simon-audio__volume-label" for="simon-reverb">
+                                        {{ 'simon.audio.reverb_label'|trans }}
+                                    </label>
+
+                                    <input
+                                        id="simon-reverb"
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        step="1"
+                                        value="12"
+                                        data-simon-reverb
+                                    >
+
+                                    <output class="simon-audio__value" data-simon-reverb-value for="simon-reverb">
+                                        {{ 'simon.audio.reverb_value'|trans({ value: 12 }) }}
                                     </output>
                                 </div>
 

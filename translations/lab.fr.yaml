@@ -86,6 +86,10 @@ simon:
         toggle_off: "Activer le son"
         volume_label: "Volume"
         volume_value: "{volume} %"
+        note_duration_label: "Durée des notes"
+        note_duration_value: "{value} %"
+        reverb_label: "Réverbération"
+        reverb_value: "{value} %"
         active: "Son activé à {volume} %."
         muted: "Son coupé. Volume mémorisé : {volume} %."
         unavailable: "Le son n’est pas disponible dans ce navigateur."
@@ -167,6 +171,9 @@ simon:
             bottom_right:
                 label: "Bas droite"
                 aria: "Zone en bas à droite, touche S"
+
+    stage:
+        label: "Plateau de jeu"
 
     instructions:
         eyebrow: "Contrôles"

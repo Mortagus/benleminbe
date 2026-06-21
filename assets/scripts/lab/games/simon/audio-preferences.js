@@ -2,6 +2,8 @@ import {
     loadSimonPreferences,
     normalizeSimonAudioPreferences,
     normalizeSimonAudioVolume,
+    normalizeSimonAudioNoteDuration,
+    normalizeSimonAudioReverb,
     normalizeSimonSoundPaletteId,
     normalizeSimonSoundNoteSetId,
     SIMON_DEFAULT_AUDIO_PREFERENCES,
@@ -32,6 +34,14 @@ export class SimonAudioPreferences {
 
     getNoteSet() {
         return this.preferences.noteSet;
+    }
+
+    getNoteDuration() {
+        return this.preferences.noteDuration;
+    }
+
+    getReverb() {
+        return this.preferences.reverb;
     }
 
     getEffectiveVolume() {
@@ -78,6 +88,26 @@ export class SimonAudioPreferences {
         this.persist();
 
         return this.getNoteSet();
+    }
+
+    setNoteDuration(noteDuration) {
+        this.preferences = {
+            ...this.preferences,
+            noteDuration: normalizeSimonAudioNoteDuration(noteDuration),
+        };
+        this.persist();
+
+        return this.getNoteDuration();
+    }
+
+    setReverb(reverb) {
+        this.preferences = {
+            ...this.preferences,
+            reverb: normalizeSimonAudioReverb(reverb),
+        };
+        this.persist();
+
+        return this.getReverb();
     }
 
     toggleMuted() {
@@ -134,6 +164,8 @@ export function resetSimonAudioPreferences(storage = globalThis.localStorage ?? 
 
 export {
     normalizeSimonAudioVolume,
+    normalizeSimonAudioNoteDuration,
+    normalizeSimonAudioReverb,
     SIMON_DEFAULT_AUDIO_PREFERENCES,
     validateSimonAudioPreferences,
 };

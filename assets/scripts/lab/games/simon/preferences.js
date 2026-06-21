@@ -25,6 +25,8 @@ export const SIMON_DEFAULT_AUDIO_PREFERENCES = Object.freeze({
     volume: 75,
     palette: SIMON_DEFAULT_SOUND_PALETTE_ID,
     noteSet: SIMON_DEFAULT_SOUND_NOTE_SET_ID,
+    noteDuration: 100,
+    reverb: 12,
 });
 
 export const SIMON_DEFAULT_PREFERENCES = Object.freeze({
@@ -239,6 +241,8 @@ export function normalizeSimonAudioPreferences(preferences) {
         volume: normalizeSimonAudioVolume(readVolumePreference(preferences)),
         palette: normalizeSimonSoundPaletteId(readPalettePreference(preferences)),
         noteSet: normalizeSimonSoundNoteSetId(readNoteSetPreference(preferences)),
+        noteDuration: normalizeSimonAudioNoteDuration(readNoteDurationPreference(preferences)),
+        reverb: normalizeSimonAudioReverb(readReverbPreference(preferences)),
     };
 }
 
@@ -508,6 +512,8 @@ function validateSimonAudioPreferencesFromObject(preferences) {
         volume,
         palette: normalizeSimonSoundPaletteId(readPalettePreference(preferences)),
         noteSet: normalizeSimonSoundNoteSetId(readNoteSetPreference(preferences)),
+        noteDuration: normalizeSimonAudioNoteDuration(readNoteDurationPreference(preferences)),
+        reverb: normalizeSimonAudioReverb(readReverbPreference(preferences)),
     };
 }
 
@@ -555,6 +561,22 @@ function readNoteSetPreference(preferences) {
     }
 
     return SIMON_DEFAULT_AUDIO_PREFERENCES.noteSet;
+}
+
+function readNoteDurationPreference(preferences) {
+    if (Object.hasOwn(preferences, 'noteDuration')) {
+        return preferences.noteDuration;
+    }
+
+    return SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration;
+}
+
+function readReverbPreference(preferences) {
+    if (Object.hasOwn(preferences, 'reverb')) {
+        return preferences.reverb;
+    }
+
+    return SIMON_DEFAULT_AUDIO_PREFERENCES.reverb;
 }
 
 function coerceSimonAudioVolume(rawVolume) {
@@ -615,6 +637,42 @@ function normalizeSimonAudioMuted(rawMuted) {
     const muted = normalizeSimonAudioBoolean(rawMuted);
 
     return muted ?? SIMON_DEFAULT_AUDIO_PREFERENCES.muted;
+}
+
+export function normalizeSimonAudioNoteDuration(rawDuration) {
+    if (rawDuration === null || rawDuration === undefined) {
+        return SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration;
+    }
+
+    if (typeof rawDuration === 'string' && rawDuration.trim() === '') {
+        return SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration;
+    }
+
+    const numericDuration = Number(rawDuration);
+
+    if (!Number.isFinite(numericDuration)) {
+        return SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration;
+    }
+
+    return Math.min(160, Math.max(50, Math.round(numericDuration)));
+}
+
+export function normalizeSimonAudioReverb(rawReverb) {
+    if (rawReverb === null || rawReverb === undefined) {
+        return SIMON_DEFAULT_AUDIO_PREFERENCES.reverb;
+    }
+
+    if (typeof rawReverb === 'string' && rawReverb.trim() === '') {
+        return SIMON_DEFAULT_AUDIO_PREFERENCES.reverb;
+    }
+
+    const numericReverb = Number(rawReverb);
+
+    if (!Number.isFinite(numericReverb)) {
+        return SIMON_DEFAULT_AUDIO_PREFERENCES.reverb;
+    }
+
+    return Math.min(100, Math.max(0, Math.round(numericReverb)));
 }
 
 export {

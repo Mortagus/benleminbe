@@ -56,6 +56,10 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.elements.soundButton.getAttribute('aria-pressed')).toBe('true');
         expect(controller.elements.audioVolumeInput.value).toBe('75');
         expect(controller.elements.audioVolumeValue.textContent).toBe('75 %');
+        expect(controller.elements.audioNoteDurationInput.value).toBe('100');
+        expect(controller.elements.audioNoteDurationValue.textContent).toBe('100 %');
+        expect(controller.elements.audioReverbInput.value).toBe('12');
+        expect(controller.elements.audioReverbValue.textContent).toBe('12 %');
         expect(controller.elements.audioFeedback.textContent).toBe('Son activé à 75 %.');
         expect(controller.elements.audioPaletteSelect.value).toBe('classic');
         expect(controller.elements.audioPaletteDescription.textContent).toBe('Sons simples, ronds et lisibles.');
@@ -68,6 +72,8 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.audio.setVolume).toHaveBeenCalledWith(75);
         expect(controller.audio.setPalette).toHaveBeenCalledWith('classic');
         expect(controller.audio.setNoteSet).toHaveBeenCalledWith('major');
+        expect(controller.audio.setNoteDuration).toHaveBeenCalledWith(100);
+        expect(controller.audio.setReverb).toHaveBeenCalledWith(12);
 
         controller.elements.soundButton.click();
         await Promise.resolve();
@@ -85,8 +91,18 @@ describe('Simon game controller keyboard handling', () => {
         controller.elements.audioVolumeInput.value = '55';
         controller.elements.audioVolumeInput.dispatchEvent({ type: 'input' });
 
+        controller.elements.audioNoteDurationInput.value = '130';
+        controller.elements.audioNoteDurationInput.dispatchEvent({ type: 'input' });
+
+        controller.elements.audioReverbInput.value = '28';
+        controller.elements.audioReverbInput.dispatchEvent({ type: 'input' });
+
         expect(controller.elements.audioVolumeValue.textContent).toBe('55 %');
         expect(controller.audio.setVolume).toHaveBeenLastCalledWith(55);
+        expect(controller.elements.audioNoteDurationValue.textContent).toBe('130 %');
+        expect(controller.audio.setNoteDuration).toHaveBeenLastCalledWith(130);
+        expect(controller.elements.audioReverbValue.textContent).toBe('28 %');
+        expect(controller.audio.setReverb).toHaveBeenLastCalledWith(28);
         expect(controller.elements.audioFeedback.textContent).toBe('Son coupé. Volume mémorisé : 55 %.');
         expect(controller.root.dataset.simonAudioMuted).toBe('true');
 
@@ -110,6 +126,8 @@ describe('Simon game controller keyboard handling', () => {
                 volume: 55,
                 palette: 'classic',
                 noteSet: 'major',
+                noteDuration: 130,
+                reverb: 28,
             },
         });
     });
@@ -138,6 +156,8 @@ describe('Simon game controller keyboard handling', () => {
                 volume: 75,
                 palette: 'classic',
                 noteSet: 'blues',
+                noteDuration: 100,
+                reverb: 12,
             },
         });
     });
@@ -168,6 +188,8 @@ describe('Simon game controller keyboard handling', () => {
                 volume: 75,
                 palette: 'arcade',
                 noteSet: 'major',
+                noteDuration: 100,
+                reverb: 12,
             },
         });
 
@@ -193,6 +215,8 @@ describe('Simon game controller keyboard handling', () => {
 
         expect(controller.elements.soundButton.disabled).toBe(true);
         expect(controller.elements.audioVolumeInput.disabled).toBe(true);
+        expect(controller.elements.audioNoteDurationInput.disabled).toBe(true);
+        expect(controller.elements.audioReverbInput.disabled).toBe(true);
         expect(controller.elements.audioFeedback.textContent).toBe('Le son n’est pas disponible dans ce navigateur.');
     });
 
@@ -271,6 +295,7 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.PREPARATION);
         expect(controller.elements.statusText.textContent).toBe('Prépare-toi…');
         expect(controller.elements.padButtons.every(button => button.disabled)).toBe(true);
+        expect(controller.elements.stage.wasFocused).toBe(true);
 
         const preparationEvent = createKeyboardEvent({ key: 'S' });
         controller.handleKeydown(preparationEvent);
@@ -424,11 +449,18 @@ function createRoot() {
     const statusText = createElement('strong', 'simonStatus');
     const currentLevel = createElement('strong', 'simonLevel');
     const bestScore = createElement('strong', 'simonBest');
+    const stage = createElement('div', 'simonStage');
     const board = createElement('div', 'simonBoard');
     const audioVolumeInput = createElement('input', 'simonVolume');
     audioVolumeInput.value = '75';
     const audioVolumeValue = createElement('output', 'simonVolumeValue', '75 %');
     const audioFeedback = createElement('p', 'simonAudioFeedback', 'Son activé à 75 %.');
+    const audioNoteDurationInput = createElement('input', 'simonNoteDuration');
+    audioNoteDurationInput.value = '100';
+    const audioNoteDurationValue = createElement('output', 'simonNoteDurationValue', '100 %');
+    const audioReverbInput = createElement('input', 'simonReverb');
+    audioReverbInput.value = '12';
+    const audioReverbValue = createElement('output', 'simonReverbValue', '12 %');
     const audioPaletteSelect = createAudioPaletteSelect();
     const audioPaletteDescription = createElement('p', 'simonAudioPaletteDescription', 'Sons simples, ronds et lisibles.');
     const audioPalettePreview = createElement('button', 'simonAudioPalettePreview', 'Écouter un aperçu');
@@ -464,6 +496,10 @@ function createRoot() {
                     toggleOff: 'Activer le son',
                     volumeLabel: 'Volume',
                     volumeValue: '{volume} %',
+                    noteDurationLabel: 'Durée des notes',
+                    noteDurationValue: '{value} %',
+                    reverbLabel: 'Réverbération',
+                    reverbValue: '{value} %',
                     active: 'Son activé à {volume} %.',
                     muted: 'Son coupé. Volume mémorisé : {volume} %.',
                     unavailable: 'Le son n’est pas disponible dans ce navigateur.',
@@ -512,6 +548,8 @@ function createRoot() {
                     return currentLevel;
                 case '[data-simon-best]':
                     return bestScore;
+                case '[data-simon-stage]':
+                    return stage;
                 case '[data-simon-board]':
                     return board;
                 case '[data-simon-keyboard-feedback]':
@@ -524,6 +562,14 @@ function createRoot() {
                     return audioVolumeValue;
                 case '[data-simon-audio-feedback]':
                     return audioFeedback;
+                case '[data-simon-note-duration]':
+                    return audioNoteDurationInput;
+                case '[data-simon-note-duration-value]':
+                    return audioNoteDurationValue;
+                case '[data-simon-reverb]':
+                    return audioReverbInput;
+                case '[data-simon-reverb-value]':
+                    return audioReverbValue;
                 case '[data-simon-audio-palette]':
                     return audioPaletteSelect;
                 case '[data-simon-audio-palette-description]':
@@ -695,6 +741,8 @@ function createAudioMock(overrides = {}) {
         setEnabled: vi.fn(),
         setPalette: vi.fn(),
         setNoteSet: vi.fn(),
+        setNoteDuration: vi.fn(),
+        setReverb: vi.fn(),
         unlock: vi.fn(() => Promise.resolve(true)),
         playPalettePreview: vi.fn(() => Promise.resolve()),
         isPreviewing: vi.fn(() => false),

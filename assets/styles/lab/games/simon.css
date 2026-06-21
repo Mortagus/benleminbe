@@ -258,6 +258,12 @@
         0 20px 40px rgb(0 0 0 / 18%);
 }
 
+.simon-stage:focus,
+.simon-stage:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+}
+
 .simon-board {
     position: relative;
     width: min(100%, 34rem);

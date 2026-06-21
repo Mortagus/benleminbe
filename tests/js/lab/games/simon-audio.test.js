@@ -2,6 +2,8 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import { SimonAudio } from '../../../../assets/scripts/lab/games/simon/audio.js';
 import {
     loadSimonAudioPreferences,
+    normalizeSimonAudioNoteDuration,
+    normalizeSimonAudioReverb,
     normalizeSimonAudioVolume,
     resetSimonAudioPreferences,
     saveSimonAudioPreferences,
@@ -38,6 +40,8 @@ describe('Simon audio preferences', () => {
         expect(preferences.getVolume()).toBe(75);
         expect(preferences.getPalette()).toBe(SIMON_DEFAULT_SOUND_PALETTE_ID);
         expect(preferences.getNoteSet()).toBe(SIMON_DEFAULT_SOUND_NOTE_SET_ID);
+        expect(preferences.getNoteDuration()).toBe(SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration);
+        expect(preferences.getReverb()).toBe(SIMON_DEFAULT_AUDIO_PREFERENCES.reverb);
         expect(preferences.getEffectiveVolume()).toBe(75);
     });
 
@@ -47,6 +51,8 @@ describe('Simon audio preferences', () => {
 
         preferences.setPalette('arcade');
         preferences.setNoteSet('blues');
+        preferences.setNoteDuration(140);
+        preferences.setReverb(24);
         preferences.toggleMuted();
         preferences.setVolume(55);
         preferences.toggleMuted();
@@ -56,6 +62,8 @@ describe('Simon audio preferences', () => {
             volume: 55,
             palette: 'arcade',
             noteSet: 'blues',
+            noteDuration: 140,
+            reverb: 24,
         });
         expect(JSON.parse(storage.getItem(SIMON_AUDIO_STORAGE_KEY))).toEqual({
             version: 1,
@@ -67,6 +75,8 @@ describe('Simon audio preferences', () => {
                 volume: 55,
                 palette: 'arcade',
                 noteSet: 'blues',
+                noteDuration: 140,
+                reverb: 24,
             },
         });
     });
@@ -86,6 +96,8 @@ describe('Simon audio preferences', () => {
             volume: 80,
             palette: SIMON_DEFAULT_SOUND_PALETTE_ID,
             noteSet: SIMON_DEFAULT_SOUND_NOTE_SET_ID,
+            noteDuration: SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration,
+            reverb: SIMON_DEFAULT_AUDIO_PREFERENCES.reverb,
         });
         expect(JSON.parse(storage.getItem(SIMON_AUDIO_STORAGE_KEY))).toEqual({
             version: 1,
@@ -97,6 +109,8 @@ describe('Simon audio preferences', () => {
                 volume: 80,
                 palette: SIMON_DEFAULT_SOUND_PALETTE_ID,
                 noteSet: SIMON_DEFAULT_SOUND_NOTE_SET_ID,
+                noteDuration: SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration,
+                reverb: SIMON_DEFAULT_AUDIO_PREFERENCES.reverb,
             },
         });
         expect(storage.getItem(SIMON_LEGACY_AUDIO_STORAGE_KEY)).toBeNull();
@@ -105,14 +119,22 @@ describe('Simon audio preferences', () => {
             volume: 120,
             palette: 'unknown',
             noteSet: 'unknown',
+            noteDuration: 21,
+            reverb: 120,
         })).toEqual({
             muted: false,
             volume: 100,
             palette: SIMON_DEFAULT_SOUND_PALETTE_ID,
             noteSet: SIMON_DEFAULT_SOUND_NOTE_SET_ID,
+            noteDuration: 50,
+            reverb: 100,
         });
         expect(normalizeSimonAudioVolume(124)).toBe(100);
         expect(normalizeSimonAudioVolume(-10)).toBe(0);
+        expect(normalizeSimonAudioNoteDuration(175)).toBe(160);
+        expect(normalizeSimonAudioNoteDuration(35)).toBe(50);
+        expect(normalizeSimonAudioReverb(140)).toBe(100);
+        expect(normalizeSimonAudioReverb(-5)).toBe(0);
     });
 
     test('falls back to the default preferences when the stored data is invalid', () => {
@@ -127,6 +149,8 @@ describe('Simon audio preferences', () => {
             volume: 75,
             palette: SIMON_DEFAULT_SOUND_PALETTE_ID,
             noteSet: SIMON_DEFAULT_SOUND_NOTE_SET_ID,
+            noteDuration: SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration,
+            reverb: SIMON_DEFAULT_AUDIO_PREFERENCES.reverb,
         }, null)).toBe(false);
     });
 });
@@ -169,25 +193,32 @@ describe('Simon audio engine', () => {
             volume: 55,
             palette: 'arcade',
             noteSet: 'blues',
+            noteDuration: 150,
+            reverb: 50,
         });
 
         expect(audio.getPalette()).toBe('arcade');
         expect(audio.getPaletteConfig()).toBe(getSimonSoundPalette('arcade'));
         expect(audio.getNoteSet()).toBe('blues');
         expect(audio.getNoteSetConfig()).toBe(getSimonSoundNoteSet('blues'));
+        expect(audio.getNoteDuration()).toBe(150);
+        expect(audio.getReverb()).toBe(50);
 
         await audio.unlock();
         await audio.playPad(0);
         await audio.playStart();
 
         expect(context.createOscillator).toHaveBeenCalledTimes(3);
+        expect(context.createConvolver).toHaveBeenCalledTimes(1);
         expect(context.oscillators[0].type).toBe('square');
         expect(context.oscillators[0].frequency.value).toBeCloseTo(261.63, 2);
         expect(context.oscillators[1].type).toBe('square');
         expect(context.oscillators[1].frequency.value).toBeCloseTo(261.63, 2);
         expect(context.oscillators[2].type).toBe('square');
         expect(context.oscillators[2].frequency.value).toBeCloseTo(311.13, 2);
-        expect(context.gains[0].gain.linearRampToValueAtTime.mock.calls[0][0]).toBeCloseTo(0.05412, 5);
+        expect(context.gains[2].gain.linearRampToValueAtTime.mock.calls[0][0]).toBeCloseTo(0.05412, 5);
+        expect(context.gains[2].gain.linearRampToValueAtTime.mock.calls[1][1]).toBeCloseTo(10.12, 2);
+        expect(context.gains[1].gain.value).toBeCloseTo(0.14, 2);
 
         audio.setEnabled(false);
         await expect(audio.playPad(0)).resolves.toBeUndefined();
@@ -202,6 +233,8 @@ describe('Simon audio engine', () => {
             volume: 75,
             palette: 'synthwave',
             noteSet: 'pentatonic',
+            noteDuration: 100,
+            reverb: 12,
         });
 
         await audio.unlock();
@@ -245,6 +278,8 @@ function createAudioContextDouble() {
         destination: {},
         oscillators: [],
         gains: [],
+        wetGains: [],
+        convolverNodes: [],
         createGain: vi.fn(() => {
             const gain = {
                 gain: {
@@ -259,6 +294,23 @@ function createAudioContextDouble() {
 
             return gain;
         }),
+        createConvolver: vi.fn(() => {
+            const convolver = {
+                buffer: null,
+                connect: vi.fn(),
+                disconnect: vi.fn(),
+            };
+
+            context.convolverNodes.push(convolver);
+
+            return convolver;
+        }),
+        createBuffer: vi.fn((numberOfChannels, length, sampleRate) => ({
+            numberOfChannels,
+            length,
+            sampleRate,
+            getChannelData: vi.fn(() => new Float32Array(length)),
+        })),
         createOscillator: vi.fn(() => {
             const oscillator = {
                 type: null,

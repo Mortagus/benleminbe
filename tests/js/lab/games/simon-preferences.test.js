@@ -37,6 +37,8 @@ describe('Simon preference storage', () => {
                     volume: 64,
                     palette: 'arcade',
                     noteSet: 'minor',
+                    noteDuration: 110,
+                    reverb: 24,
                 },
             }),
         );
@@ -56,6 +58,8 @@ describe('Simon preference storage', () => {
                 volume: 64,
                 palette: 'arcade',
                 noteSet: 'minor',
+                noteDuration: 110,
+                reverb: 24,
             },
         });
     });
@@ -89,6 +93,8 @@ describe('Simon preference storage', () => {
                     volume: 88,
                     palette: 'crystal',
                     noteSet: 'pentatonic',
+                    noteDuration: 'bad',
+                    reverb: 14,
                 },
             }),
         );
@@ -108,6 +114,8 @@ describe('Simon preference storage', () => {
                 volume: 88,
                 palette: 'crystal',
                 noteSet: 'pentatonic',
+                noteDuration: SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration,
+                reverb: 14,
             },
         });
     });
@@ -127,6 +135,8 @@ describe('Simon preference storage', () => {
                     volume: 130,
                     palette: 'percussion',
                     noteSet: 'dorian',
+                    noteDuration: 140,
+                    reverb: 28,
                 },
             }),
         );
@@ -136,6 +146,8 @@ describe('Simon preference storage', () => {
             volume: 100,
             palette: 'percussion',
             noteSet: 'dorian',
+            noteDuration: 140,
+            reverb: 28,
         });
     });
 
@@ -154,6 +166,8 @@ describe('Simon preference storage', () => {
                     volume: 82,
                     palette: 'unknown',
                     noteSet: 'unknown',
+                    noteDuration: 17,
+                    reverb: 200,
                 },
             }),
         );
@@ -163,6 +177,8 @@ describe('Simon preference storage', () => {
             volume: 82,
             palette: SIMON_DEFAULT_AUDIO_PREFERENCES.palette,
             noteSet: SIMON_DEFAULT_AUDIO_PREFERENCES.noteSet,
+            noteDuration: 50,
+            reverb: 100,
         });
     });
 
@@ -186,6 +202,8 @@ describe('Simon preference storage', () => {
                     volume: 70,
                     palette: 'synthwave',
                     noteSet: 'blues',
+                    noteDuration: 125,
+                    reverb: 42,
                 },
             }),
         );
@@ -212,6 +230,8 @@ describe('Simon preference storage', () => {
                 volume: 70,
                 palette: 'synthwave',
                 noteSet: 'blues',
+                noteDuration: 125,
+                reverb: 42,
             },
         });
     });
@@ -236,6 +256,8 @@ describe('Simon preference storage', () => {
                     volume: 40,
                     palette: 'synthwave',
                     noteSet: 'blues',
+                    noteDuration: 130,
+                    reverb: 36,
                 },
             }),
         );
@@ -251,6 +273,8 @@ describe('Simon preference storage', () => {
                     volume: 40,
                     palette: 'synthwave',
                     noteSet: 'blues',
+                    noteDuration: 130,
+                    reverb: 36,
                 },
             },
             saved: true,
@@ -277,6 +301,8 @@ describe('Simon preference storage', () => {
                     volume: 40,
                     palette: 'arcade',
                     noteSet: 'minor',
+                    noteDuration: 100,
+                    reverb: 12,
                 },
             }),
         );
@@ -313,13 +339,15 @@ describe('Simon preference storage', () => {
                     'bottom-right': 'K',
                 },
             },
-            audio: {
-                muted: true,
-                volume: 80,
-                palette: SIMON_DEFAULT_AUDIO_PREFERENCES.palette,
-                noteSet: SIMON_DEFAULT_AUDIO_PREFERENCES.noteSet,
-            },
-        });
+                audio: {
+                    muted: true,
+                    volume: 80,
+                    palette: SIMON_DEFAULT_AUDIO_PREFERENCES.palette,
+                    noteSet: SIMON_DEFAULT_AUDIO_PREFERENCES.noteSet,
+                    noteDuration: SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration,
+                    reverb: SIMON_DEFAULT_AUDIO_PREFERENCES.reverb,
+                },
+            });
         expect(storage.getItem(SIMON_LEGACY_KEYBOARD_STORAGE_KEY)).toBeNull();
         expect(storage.getItem(SIMON_LEGACY_AUDIO_STORAGE_KEY)).toBeNull();
         expect(storage.getItem(SIMON_PREFERENCES_STORAGE_KEY)).not.toBeNull();
@@ -339,6 +367,8 @@ describe('Simon preference storage', () => {
                 volume: 80,
                 palette: SIMON_DEFAULT_AUDIO_PREFERENCES.palette,
                 noteSet: SIMON_DEFAULT_AUDIO_PREFERENCES.noteSet,
+                noteDuration: SIMON_DEFAULT_AUDIO_PREFERENCES.noteDuration,
+                reverb: SIMON_DEFAULT_AUDIO_PREFERENCES.reverb,
             },
         });
         expect(storage.setItem).toHaveBeenCalledTimes(3);

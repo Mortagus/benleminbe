@@ -91,7 +91,7 @@ gpt_css:
 	php tools/build_gpt_css.php var/gpt/consolidated-css-context.css assets/styles
 
 gpt_docs:
-	php tools/build_gpt_markdown_context.php "$(GPT_DOCS_OUTPUT)" README.md docs/documentation-index.md docs/documentation-architecture.md docs/documentation-routing.md docs/project-architecture.md docs/content-workflow.md docs/deployment-and-verification.md docs/assistant-context.md docs/private docs/lab docs/en-cours
+	php tools/build_gpt_markdown_context.php "$(GPT_DOCS_OUTPUT)" README.md docs
 
 pagespeed_audit:
 	PAGESPEED_API_KEY="$(PAGESPEED_API_KEY)" php tools/pagespeed/collect_pagespeed.php --base-url="$(PAGESPEED_BASE_URL)" --locale="$(PAGESPEED_LOCALE)" --strategy="$(PAGESPEED_STRATEGY)" --output-dir="$(PAGESPEED_OUTPUT_DIR)" --retry-count="$(PAGESPEED_RETRY_COUNT)" --retry-delay-ms="$(PAGESPEED_RETRY_DELAY_MS)" --timeout-seconds="$(PAGESPEED_TIMEOUT_SECONDS)"

@@ -54,7 +54,7 @@ Compile un document Markdown de contexte pour ChatGPT.
 
 Le fichier généré est `var/gpt/consolidated-markdown-context.md`.
 
-Il agrège les documents de référence du projet, la documentation de la zone privée, la documentation du lab et les travaux en cours utiles pour partager rapidement l'état actuel du dépôt.
+Il agrège le `README.md` et toute la documentation Markdown du dossier `docs/` pour partager rapidement l'état actuel du dépôt.
 
 ### `make migrate`
 

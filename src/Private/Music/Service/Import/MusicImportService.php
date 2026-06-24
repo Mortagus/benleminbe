@@ -64,8 +64,8 @@ final class MusicImportService
                     'album_name' => null,
                     'track_uri' => null,
                 ];
-                $eventData['album_name'] = $libraryMetadata['album_name'];
-                $eventData['track_uri'] = $libraryMetadata['track_uri'];
+                $eventData['album_name'] = $this->normalizeOptionalText($libraryMetadata['album_name'] ?? null);
+                $eventData['track_uri'] = $this->normalizeOptionalText($libraryMetadata['track_uri'] ?? null);
 
                 $artist = $this->getOrCreateArtist($eventData['artist_name_raw'], $eventData['artist_name_normalized'], $eventData['played_at']);
                 $track = $this->getOrCreateTrack($artist, $eventData);
@@ -228,5 +228,12 @@ final class MusicImportService
     private function generateId(string $prefix): string
     {
         return sprintf('%s_%s', $prefix, bin2hex(random_bytes(8)));
+    }
+
+    private function normalizeOptionalText(mixed $value): ?string
+    {
+        $value = $this->normalizationService->normalizeText($value);
+
+        return $value === '' ? null : $value;
     }
 }

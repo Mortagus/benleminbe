@@ -11,8 +11,16 @@ use InvalidArgumentException;
 
 final class MusicNormalizationService
 {
-    public function normalizeText(?string $value): string
+    public function normalizeText(mixed $value): string
     {
+        if ($value === null || is_array($value)) {
+            return '';
+        }
+
+        if (is_object($value) && !method_exists($value, '__toString')) {
+            return '';
+        }
+
         $value = trim((string) $value);
         if ($value === '') {
             return '';

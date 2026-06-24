@@ -310,17 +310,17 @@ final class SpotifyArchiveReader
             $uri = $this->normalizationService->normalizeText($row['uri'] ?? null);
 
             if ($album !== '') {
-                $albumsByKey[$key][$album] = true;
+                $albumsByKey[$key][(string) $album] = true;
             }
 
             if ($uri !== '') {
-                $urisByKey[$key][$uri] = true;
+                $urisByKey[$key][(string) $uri] = true;
             }
         }
 
         foreach (array_keys($albumsByKey + $urisByKey) as $key) {
-            $albums = array_keys($albumsByKey[$key] ?? []);
-            $uris = array_keys($urisByKey[$key] ?? []);
+            $albums = array_map(static fn ($album): string => (string) $album, array_keys($albumsByKey[$key] ?? []));
+            $uris = array_map(static fn ($uri): string => (string) $uri, array_keys($urisByKey[$key] ?? []));
 
             $index[$key] = [
                 'album_name' => count($albums) === 1 ? $albums[0] : null,

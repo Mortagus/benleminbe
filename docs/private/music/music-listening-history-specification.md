@@ -429,6 +429,8 @@ Ce premier lot n'inclut pas:
 - les styles ne doivent pas etre devines;
 - le fichier `YourLibrary.json` n'est pas suffisant pour garantir une reconstruction exhaustive des albums ecoutes;
 - une partie des metadonnees de l'archive est hors sujet pour ce module.
+- l'import applicatif est traite par lots avec des flush intermediaires pour limiter la memoire;
+- le parseur lit l'archive sans extraire le ZIP sur disque, mais chaque fichier JSON reste decodé en memoire le temps de son traitement.
 
 ## Conclusion De Cadrage
 

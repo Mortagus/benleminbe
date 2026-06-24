@@ -37,11 +37,16 @@ final class SpotifyArchiveReaderTest extends TestCase
         ]);
 
         try {
-            $result = $reader->readUploadedArchive(new UploadedFile($archivePath, 'demo.zip', 'application/zip', null, true));
+            $plan = $reader->readUploadedArchive(new UploadedFile($archivePath, 'demo.zip', 'application/zip', null, true));
+            $plan->collectSummary();
 
-            self::assertCount(1, $result['music_events']);
-            self::assertSame('1989', $result['library_index']['demo artist|demo track']['album_name']);
-            self::assertSame('spotify:track:demo-track', $result['library_index']['demo artist|demo track']['track_uri']);
+            self::assertSame('spotify_archive', $plan->getSourceType());
+            self::assertCount(1, $plan->getMusicFiles());
+            self::assertSame('1989', $plan->getLibraryIndex()['demo artist|demo track']['album_name']);
+            self::assertSame('spotify:track:demo-track', $plan->getLibraryIndex()['demo artist|demo track']['track_uri']);
+            self::assertSame(1, $plan->getTotalEntries());
+            self::assertSame(0, $plan->getIgnoredEntries());
+            self::assertSame(0, $plan->getErrorEntries());
         } finally {
             @unlink($archivePath);
         }

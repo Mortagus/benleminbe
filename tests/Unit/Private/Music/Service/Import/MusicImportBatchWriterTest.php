@@ -26,7 +26,7 @@ final class MusicImportBatchWriterTest extends TestCase
         $writer = new MusicImportBatchWriter($entityManager, $musicRepository, 2);
         $import = new MusicImport('import_test', 'spotify.zip', 'checksum');
 
-        $entityManager->expects(self::exactly(3))
+        $entityManager->expects(self::exactly(2))
             ->method('getRepository')
             ->willReturnCallback(static function (string $class) use ($artistRepository, $trackRepository): EntityRepository {
                 return match ($class) {
@@ -37,13 +37,12 @@ final class MusicImportBatchWriterTest extends TestCase
             });
 
         $artistRepository->expects(self::once())
-            ->method('findOneBy')
-            ->with(['normalizedName' => 'alpha artist'])
-            ->willReturn(null);
+            ->method('findAll')
+            ->willReturn([]);
 
-        $trackRepository->expects(self::exactly(2))
-            ->method('findOneBy')
-            ->willReturn(null);
+        $trackRepository->expects(self::once())
+            ->method('findAll')
+            ->willReturn([]);
 
         $entityManager->expects(self::exactly(6))
             ->method('persist');

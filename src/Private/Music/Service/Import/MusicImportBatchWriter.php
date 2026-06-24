@@ -32,6 +32,8 @@ final class MusicImportBatchWriter
      */
     private array $pendingEvents = [];
 
+    private bool $cachesLoaded = false;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly MusicRepository $musicRepository,
@@ -41,6 +43,8 @@ final class MusicImportBatchWriter
 
     public function persistListeningEvent(MusicImport $import, SpotifyListeningEventRow $row): void
     {
+        $this->ensureCachesLoaded();
+
         $artist = $this->resolveArtist($row->artistNameRaw, $row->artistNameNormalized, $row->playedAt);
         $track = $this->resolveTrack($artist, $row->trackNameNormalized, $row->trackName);
 
@@ -88,6 +92,10 @@ final class MusicImportBatchWriter
     public function finish(): void
     {
         $this->flushPendingEvents();
+        $this->artistsByNormalizedName = [];
+        $this->tracksByArtistAndTitle = [];
+        $this->pendingEvents = [];
+        $this->cachesLoaded = false;
     }
 
     private function flushPendingEvents(): void
@@ -105,17 +113,13 @@ final class MusicImportBatchWriter
 
     private function resolveArtist(string $displayName, string $normalizedName, DateTimeImmutable $playedAt): Artist
     {
-        if (isset($this->artistsByNormalizedName[$normalizedName])) {
-            $artist = $this->artistsByNormalizedName[$normalizedName];
-        } else {
-            $artist = $this->musicRepository->findArtistByNormalizedName($normalizedName);
-            if (!$artist instanceof Artist) {
-                $artist = new Artist($this->generateId('music_artist'), $normalizedName, $displayName);
-                $this->entityManager->persist($artist);
-            }
-
+        if (!isset($this->artistsByNormalizedName[$normalizedName])) {
+            $artist = new Artist($this->generateId('music_artist'), $normalizedName, $displayName);
+            $this->entityManager->persist($artist);
             $this->artistsByNormalizedName[$normalizedName] = $artist;
         }
+
+        $artist = $this->artistsByNormalizedName[$normalizedName];
 
         if ($artist->getDisplayName() === '' || mb_strtolower($artist->getDisplayName()) === mb_strtolower($displayName)) {
             $artist->setDisplayName($displayName);
@@ -129,19 +133,13 @@ final class MusicImportBatchWriter
     private function resolveTrack(Artist $artist, string $normalizedTitle, string $displayTitle): Track
     {
         $key = $artist->getNormalizedName() . '|' . $normalizedTitle;
-        if (isset($this->tracksByArtistAndTitle[$key])) {
-            return $this->tracksByArtistAndTitle[$key];
-        }
-
-        $track = $this->musicRepository->findTrackByArtistAndNormalizedTitle($artist, $normalizedTitle);
-        if (!$track instanceof Track) {
+        if (!isset($this->tracksByArtistAndTitle[$key])) {
             $track = new Track($this->generateId('music_track'), $artist, $normalizedTitle, $displayTitle);
             $this->entityManager->persist($track);
+            $this->tracksByArtistAndTitle[$key] = $track;
         }
 
-        $this->tracksByArtistAndTitle[$key] = $track;
-
-        return $track;
+        return $this->tracksByArtistAndTitle[$key];
     }
 
     private function updatePlayedRange(Artist|Track $entity, DateTimeImmutable $playedAt): void
@@ -158,5 +156,27 @@ final class MusicImportBatchWriter
     private function generateId(string $prefix): string
     {
         return sprintf('%s_%s', $prefix, bin2hex(random_bytes(8)));
+    }
+
+    private function ensureCachesLoaded(): void
+    {
+        if ($this->cachesLoaded) {
+            return;
+        }
+
+        foreach ($this->musicRepository->findAllArtists() as $artist) {
+            $this->artistsByNormalizedName[$artist->getNormalizedName()] = $artist;
+        }
+
+        foreach ($this->musicRepository->findAllTracks() as $track) {
+            $artist = $track->getArtist();
+            if (!$artist instanceof Artist) {
+                continue;
+            }
+
+            $this->tracksByArtistAndTitle[$artist->getNormalizedName() . '|' . $track->getNormalizedTitle()] = $track;
+        }
+
+        $this->cachesLoaded = true;
     }
 }

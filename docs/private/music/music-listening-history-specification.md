@@ -431,6 +431,7 @@ Ce premier lot n'inclut pas:
 - une partie des metadonnees de l'archive est hors sujet pour ce module.
 - l'import applicatif est traite par lots avec des flush intermediaires pour limiter la memoire;
 - le parseur lit l'archive sans extraire le ZIP sur disque, mais chaque fichier JSON reste decodé en memoire le temps de son traitement.
+- les artistes et titres deja connus sont precharges en memoire au debut de l'import afin d'eviter les lookups Doctrine ligne par ligne.
 
 ## Conclusion De Cadrage
 

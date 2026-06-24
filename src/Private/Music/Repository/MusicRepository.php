@@ -32,6 +32,16 @@ final class MusicRepository
         return $artist instanceof Artist ? $artist : null;
     }
 
+    /**
+     * @return list<Artist>
+     */
+    public function findAllArtists(): array
+    {
+        $artists = $this->entityManager->getRepository(Artist::class)->findAll();
+
+        return array_values(array_filter($artists, static fn (mixed $artist): bool => $artist instanceof Artist));
+    }
+
     public function findTrackByArtistAndNormalizedTitle(Artist $artist, string $normalizedTitle): ?Track
     {
         $track = $this->entityManager->getRepository(Track::class)->findOneBy([
@@ -40,6 +50,16 @@ final class MusicRepository
         ]);
 
         return $track instanceof Track ? $track : null;
+    }
+
+    /**
+     * @return list<Track>
+     */
+    public function findAllTracks(): array
+    {
+        $tracks = $this->entityManager->getRepository(Track::class)->findAll();
+
+        return array_values(array_filter($tracks, static fn (mixed $track): bool => $track instanceof Track));
     }
 
     public function findGenreBySlug(string $slug): ?Genre

@@ -160,7 +160,9 @@ Limites observees:
 - ce n'est pas une preuve suffisante pour reconstituer tous les albums ecoutes;
 - plusieurs couples artiste+titre apparaissent avec plusieurs albums ou plusieurs URIs;
 - la relation album/titre est donc partiellement ambigue;
-- ce fichier peut servir a enrichir certaines donnees quand l'association est univoque, mais pas a faire de la fusion aveugle.
+- ce fichier peut servir a enrichir certaines donnees quand l'association est univoque, mais pas a faire de la fusion aveugle;
+- l'import musical ne doit pas echouer si ce fichier est absent, invalide ou incomplet;
+- son contenu ne sert jamais a identifier un titre de facon prioritaire par rapport a `StreamingHistory_music_*.json`.
 
 ### Autres Fichiers
 
@@ -185,11 +187,71 @@ Le premier lot conserve:
 - le nom brut de l'artiste;
 - le nom brut du titre;
 - la duree ecoutee;
-- un fingerprint technique par ligne;
+- un fingerprint technique par ligne, stable pour un import donne;
 - le hash de l'archive importee;
 - les statistiques materialisees derivees des ecoutes;
 - les agrégats par artiste et par titre;
 - les styles saisis manuellement plus tard.
+
+## Workflow D'Import Retenu
+
+Le traitement de l'archive se fait en pipeline streaming, fichier par fichier:
+
+1. inspection du ZIP pour lister les fichiers musicaux, les podcasts ignores et la presence eventuelle de `YourLibrary.json`;
+2. lecture d'un seul `StreamingHistory_music_*.json` a la fois depuis un `ZipArchive::getStream()`;
+3. parsing JSON incrementiel, evenement par evenement, sans `json_decode()` du fichier complet;
+4. transformation en DTO leger avec fingerprint technique, puis accumulation dans un batch limite;
+5. resolution des artistes et titres par indexes scalaires uniquement;
+6. ecritures DBAL de la batch courante, mise a jour des indexes scalaires, puis reinitialisation des caches temporaires;
+7. resume final materialise avec compteurs, periode, duree et memoire observee.
+
+Le traitement reste lance depuis la requete web d import. Le pipeline etend donc explicitement sa fenetre d execution pour ne pas s arreter au milieu d un gros dataset. Si l environnement d hebergement applique un timeout dur cote serveur web, il faudra alors basculer l import vers un traitement asynchrone plus tard.
+
+Choix importants:
+
+- ne pas relire le fichier historique complet plusieurs fois;
+- ne pas construire un plan d'import contenant tous les evenements;
+- ne pas conserver d'entites Doctrine detachees dans des caches globaux;
+- garder les caches persistants sous forme de maps scalaires `normalized_name => id`;
+- ne pas utiliser `YourLibrary.json` comme source de verite pour l'identite des titres;
+- garder le traitement idempotent grace au hash de l'archive et au fingerprint des lignes.
+
+## Resume Et Metriques
+
+Le resume d'import expose au moins:
+
+- les fichiers musicaux detectes;
+- les fichiers podcast ignores;
+- le nombre de lignes lues;
+- le nombre de lignes valides;
+- le nombre de lignes ignorees;
+- le nombre d'artistes crees;
+- le nombre de titres crees;
+- le nombre d'ecoutes creees;
+- le nombre d'ecoutes deja presentes ou ignorees;
+- la periode detectee;
+- la duree totale importee;
+- la duree totale de l'import;
+- la memoire maximale observee.
+
+Le suivi memoire est fait par relevés periodiques de `memory_get_usage(true)` et `memory_get_peak_usage(true)` pendant le traitement des lots.
+
+## Gestion Des Echecs
+
+- le `MusicImport` passe a `processing` au demarrage, puis a `completed` ou `failed` en fin de traitement;
+- les lots deja commites restent conservees si une erreur survient apres leur commit;
+- un echec ne doit pas masquer l'etat partiel deja sauvegarde;
+- le meme fichier ZIP reste considere comme deja vu via son checksum, donc un reimport identique est traite comme un doublon;
+- les artistes et titres crees avant l'echec restent en base si leur lot avait deja ete commitee.
+
+## Reinitialisation Complete
+
+Le module expose un reset hard volontaire pour repartir de zero quand c'est necessaire:
+
+- le reset supprime les imports, les ecoutes, les titres, les artistes et les liens artistes/styles;
+- les genres saisis manuellement restent conserves;
+- apres reset, le meme ZIP peut etre importe a nouveau comme un premier import;
+- si aucun import n'existe encore, le bouton de reset reste cache et l'UI indique explicitement que le premier import est a venir.
 
 ## Donnees Volontairement Ignorees
 
@@ -241,8 +303,9 @@ Regles importantes:
 La duplication est traitee avec prudence:
 
 - un import d'archive est identifie par le hash de l'archive ZIP;
-- un reimport de la meme archive doit etre idempotent;
-- les lignes d'ecoute conservent un fingerprint technique;
+- un reimport de la meme archive est traite comme un doublon et ne relance pas le pipeline;
+- les lignes d'ecoute conservent un fingerprint technique stable pour l'import courant;
+- le garde-fou final cote base est l'unicite de la paire `import_id + fingerprint`;
 - la fusion de deux artistes ou titres ne se fait jamais sur simple ressemblance;
 - une paire d'ecoutes identiques en apparence ne doit pas etre fusionnee si elle provient d'archives differentes sans regle explicite.
 
@@ -266,6 +329,7 @@ Rôle:
 - tracer une archive importee;
 - rendre l'import idempotent;
 - garder un resume de traitement lisible.
+- marquer explicitement `processing`, `completed` ou `failed`.
 
 ### `ListeningEvent`
 
@@ -287,6 +351,7 @@ Rôle:
 - conserver l'historique brut et exploitable;
 - servir de source de verite pour les statistiques;
 - permettre une re-normalisation ulterieure.
+- garantir l'idempotence d'un import via le fingerprint de ligne associe a l'import.
 
 ### `Artist`
 
@@ -323,6 +388,17 @@ Rôle:
 - rendre la recherche et le tri simples;
 - conserver les metadonnees disponibles sans surestimer la fiabilite des albums.
 
+### `ArtistGenre`
+
+- `artist`
+- `genre`
+
+Rôle:
+
+- liaison simple pour associer un ou plusieurs styles a un artiste;
+- relation manuelle uniquement;
+- aucune extraction automatique depuis Spotify.
+
 ### `Genre`
 
 - `id`
@@ -334,16 +410,6 @@ Rôle:
 - styles musicaux saisis manuellement;
 - aucune inference automatique;
 - aucun service externe.
-
-### `ArtistGenre`
-
-- `artist`
-- `genre`
-
-Rôle:
-
-- liaison simple pour associer un ou plusieurs styles a un artiste;
-- relation manuelle uniquement.
 
 ## Ecrans Prevus Pour Le Premier Lot
 
@@ -428,17 +494,20 @@ Ce premier lot n'inclut pas:
 - l'album n'est pas present dans l'historique musical brut;
 - les styles ne doivent pas etre devines;
 - le fichier `YourLibrary.json` n'est pas suffisant pour garantir une reconstruction exhaustive des albums ecoutes;
-- une partie des metadonnees de l'archive est hors sujet pour ce module.
-- l'import applicatif est traite par lots avec des flush intermediaires pour limiter la memoire;
-- le parseur lit l'archive sans extraire le ZIP sur disque, mais chaque fichier JSON reste decodé en memoire le temps de son traitement.
-- les artistes et titres deja connus sont precharges en memoire au debut de l'import afin d'eviter les lookups Doctrine ligne par ligne.
+- une partie des metadonnees de l'archive est hors sujet pour ce module;
+- l'import applicatif est traite par lots avec des ecritures DBAL limitees pour limiter la memoire;
+- le parseur lit l'archive sans extraire le ZIP sur disque;
+- chaque fichier `StreamingHistory_music_*.json` est lu une seule fois, mais reste traite en memoire le temps de sa passe;
+- les caches durables de l'import sont scalaires, pas des entites Doctrine;
+- la taille du ZIP reste a surveiller, meme si le fichier n'est plus redecodé completement plusieurs fois.
 
 ## Conclusion De Cadrage
 
 Le premier lot doit donc:
 
-- traiter `StreamingHistory_music_0.json` comme source principale;
+- traiter les fichiers `StreamingHistory_music_*.json` un par un;
 - conserver le brut utile;
 - materialiser les agrégats principaux localement;
 - rester prudent sur les albums et les styles;
+- garder un workflow d'import simple a raisonner sans relire completement le JSON historique;
 - laisser ouverte l'evolution vers de meilleures vues sans rearchitecture.

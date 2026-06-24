@@ -6,19 +6,19 @@ namespace App\Private\Music\Service\Import;
 
 use App\Private\Music\Entity\MusicImport;
 use App\Private\Music\Enum\MusicImportSourceType;
-use App\Private\Music\Enum\MusicImportStatus;
 use App\Private\Music\Repository\MusicRepository;
-use App\Private\Music\Service\Archive\SpotifyArchiveReader;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Private\Music\Service\Archive\SpotifyArchiveInspector;
+use App\Private\Music\Service\Normalization\MusicNormalizationService;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class MusicImportService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
         private readonly MusicRepository $musicRepository,
-        private readonly SpotifyArchiveReader $archiveReader,
-        private readonly MusicImportBatchWriter $batchWriter,
+        private readonly SpotifyArchiveInspector $archiveInspector,
+        private readonly MusicImportPipeline $musicImportPipeline,
+        private readonly MusicNormalizationService $normalizationService,
     ) {
     }
 
@@ -27,46 +27,45 @@ final class MusicImportService
      */
     public function importSpotifyArchive(UploadedFile $uploadedFile): array
     {
-        $plan = $this->archiveReader->readUploadedArchive($uploadedFile);
+        $inspection = $this->archiveInspector->inspectUploadedArchive($uploadedFile);
 
-        $existingImport = $this->musicRepository->findImportByChecksum($plan->getArchiveChecksum());
+        $existingImport = $this->musicRepository->findImportByChecksum($inspection->getArchiveChecksum());
         if ($existingImport instanceof MusicImport) {
-            $plan->collectSummary();
-
             return [
                 'import' => $this->decorateImport($existingImport),
-                'summary' => $plan->toSummary(true),
+                'summary' => $this->decorateSummary($existingImport->getSummary(), true),
             ];
         }
 
-        $import = $this->entityManager->wrapInTransaction(function (EntityManagerInterface $entityManager) use ($plan): MusicImport {
-            $import = new MusicImport(
-                $this->generateId('music_import'),
-                $plan->getOriginalFilename(),
-                $plan->getArchiveChecksum(),
-            );
-            $import->setSourceType(MusicImportSourceType::SpotifyArchive);
-            $import->setStatus(MusicImportStatus::Completed);
+        $this->musicImportPipeline->import($inspection);
 
-            $entityManager->persist($import);
-
-            foreach ($plan->iterateEvents() as $eventRow) {
-                $this->batchWriter->persistListeningEvent($import, $eventRow);
-            }
-
-            $this->batchWriter->finish();
-
-            $import->setSummary($plan->toSummary());
-            $entityManager->persist($import);
-            $entityManager->flush();
-
-            return $import;
-        });
+        $import = $this->musicRepository->findImportByChecksum($inspection->getArchiveChecksum());
+        if (!$import instanceof MusicImport) {
+            throw new InvalidArgumentException('L import Spotify a echoue avant la creation du resume final.');
+        }
 
         return [
             'import' => $this->decorateImport($import),
-            'summary' => $plan->toSummary(),
+            'summary' => $this->decorateSummary($import->getSummary(), false),
         ];
+    }
+
+    /**
+     * @return array{has_import_history: bool}
+     */
+    public function getImportPageContext(): array
+    {
+        return [
+            'has_import_history' => $this->musicRepository->hasMusicImportHistory(),
+        ];
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function hardResetMusicData(): array
+    {
+        return $this->musicRepository->hardResetMusicData();
     }
 
     /**
@@ -88,8 +87,56 @@ final class MusicImportService
         ];
     }
 
-    private function generateId(string $prefix): string
+    /**
+     * @param array<string, mixed> $summary
+     *
+     * @return array<string, mixed>
+     */
+    private function decorateSummary(array $summary, bool $duplicate): array
     {
-        return sprintf('%s_%s', $prefix, bin2hex(random_bytes(8)));
+        $defaults = [
+            'duplicate' => $duplicate,
+            'archive_checksum' => '',
+            'original_filename' => '',
+            'file_count' => 0,
+            'source_type' => MusicImportSourceType::SpotifyArchive->value,
+            'source_type_label' => MusicImportSourceType::SpotifyArchive->label(),
+            'batch_size' => 0,
+            'batch_count' => 0,
+            'music_files_detected' => 0,
+            'podcast_files_ignored_count' => 0,
+            'music_files' => [],
+            'podcast_files_ignored' => [],
+            'ignored_files' => [],
+            'your_library_status' => 'absent',
+            'lines_read' => 0,
+            'valid_lines' => 0,
+            'ignored_lines' => 0,
+            'error_lines' => 0,
+            'artists_created' => 0,
+            'tracks_created' => 0,
+            'listening_events_created' => 0,
+            'listening_events_already_present' => 0,
+            'processed_entries' => 0,
+            'ignored_entries' => 0,
+            'error_entries' => 0,
+            'period_start' => null,
+            'period_end' => null,
+            'duration_total_ms' => 0,
+            'duration_total_label' => '—',
+            'import_started_at' => null,
+            'import_finished_at' => null,
+            'import_duration_ms' => null,
+            'memory_current_usage_bytes' => 0,
+            'memory_peak_usage_bytes' => 0,
+        ];
+
+        $summary = array_replace($defaults, $summary);
+        $summary['duplicate'] = $duplicate;
+        if (!is_string($summary['duration_total_label']) || $summary['duration_total_label'] === '' || $summary['duration_total_label'] === '—') {
+            $summary['duration_total_label'] = $this->normalizationService->formatDurationLabel($summary['duration_total_ms'] ?? null);
+        }
+
+        return $summary;
     }
 }

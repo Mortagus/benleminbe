@@ -66,6 +66,31 @@ final class MusicController extends AbstractController
         return $this->renderImportPage();
     }
 
+    #[Route('/import/reset-hard', name: 'import_reset_hard', methods: ['POST'])]
+    public function resetHard(Request $request): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('private-music-import-reset-hard', $request->request->getString('_token'))) {
+            $this->addFlash('error', 'La réinitialisation a expiré. Réessaie.');
+
+            return $this->redirectToRoute('app_private_music_import');
+        }
+
+        $deletedRows = $this->musicImportService->hardResetMusicData();
+
+        $this->addFlash(
+            'success',
+            sprintf(
+                'Réinitialisation terminée: %d import(s), %d artiste(s), %d titre(s) et %d écoute(s) supprimés.',
+                $deletedRows['imports'] ?? 0,
+                $deletedRows['artists'] ?? 0,
+                $deletedRows['tracks'] ?? 0,
+                $deletedRows['listening_events'] ?? 0,
+            ),
+        );
+
+        return $this->redirectToRoute('app_private_music_import');
+    }
+
     #[Route('/artists', name: 'artists', methods: ['GET'])]
     public function artists(Request $request): Response
     {
@@ -108,6 +133,7 @@ final class MusicController extends AbstractController
         return $this->render('private/music/import.html.twig', [
             'errors' => $errors,
             'result' => $result,
+            ...$this->musicImportService->getImportPageContext(),
         ]);
     }
 

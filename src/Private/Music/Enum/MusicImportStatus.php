@@ -6,6 +6,7 @@ namespace App\Private\Music\Enum;
 
 enum MusicImportStatus: string
 {
+    case Processing = 'processing';
     case Completed = 'completed';
     case Failed = 'failed';
     case Duplicate = 'duplicate';
@@ -13,6 +14,7 @@ enum MusicImportStatus: string
     public function label(): string
     {
         return match ($this) {
+            self::Processing => 'En cours',
             self::Completed => 'Terminé',
             self::Failed => 'Échoué',
             self::Duplicate => 'Déjà importé',
@@ -35,6 +37,6 @@ enum MusicImportStatus: string
 
     public static function default(): self
     {
-        return self::Completed;
+        return self::Processing;
     }
 }

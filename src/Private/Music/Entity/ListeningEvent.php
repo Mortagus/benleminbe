@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'music_listening_events')]
-#[ORM\UniqueConstraint(name: 'uniq_music_listening_events_fingerprint', columns: ['fingerprint'])]
+#[ORM\UniqueConstraint(name: 'uniq_music_listening_events_import_fingerprint', columns: ['import_id', 'fingerprint'])]
 class ListeningEvent
 {
     #[ORM\Id]
@@ -260,6 +260,18 @@ class ListeningEvent
     public function setFingerprint(string $fingerprint): self
     {
         $this->fingerprint = $fingerprint;
+
+        return $this;
+    }
+
+    public function getSourceFingerprint(): string
+    {
+        return $this->fingerprint;
+    }
+
+    public function setSourceFingerprint(string $sourceFingerprint): self
+    {
+        $this->fingerprint = $sourceFingerprint;
 
         return $this;
     }

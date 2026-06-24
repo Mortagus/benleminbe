@@ -44,7 +44,7 @@ final class SpotifyArchiveImportPlan
 
     private ?DateTimeImmutable $periodEnd = null;
 
-    private bool $scanned = false;
+    private bool $summaryCollected = false;
 
     public function getArchiveChecksum(): string
     {
@@ -120,11 +120,29 @@ final class SpotifyArchiveImportPlan
      */
     public function iterateEvents(): iterable
     {
-        if ($this->scanned) {
-            return;
+        $zip = new ZipArchive();
+        $openResult = $zip->open($this->archivePath);
+        if ($openResult !== true) {
+            throw new InvalidArgumentException('Le fichier ZIP importe ne peut pas etre ouvert.');
         }
 
-        $this->scanned = true;
+        try {
+            foreach ($this->musicFileNames as $fileName) {
+                yield from $this->iterateMusicFileRows($zip, $fileName);
+            }
+        } finally {
+            $zip->close();
+        }
+    }
+
+    public function collectSummary(): void
+    {
+        $this->musicFileReports = [];
+        $this->totalEntries = 0;
+        $this->ignoredEntries = 0;
+        $this->errorEntries = 0;
+        $this->periodStart = null;
+        $this->periodEnd = null;
 
         $zip = new ZipArchive();
         $openResult = $zip->open($this->archivePath);
@@ -134,18 +152,13 @@ final class SpotifyArchiveImportPlan
 
         try {
             foreach ($this->musicFileNames as $fileName) {
-                yield from $this->iterateMusicFile($zip, $fileName);
+                $this->scanMusicFileSummary($zip, $fileName);
             }
         } finally {
             $zip->close();
         }
-    }
 
-    public function collectSummary(): void
-    {
-        foreach ($this->iterateEvents() as $_) {
-            // The iterator updates the summary state as it goes.
-        }
+        $this->summaryCollected = true;
     }
 
     /**
@@ -153,6 +166,10 @@ final class SpotifyArchiveImportPlan
      */
     public function toSummary(bool $duplicate = false): array
     {
+        if (!$this->summaryCollected) {
+            $this->collectSummary();
+        }
+
         return [
             'duplicate' => $duplicate,
             'archive_checksum' => $this->archiveChecksum,
@@ -172,7 +189,76 @@ final class SpotifyArchiveImportPlan
     /**
      * @return iterable<SpotifyListeningEventRow>
      */
-    private function iterateMusicFile(ZipArchive $zip, string $fileName): iterable
+    private function iterateMusicFileRows(ZipArchive $zip, string $fileName): iterable
+    {
+        $contents = $zip->getFromName($fileName);
+        if ($contents === false) {
+            throw new InvalidArgumentException(sprintf('Le fichier "%s" est illisible dans le ZIP.', $fileName));
+        }
+
+        try {
+            $decoded = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            throw new InvalidArgumentException(sprintf('Le fichier "%s" contient un JSON invalide.', $fileName), previous: $exception);
+        }
+
+        if (!is_array($decoded)) {
+            throw new InvalidArgumentException(sprintf('Le fichier "%s" ne contient pas une liste d ecoutes.', $fileName));
+        }
+
+        $recordIndex = 0;
+
+        foreach ($decoded as $row) {
+            ++$recordIndex;
+            if (!is_array($row)) {
+                continue;
+            }
+
+            $artistName = $this->normalizationService->normalizeText($row['artistName'] ?? null);
+            $trackName = $this->normalizationService->normalizeText($row['trackName'] ?? null);
+            $endTime = $this->normalizationService->normalizeText($row['endTime'] ?? null);
+            $playedDurationMs = isset($row['msPlayed']) && is_numeric($row['msPlayed']) ? max(0, (int) $row['msPlayed']) : null;
+
+            if ($artistName === '' || $trackName === '' || $endTime === '') {
+                continue;
+            }
+
+            try {
+                $playedAt = $this->normalizationService->parseArchiveDateTime($endTime);
+            } catch (InvalidArgumentException) {
+                continue;
+            }
+
+            $artistNameNormalized = $this->normalizationService->buildArtistKey($artistName);
+            $trackNameNormalized = $this->normalizationService->normalizeKey($trackName);
+            $libraryMetadata = $this->libraryIndex[$artistNameNormalized . '|' . $trackNameNormalized] ?? [
+                'album_name' => null,
+                'track_uri' => null,
+            ];
+
+            yield new SpotifyListeningEventRow(
+                playedAt: $playedAt,
+                artistNameRaw: $artistName,
+                artistNameNormalized: $artistNameNormalized,
+                trackName: $trackName,
+                trackNameNormalized: $trackNameNormalized,
+                playedDurationMs: $playedDurationMs,
+                albumName: $this->normalizeOptionalText($libraryMetadata['album_name'] ?? null),
+                trackUri: $this->normalizeOptionalText($libraryMetadata['track_uri'] ?? null),
+                sourcePayloadVersion: 'spotify_streaming_history_v1',
+                sourceFileName: $fileName,
+                sourceRecordIndex: $recordIndex,
+                fingerprint: hash('sha256', implode('|', [
+                    $this->archiveChecksum,
+                    $fileName,
+                    (string) $recordIndex,
+                ])),
+                rawPayload: $row,
+            );
+        }
+    }
+
+    private function scanMusicFileSummary(ZipArchive $zip, string $fileName): void
     {
         $contents = $zip->getFromName($fileName);
         if ($contents === false) {
@@ -207,7 +293,6 @@ final class SpotifyArchiveImportPlan
             $artistName = $this->normalizationService->normalizeText($row['artistName'] ?? null);
             $trackName = $this->normalizationService->normalizeText($row['trackName'] ?? null);
             $endTime = $this->normalizationService->normalizeText($row['endTime'] ?? null);
-            $playedDurationMs = isset($row['msPlayed']) && is_numeric($row['msPlayed']) ? max(0, (int) $row['msPlayed']) : null;
 
             if ($artistName === '' || $trackName === '' || $endTime === '') {
                 ++$errorEntries;
@@ -223,36 +308,8 @@ final class SpotifyArchiveImportPlan
 
             $fileStart = $fileStart === null || $playedAt < $fileStart ? $playedAt : $fileStart;
             $fileEnd = $fileEnd === null || $playedAt > $fileEnd ? $playedAt : $fileEnd;
-
-            $artistNameNormalized = $this->normalizationService->buildArtistKey($artistName);
-            $trackNameNormalized = $this->normalizationService->normalizeKey($trackName);
-            $libraryMetadata = $this->libraryIndex[$artistNameNormalized . '|' . $trackNameNormalized] ?? [
-                'album_name' => null,
-                'track_uri' => null,
-            ];
-
             ++$processedEntries;
             ++$this->totalEntries;
-
-            yield new SpotifyListeningEventRow(
-                playedAt: $playedAt,
-                artistNameRaw: $artistName,
-                artistNameNormalized: $artistNameNormalized,
-                trackName: $trackName,
-                trackNameNormalized: $trackNameNormalized,
-                playedDurationMs: $playedDurationMs,
-                albumName: $this->normalizeOptionalText($libraryMetadata['album_name'] ?? null),
-                trackUri: $this->normalizeOptionalText($libraryMetadata['track_uri'] ?? null),
-                sourcePayloadVersion: 'spotify_streaming_history_v1',
-                sourceFileName: $fileName,
-                sourceRecordIndex: $recordIndex,
-                fingerprint: hash('sha256', implode('|', [
-                    $this->archiveChecksum,
-                    $fileName,
-                    (string) $recordIndex,
-                ])),
-                rawPayload: $row,
-            );
         }
 
         $this->ignoredEntries += $ignoredEntries;

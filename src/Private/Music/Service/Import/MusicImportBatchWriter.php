@@ -4,153 +4,485 @@ declare(strict_types=1);
 
 namespace App\Private\Music\Service\Import;
 
-use App\Private\Music\Dto\SpotifyListeningEventRow;
-use App\Private\Music\Entity\Artist;
-use App\Private\Music\Entity\ListeningEvent;
-use App\Private\Music\Entity\MusicImport;
-use App\Private\Music\Entity\Track;
-use App\Private\Music\Repository\MusicRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Private\Music\Dto\MusicImportBatch;
+use App\Private\Music\Dto\ParsedListeningEvent;
 use DateTimeImmutable;
+use Doctrine\DBAL\Connection;
 
 final class MusicImportBatchWriter
 {
-    private const int DEFAULT_BATCH_SIZE = 250;
-
-    /**
-     * @var array<string, Artist>
-     */
-    private array $artistsByNormalizedName = [];
-
-    /**
-     * @var array<string, Track>
-     */
-    private array $tracksByArtistAndTitle = [];
-
-    /**
-     * @var list<ListeningEvent>
-     */
-    private array $pendingEvents = [];
-
-    private bool $cachesLoaded = false;
-
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly MusicRepository $musicRepository,
-        private readonly int $batchSize = self::DEFAULT_BATCH_SIZE,
+        private readonly Connection $connection,
     ) {
     }
 
-    public function persistListeningEvent(MusicImport $import, SpotifyListeningEventRow $row): void
-    {
-        $this->ensureCachesLoaded();
-
-        $artist = $this->resolveArtist($row->artistNameRaw, $row->artistNameNormalized, $row->playedAt);
-        $track = $this->resolveTrack($artist, $row->trackNameNormalized, $row->trackName);
-
-        $event = new ListeningEvent(
-            $this->generateId('music_event'),
-            $import,
-            $artist,
-            $track,
-            $row->playedAt,
-            $row->fingerprint,
-        );
-        $event->setTrackName($row->trackName);
-        $event->setArtistNameRaw($row->artistNameRaw);
-        $event->setArtistNameNormalized($row->artistNameNormalized);
-        $event->setAlbumName($row->albumName);
-        $event->setPlayedDurationMs($row->playedDurationMs);
-        $event->setTrackUri($row->trackUri);
-        $event->setSourcePayloadVersion($row->sourcePayloadVersion);
-        $event->setSourceFileName($row->sourceFileName);
-        $event->setSourceRecordIndex($row->sourceRecordIndex);
-        $event->setRawPayload($row->rawPayload);
-
-        $artist->incrementListeningCount();
-        $artist->addPlayedMs($row->playedDurationMs ?? 0);
-        $this->updatePlayedRange($artist, $row->playedAt);
-
-        $track->incrementListeningCount();
-        $track->addPlayedMs($row->playedDurationMs ?? 0);
-        $this->updatePlayedRange($track, $row->playedAt);
-        if ($track->getAlbumName() === null && $row->albumName !== null) {
-            $track->setAlbumName($row->albumName);
-        }
-        if ($track->getSpotifyUri() === null && $row->trackUri !== null) {
-            $track->setSpotifyUri($row->trackUri);
-        }
-
-        $this->entityManager->persist($event);
-        $this->pendingEvents[] = $event;
-
-        if (count($this->pendingEvents) >= $this->batchSize) {
-            $this->flushPendingEvents();
-        }
-    }
-
-    public function finish(): void
-    {
-        $this->flushPendingEvents();
-        $this->artistsByNormalizedName = [];
-        $this->tracksByArtistAndTitle = [];
-        $this->pendingEvents = [];
-        $this->cachesLoaded = false;
-    }
-
-    private function flushPendingEvents(): void
-    {
-        if ($this->pendingEvents === []) {
+    /**
+     * @param array<string, array{album_name: string|null, track_uri: string|null}> $libraryIndex
+     */
+    public function writeBatch(
+        MusicImportBatch $batch,
+        string $importId,
+        MusicReferenceIndex $referenceIndex,
+        array $libraryIndex,
+        MusicImportMetrics $metrics,
+    ): void {
+        if ($batch->isEmpty()) {
             return;
         }
 
-        $this->entityManager->flush();
-        foreach ($this->pendingEvents as $event) {
-            $this->entityManager->detach($event);
+        $localArtistsByNormalizedName = [];
+        $localTracksByKey = [];
+        $artistStatsById = [];
+        $trackStatsById = [];
+        $newArtistIds = [];
+        $newTrackIds = [];
+        $eventRows = [];
+
+        foreach ($batch->getEvents() as $event) {
+            $artistId = $this->resolveArtistId(
+                $event,
+                $referenceIndex,
+                $localArtistsByNormalizedName,
+                $newArtistIds,
+            );
+
+            $trackId = $this->resolveTrackId(
+                $event,
+                $artistId,
+                $referenceIndex,
+                $localTracksByKey,
+                $newTrackIds,
+            );
+
+            $libraryMetadata = $libraryIndex[$event->getTrackKey()] ?? [
+                'album_name' => null,
+                'track_uri' => null,
+            ];
+
+            $artistStatsById[$artistId] = $this->accumulateArtistStats(
+                $artistStatsById[$artistId] ?? null,
+                $event,
+                $event->artistDisplayName,
+            );
+
+            $trackStatsById[$trackId] = $this->accumulateTrackStats(
+                $trackStatsById[$trackId] ?? null,
+                $event,
+                $artistId,
+                $event->trackDisplayName,
+                is_array($libraryMetadata) ? $libraryMetadata : [],
+            );
+
+            $eventRows[] = [
+                'id' => $this->generateId('music_event'),
+                'import_id' => $importId,
+                'artist_id' => $artistId,
+                'track_id' => $trackId,
+                'played_at' => $this->formatDateTime($event->playedAt),
+                'track_name' => $event->trackDisplayName,
+                'artist_name_raw' => $event->artistDisplayName,
+                'artist_name_normalized' => $event->normalizedArtistName,
+                'album_name' => $this->normalizeOptionalValue($libraryMetadata['album_name'] ?? null),
+                'played_duration_ms' => $event->playedDurationMs,
+                'track_uri' => $this->normalizeOptionalValue($libraryMetadata['track_uri'] ?? null),
+                'source_payload_version' => 'spotify_streaming_history_v2',
+                'source_file_name' => $event->sourceFileName,
+                'source_record_index' => $event->sourceOffset + 1,
+                'fingerprint' => $event->sourceFingerprint,
+                'raw_payload' => json_encode([
+                    'endTime' => $event->playedAt->format('Y-m-d H:i'),
+                    'artistName' => $event->artistDisplayName,
+                    'trackName' => $event->trackDisplayName,
+                    'msPlayed' => $event->playedDurationMs,
+                ], JSON_THROW_ON_ERROR),
+            ];
         }
-        $this->pendingEvents = [];
+
+        $this->insertRows('music_artists', $this->buildArtistInsertRows($artistStatsById, $newArtistIds));
+
+        foreach ($artistStatsById as $artistId => $stats) {
+            if (isset($newArtistIds[$artistId])) {
+                continue;
+            }
+
+            $this->updateArtist($artistId, $stats);
+        }
+
+        $this->insertRows('music_tracks', $this->buildTrackInsertRows($trackStatsById, $newTrackIds));
+
+        foreach ($trackStatsById as $trackId => $stats) {
+            if (isset($newTrackIds[$trackId])) {
+                continue;
+            }
+
+            $this->updateTrack($trackId, $stats);
+        }
+
+        $this->insertRows('music_listening_events', $eventRows);
+
+        foreach (array_keys($newArtistIds) as $artistId) {
+            $referenceIndex->registerArtist(
+                (string) $artistStatsById[$artistId]['normalized_name'],
+                $artistId,
+            );
+        }
+
+        foreach (array_keys($newTrackIds) as $trackId) {
+            $artistId = (string) $trackStatsById[$trackId]['artist_id'];
+            $referenceIndex->registerTrack(
+                $artistId,
+                (string) $trackStatsById[$trackId]['normalized_title'],
+                $trackId,
+            );
+        }
+
+        $metrics->recordBatchCommitted($batch, count($newArtistIds), count($newTrackIds), count($eventRows));
     }
 
-    private function resolveArtist(string $displayName, string $normalizedName, DateTimeImmutable $playedAt): Artist
-    {
-        if (!isset($this->artistsByNormalizedName[$normalizedName])) {
-            $artist = new Artist($this->generateId('music_artist'), $normalizedName, $displayName);
-            $this->entityManager->persist($artist);
-            $this->artistsByNormalizedName[$normalizedName] = $artist;
+    /**
+     * @param array<string, string> $localArtistsByNormalizedName
+     * @param array<string, true> $newArtistIds
+     */
+    private function resolveArtistId(
+        ParsedListeningEvent $event,
+        MusicReferenceIndex $referenceIndex,
+        array &$localArtistsByNormalizedName,
+        array &$newArtistIds,
+    ): string {
+        if (isset($localArtistsByNormalizedName[$event->normalizedArtistName])) {
+            return $localArtistsByNormalizedName[$event->normalizedArtistName];
         }
 
-        $artist = $this->artistsByNormalizedName[$normalizedName];
+        $artistId = $referenceIndex->getArtistId($event->normalizedArtistName);
+        if ($artistId !== null) {
+            $localArtistsByNormalizedName[$event->normalizedArtistName] = $artistId;
 
-        if ($artist->getDisplayName() === '' || mb_strtolower($artist->getDisplayName()) === mb_strtolower($displayName)) {
-            $artist->setDisplayName($displayName);
+            return $artistId;
         }
 
-        $this->updatePlayedRange($artist, $playedAt);
+        $artistId = $this->generateId('music_artist');
+        $localArtistsByNormalizedName[$event->normalizedArtistName] = $artistId;
+        $newArtistIds[$artistId] = true;
 
-        return $artist;
+        return $artistId;
     }
 
-    private function resolveTrack(Artist $artist, string $normalizedTitle, string $displayTitle): Track
-    {
-        $key = $artist->getNormalizedName() . '|' . $normalizedTitle;
-        if (!isset($this->tracksByArtistAndTitle[$key])) {
-            $track = new Track($this->generateId('music_track'), $artist, $normalizedTitle, $displayTitle);
-            $this->entityManager->persist($track);
-            $this->tracksByArtistAndTitle[$key] = $track;
+    /**
+     * @param array<string, string> $localTracksByKey
+     * @param array<string, true> $newTrackIds
+     */
+    private function resolveTrackId(
+        ParsedListeningEvent $event,
+        string $artistId,
+        MusicReferenceIndex $referenceIndex,
+        array &$localTracksByKey,
+        array &$newTrackIds,
+    ): string {
+        $key = $artistId . '|' . $event->normalizedTrackName;
+        if (isset($localTracksByKey[$key])) {
+            return $localTracksByKey[$key];
         }
 
-        return $this->tracksByArtistAndTitle[$key];
+        $trackId = $referenceIndex->getTrackId($artistId, $event->normalizedTrackName);
+        if ($trackId !== null) {
+            $localTracksByKey[$key] = $trackId;
+
+            return $trackId;
+        }
+
+        $trackId = $this->generateId('music_track');
+        $localTracksByKey[$key] = $trackId;
+        $newTrackIds[$trackId] = true;
+
+        return $trackId;
     }
 
-    private function updatePlayedRange(Artist|Track $entity, DateTimeImmutable $playedAt): void
+    /**
+     * @param array{
+     *     normalized_name: string,
+     *     display_name: string,
+     *     first_played_at: DateTimeImmutable,
+     *     last_played_at: DateTimeImmutable,
+     *     listening_count: int,
+     *     total_played_ms: int
+     * }|null $current
+     *
+     * @return array{
+     *     normalized_name: string,
+     *     display_name: string,
+     *     first_played_at: DateTimeImmutable,
+     *     last_played_at: DateTimeImmutable,
+     *     listening_count: int,
+     *     total_played_ms: int
+     * }
+     */
+    private function accumulateArtistStats(?array $current, ParsedListeningEvent $event, string $displayName): array
     {
-        if ($entity->getFirstPlayedAt() === null || $playedAt < $entity->getFirstPlayedAt()) {
-            $entity->setFirstPlayedAt($playedAt);
+        $playedMs = max(0, $event->playedDurationMs ?? 0);
+
+        if ($current === null) {
+            return [
+                'normalized_name' => $event->normalizedArtistName,
+                'display_name' => $displayName,
+                'first_played_at' => $event->playedAt,
+                'last_played_at' => $event->playedAt,
+                'listening_count' => 1,
+                'total_played_ms' => $playedMs,
+            ];
         }
 
-        if ($entity->getLastPlayedAt() === null || $playedAt > $entity->getLastPlayedAt()) {
-            $entity->setLastPlayedAt($playedAt);
+        $current['first_played_at'] = $event->playedAt < $current['first_played_at'] ? $event->playedAt : $current['first_played_at'];
+        $current['last_played_at'] = $event->playedAt > $current['last_played_at'] ? $event->playedAt : $current['last_played_at'];
+        $current['listening_count'] = (int) $current['listening_count'] + 1;
+        $current['total_played_ms'] = (int) $current['total_played_ms'] + $playedMs;
+
+        return $current;
+    }
+
+    /**
+     * @param array<string, mixed>|null $libraryMetadata
+     *
+     * @return array{
+     *     artist_id: string,
+     *     normalized_title: string,
+     *     display_title: string,
+     *     album_name: string|null,
+     *     spotify_uri: string|null,
+     *     first_played_at: DateTimeImmutable,
+     *     last_played_at: DateTimeImmutable,
+     *     listening_count: int,
+     *     total_played_ms: int
+     * }
+     */
+    private function accumulateTrackStats(
+        ?array $current,
+        ParsedListeningEvent $event,
+        string $artistId,
+        string $displayTitle,
+        array $libraryMetadata,
+    ): array {
+        $playedMs = max(0, $event->playedDurationMs ?? 0);
+        $albumName = $this->normalizeOptionalValue($libraryMetadata['album_name'] ?? null);
+        $spotifyUri = $this->normalizeOptionalValue($libraryMetadata['track_uri'] ?? null);
+
+        if ($current === null) {
+            return [
+                'artist_id' => $artistId,
+                'normalized_title' => $event->normalizedTrackName,
+                'display_title' => $displayTitle,
+                'album_name' => $albumName,
+                'spotify_uri' => $spotifyUri,
+                'first_played_at' => $event->playedAt,
+                'last_played_at' => $event->playedAt,
+                'listening_count' => 1,
+                'total_played_ms' => $playedMs,
+            ];
         }
+
+        if ($current['album_name'] === null && $albumName !== null) {
+            $current['album_name'] = $albumName;
+        }
+
+        if ($current['spotify_uri'] === null && $spotifyUri !== null) {
+            $current['spotify_uri'] = $spotifyUri;
+        }
+
+        $current['first_played_at'] = $event->playedAt < $current['first_played_at'] ? $event->playedAt : $current['first_played_at'];
+        $current['last_played_at'] = $event->playedAt > $current['last_played_at'] ? $event->playedAt : $current['last_played_at'];
+        $current['listening_count'] = (int) $current['listening_count'] + 1;
+        $current['total_played_ms'] = (int) $current['total_played_ms'] + $playedMs;
+
+        return $current;
+    }
+
+    /**
+     * @param array<string, array{
+     *     normalized_name: string,
+     *     display_name: string,
+     *     first_played_at: DateTimeImmutable,
+     *     last_played_at: DateTimeImmutable,
+     *     listening_count: int,
+     *     total_played_ms: int
+     * }> $artistStatsById
+     * @param array<string, true> $newArtistIds
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function buildArtistInsertRows(array $artistStatsById, array $newArtistIds): array
+    {
+        $rows = [];
+
+        foreach (array_keys($newArtistIds) as $artistId) {
+            $stats = $artistStatsById[$artistId];
+            $rows[] = [
+                'id' => $artistId,
+                'normalized_name' => $stats['normalized_name'],
+                'display_name' => $stats['display_name'],
+                'first_played_at' => $this->formatDateTime($stats['first_played_at']),
+                'last_played_at' => $this->formatDateTime($stats['last_played_at']),
+                'listening_count' => $stats['listening_count'],
+                'total_played_ms' => $stats['total_played_ms'],
+            ];
+        }
+
+        return $rows;
+    }
+
+    /**
+     * @param array<string, array{
+     *     artist_id: string,
+     *     normalized_title: string,
+     *     display_title: string,
+     *     album_name: string|null,
+     *     spotify_uri: string|null,
+     *     first_played_at: DateTimeImmutable,
+     *     last_played_at: DateTimeImmutable,
+     *     listening_count: int,
+     *     total_played_ms: int
+     * }> $trackStatsById
+     * @param array<string, true> $newTrackIds
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function buildTrackInsertRows(array $trackStatsById, array $newTrackIds): array
+    {
+        $rows = [];
+
+        foreach (array_keys($newTrackIds) as $trackId) {
+            $stats = $trackStatsById[$trackId];
+            $rows[] = [
+                'id' => $trackId,
+                'artist_id' => $stats['artist_id'],
+                'normalized_title' => $stats['normalized_title'],
+                'display_title' => $stats['display_title'],
+                'album_name' => $stats['album_name'],
+                'spotify_uri' => $stats['spotify_uri'],
+                'first_played_at' => $this->formatDateTime($stats['first_played_at']),
+                'last_played_at' => $this->formatDateTime($stats['last_played_at']),
+                'listening_count' => $stats['listening_count'],
+                'total_played_ms' => $stats['total_played_ms'],
+            ];
+        }
+
+        return $rows;
+    }
+
+    /**
+     * @param list<array<string, mixed>> $rows
+     */
+    private function insertRows(string $table, array $rows): void
+    {
+        if ($rows === []) {
+            return;
+        }
+
+        $columns = array_keys($rows[0]);
+        $placeholders = [];
+        $params = [];
+
+        foreach ($rows as $row) {
+            $rowPlaceholders = [];
+            foreach ($columns as $column) {
+                $rowPlaceholders[] = '?';
+                $params[] = $row[$column];
+            }
+
+            $placeholders[] = '(' . implode(', ', $rowPlaceholders) . ')';
+        }
+
+        $sql = sprintf(
+            'INSERT INTO %s (%s) VALUES %s',
+            $table,
+            implode(', ', $columns),
+            implode(', ', $placeholders),
+        );
+
+        $this->connection->executeStatement($sql, $params);
+    }
+
+    /**
+     * @param array{
+     *     normalized_name: string,
+     *     display_name: string,
+     *     first_played_at: DateTimeImmutable,
+     *     last_played_at: DateTimeImmutable,
+     *     listening_count: int,
+     *     total_played_ms: int
+     * } $stats
+     */
+    private function updateArtist(string $artistId, array $stats): void
+    {
+        $this->connection->executeStatement(
+            <<<'SQL'
+UPDATE music_artists
+SET listening_count = listening_count + ?,
+    total_played_ms = total_played_ms + ?,
+    first_played_at = CASE
+        WHEN first_played_at IS NULL OR ? < first_played_at THEN ?
+        ELSE first_played_at
+    END,
+    last_played_at = CASE
+        WHEN last_played_at IS NULL OR ? > last_played_at THEN ?
+        ELSE last_played_at
+    END
+WHERE id = ?
+SQL,
+            [
+                $stats['listening_count'],
+                $stats['total_played_ms'],
+                $this->formatDateTime($stats['first_played_at']),
+                $this->formatDateTime($stats['first_played_at']),
+                $this->formatDateTime($stats['last_played_at']),
+                $this->formatDateTime($stats['last_played_at']),
+                $artistId,
+            ],
+        );
+    }
+
+    /**
+     * @param array{
+     *     artist_id: string,
+     *     normalized_title: string,
+     *     display_title: string,
+     *     album_name: string|null,
+     *     spotify_uri: string|null,
+     *     first_played_at: DateTimeImmutable,
+     *     last_played_at: DateTimeImmutable,
+     *     listening_count: int,
+     *     total_played_ms: int
+     * } $stats
+     */
+    private function updateTrack(string $trackId, array $stats): void
+    {
+        $this->connection->executeStatement(
+            <<<'SQL'
+UPDATE music_tracks
+SET listening_count = listening_count + ?,
+    total_played_ms = total_played_ms + ?,
+    first_played_at = CASE
+        WHEN first_played_at IS NULL OR ? < first_played_at THEN ?
+        ELSE first_played_at
+    END,
+    last_played_at = CASE
+        WHEN last_played_at IS NULL OR ? > last_played_at THEN ?
+        ELSE last_played_at
+    END,
+    album_name = COALESCE(album_name, ?),
+    spotify_uri = COALESCE(spotify_uri, ?)
+WHERE id = ?
+SQL,
+            [
+                $stats['listening_count'],
+                $stats['total_played_ms'],
+                $this->formatDateTime($stats['first_played_at']),
+                $this->formatDateTime($stats['first_played_at']),
+                $this->formatDateTime($stats['last_played_at']),
+                $this->formatDateTime($stats['last_played_at']),
+                $stats['album_name'],
+                $stats['spotify_uri'],
+                $trackId,
+            ],
+        );
     }
 
     private function generateId(string $prefix): string
@@ -158,25 +490,19 @@ final class MusicImportBatchWriter
         return sprintf('%s_%s', $prefix, bin2hex(random_bytes(8)));
     }
 
-    private function ensureCachesLoaded(): void
+    private function formatDateTime(DateTimeImmutable $dateTime): string
     {
-        if ($this->cachesLoaded) {
-            return;
+        return $dateTime->format('Y-m-d H:i:s');
+    }
+
+    private function normalizeOptionalValue(mixed $value): ?string
+    {
+        if (!is_scalar($value)) {
+            return null;
         }
 
-        foreach ($this->musicRepository->findAllArtists() as $artist) {
-            $this->artistsByNormalizedName[$artist->getNormalizedName()] = $artist;
-        }
+        $normalized = trim((string) $value);
 
-        foreach ($this->musicRepository->findAllTracks() as $track) {
-            $artist = $track->getArtist();
-            if (!$artist instanceof Artist) {
-                continue;
-            }
-
-            $this->tracksByArtistAndTitle[$artist->getNormalizedName() . '|' . $track->getNormalizedTitle()] = $track;
-        }
-
-        $this->cachesLoaded = true;
+        return $normalized !== '' ? $normalized : null;
     }
 }

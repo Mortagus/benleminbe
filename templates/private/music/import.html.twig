@@ -35,8 +35,13 @@
 
             <div class="private-copy private-copy--intro">
                 <p>Le lot actuel lit uniquement les fichiers `StreamingHistory_music_*.json` de l archive Spotify et les conserve localement pour les statistiques.</p>
-                <p>Les podcasts et les autres exports JSON sont ignorés. Les styles ne sont pas devines automatiquement et les albums ne sont exploites que lorsqu une metadonnée fiable est disponible.</p>
+                <p>Les podcasts et les autres exports JSON sont ignorés. `YourLibrary.json` est traité comme un enrichissement facultatif, sans fusion agressive avec l historique. Les styles ne sont pas devines automatiquement et les albums ne sont exploites que lorsqu une metadonnée fiable est disponible.</p>
                 <p>Réimporter la même archive ne duplique pas les données. La taille maximale admise est de 50 Mo et le ZIP doit rester structuré sans chemins dangereux.</p>
+                {% if has_import_history %}
+                    <p>Un historique musical existe déjà. Le bouton de réinitialisation complète supprime les données importées pour permettre un redémarrage depuis zéro.</p>
+                {% else %}
+                    <p>Aucun import musical n a encore été enregistré. Le premier import créera l historique à partir de l archive fournie.</p>
+                {% endif %}
             </div>
         </section>
 
@@ -61,15 +66,36 @@
             </form>
         </section>
 
+        <section class="private-surface">
+            <header class="private-surface__header">
+                <h2>Réinitialisation complète</h2>
+            </header>
+
+            {% if has_import_history %}
+                <p class="private-copy">Cette action supprime les imports, les écoutes, les titres et les artistes importés. Les genres saisis manuellement restent en base.</p>
+
+                <form class="private-form" method="post" action="{{ path('app_private_music_import_reset_hard') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('private-music-import-reset-hard') }}">
+
+                    <div class="private-actions">
+                        <button class="private-link-button private-link-button--danger" type="submit">Réinitialiser et repartir de zéro</button>
+                    </div>
+                </form>
+            {% else %}
+                <p class="private-empty">Aucune donnée musicale n est encore présente, donc aucun reset complet n est nécessaire.</p>
+            {% endif %}
+        </section>
+
         {% if result is not null %}
             <section class="private-surface">
                 <header class="private-surface__header">
                     <div>
                         <h2>Résultat de l import</h2>
                         <p class="private-muted">
-                            {{ result.summary.processed_entries }} ligne{{ result.summary.processed_entries > 1 ? 's' : '' }} traitée{{ result.summary.processed_entries > 1 ? 's' : '' }},
-                            {{ result.summary.ignored_entries }} ignorée{{ result.summary.ignored_entries > 1 ? 's' : '' }},
-                            {{ result.summary.error_entries }} en erreur.
+                            {{ result.summary.lines_read }} ligne{{ result.summary.lines_read > 1 ? 's' : '' }} lue{{ result.summary.lines_read > 1 ? 's' : '' }},
+                            {{ result.summary.valid_lines }} valide{{ result.summary.valid_lines > 1 ? 's' : '' }},
+                            {{ result.summary.ignored_lines }} ignorée{{ result.summary.ignored_lines > 1 ? 's' : '' }},
+                            {{ result.summary.error_lines }} en erreur.
                         </p>
                     </div>
                 </header>
@@ -83,7 +109,25 @@
                     <article class="private-stat-card">
                         <p class="private-stat-card__label">Fichiers JSON</p>
                         <strong>{{ result.summary.file_count }}</strong>
-                        <span>{{ result.summary.music_files|length }} fichier{{ result.summary.music_files|length > 1 ? 's' : '' }} musical{{ result.summary.music_files|length > 1 ? 'aux' : '' }}</span>
+                        <span>{{ result.summary.music_files_detected }} fichier{{ result.summary.music_files_detected > 1 ? 's' : '' }} musical{{ result.summary.music_files_detected > 1 ? 'aux' : '' }}</span>
+                    </article>
+                    <article class="private-stat-card">
+                        <p class="private-stat-card__label">Lots</p>
+                        <strong data-stat-key="batch_count">{{ result.summary.batch_count }}</strong>
+                        <span>taille batch {{ result.summary.batch_size }}</span>
+                    </article>
+                    <article class="private-stat-card">
+                        <p class="private-stat-card__label">Podcasts ignorés</p>
+                        <strong>{{ result.summary.podcast_files_ignored_count }}</strong>
+                        <span>
+                            {% if result.summary.your_library_status == 'available' %}
+                                YourLibrary disponible
+                            {% elseif result.summary.your_library_status == 'invalid' %}
+                                YourLibrary invalide
+                            {% else %}
+                                YourLibrary absent
+                            {% endif %}
+                        </span>
                     </article>
                     <article class="private-stat-card">
                         <p class="private-stat-card__label">Période</p>
@@ -100,6 +144,21 @@
                         <p class="private-stat-card__label">Checksum</p>
                         <strong>{{ result.summary.archive_checksum|slice(0, 12) }}</strong>
                         <span>hash de contrôle</span>
+                    </article>
+                    <article class="private-stat-card">
+                        <p class="private-stat-card__label">Écoutes créées</p>
+                        <strong>{{ result.summary.listening_events_created }}</strong>
+                        <span>{{ result.summary.artists_created }} artiste{{ result.summary.artists_created > 1 ? 's' : '' }}, {{ result.summary.tracks_created }} titre{{ result.summary.tracks_created > 1 ? 's' : '' }}</span>
+                    </article>
+                    <article class="private-stat-card">
+                        <p class="private-stat-card__label">Durée importée</p>
+                        <strong>{{ result.summary.duration_total_label }}</strong>
+                        <span>{{ result.summary.duration_total_ms }} ms</span>
+                    </article>
+                    <article class="private-stat-card">
+                        <p class="private-stat-card__label">Mémoire max</p>
+                        <strong>{{ ((result.summary.memory_peak_usage_bytes|default(0)) / 1024 / 1024)|number_format(2, '.', ' ') }} MiB</strong>
+                        <span>{{ result.summary.memory_current_usage_bytes|default(0) }} octets au dernier relevé</span>
                     </article>
                 </div>
 

@@ -37,13 +37,19 @@ final class MusicWebTest extends MusicWebTestCase
     public function testImportingArchiveBuildsDashboardStatistics(): void
     {
         $client = $this->createAuthenticatedClient();
-        $crawler = $this->submitFixtureArchiveImport($client);
+        $this->submitFixtureArchiveImport($client);
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('body', '7 ligne');
         self::assertSelectorTextContains('body', '2 fichier');
+        self::assertSelectorTextContains('body', '1 fichier');
         self::assertSelectorTextContains('body', 'StreamingHistory_music_0.json');
         self::assertSelectorTextContains('body', 'StreamingHistory_music_1.json');
+        self::assertSelectorTextContains('[data-stat-key="batch_count"]', '4');
+        self::assertSelectorTextContains('body', 'Lots');
+        self::assertSelectorTextContains('body', 'taille batch 2');
+        self::assertSelectorTextContains('body', 'YourLibrary disponible');
+        self::assertSelectorTextContains('body', 'Mémoire max');
 
         $client->request('GET', '/private/music');
         self::assertResponseIsSuccessful();
@@ -57,6 +63,80 @@ final class MusicWebTest extends MusicWebTestCase
         self::assertSelectorTextContains('body', 'First Light');
         self::assertSelectorTextContains('body', 'Road Trip');
         self::assertSelectorTextContains('body', 'Sunrise Sessions');
+    }
+
+    public function testImportingArchiveOnFilledDatabaseReusesExistingArtistsAndTracks(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $this->submitFixtureArchiveImport($client);
+
+        $secondZipPath = $this->createZipArchive([
+            'Spotify Account Data/StreamingHistory_music_0.json' => json_encode([
+                [
+                    'endTime' => '2026-06-07 09:30',
+                    'artistName' => 'Alpha Artist',
+                    'trackName' => 'First Light',
+                    'msPlayed' => 130000,
+                ],
+                [
+                    'endTime' => '2026-06-07 09:35',
+                    'artistName' => 'Delta Duo',
+                    'trackName' => 'Fresh Cut',
+                    'msPlayed' => 150000,
+                ],
+            ], JSON_THROW_ON_ERROR),
+            'Spotify Account Data/YourLibrary.json' => json_encode([
+                'tracks' => [
+                    [
+                        'artist' => 'Delta Duo',
+                        'album' => 'Fresh Cuts',
+                        'track' => 'Fresh Cut',
+                        'uri' => 'spotify:track:delta1',
+                    ],
+                ],
+            ], JSON_THROW_ON_ERROR),
+        ]);
+
+        $client->request('GET', '/private/music/import');
+        $token = $client->getCrawler()->filter('input[name="_token"]')->attr('value');
+
+        $client->request(
+            'POST',
+            '/private/music/import',
+            ['_token' => $token],
+            ['archive' => new UploadedFile($secondZipPath, 'spotify-second.zip', 'application/zip', null, true)],
+        );
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', '2 ligne');
+        self::assertSelectorTextContains('body', '1 fichier');
+        self::assertSelectorTextContains('[data-stat-key="batch_count"]', '1');
+        self::assertSelectorTextContains('body', 'Lots');
+        self::assertSelectorTextContains('body', 'YourLibrary disponible');
+        self::assertSelectorTextContains('body', '1 artiste');
+        self::assertSelectorTextContains('body', '1 titre');
+
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $repository = self::getContainer()->get(MusicRepository::class);
+        self::assertSame(5, $entityManager->getRepository(Artist::class)->count([]));
+        self::assertSame(6, $entityManager->getRepository(Track::class)->count([]));
+        self::assertSame(9, $entityManager->getRepository(ListeningEvent::class)->count([]));
+
+        $alpha = $repository->findArtistByNormalizedName('alpha artist');
+        self::assertInstanceOf(Artist::class, $alpha);
+        self::assertSame(3, $alpha->getListeningCount());
+
+        $firstLight = $repository->findTrackByArtistAndNormalizedTitle($alpha, 'first light');
+        self::assertInstanceOf(Track::class, $firstLight);
+        self::assertSame(2, $firstLight->getListeningCount());
+        self::assertSame('Sunrise Sessions', $firstLight->getAlbumName());
+        self::assertSame('spotify:track:alpha1', $firstLight->getSpotifyUri());
+
+        $delta = $repository->findArtistByNormalizedName('delta duo');
+        self::assertInstanceOf(Artist::class, $delta);
+        self::assertSame(1, $delta->getListeningCount());
+
+        @unlink($secondZipPath);
     }
 
     public function testImportingSameArchiveTwiceCreatesDuplicateAttemptWithoutDuplicatingEvents(): void
@@ -77,6 +157,47 @@ final class MusicWebTest extends MusicWebTestCase
         $imports = self::getContainer()->get(EntityManagerInterface::class)->getRepository(MusicImport::class)->findBy([], ['importedAt' => 'ASC']);
         self::assertCount(1, $imports);
         self::assertSame('completed', $imports[0]->getStatus()->value);
+    }
+
+    public function testHardResetClearsMusicDataAndAllowsRelaunchingTheSameArchive(): void
+    {
+        $client = $this->createAuthenticatedClient();
+
+        $client->request('GET', '/private/music/import');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', 'Aucun import musical n a encore été enregistré');
+        self::assertSelectorExists('p.private-empty');
+        self::assertSelectorCount(0, 'form[action="/private/music/import/reset-hard"]');
+
+        $this->submitFixtureArchiveImport($client);
+        self::assertResponseIsSuccessful();
+
+        $client->request('GET', '/private/music/import');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('form[action="/private/music/import/reset-hard"]');
+
+        $token = $client->getCrawler()->filter('form[action="/private/music/import/reset-hard"] input[name="_token"]')->attr('value');
+        $client->request(
+            'POST',
+            '/private/music/import/reset-hard',
+            ['_token' => $token],
+        );
+
+        self::assertResponseRedirects('/private/music/import');
+        $client->followRedirect();
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', 'Réinitialisation terminée');
+        self::assertSelectorTextContains('body', 'Aucune donnée musicale n est encore présente');
+
+        $this->submitFixtureArchiveImport($client);
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', '7 ligne');
+        self::assertSelectorTextNotContains('body', 'déjà été importée');
+
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        self::assertSame(1, $entityManager->getRepository(MusicImport::class)->count([]));
+        self::assertSame(7, $entityManager->getRepository(ListeningEvent::class)->count([]));
     }
 
     public function testImportRejectsInvalidZip(): void

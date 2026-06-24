@@ -1,0 +1,147 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Musique{% endblock %}
+
+{% block body %}
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
+                <p class="private-eyebrow">Outil privé</p>
+                <h1>Musique</h1>
+                <p class="private-page__lead">
+                    Analyse locale de mon historique Spotify importé depuis l'archive officielle.
+                </p>
+            </div>
+
+            <div class="private-page__actions">
+                <a class="private-link-button" href="{{ path('app_private_music_import') }}">Importer une archive</a>
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_music_artists') }}">Artistes</a>
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_music_tracks') }}">Titres</a>
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_music_genres') }}">Styles</a>
+            </div>
+        </header>
+
+        <div class="private-grid private-grid--stats">
+            <article class="private-stat-card" data-stat-key="listening_events_total">
+                <p class="private-stat-card__label">Ecoutes</p>
+                <strong>{{ stats.listening_events_total }}</strong>
+                <span>écoutes importées</span>
+            </article>
+            <article class="private-stat-card" data-stat-key="duration_total">
+                <p class="private-stat-card__label">Duree totale</p>
+                <strong>{{ stats.duration_total_label }}</strong>
+                <span>{{ stats.duration_total_ms }} ms</span>
+            </article>
+            <article class="private-stat-card" data-stat-key="period">
+                <p class="private-stat-card__label">Période</p>
+                <strong>
+                    {% if stats.period_start and stats.period_end %}
+                        {{ stats.period_start|date('d/m/Y') }} - {{ stats.period_end|date('d/m/Y') }}
+                    {% else %}
+                        Non disponible
+                    {% endif %}
+                </strong>
+                <span>historique couvert</span>
+            </article>
+            <article class="private-stat-card" data-stat-key="artists_total">
+                <p class="private-stat-card__label">Artistes</p>
+                <strong>{{ stats.artists_total }}</strong>
+                <span>distincts</span>
+            </article>
+            <article class="private-stat-card" data-stat-key="tracks_total">
+                <p class="private-stat-card__label">Titres</p>
+                <strong>{{ stats.tracks_total }}</strong>
+                <span>distincts</span>
+            </article>
+            <article class="private-stat-card" data-stat-key="albums_total">
+                <p class="private-stat-card__label">Albums</p>
+                <strong>
+                    {% if stats.albums_available %}
+                        {{ stats.albums_total }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </strong>
+                <span>{% if stats.albums_available %}identifiés{% else %}données non fiables pour l'instant{% endif %}</span>
+            </article>
+        </div>
+
+        <div class="private-grid private-grid--two-columns">
+            <section class="private-section-card">
+                <header class="private-section-card__header">
+                    <h2>Top artistes</h2>
+                    <a href="{{ path('app_private_music_artists') }}">Voir tout</a>
+                </header>
+
+                {% if top_artists is not empty %}
+                    <div class="private-list-stack">
+                        {% for artist in top_artists %}
+                            <article class="private-list-item">
+                                <div>
+                                    <strong>{{ artist.display_name }}</strong>
+                                    <div class="private-muted">{{ artist.total_played_label }} d'écoute</div>
+                                </div>
+                                <div class="private-list-item__meta">
+                                    <span class="private-badge private-badge--secondary">{{ artist.listening_count }} écoute{{ artist.listening_count > 1 ? 's' : '' }}</span>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="private-empty">Aucune écoute importée pour le moment.</p>
+                {% endif %}
+            </section>
+
+            <section class="private-section-card">
+                <header class="private-section-card__header">
+                    <h2>Top titres</h2>
+                    <a href="{{ path('app_private_music_tracks') }}">Voir tout</a>
+                </header>
+
+                {% if top_tracks is not empty %}
+                    <div class="private-list-stack">
+                        {% for track in top_tracks %}
+                            <article class="private-list-item">
+                                <div>
+                                    <strong>{{ track.display_title }}</strong>
+                                    <div class="private-muted">{{ track.artist_display_name }}</div>
+                                </div>
+                                <div class="private-list-item__meta">
+                                    <span class="private-badge private-badge--secondary">{{ track.listening_count }} écoute{{ track.listening_count > 1 ? 's' : '' }}</span>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="private-empty">Aucun titre encore importé.</p>
+                {% endif %}
+            </section>
+        </div>
+
+        <section class="private-section-card">
+            <header class="private-section-card__header">
+                <h2>Imports récents</h2>
+                <a href="{{ path('app_private_music_import') }}">Nouvel import</a>
+            </header>
+
+            {% if recent_imports is not empty %}
+                <div class="private-list-stack">
+                    {% for importRecord in recent_imports %}
+                        <article class="private-list-item">
+                            <div>
+                                <strong>{{ importRecord.original_filename }}</strong>
+                                <div class="private-muted">{{ importRecord.source_type_label }}</div>
+                            </div>
+                            <div class="private-list-item__meta">
+                                <span class="private-badge">{{ importRecord.status_label }}</span>
+                                <span class="private-badge private-badge--secondary">{{ importRecord.imported_at|date('d/m/Y H:i') }}</span>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="private-empty">Aucun import enregistré pour le moment.</p>
+            {% endif %}
+        </section>
+    </section>
+{% endblock %}

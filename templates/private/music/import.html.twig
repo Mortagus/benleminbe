@@ -1,0 +1,156 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Import Musique{% endblock %}
+
+{% block body %}
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
+                <p class="private-eyebrow">Outil privé</p>
+                <h1>Import Spotify</h1>
+                <p class="private-page__lead">
+                    Charge une archive ZIP officielle Spotify pour analyser les écoutes musicales locales.
+                </p>
+            </div>
+
+            <div class="private-page__actions">
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_music_index') }}">Retour au module</a>
+            </div>
+        </header>
+
+        {% if errors is not empty %}
+            <div class="private-alert-list">
+                {% for error in errors %}
+                    <div class="private-alert">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <section class="private-surface">
+            <header class="private-surface__header">
+                <div>
+                    <h2>Ce qui sera importé</h2>
+                </div>
+            </header>
+
+            <div class="private-copy private-copy--intro">
+                <p>Le lot actuel lit uniquement les fichiers `StreamingHistory_music_*.json` de l archive Spotify et les conserve localement pour les statistiques.</p>
+                <p>Les podcasts et les autres exports JSON sont ignorés. Les styles ne sont pas devines automatiquement et les albums ne sont exploites que lorsqu une metadonnée fiable est disponible.</p>
+                <p>Réimporter la même archive ne duplique pas les données. La taille maximale admise est de 50 Mo et le ZIP doit rester structuré sans chemins dangereux.</p>
+            </div>
+        </section>
+
+        <section class="private-surface">
+            <header class="private-surface__header">
+                <h2>Envoyer l archive</h2>
+            </header>
+
+            <form class="private-form" method="post" action="{{ path('app_private_music_import') }}" enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="{{ csrf_token('private-music-import') }}">
+
+                <div class="private-form__grid">
+                    <label class="private-form__field private-form__field--wide">
+                        <span>Archive ZIP</span>
+                        <input type="file" name="archive" accept=".zip,application/zip">
+                    </label>
+                </div>
+
+                <div class="private-actions">
+                    <button class="private-link-button" type="submit">Importer</button>
+                </div>
+            </form>
+        </section>
+
+        {% if result is not null %}
+            <section class="private-surface">
+                <header class="private-surface__header">
+                    <div>
+                        <h2>Résultat de l import</h2>
+                        <p class="private-muted">
+                            {{ result.summary.processed_entries }} ligne{{ result.summary.processed_entries > 1 ? 's' : '' }} traitée{{ result.summary.processed_entries > 1 ? 's' : '' }},
+                            {{ result.summary.ignored_entries }} ignorée{{ result.summary.ignored_entries > 1 ? 's' : '' }},
+                            {{ result.summary.error_entries }} en erreur.
+                        </p>
+                    </div>
+                </header>
+
+                <div class="private-grid private-grid--stats">
+                    <article class="private-stat-card">
+                        <p class="private-stat-card__label">Fichier</p>
+                        <strong>{{ result.import.original_filename }}</strong>
+                        <span>{{ result.import.status_label }}</span>
+                    </article>
+                    <article class="private-stat-card">
+                        <p class="private-stat-card__label">Fichiers JSON</p>
+                        <strong>{{ result.summary.file_count }}</strong>
+                        <span>{{ result.summary.music_files|length }} fichier{{ result.summary.music_files|length > 1 ? 's' : '' }} musical{{ result.summary.music_files|length > 1 ? 'aux' : '' }}</span>
+                    </article>
+                    <article class="private-stat-card">
+                        <p class="private-stat-card__label">Période</p>
+                        <strong>
+                            {% if result.summary.period_start and result.summary.period_end %}
+                                {{ result.summary.period_start|date('d/m/Y') }} - {{ result.summary.period_end|date('d/m/Y') }}
+                            {% else %}
+                                Non disponible
+                            {% endif %}
+                        </strong>
+                        <span>couverte par l archive</span>
+                    </article>
+                    <article class="private-stat-card">
+                        <p class="private-stat-card__label">Checksum</p>
+                        <strong>{{ result.summary.archive_checksum|slice(0, 12) }}</strong>
+                        <span>hash de contrôle</span>
+                    </article>
+                </div>
+
+                <div class="private-grid private-grid--two-columns">
+                    <section class="private-surface private-surface--flat">
+                        <header class="private-surface__header">
+                            <h3>Fichiers musicaux</h3>
+                        </header>
+
+                        {% if result.summary.music_files is not empty %}
+                            <div class="private-list-stack">
+                                {% for file in result.summary.music_files %}
+                                    <article class="private-list-item">
+                                        <div>
+                                            <strong>{{ file.file_name }}</strong>
+                                            <div class="private-muted">{{ file.record_count }} ligne{{ file.record_count > 1 ? 's' : '' }} lue{{ file.record_count > 1 ? 's' : '' }}</div>
+                                        </div>
+                                        <div class="private-list-item__meta">
+                                            <span class="private-badge">{{ file.processed_entries }} traitée{{ file.processed_entries > 1 ? 's' : '' }}</span>
+                                            <span class="private-badge private-badge--secondary">{{ file.error_entries }} erreur{{ file.error_entries > 1 ? 's' : '' }}</span>
+                                        </div>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="private-empty">Aucun fichier compatible n a été détecté.</p>
+                        {% endif %}
+                    </section>
+
+                    <section class="private-surface private-surface--flat">
+                        <header class="private-surface__header">
+                            <h3>Fichiers ignorés</h3>
+                        </header>
+
+                        {% if result.summary.ignored_files is not empty %}
+                            <div class="private-list-stack">
+                                {% for fileName in result.summary.ignored_files %}
+                                    <article class="private-list-item">
+                                        <div>
+                                            <strong>{{ fileName }}</strong>
+                                            <div class="private-muted">Non utilisé pour l import musical</div>
+                                        </div>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="private-empty">Aucun fichier ignoré.</p>
+                        {% endif %}
+                    </section>
+                </div>
+            </section>
+        {% endif %}
+    </section>
+{% endblock %}

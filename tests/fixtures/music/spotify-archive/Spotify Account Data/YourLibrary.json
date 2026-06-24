@@ -1,0 +1,90 @@
+{
+    "tracks": [
+        {
+            "artist": "Alpha Artist",
+            "album": "Sunrise Sessions",
+            "track": "First Light",
+            "uri": "spotify:track:alpha1"
+        },
+        {
+            "artist": "Alpha Artist",
+            "album": "Sunrise Sessions",
+            "track": "Second Wave",
+            "uri": "spotify:track:alpha2"
+        },
+        {
+            "artist": "Beta Band",
+            "album": "Road Album",
+            "track": "Road Trip",
+            "uri": "spotify:track:beta1"
+        },
+        {
+            "artist": "Beta Band",
+            "album": "Road Album",
+            "track": "Road Trip",
+            "uri": "spotify:track:beta2"
+        },
+        {
+            "artist": "Gamma Ensemble",
+            "album": "Dawn Lines",
+            "track": "Morning Drive (feat. Delta)",
+            "uri": "spotify:track:gamma1"
+        },
+        {
+            "artist": "Zeta Trio",
+            "album": "Late Shift",
+            "track": "Night Run",
+            "uri": "spotify:track:zeta1"
+        }
+    ],
+    "albums": [
+        {
+            "artist": "Alpha Artist",
+            "album": "Sunrise Sessions",
+            "uri": "spotify:album:alpha-sunrise"
+        },
+        {
+            "artist": "Beta Band",
+            "album": "Road Album",
+            "uri": "spotify:album:beta-road"
+        },
+        {
+            "artist": "Gamma Ensemble",
+            "album": "Dawn Lines",
+            "uri": "spotify:album:gamma-dawn"
+        },
+        {
+            "artist": "Zeta Trio",
+            "album": "Late Shift",
+            "uri": "spotify:album:zeta-late"
+        }
+    ],
+    "artists": [
+        {
+            "name": "Alpha Artist",
+            "uri": "spotify:artist:alpha"
+        },
+        {
+            "name": "Beta Band",
+            "uri": "spotify:artist:beta"
+        },
+        {
+            "name": "Gamma Ensemble",
+            "uri": "spotify:artist:gamma"
+        },
+        {
+            "name": "Zeta Trio",
+            "uri": "spotify:artist:zeta"
+        }
+    ],
+    "shows": [],
+    "episodes": [],
+    "bannedTracks": [],
+    "bannedArtists": [],
+    "pageMatch": [],
+    "kallaxes": [],
+    "other": [],
+    "parentAllowedTracks": [],
+    "parentAllowedArtists": [],
+    "podcastChapters": []
+}

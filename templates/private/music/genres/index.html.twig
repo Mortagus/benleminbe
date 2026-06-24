@@ -1,0 +1,49 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Styles{% endblock %}
+
+{% block body %}
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
+                <p class="private-eyebrow">Musique</p>
+                <h1>Styles</h1>
+                <p class="private-page__lead">
+                    Les styles musicaux restent saisis manuellement et ne sont pas inférés depuis l archive Spotify.
+                </p>
+            </div>
+
+            <div class="private-page__actions">
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_music_index') }}">Retour au module</a>
+            </div>
+        </header>
+
+        <section class="private-surface">
+            <header class="private-surface__header">
+                <div>
+                    <h2>Styles existants</h2>
+                    <p class="private-muted">{{ total_genres }} style{{ total_genres > 1 ? 's' : '' }} enregistré{{ total_genres > 1 ? 's' : '' }}.</p>
+                </div>
+            </header>
+
+            {% if genres is not empty %}
+                <div class="private-list-stack">
+                    {% for genre in genres %}
+                        <article class="private-list-item">
+                            <div>
+                                <strong>{{ genre.name }}</strong>
+                                <div class="private-muted">{{ genre.slug }}</div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="private-empty">Aucun style n a encore été saisi manuellement.</p>
+            {% endif %}
+
+            <div class="private-copy">
+                <p>La gestion détaillée des styles est volontairement minimale pour ce lot. Elle pourra être ajoutée plus tard si elle reste petite et cohérente avec le reste du module.</p>
+            </div>
+        </section>
+    </section>
+{% endblock %}

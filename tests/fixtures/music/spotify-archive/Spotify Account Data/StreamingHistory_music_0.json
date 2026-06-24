@@ -1,0 +1,32 @@
+[
+    {
+        "endTime": "2025-06-05 11:07",
+        "artistName": "Alpha Artist",
+        "trackName": "First Light",
+        "msPlayed": 120000
+    },
+    {
+        "endTime": "2025-06-05 11:13",
+        "artistName": "Alpha Artist",
+        "trackName": "Second Wave",
+        "msPlayed": 0
+    },
+    {
+        "endTime": "2025-06-06 10:55",
+        "artistName": "Beta Band",
+        "trackName": "Road Trip",
+        "msPlayed": 180000
+    },
+    {
+        "endTime": "2025-06-06 10:59",
+        "artistName": "Beta Band",
+        "trackName": "Road Trip",
+        "msPlayed": 180000
+    },
+    {
+        "endTime": "2025-06-07 09:00",
+        "artistName": "Gamma Ensemble",
+        "trackName": "Morning Drive (feat. Delta)",
+        "msPlayed": 210000
+    }
+]

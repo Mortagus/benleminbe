@@ -80,6 +80,7 @@ Exemples de bons noms:
 | `docs/en-cours/*`                       | Suivi actif, backlog, notes de chantier                             |
 | `docs/termines/*`                       | Historique des audits, plans et notes clôturés                      |
 | `docs/private/*`                        | Documentation stable de la zone privée                              |
+| `docs/private/music/*`                  | Module prive d'analyse de l'historique Spotify                       |
 | `docs/private/network/*`                | Références du module `Contacts et reseau`                           |
 | `docs/editorial/*`                      | Corpus éditorial de travail                                         |
 

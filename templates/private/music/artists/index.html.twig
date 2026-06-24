@@ -1,0 +1,166 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Artistes{% endblock %}
+
+{% block body %}
+    <section class="private-page">
+        <header class="private-page__header">
+            <div class="private-page__title">
+                <p class="private-eyebrow">Musique</p>
+                <h1>Artistes</h1>
+                <p class="private-page__lead">
+                    Recherche, tri et pagination des artistes repérés dans l historique importé.
+                </p>
+            </div>
+
+            <div class="private-page__actions">
+                <a class="private-link-button" href="{{ path('app_private_music_import') }}">Importer</a>
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_music_tracks') }}">Titres</a>
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_music_genres') }}">Styles</a>
+            </div>
+        </header>
+
+        <section class="private-surface">
+            <form class="private-toolbar private-toolbar--compact" method="get" action="{{ path('app_private_music_artists') }}">
+                <label class="private-toolbar__field private-toolbar__field--search">
+                    <span>Recherche</span>
+                    <input class="private-input" type="search" name="q" value="{{ current_query }}" placeholder="Nom d artiste..." />
+                </label>
+
+                <label class="private-toolbar__field">
+                    <span>Trier par</span>
+                    <select name="sort">
+                        {% for value, label in sort_options %}
+                            <option value="{{ value }}" {{ current_sort == value ? 'selected' : '' }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label class="private-toolbar__field">
+                    <span>Direction</span>
+                    <select name="direction">
+                        {% for value, label in direction_options %}
+                            <option value="{{ value }}" {{ current_direction == value ? 'selected' : '' }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                {% if genre_options is not empty %}
+                    <label class="private-toolbar__field">
+                        <span>Style</span>
+                        <select name="genre">
+                            <option value="">Tous</option>
+                            {% for value, label in genre_options %}
+                                <option value="{{ value }}" {{ current_genre == value ? 'selected' : '' }}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                {% endif %}
+
+                <div class="private-toolbar__actions">
+                    <button class="private-link-button" type="submit">Filtrer</button>
+                    {% if current_query or current_sort != 'default' or current_direction != 'desc' or current_genre %}
+                        <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_music_artists') }}">Réinitialiser</a>
+                    {% endif %}
+                </div>
+            </form>
+        </section>
+
+        {% if artists is not empty %}
+            <section class="private-surface">
+                <header class="private-surface__header">
+                    <div>
+                        <h2>Liste des artistes</h2>
+                        <p class="private-muted">Affichage {{ visible_from }}-{{ visible_to }} sur {{ total_artists }} artiste{{ total_artists > 1 ? 's' : '' }}.</p>
+                    </div>
+                </header>
+
+                <div class="private-table-wrap">
+                    <table class="private-table private-table--responsive">
+                        <thead>
+                            <tr>
+                                <th>Artiste</th>
+                                <th>Ecoutes</th>
+                                <th>Duree</th>
+                                <th>Première</th>
+                                <th>Dernière</th>
+                                <th>Styles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for artist in artists %}
+                                <tr>
+                                    <td class="private-table__cell private-table__cell--main" data-label="Artiste">
+                                        <strong>{{ artist.display_name }}</strong>
+                                        <div class="private-muted">{{ artist.normalized_name }}</div>
+                                    </td>
+                                    <td class="private-table__cell private-table__cell--badge" data-label="Ecoutes"><span class="private-badge private-badge--secondary">{{ artist.listening_count }}</span></td>
+                                    <td class="private-table__cell private-table__cell--badge" data-label="Duree"><span class="private-badge">{{ artist.total_played_label }}</span></td>
+                                    <td class="private-table__cell private-table__cell--hide-mobile" data-label="Première">
+                                        {% if artist.first_played_at %}
+                                            {{ artist.first_played_at|date('d/m/Y H:i') }}
+                                        {% else %}
+                                            <span class="private-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="private-table__cell private-table__cell--hide-mobile" data-label="Dernière">
+                                        {% if artist.last_played_at %}
+                                            {{ artist.last_played_at|date('d/m/Y H:i') }}
+                                        {% else %}
+                                            <span class="private-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="private-table__cell" data-label="Styles">
+                                        {% if artist.genres is not empty %}
+                                            <div class="private-tags">
+                                                {% for genre in artist.genres %}
+                                                    <span class="private-badge private-badge--secondary">{{ genre }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <span class="private-muted">Aucun style renseigné</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if page_count > 1 %}
+                    <nav class="private-pagination" aria-label="Pagination des artistes">
+                        <div class="private-pagination__controls">
+                            {% if page > 1 %}
+                                <a class="private-pagination__link private-pagination__link--nav" href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({ page: page - 1 })) }}">Précédente</a>
+                            {% else %}
+                                <span class="private-pagination__link private-pagination__link--nav private-pagination__link--disabled" aria-disabled="true">Précédente</span>
+                            {% endif %}
+
+                            <div class="private-pagination__pages" aria-label="Pages">
+                                {% for item in pagination_items %}
+                                    {% if item.type == 'ellipsis' %}
+                                        <span class="private-pagination__ellipsis" aria-hidden="true">…</span>
+                                    {% elseif item.current %}
+                                        <span class="private-pagination__link private-pagination__link--current" aria-current="page">{{ item.label }}</span>
+                                    {% else %}
+                                        <a class="private-pagination__link" href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({ page: item.page })) }}">{{ item.label }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                            {% if page < page_count %}
+                                <a class="private-pagination__link private-pagination__link--nav" href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({ page: page + 1 })) }}">Suivante</a>
+                            {% else %}
+                                <span class="private-pagination__link private-pagination__link--nav private-pagination__link--disabled" aria-disabled="true">Suivante</span>
+                            {% endif %}
+                        </div>
+                    </nav>
+                {% endif %}
+            </section>
+        {% else %}
+            <section class="private-surface">
+                <p class="private-empty">Aucun artiste ne correspond à ces filtres.</p>
+            </section>
+        {% endif %}
+    </section>
+{% endblock %}

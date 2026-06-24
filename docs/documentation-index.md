@@ -20,6 +20,7 @@ La règle generale est simple:
 - [Workflow de contenu](content-workflow.md) : sources de verite pour les contenus publics.
 - [Deploiement et verification](deployment-and-verification.md) : cibles `make`, deploiement et checks.
 - [Zone privee](private/private-area-index.md) : documentation stable de la zone privee et de son premier module.
+- [Musique privee](private/music/music-index.md) : module prive d'analyse de l'historique Spotify.
 - [Travaux en cours](en-cours/current-work-index.md) : fil de reprise, backlog et notes actives.
 - [Travaux terminés](termines/archive-index.md) : archives des audits, plans et notes clotures.
 - [Lab](lab/lab-index.md) : documentation des outils experimentaux.

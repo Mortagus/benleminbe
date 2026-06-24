@@ -1,0 +1,14 @@
+[
+    {
+        "endTime": "2026-06-05 09:00",
+        "artistName": "Alpha Artist",
+        "trackName": "First Light",
+        "msPlayed": 130000
+    },
+    {
+        "endTime": "2026-06-06 19:52",
+        "artistName": "Zeta Trio",
+        "trackName": "Night Run",
+        "msPlayed": 240000
+    }
+]

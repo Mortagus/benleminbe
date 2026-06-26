@@ -46,13 +46,18 @@ if ! grep -q 'name="_csrf_token"' "$body_file"; then
     exit 1
 fi
 
+if ! grep -q 'Se connecter avec une passkey' "$body_file"; then
+    printf '%s\n' 'Login page does not expose the passkey login action.' >&2
+    exit 1
+fi
+
 if ! grep -qi 'noindex,nofollow' "$body_file"; then
     printf '%s\n' 'Login page does not contain noindex,nofollow.' >&2
     exit 1
 fi
 
 printf '%s\n' '==> Checking private route protection'
-for protected_path in /private/network /private/network/contacts /private/network/platforms /private/network/import; do
+for protected_path in /private/network /private/network/contacts /private/network/platforms /private/network/import /private/security/passkeys; do
     status=$(curl -sS -o /dev/null -D "$headers_file" -w '%{http_code}' "$base_url$protected_path")
     location=$(tr -d '\r' < "$headers_file" | awk 'BEGIN{IGNORECASE=1} /^location:/ {print $2; exit}')
 

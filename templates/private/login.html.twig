@@ -20,6 +20,32 @@
             </div>
         </header>
 
+        {% if app.request.query.get('expired') %}
+            <p class="private-alert" role="alert">La session privée a expiré. Reconnectez-vous.</p>
+        {% endif %}
+
+        <section
+            class="private-section-card"
+            data-private-webauthn-login
+            data-options-url="{{ path('app_private_security_passkeys_login_options') }}"
+            data-result-url="{{ path('app_private_security_passkeys_login') }}"
+        >
+            <header class="private-section-card__header">
+                <div>
+                    <h2>Connexion par passkey</h2>
+                    <p class="private-muted">La méthode recommandée. Utilise Windows Hello, Face ID, Touch ID ou une clé FIDO2.</p>
+                </div>
+            </header>
+
+            <div class="private-actions">
+                <button type="button" class="private-link-button" data-private-webauthn-login-button>
+                    Se connecter avec une passkey
+                </button>
+            </div>
+
+            <p class="private-muted" data-private-webauthn-login-status hidden></p>
+        </section>
+
         {% if error %}
             <p class="private-alert" role="alert">Identifiants invalides.</p>
         {% endif %}

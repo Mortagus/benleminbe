@@ -36,6 +36,11 @@ build_login_form() {
 
 read_secret() {
     prompt=$1
+    if [ "${PRIVATE_ADMIN_PASSWORD:-}" != "" ]; then
+        printf '%s' "$PRIVATE_ADMIN_PASSWORD"
+        return 0
+    fi
+
     printf '%s' "$prompt" >&2
     stty -echo 2>/dev/null || true
     if ! IFS= read -r value; then
@@ -126,6 +131,27 @@ fi
 
 if ! grep -qi 'noindex,nofollow' "$result_file"; then
     printf '%s\n' 'Authenticated dashboard does not contain noindex,nofollow.' >&2
+    exit 1
+fi
+
+printf '%s\n' '==> Checking private passkeys page'
+result=$(curl -sS -L -b "$cookies_file" -c "$cookies_file" -o "$result_file" -w '%{http_code} %{url_effective}' \
+    "$base_url/private/security/passkeys")
+status=${result%% *}
+final_url=${result#* }
+
+if [ "$status" != "200" ]; then
+    printf '%s\n' "Expected passkeys page to return HTTP 200, got $status." >&2
+    exit 1
+fi
+
+case "$final_url" in
+    */private/security/passkeys|*/private/security/passkeys?*) ;;
+    *) printf '%s\n' "Expected passkeys page to remain on /private/security/passkeys, got: $final_url" >&2; exit 1 ;;
+esac
+
+if ! grep -q 'Passkeys' "$result_file"; then
+    printf '%s\n' 'Passkeys page does not contain the expected heading.' >&2
     exit 1
 fi
 

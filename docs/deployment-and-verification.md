@@ -112,6 +112,16 @@ Verifications:
 - l'entrypoint prive est disponible ;
 - l'entrypoint prive reference le CSS prive, le helper de copie et le theme switcher.
 
+Variables utiles:
+
+```bash
+make private-prod-check PRIVATE_BASE_URL=https://example.com
+```
+
+En local, on peut aussi pointer le check vers `http://127.0.0.1:8000` quand un serveur Symfony tourne deja.
+
+Pour les ceremonies WebAuthn manuelles, utiliser `http://localhost:8000` ou HTTPS local, pas `http://127.0.0.1:8000`.
+
 Usage typique:
 
 ```bash
@@ -136,6 +146,20 @@ Verifications:
 - le dashboard reste marque `noindex,nofollow` ;
 - le logout invalide la session ;
 - `/private` redevient inaccessible apres logout.
+
+Variables utiles:
+
+```bash
+make private-prod-auth-check PRIVATE_BASE_URL=https://example.com PRIVATE_ADMIN_USERNAME=private_admin
+```
+
+Pour l'automatisation locale ou CI, fournir aussi le mot de passe de secours sans interaction:
+
+```bash
+make private-prod-auth-check PRIVATE_BASE_URL=http://127.0.0.1:8000 PRIVATE_ADMIN_PASSWORD=private-dev-password
+```
+
+Le mot de passe ne doit jamais etre journalise.
 
 Usage typique:
 
@@ -178,3 +202,5 @@ make private-prod-auth-check
 - en cas de probleme sur `/private/network`, verifier d'abord l'etat de la base avant d'interpréter un défaut d'affichage ;
 - `make private-prod-check` ne demande pas de secret et peut servir de smoke test rapide apres un deploiement ;
 - il inclut aussi un test d'accessibilite base sur `php bin/console dbal:run-sql 'SELECT 1' --env=prod --no-interaction`.
+- les tests WebAuthn manuels restent necessaires dans un navigateur reel avec HTTPS et un authenticator physique ou systeme;
+- après un deploiement, verifier aussi que la base de developpement ou de recette a recu la migration `Version20260625183000` si un environnement local ou de staging sert aux smoke tests.

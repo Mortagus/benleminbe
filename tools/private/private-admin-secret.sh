@@ -46,7 +46,7 @@ if [ "$password" != "$password_confirm" ]; then
     exit 1
 fi
 
-hash=$(printf '%s' "$password" | php -r 'require "vendor/autoload.php"; $password = stream_get_contents(STDIN); $hasher = new Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher(); echo $hasher->hash($password), PHP_EOL;')
+hash=$(printf '%s' "$password" | php -r 'require "vendor/autoload.php"; $password = stream_get_contents(STDIN); $algorithm = defined("PASSWORD_ARGON2ID") ? "argon2id" : null; $hasher = new Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher(algorithm: $algorithm); echo $hasher->hash($password), PHP_EOL;')
 
 unset password password_confirm
 

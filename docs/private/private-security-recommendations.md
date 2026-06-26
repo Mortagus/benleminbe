@@ -1,99 +1,103 @@
 # Recommandations De Securite De La Zone Privee
 
-Date de mise a jour : 2026-05-20
+Date de mise a jour : 2026-06-25
 
-Ce document consigne la strategie recommandee pour gerer le secret `PRIVATE_ADMIN_PASSWORD_HASH` utilise par la zone privee.
+Ce document decrit le role du mot de passe de secours, la gestion du secret admin prive et les points de vigilance autour de la zone privee.
 
-## Principe
+La strategie des passkeys et leur procedure de recuperation sont decrites en detail dans [private-passkeys.md](private-passkeys.md).
+
+## Role Du Mot De Passe
+
+Le mot de passe administrateur prive reste volontairement present comme mecanisme de secours.
+
+Il ne doit pas devenir un second compte "normal" ni un canal de recuperation automatique.
+
+Son role est limite a:
+
+- premier enregistrement des passkeys;
+- recuperation manuelle en cas de perte de toutes les passkeys;
+- verification de secours dans les smoke tests automatises.
+
+## Secret Et Hash
 
 `PRIVATE_ADMIN_PASSWORD_HASH` est une donnee sensible.
 
-Elle ne doit pas etre definie dans :
+Il ne doit pas etre defini en clair dans:
 
-- `security.yaml` ;
-- `.env` ;
-- un fichier committe contenant des valeurs de production ;
-- la documentation ;
-- un ticket ou une pull request.
+- `security.yaml`;
+- `.env`;
+- une documentation publique;
+- un ticket ou une revue de code;
+- un script de deploiement qui imprimerait la valeur en clair.
 
-Le mot de passe en clair ne doit exister que dans un gestionnaire de mots de passe.
+Le mot de passe en clair ne doit exister que dans un gestionnaire de mots de passe ou dans un canal de saisie local protege.
 
 ## Developpement Local
 
-En developpement, `.env.dev` peut contenir un hash de test explicitement non sensible.
+En developpement, `.env.dev` et `.env.test` peuvent contenir un hash de test explicitement non sensible.
 
-Exemple actuel :
+Couple utilise localement:
 
 ```text
 Username: private_admin
 Password: private-dev-password
 ```
 
-Ce couple identifiant/mot de passe ne doit jamais etre utilise en production.
+Ce couple ne doit jamais etre reutilise en production.
 
-## Production
+## Hashing Recommande
 
-En production, definir `PRIVATE_ADMIN_PASSWORD_HASH` hors Git.
+La commande `tools/private/private-admin-secret.sh` prefere Argon2id lorsque l'environnement PHP le supporte.
 
-Methode recommandee pour ce projet :
+Si Argon2id n'est pas disponible, le script bascule vers l'algorithme effectif de `password_hash()` dans l'environnement courant. Ce fallback doit rester documente et exceptionnel.
 
-1. Generer un vrai mot de passe dans un gestionnaire de mots de passe.
-2. Lancer la commande Make dediee.
-3. Stocker uniquement le hash dans Symfony Secrets ou dans les variables d'environnement du serveur.
-4. Ne jamais stocker le mot de passe en clair sur le serveur.
-
-Commande recommandee :
+Commande recommandee:
 
 ```bash
 make private-admin-secret
 ```
 
-Cette commande :
+Cette commande:
 
-- utilise `prod` comme environnement par defaut ;
-- genere les cles Symfony Secrets si elles n'existent pas encore ;
-- demande le mot de passe deux fois en saisie masquee ;
-- genere un hash sans passer le mot de passe en argument de ligne de commande ;
-- stocke le hash dans le secret `PRIVATE_ADMIN_PASSWORD_HASH`.
-
-Pour cibler un autre environnement :
-
-```bash
-make private-admin-secret PRIVATE_SECRET_ENV=staging
-```
-
-Commandes Symfony equivalentes, si une intervention manuelle est necessaire :
-
-```bash
-APP_ENV=prod php bin/console secrets:generate-keys
-APP_ENV=prod php bin/console security:hash-password
-APP_ENV=prod php bin/console secrets:set PRIVATE_ADMIN_PASSWORD_HASH
-```
-
-## Deploiement Du Vault Symfony
-
-Si Symfony Secrets est utilise en production, la cle privee de dechiffrement ne doit pas etre committee.
-
-Deux options acceptables :
-
-- deposer le fichier prive `config/secrets/prod/prod.decrypt.private.php` directement sur le serveur ;
-- definir la variable d'environnement `SYMFONY_DECRYPTION_SECRET` sur le serveur.
-
-La seconde option est preferable si l'hebergeur ou le pipeline de deploiement permet de gerer proprement les variables d'environnement sensibles.
+- genere ou met a jour le secret Symfony;
+- demande le mot de passe en saisie masquee;
+- ne l'affiche pas dans les logs;
+- stocke uniquement le hash.
 
 ## Rotation
 
-Pour changer le mot de passe prive :
+Pour changer le mot de passe prive:
 
 1. Generer un nouveau mot de passe dans le gestionnaire de mots de passe.
-2. Relancer `make private-admin-secret`.
-3. Verifier que `PRIVATE_ADMIN_PASSWORD_HASH` a ete remplace dans le systeme de secrets choisi.
-4. Redployer ou vider le cache si necessaire.
+2. Lancer `make private-admin-secret`.
+3. Verifier que le hash a bien ete mis a jour dans les secrets ou la configuration deploiement.
+4. Redemarrer ou vider le cache si necessaire.
 5. Supprimer l'ancien mot de passe du gestionnaire de mots de passe.
+
+Les sessions deja authentifiees peuvent rester valides jusqu'a expiration ou logout. Le changement du hash n'est donc pas une purge de session.
+
+## Recuperation Manuelle
+
+Si toutes les passkeys sont perdues:
+
+1. Utiliser le mot de passe de secours pour ouvrir `/private/login`.
+2. Enregistrer immediatement au moins deux passkeys depuis `/private/security/passkeys`.
+3. Conserver le mot de passe comme recours documente, mais pas comme usage quotidien.
+
+Il n'existe pas de recuperation par e-mail, de reset automatique, de compte multi-utilisateur ni de SaaS externe.
+
+## Variables Et Fichiers Utiles
+
+- `PRIVATE_ADMIN_PASSWORD_HASH`
+- `PRIVATE_ADMIN_PASSWORD` uniquement pour automatiser les smoke tests locaux ou de CI, jamais pour la production
+- `app.webauthn.rp_id` et `app.webauthn.origin` pour le contexte local WebAuthn si tu utilises un autre hote ou un autre port que le défaut
+- `config/secrets/*`
+- `tools/private/private-admin-secret.sh`
+- `tools/private/private-prod-auth-check.sh`
 
 ## Reference
 
-Documentation officielle Symfony :
+Documentation officielle Symfony:
 
 ```text
 https://symfony.com/doc/current/configuration/secrets.html

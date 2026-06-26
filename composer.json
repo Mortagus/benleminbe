@@ -28,7 +28,8 @@
         "doctrine/doctrine-bundle": "^3.0",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.5",
-        "symfony/rate-limiter": "^8.0"
+        "symfony/rate-limiter": "^8.0",
+        "web-auth/webauthn-framework": "^5.3.5"
     },
     "license": "MIT",
     "autoload": {

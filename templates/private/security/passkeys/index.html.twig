@@ -1,0 +1,139 @@
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Passkeys privées{% endblock %}
+
+{% block body %}
+    <section class="private-page">
+        <header class="private-page__header private-page__header--stacked">
+            <div class="private-page__title">
+                <p class="private-eyebrow">Sécurité privée</p>
+                <h1>Passkeys</h1>
+                <p class="private-page__lead">
+                    Les passkeys renforcent l'accès à l'espace privé. Le mot de passe reste disponible comme secours contrôlé.
+                </p>
+            </div>
+
+            <div class="private-page__actions">
+                <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_dashboard') }}">
+                    Retour au tableau de bord
+                </a>
+            </div>
+        </header>
+
+        {% if shouldEncourageSecondPasskey %}
+            <p class="private-alert" role="alert">
+                Enregistrer au moins deux passkeys évite un verrouillage après perte d'un appareil.
+            </p>
+        {% endif %}
+
+        <section
+            class="private-section-card"
+            data-private-webauthn-register
+            data-options-url="{{ path('app_private_security_passkeys_register_options') }}"
+            data-result-url="{{ path('app_private_security_passkeys_register') }}"
+            data-csrf-token="{{ csrf_token('private_webauthn_register') }}"
+        >
+            <header class="private-section-card__header">
+                <div>
+                    <h2>Ajouter une passkey</h2>
+                    <p class="private-muted">Le nom choisi sera enregistré seulement si la cérémonie WebAuthn réussit.</p>
+                </div>
+            </header>
+
+            <form class="private-form private-form--compact" data-private-webauthn-register-form>
+                <label class="private-form__field">
+                    <span>Nom lisible</span>
+                    <input
+                        type="text"
+                        name="label"
+                        value="{{ nextLabel }}"
+                        autocomplete="off"
+                        spellcheck="false"
+                        required
+                    >
+                </label>
+
+                <div class="private-actions">
+                    <button type="button" class="private-link-button" data-private-webauthn-register-button>
+                        Ajouter une passkey
+                    </button>
+                </div>
+            </form>
+
+            <p class="private-muted" data-private-webauthn-register-status hidden></p>
+        </section>
+
+        <section class="private-section-card">
+            <header class="private-section-card__header">
+                <div>
+                    <h2>Passkeys enregistrées</h2>
+                    <p class="private-muted">Ne supprimez pas la dernière passkey tant que le mot de passe de secours n'a pas été vérifié.</p>
+                </div>
+            </header>
+
+            {% if credentials is empty %}
+                <p class="private-empty">Aucune passkey n'est encore enregistrée.</p>
+            {% else %}
+                <div class="private-table-wrap">
+                    <table class="private-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Ajoutée</th>
+                                <th>Dernière utilisation</th>
+                                <th>Type</th>
+                                <th>Transports</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for credential in credentials %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ credential.displayName }}</strong>
+                                    </td>
+                                    <td>{{ credential.createdAt|date('d/m/Y H:i') }}</td>
+                                    <td>
+                                        {% if credential.lastUsedAt %}
+                                            {{ credential.lastUsedAt|date('d/m/Y H:i') }}
+                                        {% else %}
+                                            Jamais
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ credential.type }}</td>
+                                    <td>
+                                        {% if credential.transports is not empty %}
+                                            <div class="private-tags">
+                                                {% for transport in credential.transports %}
+                                                    <span class="private-badge private-badge--secondary">{{ transport }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <span class="private-muted">Non renseigné</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <form
+                                            class="private-inline-form"
+                                            method="post"
+                                            action="{{ path('app_private_security_passkeys_delete', { id: credential.id }) }}"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="_csrf_token"
+                                                value="{{ csrf_token('private_webauthn_delete_' ~ credential.id) }}"
+                                            >
+                                            <button type="submit" class="private-link-button private-link-button--danger">
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </section>
+    </section>
+{% endblock %}

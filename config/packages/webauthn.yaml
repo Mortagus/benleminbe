@@ -1,0 +1,27 @@
+webauthn:
+    allowed_origins:
+        - '%app.webauthn.origin%'
+    allow_subdomains: false
+    credential_repository: App\Private\Security\Repository\PasskeyCredentialRepository
+    user_repository: App\Private\Security\Repository\PrivateAdminWebauthnUserRepository
+    creation_profiles:
+        default:
+            rp:
+                id: '%app.webauthn.rp_id%'
+            challenge_length: 32
+            authenticator_selection_criteria:
+                user_verification: required
+                resident_key: required
+            attestation_conveyance: none
+            public_key_credential_parameters:
+                - -7
+                - -257
+    request_profiles:
+        default:
+            rp_id: '%app.webauthn.rp_id%'
+            challenge_length: 32
+            user_verification: required
+    passkey_endpoints:
+        enabled: true
+        enroll: '%app.webauthn.origin%/private/security/passkeys'
+        manage: '%app.webauthn.origin%/private/security/passkeys'

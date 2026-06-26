@@ -6,6 +6,8 @@ Ces documents restent utiles pour comprendre les décisions passées, mais l'ét
 
 ## Audits
 
+- [Audit de securite de l'authentification privee](audits/private-authentication-security-audit.md)
+- [Investigation locale Passkey / WebAuthn](audits/passkey-local-investigation.md)
 - [Plan d'audit architecture](audits/site-architecture-audit-plan.md)
 - [Audit architecture - phase 1](audits/site-architecture-audit-phase-1.md)
 - [Audit architecture - phase 2](audits/site-architecture-audit-phase-2.md)

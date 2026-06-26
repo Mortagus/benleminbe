@@ -156,13 +156,6 @@
     line-height: 1.55;
 }
 
-.simon-hero__actions .simon-audio__toggle {
-    min-width: 0;
-    width: 3rem;
-    height: 3rem;
-    padding: 0;
-}
-
 .simon-audio__toggle .simon-audio__icon {
     display: inline-flex;
     align-items: center;
@@ -181,16 +174,15 @@
     display: none;
 }
 
-.simon-page[data-simon-audio-muted="true"] .simon-audio__toggle {
-    border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
-    background: color-mix(in srgb, var(--accent) 6%, var(--card));
-}
-
 .simon-hero__note {
     max-width: 46rem;
     margin: 0;
     color: var(--muted);
     line-height: 1.65;
+}
+
+.simon-page .button {
+    min-width: 10rem;
 }
 
 .simon-shell {
@@ -206,36 +198,6 @@
     box-shadow: 0 18px 48px var(--shadow);
 }
 
-.simon-stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-}
-
-.simon-stat {
-    display: grid;
-    gap: 0.35rem;
-    padding: 1rem 1.05rem;
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    background: var(--card);
-    box-shadow: 0 16px 40px var(--shadow);
-}
-
-.simon-stat span {
-    color: var(--accent-text);
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-.simon-stat strong {
-    color: var(--text);
-    font-size: 1.55rem;
-    line-height: 1.1;
-}
-
 .simon-layout {
     display: grid;
     grid-template-columns: 1fr;
@@ -247,6 +209,7 @@
     width: 100%;
     max-width: 42rem;
     display: grid;
+    gap: 1rem;
     place-items: center;
     padding: 1rem;
     border-radius: 30px;
@@ -281,6 +244,27 @@
         inset 0 14px 24px rgb(255 255 255 / 5%),
         0 20px 50px rgb(0 0 0 / 28%);
     overflow: hidden;
+}
+
+.simon-stage__actions {
+    width: min(100%, 28rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.simon-stage__actions .button {
+    flex: 1 1 12rem;
+    min-width: 0;
+}
+
+.simon-stage__actions .simon-audio__toggle {
+    flex: 0 0 auto;
+    min-width: 0;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
 }
 
 .simon-board::after {
@@ -327,6 +311,11 @@
 
 .simon-page[data-simon-phase="player"] .simon-board::after {
     opacity: 0;
+}
+
+.simon-page[data-simon-audio-muted="true"] .simon-audio__toggle {
+    border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
+    background: color-mix(in srgb, var(--accent) 6%, var(--card));
 }
 
 .simon-pad {
@@ -436,15 +425,15 @@
 
 .simon-board__core {
     position: absolute;
-    inset: 31%;
+    inset: 25%;
     z-index: 2;
     pointer-events: none;
     display: grid;
+    gap: 0.4rem;
     place-items: center;
-    gap: 0.35rem;
-    padding: 1rem;
+    padding: 0.55rem;
     border: 1px solid rgb(255 255 255 / 8%);
-    border-radius: 50%;
+    border-radius: 999px;
     background:
         radial-gradient(circle at top, rgb(255 255 255 / 14%), transparent 46%),
         linear-gradient(180deg, color-mix(in srgb, var(--card) 82%, #000 18%), color-mix(in srgb, var(--bg-soft) 60%, #000 40%));
@@ -454,25 +443,30 @@
     text-align: center;
 }
 
-.simon-board__eyebrow {
+.simon-board__metric {
+    display: grid;
+    gap: 0.08rem;
+    place-items: center;
+    line-height: 1;
+}
+
+.simon-board__metric strong {
+    color: var(--text);
+    font-size: 0.98rem;
+    line-height: 1.05;
+}
+
+.simon-board__metric-label {
     color: var(--accent-text);
-    font-size: 0.7rem;
+    font-size: 0.58rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
-.simon-board__title {
-    color: var(--text);
-    font-size: 1.05rem;
-    line-height: 1.1;
-}
-
-.simon-board__status {
-    max-width: 9rem;
-    color: var(--muted);
-    font-size: 0.88rem;
-    line-height: 1.45;
+.simon-board__metric--status strong {
+    font-size: 0.86rem;
+    text-wrap: balance;
 }
 
 .simon-sidebar {
@@ -732,35 +726,62 @@
     gap: 0.75rem;
 }
 
-.simon-page .button {
-    min-width: 10rem;
-}
-
 @media (width <= 760px) {
     .simon-page {
         width: min(100% - 1rem, 76rem);
         padding-block: 2rem 3rem;
     }
 
-    .simon-shell {
-        padding: 1.25rem;
+    .simon-hero {
+        gap: 0.75rem;
     }
 
-    .simon-stats {
-        grid-template-columns: 1fr;
+    .simon-hero h1 {
+        font-size: clamp(2.1rem, 11vw, 3rem);
+    }
+
+    .simon-hero__intro,
+    .simon-hero__note {
+        font-size: 0.95rem;
+        line-height: 1.55;
+    }
+
+    .simon-hero__actions {
+        gap: 0.6rem;
+    }
+
+    .simon-shell {
+        padding: 1rem;
     }
 
     .simon-stage {
         padding: 0.8rem;
     }
 
+    .simon-stage__actions {
+        width: 100%;
+        flex-wrap: nowrap;
+    }
+
     .simon-pad__content {
         padding: 0.9rem;
     }
 
-    .simon-page .button {
+    .simon-hero__actions .button {
         min-width: 0;
-        width: 100%;
+        width: auto;
+    }
+
+    .simon-stage__actions .button,
+    .simon-audio__preview,
+    .simon-keyboard__edit,
+    .simon-keyboard__actions .button {
+        min-width: 0;
+        width: auto;
+    }
+
+    .simon-stage__actions .simon-audio__toggle {
+        width: 3rem;
     }
 
     .simon-sidebar {
@@ -780,6 +801,10 @@
 
     .simon-audio__control {
         grid-template-columns: 1fr;
+    }
+
+    .simon-audio__header h3 {
+        font-size: 1.1rem;
     }
 
     .simon-audio__value {
@@ -803,6 +828,28 @@
 
     .simon-disclosure__state {
         justify-self: start;
+    }
+
+    .simon-board__core {
+        inset: 31%;
+        gap: 0.3rem;
+        padding: 0.4rem;
+    }
+
+    .simon-board__metric {
+        gap: 0.04rem;
+    }
+
+    .simon-board__metric strong {
+        font-size: 0.76rem;
+    }
+
+    .simon-board__metric-label {
+        font-size: 0.52rem;
+    }
+
+    .simon-board__metric--status strong {
+        font-size: 0.66rem;
     }
 }
 

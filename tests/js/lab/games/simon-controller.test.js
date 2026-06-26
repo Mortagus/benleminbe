@@ -68,6 +68,9 @@ describe('Simon game controller keyboard handling', () => {
         expect(controller.elements.audioNoteSetSelect.value).toBe('major');
         expect(controller.elements.audioNoteSetDescription.textContent).toBe('Notes claires et lumineuses, très lisibles.');
         expect(controller.elements.audioNoteSetFeedback.textContent).toBe('Jeu de notes actif : Majeur.');
+        expect(controller.elements.currentLevel.textContent).toBe('0');
+        expect(controller.elements.bestScore.textContent).toBe('0');
+        expect(controller.elements.statusText.textContent).toBe('En attente');
         expect(controller.audio.setEnabled).toHaveBeenCalledWith(true);
         expect(controller.audio.setVolume).toHaveBeenCalledWith(75);
         expect(controller.audio.setPalette).toHaveBeenCalledWith('classic');
@@ -354,6 +357,7 @@ describe('Simon game controller keyboard handling', () => {
 
         expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.PLAYER);
         expect(controller.elements.statusText.textContent).toBe('À toi de jouer');
+        expect(controller.elements.currentLevel.textContent).toBe('1');
         expect(activePadSpy).toHaveBeenCalledWith(3, true);
         expect(activePadSpy).not.toHaveBeenCalledWith(0, true);
     });
@@ -406,6 +410,7 @@ describe('Simon game controller keyboard handling', () => {
 
         expect(controller.root.dataset.simonPhase).toBe(SIMON_PHASE.PLAYER);
         expect(controller.elements.statusText.textContent).toBe('À toi de jouer');
+        expect(controller.elements.currentLevel.textContent).toBe('2');
         expect(controller.elements.padButtons.every(button => button.disabled)).toBe(false);
     });
 

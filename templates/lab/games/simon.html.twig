@@ -85,33 +85,6 @@
             </div>
 
             <div class="simon-hero__actions">
-                <button type="button" class="button" data-simon-start>
-                    {{ 'simon.actions.start'|trans }}
-                </button>
-
-                <button
-                    type="button"
-                    class="button button-secondary simon-audio__toggle"
-                    data-simon-sound
-                    aria-pressed="true"
-                    aria-label="{{ 'simon.audio.toggle_on'|trans }}"
-                    title="{{ 'simon.audio.toggle_on'|trans }}"
-                >
-                    <span class="simon-audio__icon simon-audio__icon--on" data-simon-sound-icon="on" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                            <path d="M5 10v4h4l5 4V6l-5 4H5z" fill="currentColor"/>
-                            <path d="M16.5 8.5a4 4 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                        </svg>
-                    </span>
-
-                    <span class="simon-audio__icon simon-audio__icon--off" data-simon-sound-icon="off" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                            <path d="M5 10v4h4l5 4V6l-5 4H5z" fill="currentColor"/>
-                            <path d="M16 8l5 5m0-5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                        </svg>
-                    </span>
-                </button>
-
                 <a class="button button-secondary" href="{{ path('app_lab_index') }}">
                     {{ 'simon.actions.back'|trans }}
                 </a>
@@ -125,23 +98,6 @@
         <section class="content-section" aria-labelledby="simon-board-title">
             <div class="card simon-shell">
                 <h2 id="simon-board-title" class="simon-sr-only">{{ 'simon.instructions.title'|trans }}</h2>
-
-                <div class="simon-stats" aria-label="{{ 'simon.metrics.label'|trans }}">
-                    <article class="simon-stat">
-                        <span>{{ 'simon.metrics.status'|trans }}</span>
-                        <strong data-simon-status aria-live="polite">{{ 'simon.status.idle'|trans }}</strong>
-                    </article>
-
-                    <article class="simon-stat">
-                        <span>{{ 'simon.metrics.level'|trans }}</span>
-                        <strong data-simon-level>0</strong>
-                    </article>
-
-                    <article class="simon-stat">
-                        <span>{{ 'simon.metrics.best'|trans }}</span>
-                        <strong data-simon-best>0</strong>
-                    </article>
-                </div>
 
                 <div class="simon-layout">
                     <div
@@ -212,11 +168,51 @@
                                 </span>
                             </button>
 
-                            <div class="simon-board__core" aria-hidden="true">
-                                <span class="simon-board__eyebrow">{{ 'simon.board.core.eyebrow'|trans }}</span>
-                                <strong class="simon-board__title">{{ 'simon.board.core.title'|trans }}</strong>
-                                <p class="simon-board__status">{{ 'simon.board.core.description'|trans }}</p>
+                            <div class="simon-board__core">
+                                <div class="simon-board__metric simon-board__metric--status">
+                                    <span class="simon-board__metric-label">{{ 'simon.metrics.status'|trans }}</span>
+                                    <strong data-simon-status aria-live="polite">{{ 'simon.status.idle'|trans }}</strong>
+                                </div>
+
+                                <div class="simon-board__metric">
+                                    <span class="simon-board__metric-label">{{ 'simon.metrics.level'|trans }}</span>
+                                    <strong data-simon-level>0</strong>
+                                </div>
+
+                                <div class="simon-board__metric">
+                                    <span class="simon-board__metric-label">{{ 'simon.metrics.best'|trans }}</span>
+                                    <strong data-simon-best>0</strong>
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="simon-stage__actions">
+                            <button type="button" class="button" data-simon-start>
+                                {{ 'simon.actions.start'|trans }}
+                            </button>
+
+                            <button
+                                type="button"
+                                class="button button-secondary simon-audio__toggle"
+                                data-simon-sound
+                                aria-pressed="true"
+                                aria-label="{{ 'simon.audio.toggle_on'|trans }}"
+                                title="{{ 'simon.audio.toggle_on'|trans }}"
+                            >
+                                <span class="simon-audio__icon simon-audio__icon--on" data-simon-sound-icon="on" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                        <path d="M5 10v4h4l5 4V6l-5 4H5z" fill="currentColor"/>
+                                        <path d="M16.5 8.5a4 4 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                    </svg>
+                                </span>
+
+                                <span class="simon-audio__icon simon-audio__icon--off" data-simon-sound-icon="off" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                        <path d="M5 10v4h4l5 4V6l-5 4H5z" fill="currentColor"/>
+                                        <path d="M16 8l5 5m0-5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                    </svg>
+                                </span>
+                            </button>
                         </div>
                     </div>
 

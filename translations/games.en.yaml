@@ -1,0 +1,201 @@
+meta:
+    title: "Games"
+    description: "Small home-made games that run directly in the browser."
+
+navigation:
+    label: "Games navigation"
+    index: "Games"
+    simon: "Simon"
+
+hero:
+    eyebrow: "Public universe"
+    title: "Games"
+    intro: "Games brings together HTML, CSS and JavaScript games designed to stay simple, quick to load and easy to evolve."
+    facts:
+        label: "Games highlights"
+        public:
+            value: "Public"
+            label: "Games available without an account"
+        vanilla:
+            value: "Vanilla JavaScript"
+            label: "Light interfaces, without a framework"
+        stack:
+            value: "Symfony / Twig"
+            label: "Shared site foundation"
+
+games:
+    eyebrow: "First game"
+    title: "Simon"
+    intro: "Simon opens the Games universe with a base that can host more games without reorganizing the site."
+    featured:
+        label: "Available game"
+        title: "Simon"
+        description: "A public memory game with configurable keyboard shortcuts, adjustable sound, and a local high score."
+        meta_label: "Game metadata"
+        meta:
+            1: "Public game"
+            2: "Vanilla JavaScript"
+            3: "Local high score"
+            4: "Configurable keyboard"
+        action: "Play Simon"
+
+simon:
+    meta:
+        title: "Simon"
+        description: "A public memory game in the Games universe on benlemin.be."
+
+    hero:
+        eyebrow: "Memory game"
+        title: "Simon"
+        intro: "Repeat the color sequence and last as long as you can. Each round adds one more step."
+
+    actions:
+        start: "Start a game"
+        restart: "Restart"
+        back: "Back to Games"
+
+    sound:
+        on: "Sound on"
+        off: "Sound off"
+        note: "Audio only starts after an explicit user interaction, as required by the browser."
+
+    panel:
+        open: "Open"
+        close: "Close"
+
+    audio:
+        eyebrow: "Audio"
+        title: "Sound and volume"
+        toggle_on: "Mute sound"
+        toggle_off: "Enable sound"
+        volume_label: "Volume"
+        volume_value: "{volume} %"
+        note_duration_label: "Note duration"
+        note_duration_value: "{value} %"
+        reverb_label: "Reverb"
+        reverb_value: "{value} %"
+        active: "Sound enabled at {volume} %."
+        muted: "Sound muted. Stored volume: {volume} %."
+        unavailable: "Sound is not available in this browser."
+        palette:
+            label: "Sound style"
+            description: "Choose an audio mood for Simon's sounds."
+            preview: "Listen to a preview"
+            previewing: "Preview in progress..."
+            muted: "Enable sound to listen to a preview."
+            unavailable: "Preview is not available in this browser."
+            active: "Active palette: {label}."
+        note_set:
+            label: "Note set"
+            description: "Choose a fixed scale for Simon's 4 notes."
+            active: "Active note set: {label}."
+        palettes:
+            classic:
+                label: "Classic"
+                description: "Simple, round and readable sounds."
+            arcade:
+                label: "Arcade"
+                description: "Short, punchy, slightly retro sounds."
+            crystal:
+                label: "Crystal"
+                description: "Brighter and lighter sounds."
+            synthwave:
+                label: "Synthwave"
+                description: "Richer electronic sounds."
+            percussion:
+                label: "Percussion"
+                description: "Shorter and more rhythmic sounds."
+        note_sets:
+            major:
+                label: "Major"
+                description: "Clear, bright and easy to read notes."
+            minor:
+                label: "Minor"
+                description: "Softer and slightly darker notes."
+            pentatonic:
+                label: "Pentatonic"
+                description: "Four very stable notes, easy to distinguish."
+            dorian:
+                label: "Dorian"
+                description: "A simple modal color, a bit more tense."
+            blues:
+                label: "Blues"
+                description: "Slightly grittier and more expressive notes."
+
+    metrics:
+        label: "Game summary"
+        status: "State"
+        level: "Level"
+        best: "Best score"
+
+    status:
+        idle: "Waiting"
+        preparation: "Get ready..."
+        demo: "Watch the sequence"
+        player: "Your turn"
+        success: "Well done!"
+        failure: "Game over"
+
+    board:
+        label: "Simon play area"
+        core:
+            eyebrow: "Simon"
+            title: "Sequence"
+            description: "Watch the demo, then replay the sequence."
+        pads:
+            top_left:
+                label: "Top left"
+                aria: "Top-left zone, key A"
+            top_right:
+                label: "Top right"
+                aria: "Top-right zone, key Z"
+            bottom_left:
+                label: "Bottom left"
+                aria: "Bottom-left zone, key Q"
+            bottom_right:
+                label: "Bottom right"
+                aria: "Bottom-right zone, key S"
+
+    stage:
+        label: "Game stage"
+
+    instructions:
+        eyebrow: "Controls"
+        title: "How to play"
+        intro: "Click the colored zones, tap them on touch devices, or use the keyboard. The mapping shown below can be customized."
+        note: "A, Z, Q and S are the default mapping. The active setup is shown below."
+
+    keyboard:
+        default_keys:
+            top_left: "A"
+            top_right: "Z"
+            bottom_left: "Q"
+            bottom_right: "S"
+        eyebrow: "Keyboard"
+        title: "Configurable keys"
+        intro: "Adjust the keys used for each of the four zones."
+        summary_label: "Active keyboard mapping"
+        summary_default: "Active mapping: A / Z / Q / S"
+        idle: "Click Modify to change a key."
+        summary: "Active mapping: {bindings}"
+        capture: "Press a key for {zone}."
+        applied: "{zone}: {key}"
+        duplicate: "{key} is already used by {zone}."
+        invalid: "This key cannot be used."
+        reset: "Keys reset: A / Z / Q / S"
+        actions:
+            edit: "Modify"
+            reset: "Reset keys"
+        zones:
+            top_left: "Top left"
+            top_right: "Top right"
+            bottom_left: "Bottom left"
+            bottom_right: "Bottom right"
+        pad_aria: "Zone {zone}, key {key}"
+
+    rules:
+        eyebrow: "Rules"
+        title: "V1 behavior"
+        step_1: "A random sequence starts with a single step."
+        step_2: "Each successful round adds one more step."
+        step_3: "Any mistake ends the game immediately."

@@ -8,7 +8,7 @@ Le site est une application Symfony qui présente le profil professionnel de Ben
 
 Le projet remplace progressivement un CV PDF statique par une présence en ligne bilingue et maintenable. Les contenus publics sont disponibles en français et en anglais.
 
-Le site est aussi pensé comme un ensemble d'univers fonctionnels clairement séparés: `Pro`, `Lab`, `Private`, puis plus tard `Articles` et `Games`. Le découpage de navigation associé est documenté dans [Univers du site et navigation](site-universes-and-navigation.md).
+Le site est aussi pensé comme un ensemble d'univers fonctionnels clairement séparés: `Pro`, `Lab`, `Games` et `Private`, avec `Articles` réservé pour plus tard. Le découpage de navigation associé est documenté dans [Univers du site et navigation](site-universes-and-navigation.md).
 
 ## Stack
 
@@ -77,6 +77,24 @@ docs/lab/
 `LabController` sert de point d'entrée général pour les outils publics du lab et porte aussi les routes du tracker DnD.
 
 Le lab reste public, mais séparé du contenu professionnel par ses routes, templates, styles, scripts et documents dédiés.
+
+### Games
+
+Responsabilité : héberger les petits jeux maison HTML/CSS/JS.
+
+Emplacements principaux :
+
+```text
+src/Public/Controller/GamesController.php
+templates/games/
+assets/pages/games*.js
+assets/scripts/games/
+assets/styles/games/
+docs/games/
+translations/games.*
+```
+
+Le premier jeu publié de cet univers est Simon.
 
 ### Contenus Et Traductions
 

@@ -1,0 +1,22 @@
+{% trans_default_domain 'games' %}
+
+{% set currentRoute = currentRoute|default(app.request.attributes.get('_route')) %}
+
+{% include 'shared/navigation/_universe_nav.html.twig' with {
+    link_class: 'site-header__link',
+    active_class: 'active',
+    links: [
+        {
+            href: path('app_games_index', { _locale: app.request.locale }),
+            label: 'navigation.index'|trans,
+            active: currentRoute == 'app_games_index',
+            aria_current: currentRoute == 'app_games_index',
+        },
+        {
+            href: path('app_games_simon', { _locale: app.request.locale }),
+            label: 'navigation.simon'|trans,
+            active: currentRoute == 'app_games_simon',
+            aria_current: currentRoute == 'app_games_simon',
+        },
+    ],
+} only %}

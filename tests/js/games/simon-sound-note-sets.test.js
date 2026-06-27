@@ -5,7 +5,7 @@ import {
     getSimonSoundNoteSet,
     getSimonSoundNoteSetOptions,
     normalizeSimonSoundNoteSetId,
-} from '../../../../assets/scripts/lab/games/simon/sound-note-sets.js';
+} from '../../../assets/scripts/games/simon/sound-note-sets.js';
 
 describe('Simon sound note sets', () => {
     test('exposes the expected note set identifiers and options', () => {

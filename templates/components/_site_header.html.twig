@@ -3,9 +3,11 @@
 {% trans_default_domain 'layout' %}
 
 {% set currentRoute = app.request.attributes.get('_route')|default('') %}
-{% set siteHeaderNavTemplate = currentRoute starts with 'app_lab'
-    ? 'shared/navigation/_lab_nav.html.twig'
-    : 'shared/navigation/_pro_nav.html.twig' %}
+{% set siteHeaderNavTemplate = currentRoute starts with 'app_games'
+    ? 'shared/navigation/_games_nav.html.twig'
+    : (currentRoute starts with 'app_lab'
+        ? 'shared/navigation/_lab_nav.html.twig'
+        : 'shared/navigation/_pro_nav.html.twig') %}
 
 <header class="site-header" data-site-header>
     <div class="site-header__inner">

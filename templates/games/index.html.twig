@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'games' %}
+
+{% block title %}{{ 'meta.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'meta.description'|trans }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_games']) }}{% endblock %}
+
+{% block body %}
+    <main class="games-home">
+        <header class="games-home__hero">
+            <p class="eyebrow">{{ 'hero.eyebrow'|trans }}</p>
+
+            <h1>{{ 'hero.title'|trans }}</h1>
+
+            <p class="games-home__intro">
+                {{ 'hero.intro'|trans|highlight_keywords }}
+            </p>
+
+            <div class="games-home__facts" aria-label="{{ 'hero.facts.label'|trans }}">
+                <article class="games-home__fact">
+                    <strong>{{ 'hero.facts.public.value'|trans }}</strong>
+                    <span>{{ 'hero.facts.public.label'|trans }}</span>
+                </article>
+
+                <article class="games-home__fact">
+                    <strong>{{ 'hero.facts.vanilla.value'|trans }}</strong>
+                    <span>{{ 'hero.facts.vanilla.label'|trans }}</span>
+                </article>
+
+                <article class="games-home__fact">
+                    <strong>{{ 'hero.facts.stack.value'|trans }}</strong>
+                    <span>{{ 'hero.facts.stack.label'|trans }}</span>
+                </article>
+            </div>
+        </header>
+
+        <section class="content-section" aria-labelledby="games-available-title">
+            <div class="card games-panel">
+                <div class="games-panel__intro">
+                    <p class="eyebrow">{{ 'games.eyebrow'|trans }}</p>
+
+                    <h2 id="games-available-title">{{ 'games.title'|trans }}</h2>
+
+                    <p>{{ 'games.intro'|trans|highlight_keywords }}</p>
+                </div>
+
+                <div class="games-grid">
+                    <article class="games-card games-card--featured">
+                        <p class="games-card__eyebrow">{{ 'games.featured.label'|trans }}</p>
+
+                        <h3>{{ 'games.featured.title'|trans }}</h3>
+
+                        <p>{{ 'games.featured.description'|trans|highlight_keywords }}</p>
+
+                        <ul class="games-card__meta" aria-label="{{ 'games.featured.meta_label'|trans }}">
+                            <li>{{ 'games.featured.meta.1'|trans }}</li>
+                            <li>{{ 'games.featured.meta.2'|trans }}</li>
+                            <li>{{ 'games.featured.meta.3'|trans }}</li>
+                            <li>{{ 'games.featured.meta.4'|trans }}</li>
+                        </ul>
+
+                        <div class="games-card__actions">
+                            <a href="{{ path('app_games_simon', { _locale: app.request.locale }) }}" class="button">
+                                {{ 'games.featured.action'|trans }}
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

@@ -6,7 +6,6 @@ Ce dossier regroupe la documentation stable du Lab public de `benlemin.be`.
 
 - [Univers du site et navigation](../site-universes-and-navigation.md) : cadrage global des univers, routes et navigation.
 - [DnD Initiative Tracker](dnd-initiative-audit.md) : état actuel du module principal du Lab.
-- [Simon](simon-architecture.md) : cartographie technique du jeu public de mémoire à séquence.
 - [Pipeline bestiaire](dnd-bestiary-pipeline.md) : génération du catalogue de monstres du tracker.
 - [Contrats DOM](dnd-dom-contracts.md) : sélecteurs critiques entre Twig et JavaScript.
 - [Cartographie JavaScript](dnd-initiative-js-map.md) : lecture du code front du tracker.
@@ -17,7 +16,6 @@ Ce dossier regroupe la documentation stable du Lab public de `benlemin.be`.
 ```text
 docs/lab/
 ├── lab-index.md
-├── simon-architecture.md
 ├── dnd-bestiary-pipeline.md
 ├── dnd-dom-contracts.md
 ├── dnd-initiative-audit.md
@@ -29,4 +27,5 @@ docs/lab/
 
 - Conserver ici les documents stables qui décrivent le Lab public.
 - Garder les audits, contrats et notes de cadrage du Lab dans ce dossier tant qu'ils restent liés à un outil public du Lab.
+- Simon a quitté le Lab pour rejoindre l'univers `Games`; sa référence technique vit désormais dans `docs/games/`.
 - Utiliser un autre dossier seulement si le sujet sort du Lab ou devient un document de suivi plus général.

@@ -23,6 +23,10 @@ Ce document donne a Codex une base de lecture minimale pour reprendre rapidement
 
 - [Documentation du Lab](lab/lab-index.md)
 
+### Games
+
+- [Documentation des Games](games/games-index.md)
+
 ### Suivi Actif Et Historique
 
 - [Travaux en cours](en-cours/current-work-index.md)

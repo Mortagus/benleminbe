@@ -29,9 +29,9 @@ final class LabController extends AbstractController
     }
 
     #[Route(path: '/game-simon', name: 'game_simon', methods: ['GET'])]
-    public function gameSimon(): Response
+    public function redirectSimonToGames(Request $request): Response
     {
-        return $this->render('lab/games/simon.html.twig');
+        return $this->redirectToRoute('app_games_simon', $request->query->all(), Response::HTTP_MOVED_PERMANENTLY);
     }
 
     #[Route(path: '/dnd-initiative/import-player', name: 'dnd_player_import', methods: ['POST'])]

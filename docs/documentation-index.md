@@ -24,6 +24,7 @@ La règle generale est simple:
 - [Travaux en cours](en-cours/current-work-index.md) : fil de reprise, backlog et notes actives.
 - [Travaux terminés](termines/archive-index.md) : archives des audits, plans et notes clotures.
 - [Lab](lab/lab-index.md) : documentation des outils experimentaux.
+- [Games](games/games-index.md) : documentation de l'univers public des petits jeux.
 - [Contexte assistant](assistant-context.md) : lecture minimale a fournir a Codex.
 
 ## Organisation
@@ -38,6 +39,7 @@ docs/
 ├── deployment-and-verification.md
 ├── content-workflow.md
 ├── assistant-context.md
+├── games/
 ├── lab/
 ├── private/
 ├── en-cours/

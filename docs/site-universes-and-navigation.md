@@ -35,6 +35,7 @@ Exemple d'intention:
 
 - `Pro` : `Accueil`, `Parcours`, `Projets`, `Compétences`, `Contact`;
 - `Lab` : `Lab`, `DnD Initiative Tracker`, futurs outils publics;
+- `Games` : `Jeux`, `Simon`, futurs petits jeux maison;
 - `Private` : `Dashboard`, `Contacts`, `Plateformes`, `Import`, `Doublons`, futurs outils personnels.
 
 ## Carte Des Univers
@@ -44,7 +45,7 @@ Exemple d'intention:
 | `Pro`      | Présence professionnelle, portfolio, contact et informations légales | Prospects, recruteurs, clients, visiteurs          | `/{_locale}` et pages publiques associées | Oui, navigation principale déjà en place | Oui, c'est l'univers de référence           |
 | `Lab`      | Expérimentations publiques et prototypes utiles                      | Visiteurs curieux, moi-même, testeurs              | `/lab`                                    | Oui, à partir d'un shell dédié           | Oui, lien discret attendu depuis le Pro     |
 | `Articles` | Publications publiques à venir                                       | Lecteurs, visiteurs, futurs abonnés                | `/articles` à créer plus tard             | Oui, à définir plus tard                 | Oui, réservé dès maintenant                 |
-| `Games`    | Petits jeux maison en JavaScript                                     | Visiteurs curieux, usage personnel, démonstrations | `/games` à créer plus tard                | Oui, à définir plus tard                 | Oui, réservé dès maintenant                 |
+| `Games`    | Petits jeux maison en JavaScript                                     | Visiteurs curieux, usage personnel, démonstrations | `/games`                                   | Oui, à partir d'un shell dédié           | Oui, lien discret attendu depuis le Pro     |
 | `Private`  | Outils personnels authentifiés                                       | Moi-même                                           | `/private`                                | Oui, navigation privée dédiée            | Non depuis le public, accès réservé         |
 
 ## Univers Pro
@@ -92,9 +93,8 @@ Elle expose maintenant:
 
 - `Pro`;
 - `Lab`;
+- `Games`;
 - `Privé`.
-
-Les univers `Articles` et `Games` sont réservés pour plus tard et restent documentés comme tels avant leur mise en place.
 
 ## Univers Lab
 
@@ -107,6 +107,7 @@ Le `Lab` regroupe les expérimentations publiques utiles, intégrées au même s
 - `app_lab_index` -> `/lab`
 - `app_lab_dnd_initiative` -> `/lab/dnd-initiative`
 - `app_lab_dnd_player_import` -> `/lab/dnd-initiative/import-player`
+- `app_lab_game_simon` -> `/lab/game-simon` avec redirection permanente vers `app_games_simon`
 
 ### Navigation Locale Actuelle
 
@@ -117,6 +118,11 @@ Sa navigation principale partagée vit dans [templates/shared/navigation/\_lab_n
 ### Présence Dans La Navigation Inter-Univers
 
 Le Lab doit devenir atteignable depuis le Pro via un lien discret.
+
+### Jeux Retirés Du Lab
+
+- Simon ne fait plus partie du Lab.
+- L'ancienne URL `/lab/game-simon` redirige vers l'univers `Games`.
 
 ## Univers Articles
 
@@ -142,25 +148,27 @@ Quand il sera créé, `Articles` devra avoir:
 
 ## Univers Games
 
-### Statut
+### Rôle
 
-Univers réservé pour des petits jeux maison en JavaScript.
+`Games` regroupe les petits jeux maison en JavaScript.
 
-### Route Racine Prévue
+### Routes Publiques Existantes
 
-- `/games`
+- `app_games_index` -> `/games` avec `_locale=en` en variante de langue
+- `app_games_simon` -> `/games/simon` avec `_locale=en` en variante de langue
 
-### Etat Actuel
+### Navigation Locale Actuelle
 
-Aucune route n'existe encore pour cet univers.
+La navigation locale vit dans [templates/shared/navigation/_games_nav.html.twig](/var/www/projects/benleminbe/templates/shared/navigation/_games_nav.html.twig).
+
+Elle expose:
+
+- `Jeux` / `Games`;
+- `Simon`.
 
 ### Intention De Navigation
 
-Quand il sera créé, `Games` devra:
-
-- vivre dans son propre shell;
-- rester discret dans la navigation inter-univers;
-- ne pas mélanger ses entrées avec le Pro ou le Lab.
+`Games` doit rester un shell dédié aux petits jeux, sans mélanger ses entrées avec le Lab ou le Pro.
 
 ## Univers Private
 
@@ -223,6 +231,7 @@ La zone privée affiche aussi la navigation inter-univers partagée:
 
 - `Pro`;
 - `Lab`;
+- `Games`;
 - `Privé`.
 
 Cette nav est rendue dans le shell privé principal, mais elle est volontairement masquée sur la page de connexion pour conserver un écran d'authentification plus sobre.
@@ -237,6 +246,7 @@ Cette nav est rendue dans le shell privé principal, mais elle est volontairemen
 - page `Compétences`;
 - page `À propos`;
 - page `Contact`;
+- univers `Games` avec l'index et Simon;
 - pages légales;
 - carte de visite web;
 - téléchargement de CV;
@@ -247,6 +257,12 @@ Cette nav est rendue dans le shell privé principal, mais elle est volontairemen
 - page d'accueil du Lab `/lab`;
 - `DnD Initiative Tracker`;
 - import XML de joueur pour le tracker.
+
+### Games
+
+- index `/games`;
+- page Simon `/games/simon`;
+- redirection 301 depuis `/lab/game-simon`.
 
 ### Private
 

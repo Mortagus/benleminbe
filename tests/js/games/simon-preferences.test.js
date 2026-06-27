@@ -10,7 +10,7 @@ import {
     SIMON_LEGACY_KEYBOARD_STORAGE_KEY,
     SIMON_PREFERENCES_STORAGE_KEY,
     updateSimonPreferences,
-} from '../../../../assets/scripts/lab/games/simon/preferences.js';
+} from '../../../assets/scripts/games/simon/preferences.js';
 
 describe('Simon preference storage', () => {
     test('loads the default preferences when nothing is stored', () => {

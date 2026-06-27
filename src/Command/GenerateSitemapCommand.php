@@ -133,6 +133,25 @@ class GenerateSitemapCommand extends Command {
                 continue;
             }
 
+            if (str_starts_with($routeName, 'app_games_')) {
+                $canonicalUrl = [
+                    'loc' => $this->router->generate(
+                        $routeName,
+                        [],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    ),
+                    'alternates' => [],
+                ];
+
+                if (is_string($lastmod)) {
+                    $canonicalUrl['lastmod'] = $lastmod;
+                }
+
+                $urls[] = $canonicalUrl;
+
+                continue;
+            }
+
             $urls = [
                 ...$urls,
                 ...$this->buildLocalizedUrls(

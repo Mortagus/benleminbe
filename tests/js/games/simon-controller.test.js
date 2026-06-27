@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { SimonGameController } from '../../../../assets/scripts/lab/games/simon/controller.js';
-import { SimonGame, SIMON_PHASE } from '../../../../assets/scripts/lab/games/simon/game.js';
-import { SIMON_DEFAULT_KEYBOARD_BINDINGS, SIMON_KEYBOARD_STORAGE_KEY } from '../../../../assets/scripts/lab/games/simon/keyboard.js';
-import { TestElement } from '../dnd/dom-test-helpers.js';
+import { SimonGameController } from '../../../assets/scripts/games/simon/controller.js';
+import { SimonGame, SIMON_PHASE } from '../../../assets/scripts/games/simon/game.js';
+import { SIMON_DEFAULT_KEYBOARD_BINDINGS, SIMON_KEYBOARD_STORAGE_KEY } from '../../../assets/scripts/games/simon/keyboard.js';
+import { TestElement } from '../lab/dnd/dom-test-helpers.js';
 import {
     SIMON_DEFAULT_AUDIO_PREFERENCES,
-} from '../../../../assets/scripts/lab/games/simon/preferences.js';
+} from '../../../assets/scripts/games/simon/preferences.js';
 
 describe('Simon game controller keyboard handling', () => {
     afterEach(() => {

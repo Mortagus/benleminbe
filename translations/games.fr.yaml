@@ -1,0 +1,201 @@
+meta:
+    title: "Jeux"
+    description: "Petits jeux maison jouables directement dans le navigateur."
+
+navigation:
+    label: "Navigation des jeux"
+    index: "Jeux"
+    simon: "Simon"
+
+hero:
+    eyebrow: "Univers public"
+    title: "Jeux"
+    intro: "Games rassemble des jeux HTML, CSS et JavaScript pensés pour rester simples, rapides à charger et faciles à faire évoluer."
+    facts:
+        label: "Points clés de Games"
+        public:
+            value: "Public"
+            label: "Jeux accessibles sans compte"
+        vanilla:
+            value: "JavaScript vanilla"
+            label: "Interfaces légères, sans framework"
+        stack:
+            value: "Symfony / Twig"
+            label: "Socle commun du site"
+
+games:
+    eyebrow: "Premier jeu"
+    title: "Simon"
+    intro: "Simon ouvre l’univers Games avec une base prête à accueillir d’autres jeux sans réorganiser le site."
+    featured:
+        label: "Jeu disponible"
+        title: "Simon"
+        description: "Un jeu de mémoire public avec clavier configurable, sonorités réglables et score local."
+        meta_label: "Métadonnées du jeu"
+        meta:
+            1: "Jeu public"
+            2: "JavaScript vanilla"
+            3: "Score local"
+            4: "Clavier configurable"
+        action: "Jouer à Simon"
+
+simon:
+    meta:
+        title: "Simon"
+        description: "Jeu de mémoire public de l’univers Games sur benlemin.be."
+
+    hero:
+        eyebrow: "Jeu de mémoire"
+        title: "Simon"
+        intro: "Reproduis la séquence de couleurs et tiens le plus longtemps possible. Chaque manche ajoute une étape de plus."
+
+    actions:
+        start: "Démarrer une partie"
+        restart: "Recommencer"
+        back: "Retour aux jeux"
+
+    sound:
+        on: "Son activé"
+        off: "Son coupé"
+        note: "Le son démarre uniquement après une interaction explicite, comme l’exige le navigateur."
+
+    panel:
+        open: "Ouvrir"
+        close: "Fermer"
+
+    audio:
+        eyebrow: "Audio"
+        title: "Son et volume"
+        toggle_on: "Couper le son"
+        toggle_off: "Activer le son"
+        volume_label: "Volume"
+        volume_value: "{volume} %"
+        note_duration_label: "Durée des notes"
+        note_duration_value: "{value} %"
+        reverb_label: "Réverbération"
+        reverb_value: "{value} %"
+        active: "Son activé à {volume} %."
+        muted: "Son coupé. Volume mémorisé : {volume} %."
+        unavailable: "Le son n’est pas disponible dans ce navigateur."
+        palette:
+            label: "Style sonore"
+            description: "Choisis une ambiance audio pour les sons de Simon."
+            preview: "Écouter un aperçu"
+            previewing: "Aperçu en cours…"
+            muted: "Active le son pour écouter un aperçu."
+            unavailable: "L’aperçu n’est pas disponible dans ce navigateur."
+            active: "Palette active : {label}."
+        note_set:
+            label: "Jeu de notes"
+            description: "Choisis une gamme fixe pour les 4 notes de Simon."
+            active: "Jeu de notes actif : {label}."
+        palettes:
+            classic:
+                label: "Classique"
+                description: "Sons simples, ronds et lisibles."
+            arcade:
+                label: "Arcade"
+                description: "Sons courts, francs, légèrement rétro."
+            crystal:
+                label: "Cristal"
+                description: "Sons plus brillants et légers."
+            synthwave:
+                label: "Synthwave"
+                description: "Sons électroniques plus riches."
+            percussion:
+                label: "Percussions"
+                description: "Sons courts et plus rythmiques."
+        note_sets:
+            major:
+                label: "Majeur"
+                description: "Notes claires et lumineuses, très lisibles."
+            minor:
+                label: "Mineur"
+                description: "Tonalité plus douce et légèrement plus sombre."
+            pentatonic:
+                label: "Pentatonique"
+                description: "Quatre notes très stables, faciles à distinguer."
+            dorian:
+                label: "Dorien"
+                description: "Couleur modale simple, un peu plus nerveuse."
+            blues:
+                label: "Blues"
+                description: "Notes légèrement plus tendues et expressives."
+
+    metrics:
+        label: "Résumé de la partie"
+        status: "État"
+        level: "Niveau"
+        best: "Meilleur score"
+
+    status:
+        idle: "En attente"
+        preparation: "Prépare-toi…"
+        demo: "Observe la séquence"
+        player: "À toi de jouer"
+        success: "Bien joué !"
+        failure: "Partie terminée"
+
+    board:
+        label: "Zone de jeu Simon"
+        core:
+            eyebrow: "Simon"
+            title: "Séquence"
+            description: "Observe la démonstration, puis rejoue la séquence."
+        pads:
+            top_left:
+                label: "Haut gauche"
+                aria: "Zone en haut à gauche, touche A"
+            top_right:
+                label: "Haut droite"
+                aria: "Zone en haut à droite, touche Z"
+            bottom_left:
+                label: "Bas gauche"
+                aria: "Zone en bas à gauche, touche Q"
+            bottom_right:
+                label: "Bas droite"
+                aria: "Zone en bas à droite, touche S"
+
+    stage:
+        label: "Plateau de jeu"
+
+    instructions:
+        eyebrow: "Contrôles"
+        title: "Comment jouer"
+        intro: "Clique les zones colorées, touche les boutons du clavier ou utilise la souris et le tactile. Le mapping affiché ci-dessous est modifiable."
+        note: "A, Z, Q et S sont le mapping par défaut. Le réglage actif est affiché ci-dessous."
+
+    keyboard:
+        default_keys:
+            top_left: "A"
+            top_right: "Z"
+            bottom_left: "Q"
+            bottom_right: "S"
+        eyebrow: "Clavier"
+        title: "Touches configurables"
+        intro: "Ajuste les touches utilisées pour chacune des quatre zones."
+        summary_label: "Configuration active du clavier"
+        summary_default: "Configuration active : A / Z / Q / S"
+        idle: "Clique sur Modifier pour changer une touche."
+        summary: "Configuration active : {bindings}"
+        capture: "Appuie sur une touche pour {zone}."
+        applied: "{zone} : {key}"
+        duplicate: "{key} est déjà utilisée par {zone}."
+        invalid: "Cette touche ne peut pas être utilisée."
+        reset: "Touches réinitialisées : A / Z / Q / S"
+        actions:
+            edit: "Modifier"
+            reset: "Réinitialiser les touches"
+        zones:
+            top_left: "Haut gauche"
+            top_right: "Haut droite"
+            bottom_left: "Bas gauche"
+            bottom_right: "Bas droite"
+        pad_aria: "Zone {zone}, touche {key}"
+
+    rules:
+        eyebrow: "Règles"
+        title: "Fonctionnement de la V1"
+        step_1: "Une séquence aléatoire commence avec une seule étape."
+        step_2: "Après chaque manche réussie, une nouvelle étape est ajoutée."
+        step_3: "Une erreur termine immédiatement la partie."

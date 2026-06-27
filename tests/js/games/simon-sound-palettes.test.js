@@ -5,7 +5,7 @@ import {
     getSimonSoundPalette,
     getSimonSoundPaletteOptions,
     normalizeSimonSoundPaletteId,
-} from '../../../../assets/scripts/lab/games/simon/sound-palettes.js';
+} from '../../../assets/scripts/games/simon/sound-palettes.js';
 
 describe('Simon sound palettes', () => {
     test('exposes the expected palette identifiers and options', () => {

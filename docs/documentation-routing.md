@@ -76,6 +76,8 @@ Exemples de bons noms:
 | `docs/site-universes-and-navigation.md` | Découpage des univers et navigation du site                         |
 | `docs/content-workflow.md`              | Source de vérité des contenus publics                               |
 | `docs/lab/lab-index.md`                 | Index stable du Lab public                                          |
+| `docs/games/games-index.md`             | Index stable de l'univers public Games                              |
+| `docs/games/simon.md`                   | Référence technique du jeu Simon                                    |
 | `docs/assistant-context.md`             | Pack de lecture minimal pour Codex                                  |
 | `docs/en-cours/*`                       | Suivi actif, backlog, notes de chantier                             |
 | `docs/termines/*`                       | Historique des audits, plans et notes clôturés                      |

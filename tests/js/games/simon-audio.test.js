@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { SimonAudio } from '../../../../assets/scripts/lab/games/simon/audio.js';
+import { SimonAudio } from '../../../assets/scripts/games/simon/audio.js';
 import {
     loadSimonAudioPreferences,
     normalizeSimonAudioNoteDuration,
@@ -11,21 +11,21 @@ import {
     SIMON_AUDIO_STORAGE_KEY,
     SIMON_DEFAULT_AUDIO_PREFERENCES,
     validateSimonAudioPreferences,
-} from '../../../../assets/scripts/lab/games/simon/audio-preferences.js';
+} from '../../../assets/scripts/games/simon/audio-preferences.js';
 import {
     SIMON_DEFAULT_KEYBOARD_BINDINGS,
     SIMON_LEGACY_AUDIO_STORAGE_KEY,
-} from '../../../../assets/scripts/lab/games/simon/preferences.js';
+} from '../../../assets/scripts/games/simon/preferences.js';
 import {
     SIMON_DEFAULT_SOUND_PALETTE_ID,
     SIMON_SOUND_PALETTE_IDS,
     getSimonSoundPalette,
-} from '../../../../assets/scripts/lab/games/simon/sound-palettes.js';
+} from '../../../assets/scripts/games/simon/sound-palettes.js';
 import {
     SIMON_DEFAULT_SOUND_NOTE_SET_ID,
     SIMON_SOUND_NOTE_SET_IDS,
     getSimonSoundNoteSet,
-} from '../../../../assets/scripts/lab/games/simon/sound-note-sets.js';
+} from '../../../assets/scripts/games/simon/sound-note-sets.js';
 
 describe('Simon audio preferences', () => {
     afterEach(() => {

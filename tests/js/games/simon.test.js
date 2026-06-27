@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { SimonGame, SIMON_PHASE } from '../../../../assets/scripts/lab/games/simon/game.js';
+import { SimonGame, SIMON_PHASE } from '../../../assets/scripts/games/simon/game.js';
 import {
     loadSimonBestScore,
     saveSimonBestScore,
-} from '../../../../assets/scripts/lab/games/simon/storage.js';
+} from '../../../assets/scripts/games/simon/storage.js';
 
 describe('Simon game logic', () => {
     test('starts a game with one random step and enters preparation mode', () => {

@@ -60,8 +60,12 @@ return [
         'path' => './assets/pages/lab.js',
         'entrypoint' => true,
     ],
-    'page_lab_game_simon' => [
-        'path' => './assets/pages/lab_game_simon.js',
+    'page_games' => [
+        'path' => './assets/pages/games.js',
+        'entrypoint' => true,
+    ],
+    'page_games_simon' => [
+        'path' => './assets/pages/games_simon.js',
         'entrypoint' => true,
     ],
     'dnd_initiative' => [

@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% trans_default_domain 'lab' %}
+{% trans_default_domain 'games' %}
 
 {% block title %}{{ 'simon.meta.title'|trans }}{% endblock %}
 {% block meta_description %}{{ 'simon.meta.description'|trans }}{% endblock %}
-{% block importmap %}{{ importmap(['app', 'page_lab', 'page_lab_game_simon']) }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_games_simon']) }}{% endblock %}
 
 {% block body %}
     <main
@@ -85,7 +85,7 @@
             </div>
 
             <div class="simon-hero__actions">
-                <a class="button button-secondary" href="{{ path('app_lab_index') }}">
+                <a class="button button-secondary" href="{{ path('app_games_index', { _locale: app.request.locale }) }}">
                     {{ 'simon.actions.back'|trans }}
                 </a>
             </div>

@@ -10,11 +10,11 @@ import {
     SIMON_DEFAULT_KEYBOARD_BINDINGS,
     SIMON_KEYBOARD_STORAGE_KEY,
     validateSimonKeyboardBindings,
-} from '../../../../assets/scripts/lab/games/simon/keyboard.js';
+} from '../../../assets/scripts/games/simon/keyboard.js';
 import {
     SIMON_DEFAULT_AUDIO_PREFERENCES,
     SIMON_LEGACY_KEYBOARD_STORAGE_KEY,
-} from '../../../../assets/scripts/lab/games/simon/preferences.js';
+} from '../../../assets/scripts/games/simon/preferences.js';
 
 describe('Simon keyboard bindings', () => {
     test('uses the AZQS mapping by default', () => {

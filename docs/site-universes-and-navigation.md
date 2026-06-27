@@ -45,7 +45,7 @@ Exemple d'intention:
 | `Pro`      | Présence professionnelle, portfolio, contact et informations légales | Prospects, recruteurs, clients, visiteurs          | `/{_locale}` et pages publiques associées | Oui, navigation principale déjà en place | Oui, c'est l'univers de référence           |
 | `Lab`      | Expérimentations publiques et prototypes utiles                      | Visiteurs curieux, moi-même, testeurs              | `/lab`                                    | Oui, à partir d'un shell dédié           | Oui, lien discret attendu depuis le Pro     |
 | `Articles` | Publications publiques à venir                                       | Lecteurs, visiteurs, futurs abonnés                | `/articles` à créer plus tard             | Oui, à définir plus tard                 | Oui, réservé dès maintenant                 |
-| `Games`    | Petits jeux maison en JavaScript                                     | Visiteurs curieux, usage personnel, démonstrations | `/games`                                   | Oui, à partir d'un shell dédié           | Oui, lien discret attendu depuis le Pro     |
+| `Games`    | Petits jeux maison en JavaScript                                     | Visiteurs curieux, usage personnel, démonstrations | `/{_locale}/games`                         | Oui, à partir d'un shell dédié           | Oui, lien discret attendu depuis le Pro     |
 | `Private`  | Outils personnels authentifiés                                       | Moi-même                                           | `/private`                                | Oui, navigation privée dédiée            | Non depuis le public, accès réservé         |
 
 ## Univers Pro
@@ -154,8 +154,10 @@ Quand il sera créé, `Articles` devra avoir:
 
 ### Routes Publiques Existantes
 
-- `app_games_index` -> `/games` avec `_locale=en` en variante de langue
-- `app_games_simon` -> `/games/simon` avec `_locale=en` en variante de langue
+- `app_games_index` -> `/{_locale}/games`
+- `app_games_simon` -> `/{_locale}/games/simon`
+- `app_games_index_redirect` -> `/games` avec redirection permanente vers la route localisée
+- `app_games_simon_redirect` -> `/games/simon` avec redirection permanente vers la route localisée
 
 ### Navigation Locale Actuelle
 
@@ -246,7 +248,7 @@ Cette nav est rendue dans le shell privé principal, mais elle est volontairemen
 - page `Compétences`;
 - page `À propos`;
 - page `Contact`;
-- univers `Games` avec l'index et Simon;
+- univers `Games` avec l'index et Simon, accessibles en `/fr/games`, `/en/games`, `/fr/games/simon` et `/en/games/simon`;
 - pages légales;
 - carte de visite web;
 - téléchargement de CV;

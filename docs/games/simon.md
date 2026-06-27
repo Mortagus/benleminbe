@@ -16,8 +16,10 @@ Le jeu ne cherche pas à:
 
 ## Routes Publiques
 
-- `app_games_index` -> `/games`, avec `_locale=en` pour la variante anglaise.
-- `app_games_simon` -> `/games/simon`, avec `_locale=en` pour la variante anglaise.
+- `app_games_index` -> `/{_locale}/games`.
+- `app_games_simon` -> `/{_locale}/games/simon`.
+- `app_games_index_redirect` -> `/games` en compatibilité, avec redirection HTTP 301 vers `app_games_index`.
+- `app_games_simon_redirect` -> `/games/simon` en compatibilité, avec redirection HTTP 301 vers `app_games_simon`.
 - `app_lab_game_simon` -> `/lab/game-simon` en compatibilité, avec redirection HTTP 301 vers `app_games_simon`.
 
 ## Points D'Entrée

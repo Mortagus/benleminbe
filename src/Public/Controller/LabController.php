@@ -31,7 +31,17 @@ final class LabController extends AbstractController
     #[Route(path: '/game-simon', name: 'game_simon', methods: ['GET'])]
     public function redirectSimonToGames(Request $request): Response
     {
-        return $this->redirectToRoute('app_games_simon', $request->query->all(), Response::HTTP_MOVED_PERMANENTLY);
+        $queryParameters = $request->query->all();
+        $queryLocale = $request->query->getString('_locale');
+        $locale = \in_array($queryLocale, ['fr', 'en'], true) ? $queryLocale : $request->getLocale();
+
+        if (!\in_array($locale, ['fr', 'en'], true)) {
+            $locale = 'fr';
+        }
+
+        $queryParameters['_locale'] = $locale;
+
+        return $this->redirectToRoute('app_games_simon', $queryParameters, Response::HTTP_MOVED_PERMANENTLY);
     }
 
     #[Route(path: '/dnd-initiative/import-player', name: 'dnd_player_import', methods: ['POST'])]

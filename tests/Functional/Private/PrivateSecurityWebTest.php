@@ -45,6 +45,33 @@ final class PrivateSecurityWebTest extends PrivateSecurityWebTestCase
         self::assertSame('ok', json_decode($client->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR)['status'] ?? null);
     }
 
+    public function testPasskeyLoginOptionsEndpointIsRateLimited(): void
+    {
+        $client = static::createClient();
+
+        for ($index = 0; $index < 2; ++$index) {
+            $client->request(
+                'POST',
+                '/private/security/passkeys/login/options',
+                server: ['CONTENT_TYPE' => 'application/json'],
+                content: '{}',
+            );
+            self::assertResponseIsSuccessful();
+        }
+
+        $client->request(
+            'POST',
+            '/private/security/passkeys/login/options',
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: '{}',
+        );
+
+        self::assertResponseStatusCodeSame(429);
+        $data = json_decode($client->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR);
+        self::assertSame('error', $data['status'] ?? null);
+        self::assertSame('Trop de tentatives. Reessayez dans un instant.', $data['errorMessage'] ?? null);
+    }
+
     public function testMalformedPasskeyLoginPayloadIsRejected(): void
     {
         $client = static::createClient();
@@ -59,6 +86,22 @@ final class PrivateSecurityWebTest extends PrivateSecurityWebTestCase
         $data = json_decode($client->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR);
         self::assertSame('error', $data['status'] ?? null);
         self::assertSame('Operation impossible.', $data['errorMessage'] ?? null);
+    }
+
+    public function testPrivateResponsesExposeSecurityHeaders(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/private/login');
+
+        self::assertResponseIsSuccessful();
+        self::assertResponseHeaderSame('X-Frame-Options', 'DENY');
+        self::assertResponseHeaderSame('X-Content-Type-Options', 'nosniff');
+        self::assertResponseHeaderSame('X-Robots-Tag', 'noindex, nofollow');
+        self::assertResponseHeaderSame('Referrer-Policy', 'strict-origin-when-cross-origin');
+        self::assertStringContainsString(
+            "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
+            (string) $client->getResponse()->headers->get('Content-Security-Policy'),
+        );
     }
 
     public function testInvalidPasswordAndInvalidUsernameShareTheSameLoginMessage(): void
@@ -146,7 +189,10 @@ final class PrivateSecurityWebTest extends PrivateSecurityWebTestCase
         $client->request('GET', '/private/security/passkeys');
         self::assertResponseIsSuccessful();
 
-        $client->request('GET', '/private/logout');
+        $logoutForm = $client->getCrawler()->filter('form[action="/private/logout"]')->first();
+        $logoutToken = $logoutForm->filter('input[name="_csrf_token"]')->attr('value');
+
+        $client->request('POST', '/private/logout', ['_csrf_token' => $logoutToken]);
         self::assertResponseRedirects('/private/login');
 
         $client->followRedirect();

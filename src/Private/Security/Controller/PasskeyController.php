@@ -11,10 +11,12 @@ use App\Private\Security\Service\PasskeyCeremonyLogger;
 use App\Private\Security\Service\PrivateAdminLoginUserFactory;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -58,6 +60,8 @@ final class PasskeyController extends AbstractController
         private readonly Security $security,
         private readonly PrivateAdminLoginUserFactory $loginUserFactory,
         private readonly PasskeyCeremonyLogger $ceremonyLogger,
+        #[Autowire(service: 'limiter.private_passkey_login_options')]
+        private readonly RateLimiterFactory $loginOptionsLimiter,
     ) {
     }
 
@@ -221,6 +225,20 @@ final class PasskeyController extends AbstractController
     public function loginOptions(Request $request): Response
     {
         $this->logCeremony($request, 'login_options.start');
+        $limit = $this->loginOptionsLimiter
+            ->create($request->getClientIp() ?? 'private-webauthn-anonymous')
+            ->consume();
+        if (! $limit->isAccepted()) {
+            $this->logCeremony($request, 'login_options.rate_limited', [
+                'retry_after_seconds' => $limit->getRetryAfter()?->getTimestamp(),
+            ]);
+
+            return new JsonResponse([
+                'status' => 'error',
+                'errorMessage' => 'Trop de tentatives. Reessayez dans un instant.',
+            ], Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
         $options = $this->requestOptionsFactory->create('default', []);
         $this->logCeremony($request, 'login_options.created', [
             'challenge_hash' => $this->hashForLog($options->challenge),

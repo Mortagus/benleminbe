@@ -26,7 +26,7 @@ final class PrivateSecurityHeadersSubscriber
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'publickey-credentials-get=(self), publickey-credentials-create=(self)');
-        $response->headers->set('Content-Security-Policy', "frame-ancestors 'none'");
+        $response->headers->set('Content-Security-Policy', "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'");
         $response->headers->set('X-Frame-Options', 'DENY');
         $response->setPrivate();
         $response->setMaxAge(0);

@@ -25,7 +25,7 @@ final class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/logout', name: 'logout', methods: ['GET'])]
+    #[Route('/logout', name: 'logout', methods: ['POST'])]
     public function logout(): never
     {
         throw new \LogicException('Logout is handled by the Symfony security firewall.');

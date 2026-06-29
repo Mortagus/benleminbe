@@ -31,6 +31,7 @@ security:
             logout:
                 path: app_private_logout
                 target: app_private_login
+                enable_csrf: true
 
     # Note: Only the *first* matching rule is applied
     access_control:

@@ -12,9 +12,12 @@
 
         <div class="private-header__actions">
             {% include 'components/_theme_switcher.html.twig' %}
-            <a class="private-link-button private-link-button--secondary" href="{{ path('app_private_logout') }}">
-                Déconnexion
-            </a>
+            <form method="post" action="{{ path('app_private_logout') }}">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                <button type="submit" class="private-link-button private-link-button--secondary">
+                    Déconnexion
+                </button>
+            </form>
         </div>
     </div>
 </header>

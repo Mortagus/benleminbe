@@ -16,6 +16,7 @@ Ce document donne a Codex une base de lecture minimale pour reprendre rapidement
 ### Zone Privee
 
 - [Documentation de la zone privee](private/private-area-index.md)
+- [Musique privee](private/music/music-index.md)
 - [Reseau prive](private/network/network-index.md)
 - [Deploiement et verification](deployment-and-verification.md)
 

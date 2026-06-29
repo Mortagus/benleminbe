@@ -40,6 +40,7 @@ Si deux documents semblent couvrir le même sujet, privilégier:
 | Comment la documentation est-elle organisée ?        | `documentation-architecture.md`                             | `documentation-routing.md` ou `documentation-index.md` si l'index doit changer | Architecture documentaire             |
 | Où trouver rapidement un sujet ?                     | `documentation-index.md`                                    | `documentation-index.md` si un nouveau point d'entrée est nécessaire           | Index global                          |
 | Quelle fonctionnalité existe déjà ?                  | `documentation-index.md` puis l'index du domaine            | Le document métier du domaine concerné                                         | Document de référence du domaine      |
+| Comment fonctionne l'intégration Spotify privée ?    | `private/music/music-index.md` puis la spec Spotify ciblée  | Le document stable de `docs/private/music/` correspondant au lot concerné      | Référence stable du module Music      |
 | Comment fonctionne une règle métier précise ?        | Le document métier dédié                                    | Le document métier dédié                                                       | Référence métier                      |
 | Qu'est-ce qui est en cours ?                         | `en-cours/current-work-index.md` puis la note active        | La note active ou le backlog                                                   | Suivi actif                           |
 | Quelle est la prochaine évolution prévue ?           | Le backlog du domaine concerné                              | Le backlog du domaine concerné                                                 | Backlog                               |
@@ -82,7 +83,8 @@ Exemples de bons noms:
 | `docs/en-cours/*`                       | Suivi actif, backlog, notes de chantier                             |
 | `docs/termines/*`                       | Historique des audits, plans et notes clôturés                      |
 | `docs/private/*`                        | Documentation stable de la zone privée                              |
-| `docs/private/music/*`                  | Module prive d'analyse de l'historique Spotify                       |
+| `docs/private/music/*`                  | Module prive d'analyse de l'historique Spotify                      |
+| `docs/private/music/spotify-*.md`       | Architecture, sécurité OAuth, synchronisation et backlog Spotify    |
 | `docs/private/network/*`                | Références du module `Contacts et reseau`                           |
 | `docs/editorial/*`                      | Corpus éditorial de travail                                         |
 

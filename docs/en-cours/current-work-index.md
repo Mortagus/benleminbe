@@ -6,6 +6,7 @@ Ce dossier contient les documents qui servent encore de fil de reprise, de backl
 
 - [Audit contenu et impact](content-impact-audit-notes.md) : recommandations à transformer en observations, tests ou ajustements de contenu.
 - [Backlog DnD Initiative Tracker](dnd-initiative-tracker-backlog.md) : prochaines évolutions du module lab DnD.
+- [Backlog du module Workout](muscu-module-backlog.md) : cadrage et implementation progressive du suivi prive de musculation.
 - [Audit module Network](network-module-audit.md) : constat structurel et pistes de refactor du module réseau privé.
 - [PageSpeed Protocol](pagespeed-protocol.md) : protocole de suivi PageSpeed et baseline initiale.
 - [Reprise du chantier prive du 2026-05-29](private-network-reprise-2026-05-29.md) : point de reprise pour la suite des regles de fusion automatique.

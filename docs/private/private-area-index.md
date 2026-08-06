@@ -13,6 +13,7 @@ Les actions `Import` et `Revue des doublons` relèvent du flux Contacts et doive
 - [Prochaines étapes](private-next-steps.md) : note de reprise et suivi des suites a donner a la zone privee.
 - [Réseau privé](network/network-index.md) : documentation du premier outil prive `Contacts et reseau`.
 - [Musique](music/music-index.md) : documentation du module prive d'analyse de l'historique Spotify.
+- [Workout](workout/workout-index.md) : futur module prive de suivi de musculation et de cardio.
 
 La fonctionnalité d'import des contacts est traitée comme une action contextuelle du module réseau, pas comme une entrée de navigation de premier niveau.
 
@@ -27,6 +28,11 @@ docs/private/
 ├── music/
 │   ├── music-index.md
 │   └── music-listening-history-specification.md
+├── workout/
+│   ├── workout-index.md
+│   ├── workout-vision.md
+│   ├── workout-domain-model.md
+│   └── workout-mvp-specification.md
 └── network/
     ├── network-index.md
     ├── network-vision.md

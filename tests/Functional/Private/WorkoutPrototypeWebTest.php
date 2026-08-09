@@ -29,8 +29,11 @@ final class WorkoutPrototypeWebTest extends WebTestCase
         $client->request('GET', '/private/workout/prototype');
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('h1', 'Musculation A');
-        self::assertSelectorCount(3, '[data-workout-exercise-id]');
+        self::assertSelectorTextContains('h1', 'Séance habituelle');
+        self::assertSelectorCount(6, '[data-workout-exercise-id]');
+        self::assertSelectorCount(6, '[data-workout-set-position]');
+        self::assertSelectorTextContains('[data-workout-exercise-id="cardio"]', '25 minutes');
+        self::assertSelectorTextContains('[data-workout-exercise-id="suitcase-carry"]', '32 kg');
         self::assertSelectorExists('[data-workout-save-status]');
     }
 }

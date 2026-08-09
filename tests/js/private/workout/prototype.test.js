@@ -14,13 +14,13 @@ function createExercises() {
         {
             id: 'squat',
             sets: [
-                { id: '1', loadInput: { value: '70' }, repetitionsInput: { value: '8' } },
-                { id: '2', loadInput: { value: '70' }, repetitionsInput: { value: '8' } },
+                { id: '1', fields: [{ id: 'load', input: { value: '70' } }, { id: 'repetitions', input: { value: '8' } }] },
+                { id: '2', fields: [{ id: 'load', input: { value: '70' } }, { id: 'repetitions', input: { value: '8' } }] },
             ],
         },
         {
             id: 'row',
-            sets: [{ id: '1', loadInput: { value: '45' }, repetitionsInput: { value: '12' } }],
+            sets: [{ id: '1', fields: [{ id: 'duration', input: { value: '25' } }, { id: 'recovery', input: { value: '5' } }] }],
         },
     ];
 }
@@ -56,7 +56,7 @@ describe('workout prototype state', () => {
         const state = createInitialPrototypeState(createExercises());
 
         expect(state).toMatchObject({
-            version: 1,
+            version: 2,
             activeExerciseId: 'squat',
             exercises: { squat: { activeSetId: '1' }, row: { activeSetId: '1' } },
         });
@@ -71,19 +71,19 @@ describe('workout prototype state', () => {
 
         expect(state.activeExerciseId).toBe('squat');
         expect(state.exercises.squat.activeSetId).toBe('1');
-        expect(state.exercises.squat.sets['1']).toEqual({ load: '70', repetitions: '8', completed: false });
+        expect(state.exercises.squat.sets['1']).toEqual({ fields: { load: '70', repetitions: '8' }, completed: false });
     });
 
     it('restores only compatible stable identifiers and counts completed sets', () => {
         const state = restorePrototypeState({
-            version: 1,
+            version: 2,
             activeExerciseId: 'row',
             exercises: {
                 squat: {
                     activeSetId: '2',
                     sets: {
-                        1: { load: '71.25', repetitions: '9', completed: true },
-                        2: { load: '-1', repetitions: 'nope', completed: true },
+                        1: { fields: { load: '71.25', repetitions: '9' }, completed: true },
+                        2: { fields: { load: '-1', repetitions: 'nope' }, completed: true },
                     },
                 },
             },
@@ -91,8 +91,8 @@ describe('workout prototype state', () => {
 
         expect(state.activeExerciseId).toBe('row');
         expect(state.exercises.squat.activeSetId).toBe('2');
-        expect(state.exercises.squat.sets['1']).toEqual({ load: '71.25', repetitions: '9', completed: true });
-        expect(state.exercises.squat.sets['2']).toEqual({ load: '70', repetitions: '8', completed: true });
+        expect(state.exercises.squat.sets['1']).toEqual({ fields: { load: '71.25', repetitions: '9' }, completed: true });
+        expect(state.exercises.squat.sets['2']).toEqual({ fields: { load: '70', repetitions: '8' }, completed: true });
         expect(getCompletedSetCount(state.exercises.squat)).toBe(2);
     });
 });

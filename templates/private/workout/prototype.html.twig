@@ -9,8 +9,8 @@
         <header class="private-page__header workout-prototype__header">
             <div class="private-page__title">
                 <p class="private-eyebrow">Workout · prototype local</p>
-                <h1>Musculation A</h1>
-                <p class="private-page__lead">Maquette mobile : les valeurs restent dans ce navigateur pour tester la saisie pendant une séance.</p>
+                <h1>Séance habituelle</h1>
+                <p class="private-page__lead">Maquette mobile basée sur ta séance réelle : les valeurs restent dans ce navigateur pour tester la saisie pendant l’entraînement.</p>
             </div>
             <div class="private-page__actions">
                 <button class="private-link-button private-link-button--secondary" type="button" data-workout-reset>Réinitialiser l’essai</button>
@@ -20,76 +20,43 @@
         <p class="workout-prototype__status" aria-live="polite" data-workout-save-status>Essai local prêt.</p>
 
         <nav class="workout-prototype__steps" aria-label="Exercices de la séance">
-            <button type="button" class="workout-prototype__step is-current" data-workout-select="squat" aria-current="step">1 <span>Squat</span></button>
-            <button type="button" class="workout-prototype__step" data-workout-select="bench-press">2 <span>Développé couché</span></button>
-            <button type="button" class="workout-prototype__step" data-workout-select="seated-row">3 <span>Rowing assis</span></button>
+            {% for exercise in exercises %}
+                <button type="button" class="workout-prototype__step{% if loop.first %} is-current{% endif %}" data-workout-select="{{ exercise.id }}"{% if loop.first %} aria-current="step"{% endif %}>{{ loop.index }} <span>{{ exercise.name }}</span></button>
+            {% endfor %}
         </nav>
 
-        <article class="private-section-card workout-prototype__exercise" data-workout-exercise-id="squat">
-            <header class="workout-prototype__exercise-header">
-                <div>
-                    <p class="private-eyebrow">Exercice 1 sur 3</p>
-                    <h2>Squat</h2>
-                    <p class="private-muted">Objectif : 3 séries de 8 répétitions · dernière fois : 70 kg × 8</p>
-                </div>
-                <span class="workout-prototype__completion" data-workout-completion>0/3</span>
-            </header>
-            <p class="workout-prototype__set-position" aria-live="polite" data-workout-set-position>Série 1 sur 3</p>
-            <form class="workout-prototype__sets" data-workout-sets>
-                {% for setNumber in 1..3 %}
-                    <fieldset class="workout-prototype__set" data-workout-set-id="{{ setNumber }}">
-                        <legend>Série {{ setNumber }}</legend>
-                        <div class="workout-prototype__field"><span id="workout-squat-load-{{ setNumber }}">Charge (kg)</span><span class="workout-prototype__value-control" data-workout-value-control><button type="button" data-workout-adjust="decrease" aria-label="Réduire la charge de 1,25 kg">−</button><input aria-labelledby="workout-squat-load-{{ setNumber }}" inputmode="decimal" type="number" min="0" step="1.25" value="70" data-workout-load><button type="button" data-workout-adjust="increase" aria-label="Augmenter la charge de 1,25 kg">+</button></span></div>
-                        <div class="workout-prototype__field"><span id="workout-squat-repetitions-{{ setNumber }}">Répétitions</span><span class="workout-prototype__value-control" data-workout-value-control><button type="button" data-workout-adjust="decrease" aria-label="Réduire les répétitions de 1">−</button><input aria-labelledby="workout-squat-repetitions-{{ setNumber }}" inputmode="numeric" type="number" min="0" step="1" value="8" data-workout-repetitions><button type="button" data-workout-adjust="increase" aria-label="Augmenter les répétitions de 1">+</button></span></div>
-                        <button type="button" class="private-link-button" data-workout-complete>Valider</button>
-                    </fieldset>
-                {% endfor %}
-            </form>
-        </article>
-
-        <article class="private-section-card workout-prototype__exercise" data-workout-exercise-id="bench-press" hidden>
-            <header class="workout-prototype__exercise-header">
-                <div>
-                    <p class="private-eyebrow">Exercice 2 sur 3</p>
-                    <h2>Développé couché</h2>
-                    <p class="private-muted">Objectif : 3 séries de 10 répétitions · dernière fois : 50 kg × 10</p>
-                </div>
-                <span class="workout-prototype__completion" data-workout-completion>0/3</span>
-            </header>
-            <p class="workout-prototype__set-position" aria-live="polite" data-workout-set-position>Série 1 sur 3</p>
-            <form class="workout-prototype__sets" data-workout-sets>
-                {% for setNumber in 1..3 %}
-                    <fieldset class="workout-prototype__set" data-workout-set-id="{{ setNumber }}">
-                        <legend>Série {{ setNumber }}</legend>
-                        <div class="workout-prototype__field"><span id="workout-bench-load-{{ setNumber }}">Charge (kg)</span><span class="workout-prototype__value-control" data-workout-value-control><button type="button" data-workout-adjust="decrease" aria-label="Réduire la charge de 1,25 kg">−</button><input aria-labelledby="workout-bench-load-{{ setNumber }}" inputmode="decimal" type="number" min="0" step="1.25" value="50" data-workout-load><button type="button" data-workout-adjust="increase" aria-label="Augmenter la charge de 1,25 kg">+</button></span></div>
-                        <div class="workout-prototype__field"><span id="workout-bench-repetitions-{{ setNumber }}">Répétitions</span><span class="workout-prototype__value-control" data-workout-value-control><button type="button" data-workout-adjust="decrease" aria-label="Réduire les répétitions de 1">−</button><input aria-labelledby="workout-bench-repetitions-{{ setNumber }}" inputmode="numeric" type="number" min="0" step="1" value="10" data-workout-repetitions><button type="button" data-workout-adjust="increase" aria-label="Augmenter les répétitions de 1">+</button></span></div>
-                        <button type="button" class="private-link-button" data-workout-complete>Valider</button>
-                    </fieldset>
-                {% endfor %}
-            </form>
-        </article>
-
-        <article class="private-section-card workout-prototype__exercise" data-workout-exercise-id="seated-row" hidden>
-            <header class="workout-prototype__exercise-header">
-                <div>
-                    <p class="private-eyebrow">Exercice 3 sur 3</p>
-                    <h2>Rowing assis</h2>
-                    <p class="private-muted">Objectif : 3 séries de 12 répétitions · dernière fois : 45 kg × 12</p>
-                </div>
-                <span class="workout-prototype__completion" data-workout-completion>0/3</span>
-            </header>
-            <p class="workout-prototype__set-position" aria-live="polite" data-workout-set-position>Série 1 sur 3</p>
-            <form class="workout-prototype__sets" data-workout-sets>
-                {% for setNumber in 1..3 %}
-                    <fieldset class="workout-prototype__set" data-workout-set-id="{{ setNumber }}">
-                        <legend>Série {{ setNumber }}</legend>
-                        <div class="workout-prototype__field"><span id="workout-row-load-{{ setNumber }}">Charge (kg)</span><span class="workout-prototype__value-control" data-workout-value-control><button type="button" data-workout-adjust="decrease" aria-label="Réduire la charge de 1,25 kg">−</button><input aria-labelledby="workout-row-load-{{ setNumber }}" inputmode="decimal" type="number" min="0" step="1.25" value="45" data-workout-load><button type="button" data-workout-adjust="increase" aria-label="Augmenter la charge de 1,25 kg">+</button></span></div>
-                        <div class="workout-prototype__field"><span id="workout-row-repetitions-{{ setNumber }}">Répétitions</span><span class="workout-prototype__value-control" data-workout-value-control><button type="button" data-workout-adjust="decrease" aria-label="Réduire les répétitions de 1">−</button><input aria-labelledby="workout-row-repetitions-{{ setNumber }}" inputmode="numeric" type="number" min="0" step="1" value="12" data-workout-repetitions><button type="button" data-workout-adjust="increase" aria-label="Augmenter les répétitions de 1">+</button></span></div>
-                        <button type="button" class="private-link-button" data-workout-complete>Valider</button>
-                    </fieldset>
-                {% endfor %}
-            </form>
-        </article>
+        {% for exercise in exercises %}
+            <article class="private-section-card workout-prototype__exercise" data-workout-exercise-id="{{ exercise.id }}"{% if not loop.first %} hidden{% endif %}>
+                <header class="workout-prototype__exercise-header">
+                    <div>
+                        <p class="private-eyebrow">Exercice {{ loop.index }} sur {{ exercises|length }}</p>
+                        <h2>{{ exercise.name }}</h2>
+                        <p class="private-muted">Objectif : {{ exercise.goal }}</p>
+                    </div>
+                    <span class="workout-prototype__completion" data-workout-completion>0/{{ exercise.sets|length }}</span>
+                </header>
+                <p class="workout-prototype__set-position" aria-live="polite" data-workout-set-position>Série 1 sur {{ exercise.sets|length }}</p>
+                <form class="workout-prototype__sets" data-workout-sets>
+                    {% for set in exercise.sets %}
+                        <fieldset class="workout-prototype__set" data-workout-set-id="{{ set.id }}">
+                            <legend>{{ set.label }}</legend>
+                            {% for field in set.fields %}
+                                {% set inputId = 'workout-' ~ exercise.id ~ '-' ~ set.id ~ '-' ~ field.id %}
+                                <div class="workout-prototype__field">
+                                    <label for="{{ inputId }}">{{ field.label }}</label>
+                                    <span class="workout-prototype__value-control" data-workout-value-control>
+                                        <button type="button" data-workout-adjust="decrease" aria-label="Réduire {{ field.label }} de {{ field.step }}">−</button>
+                                        <input id="{{ inputId }}" inputmode="{{ field.inputmode }}" type="number" min="0" step="{{ field.step }}" value="{{ field.value }}" data-workout-field="{{ field.id }}">
+                                        <button type="button" data-workout-adjust="increase" aria-label="Augmenter {{ field.label }} de {{ field.step }}">+</button>
+                                    </span>
+                                </div>
+                            {% endfor %}
+                            <button type="button" class="private-link-button" data-workout-complete>Valider</button>
+                        </fieldset>
+                    {% endfor %}
+                </form>
+            </article>
+        {% endfor %}
 
         <footer class="workout-prototype__navigation" data-workout-navigation hidden>
             <button class="private-link-button private-link-button--secondary" type="button" data-workout-previous>Exercice précédent</button>

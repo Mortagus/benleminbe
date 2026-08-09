@@ -1,7 +1,7 @@
 import { createWorkoutPrototypeDebugger } from './prototype-debug.js';
 
 const STORAGE_KEY = 'benleminbe.workout.prototype.v1';
-const SNAPSHOT_VERSION = 1;
+const SNAPSHOT_VERSION = 2;
 const INITIALIZATION_CONTROLLERS = new WeakMap();
 
 export function readPrototypeSnapshot(storage) {
@@ -68,8 +68,7 @@ export function createInitialPrototypeState(exercises) {
         exercises: Object.fromEntries(exercises.map((exercise) => [exercise.id, {
             activeSetId: exercise.sets[0].id,
             sets: Object.fromEntries(exercise.sets.map((set) => [set.id, {
-                load: set.loadInput.value,
-                repetitions: set.repetitionsInput.value,
+                fields: Object.fromEntries(set.fields.map((field) => [field.id, field.input.value])),
                 completed: false,
             }])),
         }])),
@@ -103,8 +102,10 @@ export function restorePrototypeState(snapshot, exercises) {
             }
 
             initialState.exercises[exercise.id].sets[set.id] = {
-                load: isValidNumberValue(savedSet.load) ? savedSet.load : set.loadInput.value,
-                repetitions: isValidNumberValue(savedSet.repetitions) ? savedSet.repetitions : set.repetitionsInput.value,
+                fields: Object.fromEntries(set.fields.map((field) => [
+                    field.id,
+                    isValidNumberValue(savedSet.fields?.[field.id]) ? savedSet.fields[field.id] : field.input.value,
+                ])),
                 completed: savedSet.completed === true,
             };
         });
@@ -160,13 +161,29 @@ function collectPrototypeElements(root) {
             throw new Error(`Workout exercise ${id} requires at least one set.`);
         }
 
-        const sets = setElements.map((setElement) => ({
-            id: requireDataId(setElement, 'workoutSetId'),
-            element: setElement,
-            loadInput: requireElement(setElement, '[data-workout-load]'),
-            repetitionsInput: requireElement(setElement, '[data-workout-repetitions]'),
-            completionButton: requireElement(setElement, '[data-workout-complete]'),
-        }));
+        const sets = setElements.map((setElement) => {
+            const fieldInputs = [...setElement.querySelectorAll('[data-workout-field]')];
+
+            if (fieldInputs.length === 0) {
+                throw new Error(`Workout set ${requireDataId(setElement, 'workoutSetId')} requires at least one field.`);
+            }
+
+            const fields = fieldInputs.map((input) => ({
+                id: requireDataId(input, 'workoutField'),
+                input,
+            }));
+
+            if (new Set(fields.map((field) => field.id)).size !== fields.length) {
+                throw new Error(`Workout set ${requireDataId(setElement, 'workoutSetId')} contains duplicate field identifiers.`);
+            }
+
+            return {
+                id: requireDataId(setElement, 'workoutSetId'),
+                element: setElement,
+                fields,
+                completionButton: requireElement(setElement, '[data-workout-complete]'),
+            };
+        });
 
         if (new Set(sets.map((set) => set.id)).size !== sets.length) {
             throw new Error(`Workout exercise ${id} contains duplicate set identifiers.`);
@@ -249,8 +266,9 @@ function renderPrototype(elements, state, options = {}) {
 
             set.element.hidden = !isActiveSet;
             set.element.classList.toggle('is-completed', setState.completed);
-            set.loadInput.value = setState.load;
-            set.repetitionsInput.value = setState.repetitions;
+            set.fields.forEach((field) => {
+                field.input.value = setState.fields[field.id];
+            });
             set.completionButton.textContent = setState.completed ? 'Annuler' : 'Valider';
             set.completionButton.setAttribute('aria-pressed', String(setState.completed));
         });
@@ -268,7 +286,7 @@ function renderPrototype(elements, state, options = {}) {
     if (options.focusSet === true) {
         const activeSet = activeExercise.sets[activeSetIndex];
         activeSet.element.scrollIntoView({ behavior: options.reducedMotion ? 'auto' : 'smooth', block: 'center' });
-        activeSet.loadInput.focus({ preventScroll: true });
+        activeSet.fields[0].input.focus({ preventScroll: true });
     }
 }
 
@@ -333,13 +351,13 @@ export function setupWorkoutPrototype(document, dependencies = {}) {
     };
 
     root.addEventListener('input', (event) => {
-        if (!event.target.matches('[data-workout-load], [data-workout-repetitions]')) {
+        if (!event.target.matches('[data-workout-field]')) {
             return;
         }
 
         const { exerciseId, setId } = getSetContext(event.target);
-        const field = event.target.matches('[data-workout-load]') ? 'load' : 'repetitions';
-        state.exercises[exerciseId].sets[setId][field] = event.target.value;
+        const fieldId = requireDataId(event.target, 'workoutField');
+        state.exercises[exerciseId].sets[setId].fields[fieldId] = event.target.value;
         persistence.request(state);
     }, { signal: lifecycle.signal });
     root.addEventListener('click', (event) => {
@@ -398,7 +416,7 @@ export function setupWorkoutPrototype(document, dependencies = {}) {
     elements.nextButton.addEventListener('click', () => {
         const index = elements.exercises.findIndex((exercise) => exercise.id === state.activeExerciseId);
         state.activeExerciseId = elements.exercises[Math.min(elements.exercises.length - 1, index + 1)].id;
-        renderAndPersist();
+        renderAndPersist({ focusSet: true });
     }, { signal: lifecycle.signal });
     elements.resetButton.addEventListener('click', () => {
         try {

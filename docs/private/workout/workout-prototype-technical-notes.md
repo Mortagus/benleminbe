@@ -45,8 +45,8 @@ de stockage impossibles. Il reste temporaire tant que le prototype est teste.
 
 ## Snapshot local
 
-Le snapshot porte `version: 1`, `activeExerciseId`, puis les exercices et series
-par identifiant stable. Un snapshot absent, invalide ou d'une version inconnue
+Le snapshot porte `version: 2`, `activeExerciseId`, puis les exercices, series
+et champs de chaque serie par identifiant stable. Un snapshot absent, invalide ou d'une version inconnue
 est ignore au profit de l'etat initial ; aucune migration locale n'est justifiee
 pour ce prototype. Si le stockage est indisponible, l'interface reste utilisable
 pour la page courante, affiche un message sobre et emet un diagnostic seulement
@@ -54,8 +54,7 @@ en mode debug.
 
 ## Points a ne pas reutiliser tels quels
 
-- les identifiants statiques `squat`, `bench-press` et `seated-row` ;
-- les objectifs et valeurs par defaut dans Twig ;
+- les identifiants statiques, objectifs et valeurs de la seance de test ;
 - la forme exacte du snapshot `localStorage` ;
 - le statut de sauvegarde local comme garantie de persistance metier ;
 - le rendu DOM direct comme implementation de l'historique reel.

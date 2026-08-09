@@ -76,4 +76,8 @@ return [
         'path' => './assets/scripts/private/private.js',
         'entrypoint' => true,
     ],
+    'private_workout_prototype' => [
+        'path' => './assets/pages/private_workout_prototype.js',
+        'entrypoint' => true,
+    ],
 ];

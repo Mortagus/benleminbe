@@ -11,6 +11,8 @@ reste de la zone privee.
   separation entre programme et historique.
 - [Specification MVP](workout-mvp-specification.md) : perimetre, ecrans,
   regles et criteres d'acceptation du premier produit utilisable.
+- [Notes techniques du prototype](workout-prototype-technical-notes.md) :
+  contrat JavaScript, diagnostic du stepper et limites du lot 1.
 - Les regles de progression et de remplacement seront ajoutees ici lorsqu'elles
   seront stabilisees ; elles ne font pas partie du premier cycle d'implementation.
 - [Backlog actif](../../en-cours/muscu-module-backlog.md) : lots, suivi et
@@ -18,9 +20,10 @@ reste de la zone privee.
 
 ## Etat
 
-Le lot 0 est en cours : le cadrage fonctionnel est documente, sans entite,
-migration ni interface applicative. La prochaine etape est le prototype mobile
-statique du mode seance (lot 1), avec quelques exercices representatifs.
+Le lot 0 est termine. Le lot 1 est en cours : le prototype mobile local du mode
+seance est disponible sur `/private/workout/prototype`, sans entite ni migration.
+Il doit maintenant etre utilise pendant de vraies seances afin de documenter les
+retours avant le catalogue persistant.
 
 ## Position dans la zone privee
 

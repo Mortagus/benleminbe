@@ -68,6 +68,8 @@ exacte. Les alternatives et recommandations restent hors de ce premier cycle.
 
 - les exercices precis du premier programme et leurs objectifs initiaux ;
 - la disposition exacte des controles mobiles apres le prototype terrain ;
-- les arrondis d'affichage par type d'equipement ;
+- les arrondis d'affichage par type d'equipement ; le prototype utilise 1,25 kg
+  (equivalent a 2,5 lb) comme pas minimal, puis le catalogue portera un pas par
+  variation ou equipement ;
 - le niveau de correction autorise apres une seance terminee ;
 - le format initial de la premiere courbe de progression.

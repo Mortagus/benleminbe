@@ -24,6 +24,11 @@ sections:
         title: "Ce qui définit réellement mon profil"
         intro: "Je travaille surtout à comprendre, reprendre et faire évoluer des **applications web métier** déjà en production."
 
+    system:
+        eyebrow: "Au-delà du code"
+        title: "Comprendre le système au-delà du code"
+        intro: "Une application métier traduit des processus, des règles, des contraintes et des décisions prises par des personnes. Une part importante de mon travail consiste à comprendre cet ensemble avant de le faire évoluer correctement."
+
     regular:
         eyebrow: "Compétences régulières"
         title: "Ce que j'utilise fréquemment dans ce cadre"
@@ -39,7 +44,7 @@ sections:
         title: "Backend d'abord, le reste en soutien"
         paragraph_1: "Mon cœur de métier, c'est **PHP, Symfony, Drupal**, les **applications web métier**, les **APIs**, la **maintenance évolutive** et la **reprise d'existant**."
         paragraph_2: "Autour de ce socle, j'utilise régulièrement les outils qui permettent de livrer, d'exploiter et d'améliorer les applications dans la durée: données, Git, Docker, CI/CD, tests automatisés, refactoring et analyse de production."
-        paragraph_3: "J'interviens aussi avec une logique d'**analyse**, de **pragmatisme**, de **collaboration** et de **transmission**, pour aider une équipe à faire évoluer l'existant sans perdre le sens du métier."
+        paragraph_3: "Avec les années, j'ai aussi appris à comprendre ce qui entoure le code : le **métier**, les **utilisateurs**, les **processus**, les autres systèmes et les contraintes du projet, afin d'aider une équipe à faire évoluer l'existant sans en perdre le sens."
         actions:
             contact: "Me contacter"
             projects: "Voir les projets"
@@ -60,6 +65,44 @@ core:
     maintenance:
         title: "Maintenance évolutive"
         text: "Reprise d'existant, stabilisation, refactoring ciblé et évolution progressive sans réécriture inutile."
+
+system:
+    domain:
+        title: "Comprendre un domaine métier"
+        text: "Construire progressivement un modèle mental d'un domaine que je ne connais pas encore, en échangeant avec les personnes qui le pratiquent pour en comprendre les concepts, règles et contraintes."
+        context: "Contextes : agriculture · finance · santé · médias · retail · logistique"
+
+    translation:
+        title: "Traduire le métier en logiciel"
+        text: "Transformer des processus réels en modèles de données, règles métier, workflows et fonctionnalités compréhensibles."
+        context_before: "Contextes : "
+        context_project: "ERP Sogesa"
+        context_after: " · plateformes métier · analyse d'un produit de gestion locative"
+
+    existing:
+        title: "Comprendre un système existant"
+        text: "Reconstituer progressivement le fonctionnement d'une application à partir du code, des données, des intégrations et des usages, même lorsque la documentation est incomplète, avant d'intervenir de façon fiable."
+        context_before: "Exemples : "
+        context_delcampe: "Delcampe"
+        context_keytrade: "Keytrade"
+        context_dpi: "DPI"
+        context_stanhome: "Stanhome"
+        context_separator: " · "
+
+    constraints:
+        title: "Identifier les vraies contraintes"
+        text: "Ne pas réduire un problème à son symptôme technique : prendre en compte les contraintes métier, techniques, organisationnelles, budgétaires et celles des systèmes externes."
+        context: "Exemples : intégrations d'authentification · permissions · environnements · responsabilités partagées"
+
+    tradeoffs:
+        title: "Arbitrer plutôt que sur-concevoir"
+        text: "Choisir une solution adaptée au besoin réel en équilibrant valeur, complexité, coût, délai, risques et maintenabilité."
+        context: "Pratiques : évolutions incrémentales · MVP ciblés · refactorings utiles"
+
+    shared_understanding:
+        title: "Construire une compréhension partagée"
+        text: "Expliquer clairement un problème, rendre les hypothèses explicites et adapter le niveau de détail à un développeur, un responsable métier, un client ou un apprenant."
+        context: "Pratiques : documentation · mentoring · coaching en programmation depuis 2021"
 
 regular:
     data:

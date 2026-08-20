@@ -102,6 +102,10 @@
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
 }
 
+.skills-page .skills-system-grid {
+    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+}
+
 .skills-page .skills-highlight-grid article,
 .skills-page .skills-category {
     display: grid;
@@ -128,6 +132,19 @@
     margin: 0;
     color: var(--muted-on-soft);
     line-height: 1.65;
+}
+
+.skills-page .skills-context {
+    color: var(--muted-on-soft);
+    font-size: 0.9rem;
+    font-style: italic;
+    line-height: 1.5;
+}
+
+.skills-page .skills-context a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
 }
 
 .skills-page .skills-two-columns {

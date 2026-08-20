@@ -24,6 +24,11 @@ sections:
         title: "What truly defines my profile"
         intro: "I mainly work on understanding, taking over and evolving **business web applications** already in production."
 
+    system:
+        eyebrow: "Beyond the code"
+        title: "Understanding the system beyond the code"
+        intro: "A business application reflects processes, rules, constraints and decisions made by people. An important part of my work is understanding that whole before evolving it properly."
+
     regular:
         eyebrow: "Regular skills"
         title: "What I use frequently in that context"
@@ -39,7 +44,7 @@ sections:
         title: "Backend first, everything else in support"
         paragraph_1: "My core work is **PHP, Symfony, Drupal**, **business web applications**, **APIs**, **continuous maintenance** and **existing project takeovers**."
         paragraph_2: "Around that core, I regularly use the tools that help deliver, operate and improve applications over time: data stores, Git, Docker, CI/CD, automated testing, refactoring and production analysis."
-        paragraph_3: "I also work with a mindset built on **analysis**, **pragmatism**, **collaboration** and **knowledge sharing**, so a team can evolve what already exists without losing sight of the business."
+        paragraph_3: "Over the years, I have also learned to understand what surrounds the code: the **business domain**, **users**, **processes**, other systems and project constraints, so a team can evolve what already exists without losing its meaning."
         actions:
             contact: "Contact me"
             projects: "See projects"
@@ -60,6 +65,44 @@ core:
     maintenance:
         title: "Continuous maintenance"
         text: "Project takeovers, stabilization, targeted refactoring and progressive evolution without unnecessary rewrites."
+
+system:
+    domain:
+        title: "Understanding a business domain"
+        text: "Progressively build a mental model of a domain I do not yet know by talking with the people who work in it, to understand its concepts, rules and constraints."
+        context: "Contexts: agriculture · finance · healthcare · media · retail · logistics"
+
+    translation:
+        title: "Translating business into software"
+        text: "Turn real processes into data models, business rules, workflows and understandable features."
+        context_before: "Contexts: "
+        context_project: "Sogesa ERP"
+        context_after: " · business platforms · analysis of a rental-management product"
+
+    existing:
+        title: "Understanding an existing system"
+        text: "Progressively reconstruct how an application works from its code, data, integrations and usage, even when documentation is incomplete, before making reliable changes."
+        context_before: "Examples: "
+        context_delcampe: "Delcampe"
+        context_keytrade: "Keytrade"
+        context_dpi: "DPI"
+        context_stanhome: "Stanhome"
+        context_separator: " · "
+
+    constraints:
+        title: "Identifying the real constraints"
+        text: "Do not reduce a problem to its technical symptom: account for business, technical, organisational and budget constraints, as well as those imposed by external systems."
+        context: "Examples: authentication integrations · permissions · environments · shared responsibilities"
+
+    tradeoffs:
+        title: "Making trade-offs instead of over-designing"
+        text: "Choose a solution that fits the real need by balancing value, complexity, cost, time, risk and maintainability."
+        context: "Practices: incremental evolution · focused MVPs · useful refactoring"
+
+    shared_understanding:
+        title: "Building shared understanding"
+        text: "Explain a problem clearly, make assumptions explicit and adapt the level of detail for a developer, business lead, client or learner."
+        context: "Practices: documentation · mentoring · programming coaching since 2021"
 
 regular:
     data:

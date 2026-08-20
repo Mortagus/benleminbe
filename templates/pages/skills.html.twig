@@ -71,6 +71,56 @@
             </div>
         </section>
 
+        <section class="content-section" aria-labelledby="skills-system-title">
+            <div class="card skills-panel">
+                <div class="skills-panel__intro">
+                    <p class="eyebrow">{{ 'sections.system.eyebrow'|trans }}</p>
+
+                    <h2 id="skills-system-title">{{ 'sections.system.title'|trans }}</h2>
+
+                    <p class="skills-panel__lead">{{ 'sections.system.intro'|trans|highlight_keywords }}</p>
+                </div>
+
+                <div class="skills-highlight-grid skills-system-grid">
+                    <article>
+                        <h3>{{ 'system.domain.title'|trans }}</h3>
+                        <p>{{ 'system.domain.text'|trans|highlight_keywords }}</p>
+                        <p class="skills-context">{{ 'system.domain.context'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'system.translation.title'|trans }}</h3>
+                        <p>{{ 'system.translation.text'|trans|highlight_keywords }}</p>
+                        <p class="skills-context">{{ 'system.translation.context_before'|trans }}<a href="{{ path('app_projects_show', { _locale: app.request.locale, project: 'sogesa' }) }}">{{ 'system.translation.context_project'|trans }}</a>{{ 'system.translation.context_after'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'system.existing.title'|trans }}</h3>
+                        <p>{{ 'system.existing.text'|trans|highlight_keywords }}</p>
+                        <p class="skills-context">{{ 'system.existing.context_before'|trans }}<a href="{{ path('app_projects_show', { _locale: app.request.locale, project: 'delcampe' }) }}">{{ 'system.existing.context_delcampe'|trans }}</a>{{ 'system.existing.context_separator'|trans }}<a href="{{ path('app_projects_show', { _locale: app.request.locale, project: 'keytrade' }) }}">{{ 'system.existing.context_keytrade'|trans }}</a>{{ 'system.existing.context_separator'|trans }}<a href="{{ path('app_projects_show', { _locale: app.request.locale, project: 'dpi' }) }}">{{ 'system.existing.context_dpi'|trans }}</a>{{ 'system.existing.context_separator'|trans }}<a href="{{ path('app_projects_show', { _locale: app.request.locale, project: 'stanhome' }) }}">{{ 'system.existing.context_stanhome'|trans }}</a></p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'system.constraints.title'|trans }}</h3>
+                        <p>{{ 'system.constraints.text'|trans|highlight_keywords }}</p>
+                        <p class="skills-context">{{ 'system.constraints.context'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'system.tradeoffs.title'|trans }}</h3>
+                        <p>{{ 'system.tradeoffs.text'|trans|highlight_keywords }}</p>
+                        <p class="skills-context">{{ 'system.tradeoffs.context'|trans }}</p>
+                    </article>
+
+                    <article>
+                        <h3>{{ 'system.shared_understanding.title'|trans }}</h3>
+                        <p>{{ 'system.shared_understanding.text'|trans|highlight_keywords }}</p>
+                        <p class="skills-context">{{ 'system.shared_understanding.context'|trans }}</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
         <section class="content-section" aria-labelledby="skills-regular-title">
             <div class="card skills-panel">
                 <div class="skills-panel__intro">

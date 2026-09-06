@@ -10,6 +10,7 @@ Il sert de passerelle pratique entre les index, les documents de référence, le
 - Si la question porte sur le découpage du site en univers ou sur la navigation entre univers, lire `site-universes-and-navigation.md`.
 - Si la question porte sur une fonctionnalité ou une règle métier, lire le document de référence du domaine concerné.
 - Si la question porte sur un chantier en cours, lire le suivi actif correspondant.
+- Si la question porte sur le pilotage, la reprise ou la clôture d'une évolution, lire le workflow de développement puis le backlog du domaine.
 - Si la question porte sur une décision passée, lire l'archive ou l'audit associé.
 - Si la question porte sur l'organisation de la documentation elle-même, lire ce document et l'architecture documentaire.
 - Si la question porte sur ce qu'il faut fournir a Codex, lire le contexte assistant.
@@ -33,20 +34,21 @@ Si deux documents semblent couvrir le même sujet, privilégier:
 
 ## Carte Par Type De Question
 
-| Type de question                                     | Lire en priorité                                            | Où écrire / mettre à jour                                                      | Document qui fait autorité            |
-| ---------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------- |
-| Quel est le but du projet ?                          | `project-architecture.md`                                   | `project-architecture.md` ou une vision dédiée                                 | Vision / architecture du site         |
-| Comment le site est-il découpé en univers ?          | `site-universes-and-navigation.md`                          | `site-universes-and-navigation.md`                                             | Architecture de navigation            |
-| Comment la documentation est-elle organisée ?        | `documentation-architecture.md`                             | `documentation-routing.md` ou `documentation-index.md` si l'index doit changer | Architecture documentaire             |
-| Où trouver rapidement un sujet ?                     | `documentation-index.md`                                    | `documentation-index.md` si un nouveau point d'entrée est nécessaire           | Index global                          |
-| Quelle fonctionnalité existe déjà ?                  | `documentation-index.md` puis l'index du domaine            | Le document métier du domaine concerné                                         | Document de référence du domaine      |
-| Comment fonctionne l'intégration Spotify privée ?    | `private/music/music-index.md` puis la spec Spotify ciblée  | Le document stable de `docs/private/music/` correspondant au lot concerné      | Référence stable du module Music      |
-| Comment fonctionne une règle métier précise ?        | Le document métier dédié                                    | Le document métier dédié                                                       | Référence métier                      |
-| Qu'est-ce qui est en cours ?                         | `en-cours/current-work-index.md` puis la note active        | La note active ou le backlog                                                   | Suivi actif                           |
-| Quelle est la prochaine évolution prévue ?           | Le backlog du domaine concerné                              | Le backlog du domaine concerné                                                 | Backlog                               |
-| Pourquoi une décision technique a-t-elle été prise ? | `project-architecture.md`, puis l'audit ou la note associée | L'audit ou la note associée                                                    | Document d'architecture ou historique |
-| Que faut-il fournir à Codex pour reprendre vite ?    | `assistant-context.md`                                      | `assistant-context.md` si le pack minimal doit évoluer                         | Contexte assistant                    |
-| Quelle information devient la source de vérité ?     | Le document du sujet concerné                               | Le document du sujet concerné                                                  | Référence stable du sujet             |
+| Type de question                                     | Lire en priorité                                               | Où écrire / mettre à jour                                                      | Document qui fait autorité            |
+| ---------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------- |
+| Quel est le but du projet ?                          | `project-architecture.md`                                      | `project-architecture.md` ou une vision dédiée                                 | Vision / architecture du site         |
+| Comment le site est-il découpé en univers ?          | `site-universes-and-navigation.md`                             | `site-universes-and-navigation.md`                                             | Architecture de navigation            |
+| Comment la documentation est-elle organisée ?        | `documentation-architecture.md`                                | `documentation-routing.md` ou `documentation-index.md` si l'index doit changer | Architecture documentaire             |
+| Où trouver rapidement un sujet ?                     | `documentation-index.md`                                       | `documentation-index.md` si un nouveau point d'entrée est nécessaire           | Index global                          |
+| Quelle fonctionnalité existe déjà ?                  | `documentation-index.md` puis l'index du domaine               | Le document métier du domaine concerné                                         | Document de référence du domaine      |
+| Comment fonctionne l'intégration Spotify privée ?    | `private/music/music-index.md` puis la spec Spotify ciblée     | Le document stable de `docs/private/music/` correspondant au lot concerné      | Référence stable du module Music      |
+| Comment fonctionne une règle métier précise ?        | Le document métier dédié                                       | Le document métier dédié                                                       | Référence métier                      |
+| Qu'est-ce qui est en cours ?                         | `en-cours/current-work-index.md` puis la note active           | La note active ou le backlog                                                   | Suivi actif                           |
+| Quelle est la prochaine évolution prévue ?           | Le backlog du domaine concerné                                 | Le backlog du domaine concerné                                                 | Backlog                               |
+| Comment créer, démarrer ou reprendre un ticket ?     | `development-workflow.md`, puis le backlog du domaine concerné | Le ticket dans le backlog ou sa fiche liée                                     | Workflow de développement             |
+| Pourquoi une décision technique a-t-elle été prise ? | `project-architecture.md`, puis l'audit ou la note associée    | L'audit ou la note associée                                                    | Document d'architecture ou historique |
+| Que faut-il fournir à Codex pour reprendre vite ?    | `assistant-context.md`                                         | `assistant-context.md` si le pack minimal doit évoluer                         | Contexte assistant                    |
+| Quelle information devient la source de vérité ?     | Le document du sujet concerné                                  | Le document du sujet concerné                                                  | Référence stable du sujet             |
 
 ## Règle De Nommage
 
@@ -76,6 +78,7 @@ Exemples de bons noms:
 | `docs/project-architecture.md`          | Architecture stable du site                                         |
 | `docs/site-universes-and-navigation.md` | Découpage des univers et navigation du site                         |
 | `docs/content-workflow.md`              | Source de vérité des contenus publics                               |
+| `docs/development-workflow.md`          | Cycle de vie des tickets, reprises, validations et clôtures         |
 | `docs/lab/lab-index.md`                 | Index stable du Lab public                                          |
 | `docs/games/games-index.md`             | Index stable de l'univers public Games                              |
 | `docs/games/simon.md`                   | Référence technique du jeu Simon                                    |
@@ -94,10 +97,11 @@ Exemples de bons noms:
 
 1. Déterminer si l'information est stable ou temporaire.
 2. Déterminer si elle concerne le projet global, un domaine métier, un chantier en cours ou l'archive.
-3. Écrire dans le document le plus spécifique qui fait autorité.
-4. Mettre à jour l'index si un nouveau point d'entrée devient utile.
-5. Mettre à jour `documentation-routing.md` si la nouvelle information change la façon de lire ou d'écrire la documentation.
-6. Mettre à jour `assistant-context.md` si cette information devient un point d'entrée important pour Codex.
+3. Pour une évolution significative, créer ou mettre à jour son ticket selon `development-workflow.md`.
+4. Écrire dans le document le plus spécifique qui fait autorité.
+5. Mettre à jour l'index si un nouveau point d'entrée devient utile.
+6. Mettre à jour `documentation-routing.md` si la nouvelle information change la façon de lire ou d'écrire la documentation.
+7. Mettre à jour `assistant-context.md` si cette information devient un point d'entrée important pour Codex.
 
 ### Si Tu Recherches Une Réponse
 

@@ -11,6 +11,7 @@ Ce document donne a Codex une base de lecture minimale pour reprendre rapidement
 - [Univers du site et navigation](site-universes-and-navigation.md)
 - [Architecture documentaire](documentation-architecture.md)
 - [Guide de routage documentaire](documentation-routing.md)
+- [Workflow de développement](development-workflow.md)
 - [Workflow de contenu](content-workflow.md)
 
 ### Zone Privee
@@ -39,6 +40,7 @@ Ce document donne a Codex une base de lecture minimale pour reprendre rapidement
 - Lire ensuite le document de vision ou la specification du sujet.
 - Lire le document de regle metier si la question porte sur un comportement precis.
 - Lire le suivi actif seulement si la tâche est encore en cours.
+- Pour une évolution ou une reprise, lire le ticket du backlog et respecter le workflow de développement.
 - Lire l'archive uniquement pour comprendre une décision passée.
 
 ## Regles D'Usage

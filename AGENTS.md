@@ -9,8 +9,9 @@ Au début d'une nouvelle session de travail, lire en priorité :
 3. [docs/project-architecture.md](docs/project-architecture.md)
 4. [docs/documentation-architecture.md](docs/documentation-architecture.md)
 5. [docs/documentation-routing.md](docs/documentation-routing.md)
+6. [docs/development-workflow.md](docs/development-workflow.md)
 
-Ces cinq fichiers donnent le contexte global, l'organisation documentaire, l'architecture actuelle du projet et le routage pratique des documents.
+Ces six fichiers donnent le contexte global, l'organisation documentaire, l'architecture actuelle du projet, le routage pratique des documents et le workflow de développement.
 
 ## Documentation Par Sujet
 
@@ -21,6 +22,7 @@ Ces cinq fichiers donnent le contexte global, l'organisation documentaire, l'arc
 * Corpus éditorial professionnel : [docs/editorial/](docs/editorial/)
 * Sécurité de la zone privée : [docs/private/private-security-recommendations.md](docs/private/private-security-recommendations.md)
 * Routage documentaire : [docs/documentation-routing.md](docs/documentation-routing.md)
+* Workflow de développement et tickets : [docs/development-workflow.md](docs/development-workflow.md)
 
 ## Commandes De Verification
 
@@ -42,6 +44,7 @@ make private-prod-auth-check
 ## Regles De Travail
 
 * Identifier et consulter la documentation pertinente avant une modification significative.
+* Pour une évolution significative, lire et maintenir le ticket du backlog conformément au workflow de développement ; inscrire un checkpoint concis avant une interruption.
 * Préférer les conventions existantes du projet aux nouvelles abstractions.
 * Garder les changements ciblés sur la demande.
 * Ne pas traiter `docs/editorial/` comme source runtime : les contenus publiés viennent des fichiers YAML de `translations/`.
@@ -127,3 +130,33 @@ Utiliser notamment :
 * `requirements-analyst` pour clarifier un besoin avant implémentation.
 * `symfony-developer` pour les modifications applicatives Symfony.
 * `code-reviewer` pour les revues de diff et validations avant commit.
+
+<!-- BACKLOG.MD MCP GUIDELINES START -->
+<!-- backlog.md-instructions-version: 1.51.0 -->
+
+<CRITICAL_INSTRUCTION>
+
+## BACKLOG WORKFLOW INSTRUCTIONS
+
+This project uses Backlog.md MCP for all task and project management activities.
+
+**CRITICAL GUIDANCE**
+
+- If your client supports MCP resources, read `backlog://workflow/overview` to understand when and how to use Backlog for this project.
+- If your client only supports tools or the above request fails, call `backlog.get_backlog_instructions()` to load the tool-oriented overview. Use the `instruction` selector when you need `task-creation`, `task-execution`, or `task-finalization`.
+
+- **First time working here?** Read the overview resource IMMEDIATELY to learn the workflow
+- **Already familiar?** You should have the overview cached ("## Backlog.md Overview (MCP)")
+- **When to read it**: BEFORE creating tasks, or when you're unsure whether to track work
+
+These guides cover:
+- Decision framework for when to create tasks
+- Search-first workflow to avoid duplicates
+- Links to detailed guides for task creation, execution, and finalization
+- MCP tools reference
+
+You MUST read the overview resource to understand the complete workflow. The information is NOT summarized here.
+
+</CRITICAL_INSTRUCTION>
+
+<!-- BACKLOG.MD MCP GUIDELINES END -->

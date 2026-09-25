@@ -42,7 +42,7 @@ Exemple d'intention:
 
 | Univers    | Rôle                                                                 | Public cible                                       | Route racine                              | Navigation locale attendue               | Visibilité dans la navigation inter-univers |
 | ---------- | -------------------------------------------------------------------- | -------------------------------------------------- | ----------------------------------------- | ---------------------------------------- | ------------------------------------------- |
-| `Pro`      | Présence professionnelle, portfolio, contact et informations légales | Prospects, recruteurs, clients, visiteurs          | `/{_locale}` et pages publiques associées | Oui, navigation principale déjà en place | Oui, c'est l'univers de référence           |
+| `Pro`      | Présence professionnelle, portfolio, contact et informations légales | Recruteurs, employeurs, pairs techniques, visiteurs | `/{_locale}` et pages publiques associées | Oui, navigation principale déjà en place | Oui, c'est l'univers de référence           |
 | `Lab`      | Expérimentations publiques et prototypes utiles                      | Visiteurs curieux, moi-même, testeurs              | `/lab`                                    | Oui, à partir d'un shell dédié           | Oui, lien discret attendu depuis le Pro     |
 | `Articles` | Publications publiques à venir                                       | Lecteurs, visiteurs, futurs abonnés                | `/articles` à créer plus tard             | Oui, à définir plus tard                 | Oui, réservé dès maintenant                 |
 | `Games`    | Petits jeux maison en JavaScript                                     | Visiteurs curieux, usage personnel, démonstrations | `/{_locale}/games`                         | Oui, à partir d'un shell dédié           | Oui, lien discret attendu depuis le Pro     |
@@ -65,7 +65,6 @@ Le `Pro` est la partie publique centrale du site. Il sert à présenter le profi
 - `app_skills` -> `/{_locale}/skills`
 - `app_about` -> `/{_locale}/about`
 - `app_contact` -> `/{_locale}/contact`
-- `app_terms_and_conditions` -> `/{_locale}/terms-and-conditions`
 - `app_privacy_policy` -> `/{_locale}/privacy-policy`
 - `app_legal_notice` -> `/{_locale}/legal-notice`
 - `app_card.fr` -> `/card`

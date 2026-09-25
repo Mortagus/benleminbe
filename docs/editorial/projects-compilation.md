@@ -1838,17 +1838,17 @@ Following recent discussions with the client, access to the required data source
 
 **Role:** Programming Coach / Technical Mentor  
 **Platform:** Superprof.be  
-**Duration:** 10/2021 – Present
+**Duration:** 10/2021 – présent
 
 ---
 
 ## Context
 
-Since October 2021, I have been providing private programming coaching sessions for students and professionals seeking to improve their technical skills.
+Since October 2021, I have been helping students and professionals learn programming and develop their technical skills.
 
-The coaching activity started as a complementary professional activity and progressively evolved into a regular mentoring practice.
+This experience started as a complementary professional activity and progressively evolved into a regular mentoring practice.
 
-Sessions are organized mainly through the **Superprof** platform, with additional presence on **Apprentus** and **Malt**.
+Sessions are primarily arranged through **Superprof**. I have also used **Apprentus** and **Malt** over the course of my coaching experience.
 
 ---
 

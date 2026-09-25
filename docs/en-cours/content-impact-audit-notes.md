@@ -10,7 +10,7 @@ L'objectif n'est pas d'auditer l'architecture technique du projet, mais de compr
 
 Questions principales :
 
-- comprend-on rapidement que je suis developpeur web senior specialise PHP, Symfony, Drupal et reprise d'existant ?
+- comprend-on rapidement que je suis développeur web expérimenté spécialisé PHP, Symfony, Drupal et reprise d'existant, à la recherche d'un poste salarié ?
 - comprend-on a qui le site s'adresse : entreprises, recruteurs, equipes techniques, clients avec outils metier ou legacy ?
 - le site donne-t-il confiance pour intervenir sur un projet existant critique ?
 - les pages projets et experiences sont-elles lues ou seulement survolees ?
@@ -80,7 +80,7 @@ Questions a poser :
 
 Signaux a rechercher :
 
-- les testeurs doivent identifier rapidement le positionnement freelance senior ;
+- les testeurs doivent identifier rapidement le positionnement de développeur web expérimenté en recherche d'opportunités salariées ;
 - ils doivent comprendre le lien entre experience, projets et capacite a reprendre un existant ;
 - ils ne doivent pas retenir uniquement une liste de technologies ;
 - ils doivent percevoir une proposition claire : stabiliser, reprendre, faire evoluer et livrer des applications web metier.
@@ -171,7 +171,7 @@ Aucun outil automatique ne remplace ce point.
 Profils utiles :
 
 - recruteur tech ;
-- freelance senior ;
+- développeur web expérimenté ;
 - CTO ou lead dev ;
 - personne non technique ;
 - client PME ou responsable metier.
@@ -281,7 +281,7 @@ Indicateurs qualitatifs :
 - clarte du positionnement ;
 - confiance inspiree ;
 - comprehension des types de missions ;
-- perception senior ;
+- perception de l'expérience professionnelle ;
 - capacite percue a reprendre un projet existant ;
 - objections ou zones floues recurrentes.
 
@@ -298,6 +298,12 @@ L'audit peut etre considere utile si :
 - les prochaines modifications sont classees par impact potentiel.
 
 ## Note De Reprise
+
+État au 25 septembre 2026 : les contenus publics FR/EN ont été repositionnés vers la recherche d'un poste salarié de développeur web expérimenté. Les références au statut freelance actuel, au numéro d'entreprise/TVA et aux conditions générales de prestation ont été retirées. Le coaching reste en cours depuis octobre 2021, principalement via Superprof ; Apprentus et Malt relèvent du parcours historique.
+
+Les textes de confidentialité ont été actualisés concernant le suivi des clics CV et le stockage local. Ces changements éditoriaux ne signifient pas que les recommandations d'observation ci-dessus ont été exécutées : Clarity n'est pas installé et les tests utilisateurs restent à réaliser. Les mesures Lighthouse historiques sont documentées séparément ; une nouvelle mesure serait nécessaire pour évaluer le contenu actuel. Les CV PDF restent à actualiser dans le chantier dédié.
+
+Point technique restant identifié : le template de confidentialité référence encore un quatrième paragraphe de conservation absent des traductions. Ce fichier appartient au commit principal et reste hors de ce nettoyage documentaire.
 
 Prochaine action recommandee :
 

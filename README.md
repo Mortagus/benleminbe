@@ -2,7 +2,7 @@
 
 Code source de mon site web personnel : [benlemin.be](https://benlemin.be).
 
-Le site sert à présenter mon profil de développeur web senior, mon parcours, mes projets représentatifs et les moyens de me contacter. Il remplace progressivement le simple CV PDF par une présence en ligne plus complète, bilingue et maintenable.
+Le site sert à présenter mon profil de développeur web expérimenté, mon parcours, mes projets représentatifs et les moyens de me contacter. Il remplace progressivement le simple CV PDF par une présence en ligne plus complète, bilingue et maintenable.
 
 Il joue aussi le rôle de CV vivant en ligne : le contenu peut évoluer avec mon parcours, mais le projet reste également un espace d'expérimentation. Certaines fonctionnalités annexes, regroupées notamment dans le `lab`, me permettent de tester des idées, des interfaces et des outils concrets directement dans le code du site, sans les séparer de son écosystème technique.
 
@@ -10,7 +10,7 @@ Il joue aussi le rôle de CV vivant en ligne : le contenu peut évoluer avec mon
 
 Le site contient notamment :
 
-- une page d'accueil orientée missions freelance et développement web sur mesure ;
+- une page d'accueil présentant un profil de développeur web expérimenté à l'écoute d'opportunités salariées ;
 - un parcours professionnel détaillé, avec expériences, responsabilités et technologies ;
 - un portfolio de projets représentatifs issus de différents contextes métier ;
 - une page compétences autour de PHP, Symfony, Drupal, JavaScript, intégration, reprise d'existant et qualité logicielle ;

@@ -22,7 +22,7 @@ final class PageController extends AbstractController
             'sitemap' => [
                 'enabled' => true,
                 'locales' => ['fr', 'en'],
-                'lastmod' => '2026-05-11',
+                'lastmod' => '2026-09-22',
             ],
         ],
         methods: ['GET'],
@@ -39,7 +39,7 @@ final class PageController extends AbstractController
             'sitemap' => [
                 'enabled' => true,
                 'locales' => ['fr', 'en'],
-                'lastmod' => '2026-06-04',
+                'lastmod' => '2026-09-22',
             ],
         ],
         methods: ['GET'],
@@ -56,7 +56,7 @@ final class PageController extends AbstractController
             'sitemap' => [
                 'enabled' => true,
                 'locales' => ['fr', 'en'],
-                'lastmod' => '2026-05-13',
+                'lastmod' => '2026-09-22',
             ],
         ],
         methods: ['GET'],
@@ -73,7 +73,7 @@ final class PageController extends AbstractController
             'sitemap' => [
                 'enabled' => true,
                 'locales' => ['fr', 'en'],
-                'lastmod' => '2026-05-13',
+                'lastmod' => '2026-09-22',
             ],
         ],
         methods: ['GET'],

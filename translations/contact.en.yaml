@@ -1,59 +1,55 @@
 contact:
     meta:
         title: "Contact | Benjamin Lemin"
-        description: "Reach out for a freelance mission, an existing project takeover, a technical question, or backend support."
+        description: "Contact Benjamin Lemin about a salaried employment opportunity, an experienced web developer role, or to learn more about his professional background."
 
     hero:
         eyebrow: "Contact"
-        title: "The easiest option: write to me directly."
+        title: "The easiest way to reach me is to write to me directly."
         intro: >
-            If you have a **specific need**, a freelance mission, a project to take over or a technical question,
-            send me a few lines about the context and the goal. I can then reply faster and more clearly.
+            If you would like to discuss a **professional opportunity**, your team or a potential role,
+            send me a few lines about the context. This will help me respond more quickly and clearly.
         actions:
             label: "Main actions"
             email: "Send me an email"
             linkedin: "Contact me on LinkedIn"
-        note: "To move quickly, the most useful thing is to send me the **context, the need and your expected timing**."
+        note: "To get the conversation started, a little information about **your context and the opportunity you have in mind** is all I need."
 
     methods:
-        eyebrow: "Channels"
-        title: "Pick the channel that is simplest for you"
-        intro: "I can reply through whichever channel suits you best. If you are unsure, **email is the most direct**."
+        eyebrow: "Contact options"
+        title: "Choose whichever way of getting in touch works best for you"
+        intro: "I'm happy to reply through whichever channel suits you best. If you're unsure, **email is the most direct option**."
 
         linkedin:
             name: "LinkedIn"
-            description: "To discuss a mission, a project or my professional background."
-            action: "Open →"
-
-        malt:
-            name: "Malt"
-            description: "For structured **freelance mission requests**."
+            description: "To discuss a **professional opportunity**, a project or my background."
             action: "Open →"
 
         email:
             name: "Email"
-            description: "For a direct message, a question or an initial contact."
+            description: "For a direct message, a question or an initial conversation."
             action: "Write →"
 
         whatsapp:
             name: "WhatsApp"
-            description: "For a quick exchange if we are already in contact."
-            action: "Write →"
+            description: "For a quick chat if we're already in touch."
+            action: "Message →"
 
     details:
         request:
-            title: "What I need to know"
-            intro: "To give you a useful answer, a short message is enough if it includes:"
-            item_1: "the **context** and the type of project involved;"
-            item_2: "the **main need** or the problem to solve;"
-            item_3: "the **deadline** or urgency level;"
-            item_4: "your preferred **reply channel**."
+            title: "To make our conversation easier"
+            intro: "To help me give you a useful reply, a short message could include:"
+            item_1: "the **context** of the opportunity;"
+            item_2: "the **position** or role you have in mind;"
+            item_3: "the **team** and technical environment;"
+            item_4: "your preferred **way to get back to you**."
 
         availability:
-            title: "Availability"
+            title: "Opportunities I'm looking for"
             paragraph_1: >
-                I am currently working on **part-time freelance assignments**,
-                with a structured **20h/week** schedule, alongside coaching activities and personal projects.
+                I'm open to **salaried employment opportunities** where my experience in PHP,
+                Symfony and Drupal backend development, along with my full-stack background, could be useful.
 
             paragraph_2: >
-                If your need is clear but brief, I can also help you structure it before **going further**.
+                I'm particularly interested in **maintaining and evolving existing applications**,
+                software design, system integration and working as part of a technical team.

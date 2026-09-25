@@ -1,7 +1,7 @@
 about:
     meta:
         title: "About | Benjamin Lemin"
-        description: "Discover my journey as a web developer, coach, and passionate about the world around me. Explore my motivations and projects."
+        description: "Learn about my background in web development and programming coaching, my interests, and what drives my work and personal projects."
 
     hero:
         eyebrow: "About"
@@ -10,7 +10,7 @@ about:
 
     sections:
         why_it:
-            title: "Why Software Development?"
+            title: "Why software development?"
             paragraphs:
                 1: "I became a developer not because I was particularly fascinated by computers, but because I have always enjoyed **understanding how things work**."
                 2: "What interests me is not just writing code. It is understanding systems, interactions, constraints, and the way very different pieces fit together to create something coherent."
@@ -28,9 +28,9 @@ about:
         coaching:
             title: "Coaching and knowledge sharing"
             paragraphs:
-                1: "Alongside web development, I also support people who are learning programming or who want to improve their practice."
-                2: "I particularly enjoy helping clarify concepts that seem unclear at first: **structuring a line of reasoning**, breaking down a problem, understanding an error, or simply regaining confidence when facing code."
-                3: "This activity also enriches my work as a developer. **Explaining things forces me to be clear**, question my own habits, and regularly return to the fundamentals."
+                1: "Alongside my web development career, I also coach people who are learning programming or want to improve their skills."
+                2: "I particularly enjoy helping people understand concepts that seem unclear at first: **structuring their reasoning**, breaking down a problem, understanding an error, or simply regaining confidence when working with code."
+                3: "This activity also enriches my work as a developer. **Explaining things requires clarity**, encourages me to question my own habits, and regularly brings me back to the fundamentals."
 
         interests:
             title: "My interests"
@@ -42,9 +42,9 @@ about:
         now:
             title: "Where I am today"
             paragraphs:
-                1: "Today, I am gradually building an independent business that allows me to work differently: with more clarity, more perspective, and greater attention to balancing quality of work with personal well-being."
-                2: "I am looking to collaborate on projects where my experience can be useful: **understanding an existing system**, stabilizing an application, evolving a business platform, supporting a team, or helping bring order to a codebase."
-                3: "This transition is also an opportunity to build a professional framework that is more aligned with the way I work: asking the right questions, moving forward step by step, and favoring **durable solutions** over rushed answers."
+                1: "I am currently looking for a salaried web developer role where I can put my experience to work as part of a team and make a lasting contribution to its applications."
+                2: "I want to join projects where my experience can be useful: **understanding an existing system**, stabilizing an application, evolving a business platform, supporting a team, or helping bring order to a codebase."
+                3: "I am looking for a professional environment aligned with the way I work: asking the right questions, moving forward step by step, and favoring **lasting solutions** over rushed answers."
 
         website:
             title: "Why this website exists"

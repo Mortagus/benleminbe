@@ -1666,7 +1666,7 @@ coaching:
     meta_title: "Programming Coaching & Technical Mentoring | Benjamin Lemin"
     eyebrow: "Coaching · Technical mentoring · Knowledge sharing"
     title: "Programming Coaching & Technical Mentoring"
-    lead: "Individual support for students, professionals and developers in their **technical progression**, through coaching sessions focused on programming, architecture, debugging and best practices."
+    lead: "Individual support for students, professionals and developers in their **technical development**, through coaching sessions focused on programming, architecture, debugging and best practices."
 
     meta:
         -   label: "Period:"
@@ -1681,42 +1681,42 @@ coaching:
     sections:
         -   title: "Context"
             paragraphs:
-                - "Since October 2021, I have been providing private programming coaching sessions for students and professionals seeking to improve their technical skills."
-                - "The coaching activity started as a complementary professional activity and progressively evolved into a regular mentoring practice."
-                - "Sessions are organized mainly through the Superprof platform, with additional presence on Apprentus and Malt."
+                - "Since October 2021, I have been helping students and professionals learn programming and develop their technical skills."
+                - "This activity began as a supplementary professional activity and gradually developed into a regular mentoring practice."
+                - "Sessions are primarily arranged through Superprof. I have also used Apprentus and Malt over the course of my coaching experience."
 
         -   title: "Audience"
             paragraphs:
                 - "Participants come from diverse backgrounds."
-                - "The mentoring approach adapts to the learner’s context and technical background."
+                - "My mentoring approach adapts to each learner’s circumstances and technical experience."
             list:
                 - "Computer science students preparing for exams"
-                - "Professionals needing additional technical support in their job"
-                - "Individuals transitioning into software development"
-                - "Developers working on personal or professional projects requiring guidance"
+                - "Professionals needing additional technical support in their work"
+                - "People transitioning into software development"
+                - "Developers working on personal or professional projects who need guidance"
 
         -   title: "Topics covered"
             paragraphs:
-                - "Coaching sessions cover a broad range of software development topics."
+                - "Coaching sessions cover a wide range of software development topics."
             list:
                 - "Web development fundamentals"
                 - "PHP and backend development"
-                - "HTML, JavaScript and front-end basics"
+                - "HTML, JavaScript and frontend fundamentals"
                 - "SQL and database design"
                 - "HTTP protocols and API interactions"
                 - "AJAX and asynchronous programming"
                 - "Git and version control"
                 - "Software architecture concepts"
                 - "Development best practices"
-                - "Project structuring and debugging strategies"
+                - "Project structure and debugging strategies"
 
         -   title: "Session format"
             paragraphs:
-                - "Sessions typically last two hours, which allows meaningful technical progress while maintaining focus."
+                - "Sessions typically last two hours, allowing for meaningful technical progress while maintaining focus."
                 - "Different formats are used depending on the learner’s needs."
-                - "Sessions often involve live coding, code review, debugging assistance, explanation of technical concepts and guidance on project architecture."
+                - "Sessions often involve live coding, code review, debugging assistance, explanations of technical concepts and guidance on project architecture."
             list:
-                - "Remote sessions via video conferencing, for example Zoom or similar tools"
+                - "Remote sessions via video conferencing, using Zoom or similar tools"
                 - "In-person coaching at the learner’s location"
                 - "In-person coaching at my workspace"
                 - "Live coding"
@@ -1729,19 +1729,19 @@ coaching:
             list:
                 - "First coaching session: October 11, 2021"
                 - "Approximately 698 hours of coaching delivered between 2022 and 2025"
-                - "Around 10 students mentored across different contexts"
-                - "The activity continues today with an average of around two sessions per week"
+                - "Around 10 students mentored in different contexts"
+                - "The activity is ongoing, with an average of around two sessions per week"
 
         -   title: "Key contributions"
             list:
-                - "Helping learners overcome technical blockers"
-                - "Structuring explanations of complex programming concepts"
+                - "Helping learners overcome technical challenges"
+                - "Explaining complex programming concepts in a structured way"
                 - "Guiding learners through real development projects"
-                - "Supporting professional development and technical autonomy"
+                - "Supporting professional development and technical independence"
 
         -   title: "Personal motivation"
             highlight: true
             paragraphs:
-                - "This activity combines several aspects that I value in my professional practice: sharing knowledge and experience, meeting new people from diverse backgrounds, strengthening my own technical mastery through teaching, and helping others progress and gain confidence in programming."
+                - "This activity brings together several things I value in my professional life: sharing my knowledge and experience, meeting people from different backgrounds, strengthening my own technical understanding through teaching, and helping others progress and gain confidence in programming."
 
     back: "← Back to projects"

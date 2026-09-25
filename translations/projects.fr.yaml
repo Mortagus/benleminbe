@@ -103,7 +103,7 @@ index:
             description: "Développement d’une **plateforme ETL et analytique** permettant de consolider des données opérationnelles pour analyser les marges réelles des produits."
 
         coaching:
-            title: "Programming Coaching & Technical Mentoring"
+            title: "Coaching en programmation et mentorat technique"
             description: "Accompagnement individuel d’étudiants, professionnels et développeurs sur des sujets de **programmation, architecture, debugging et bonnes pratiques**."
 
 raidgbs:
@@ -1663,16 +1663,16 @@ marge_delhaize:
     back: "← Retour aux projets"
 
 coaching:
-    meta_title: "Programming Coaching & Technical Mentoring | Benjamin Lemin"
+    meta_title: "Coaching en programmation et mentorat technique | Benjamin Lemin"
     eyebrow: "Coaching · Mentorat technique · Transmission"
-    title: "Programming Coaching & Technical Mentoring"
+    title: "Coaching en programmation et mentorat technique"
     lead: "Accompagnement individuel d’étudiants, professionnels et développeurs dans leur **progression technique**, à travers des sessions de coaching orientées programmation, architecture, debugging et bonnes pratiques."
 
     meta:
         -   label: "Période :"
             value: "10/2021 – présent"
         -   label: "Rôle :"
-            value: "Programming Coach / Technical Mentor"
+            value: "Coach en programmation / Mentor technique"
         -   label: "Plateformes :"
             value: "Superprof.be, Apprentus, Malt"
         -   label: "Volume d’activité :"
@@ -1681,9 +1681,9 @@ coaching:
     sections:
         -   title: "Contexte"
             paragraphs:
-                - "Depuis octobre 2021, je donne des sessions privées de coaching en programmation pour des étudiants et des professionnels souhaitant améliorer leurs compétences techniques."
-                - "L’activité de coaching a démarré comme une activité professionnelle complémentaire et a progressivement évolué vers une pratique régulière de mentorat."
-                - "Les sessions sont principalement organisées via la plateforme Superprof, avec une présence complémentaire sur Apprentus et Malt."
+                - "Depuis octobre 2021, j’accompagne des étudiants et des professionnels dans leur apprentissage de la programmation et leur progression technique."
+                - "Cette activité a démarré comme une activité professionnelle complémentaire et a progressivement évolué vers une pratique régulière de mentorat."
+                - "Les sessions sont principalement organisées via Superprof. J’ai également été présent sur Apprentus et Malt au cours de mon parcours."
 
         -   title: "Public accompagné"
             paragraphs:

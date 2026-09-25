@@ -1,13 +1,13 @@
 meta:
-    title: "Benjamin Lemin - Applications web sur mesure, reprise d'existant et renfort senior"
-    description: "J'aide les entreprises à concevoir, reprendre et faire évoluer des applications web sur mesure lorsqu'elles ont un besoin métier spécifique ou un problème technique complexe."
+    title: "Benjamin Lemin - Développeur web expérimenté PHP, Symfony et Drupal"
+    description: "Portfolio de Benjamin Lemin, développeur web expérimenté spécialisé en backend PHP, Symfony et Drupal, avec une expérience full-stack et en reprise d'existant."
 
 hero:
-    eyebrow: "Disponible pour missions freelance (20h/semaine)"
+    eyebrow: "À l'écoute d'opportunités professionnelles salariées"
     name: "Benjamin Lemin"
     title: "Comprendre. Structurer. Construire pour durer."
-    subtitle: "Développeur web senior PHP, Symfony, Drupal"
-    intro: "J'aide les entreprises à concevoir, reprendre et faire évoluer des **applications web sur mesure**."
+    subtitle: "Développeur web expérimenté PHP, Symfony, Drupal"
+    intro: "Je conçois, reprends et fais évoluer des **applications web sur mesure**, avec une spécialisation backend et une expérience full-stack."
     details_p1: "**15+ ans d'expérience** sur des applications métier, des reprises d'existant et des plateformes en production."
 
 actions:
@@ -16,33 +16,33 @@ actions:
     download_cv: "Télécharger mon CV"
 
 help:
-    title: "Je peux vous aider si..."
+    title: "Les contextes dans lesquels j'apporte mon expérience"
     card_1:
-        title: "Vous avez une idée d'outil métier"
-        text: "Vous devez créer une **application adaptée** à vos processus réels."
+        title: "Conception d'outils métier"
+        text: "Création d'**applications adaptées** aux processus et contraintes réels."
     card_2:
-        title: "Votre application atteint ses limites"
-        text: "Ajouter, corriger ou faire évoluer l'outil **devient difficile**."
+        title: "Évolution d'applications"
+        text: "Ajout de fonctionnalités, corrections et évolution d'outils **devenus difficiles à maintenir**."
     card_3:
-        title: "Vous devez reprendre un projet existant"
-        text: "Le développeur précédent n'est plus disponible ou **la connaissance s'est dispersée**."
+        title: "Reprise de projets existants"
+        text: "Reconstruction de la connaissance lorsque **le contexte s'est dispersé**."
     card_4:
-        title: "Votre domaine métier est complexe"
-        text: "Vous avez besoin d'un regard capable de comprendre vite **les règles et les risques**."
+        title: "Domaines métier complexes"
+        text: "Compréhension rapide des **règles, contraintes et risques**."
     card_5:
-        title: "Votre équipe manque de ressources"
-        text: "Je peux rejoindre une équipe existante comme **renfort senior** à temps partiel."
+        title: "Travail en équipe"
+        text: "Collaboration avec des équipes produit, métier et techniques comme **développeur expérimenté**."
     card_6:
-        title: "Un outil standard ne suffit pas"
-        text: "Vous avez besoin d'une solution connectée à **vos données et vos APIs**."
+        title: "Intégration de systèmes"
+        text: "Connexion d'applications à des **données, APIs et services externes**."
 
 concrete:
-    title: "Ce que je peux prendre en charge"
-    item_1: "Concevoir et développer une **application web métier sur mesure**"
-    item_2: "Reprendre un projet **PHP, Symfony ou Drupal** déjà en production"
-    item_3: "Ajouter des fonctionnalités **sans repartir de zéro**"
-    item_4: "**Moderniser progressivement** un système existant"
-    item_5: "Intégrer des **APIs, services externes et bases de données** dans un outil métier"
+    title: "Compétences mises en pratique"
+    item_1: "**Comprendre un existant complexe** : analyser le code, les données et les règles métier avant de le faire évoluer."
+    item_2: "**Diagnostiquer et résoudre des problèmes** : identifier leur origine et apporter des corrections adaptées au contexte."
+    item_3: "**Concevoir des évolutions maintenables** : développer de nouvelles fonctionnalités en tenant compte de l'architecture et des besoins métier."
+    item_4: "**Fiabiliser les changements** : utiliser les tests, la revue de code et une progression par étapes pour limiter les risques."
+    item_5: "**Collaborer et transmettre** : clarifier les besoins, partager les connaissances et faciliter le travail au sein d'une équipe."
 
 projects:
     title: "Quelques projets représentatifs"
@@ -75,5 +75,5 @@ summary:
         label: "intégration dans des équipes produit, métier et techniques"
 
 contact:
-    title: "Vous voulez savoir si je peux vous être utile ?"
-    text: "Expliquez-moi votre **contexte**, votre **blocage** ou l'outil que vous souhaitez faire évoluer. Je vous dirai rapidement si je peux aider et par où commencer."
+    title: "Vous souhaitez échanger sur une opportunité professionnelle ?"
+    text: "Contactez-moi pour parler de votre **équipe**, de vos **applications** ou d'un poste où mon expérience pourrait être utile."

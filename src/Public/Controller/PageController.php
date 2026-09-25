@@ -50,23 +50,6 @@ final class PageController extends AbstractController
     }
 
     #[Route(
-        path: '/terms-and-conditions',
-        name: 'terms_and_conditions',
-        options: [
-            'sitemap' => [
-                'enabled' => true,
-                'locales' => ['fr', 'en'],
-                'lastmod' => '2026-05-13',
-            ],
-        ],
-        methods: ['GET'],
-    )]
-    public function termsAndConditions(): Response
-    {
-        return $this->render('pages/terms_and_conditions.html.twig');
-    }
-
-    #[Route(
         path: '/privacy-policy',
         name: 'privacy_policy',
         options: [

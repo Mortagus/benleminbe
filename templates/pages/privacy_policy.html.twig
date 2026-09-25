@@ -82,8 +82,15 @@
         <section class="content-section" aria-labelledby="privacy-cookies">
             <div class="card">
                 <h2 id="privacy-cookies">{{ 'privacy_policy.sections.cookies.title'|trans }}</h2>
-                <p>{{ 'privacy_policy.sections.cookies.paragraphs.1'|trans }}</p>
-                <p>{{ 'privacy_policy.sections.cookies.paragraphs.2'|trans }}</p>
+                {% macro cookie_paragraphs(index = 1) %}
+                    {% set key = 'privacy_policy.sections.cookies.paragraphs.' ~ index %}
+                    {% set paragraph = key|trans({}, 'legal') %}
+                    {% if paragraph != key %}
+                        <p>{{ paragraph }}</p>
+                        {{ _self.cookie_paragraphs(index + 1) }}
+                    {% endif %}
+                {% endmacro %}
+                {{ _self.cookie_paragraphs() }}
             </div>
         </section>
 

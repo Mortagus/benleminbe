@@ -28,7 +28,7 @@ about:
         coaching:
             title: "Le coaching et la transmission"
             paragraphs:
-                1: "En parallèle du développement web, j’accompagne aussi des personnes qui apprennent la programmation ou qui souhaitent progresser dans leur pratique."
+                1: "En parallèle de mon parcours en développement web, j’accompagne aussi des personnes qui apprennent la programmation ou souhaitent progresser dans leur pratique."
                 2: "J’aime particulièrement aider à clarifier les notions qui semblent floues au départ : **structurer un raisonnement**, découper un problème, comprendre une erreur, ou simplement reprendre confiance face au code."
                 3: "Cette activité nourrit aussi ma pratique de développeur. **Expliquer oblige à être clair**, à questionner ses propres habitudes et à revenir régulièrement aux fondamentaux."
 
@@ -42,9 +42,9 @@ about:
         now:
             title: "Où j’en suis aujourd’hui"
             paragraphs:
-                1: "Aujourd’hui, je construis progressivement une activité indépendante qui me permet de travailler autrement : avec plus de clarté, plus de recul et une meilleure attention portée à l’équilibre entre qualité du travail et rythme de vie."
-                2: "Je souhaite collaborer sur des projets où mon expérience peut être utile : **comprendre un existant**, stabiliser une application, faire évoluer un système métier, accompagner une équipe ou aider à remettre de l’ordre dans une base de code."
-                3: "Cette transition est aussi l’occasion de construire un cadre professionnel plus aligné avec ma manière de travailler : poser les bonnes questions, avancer étape par étape et privilégier les **solutions durables** plutôt que les réponses précipitées."
+                1: "Aujourd’hui, je recherche un poste salarié de développeur web où je pourrai mettre mon expérience au service d’une équipe et contribuer durablement à l’évolution de ses applications."
+                2: "Je souhaite rejoindre des projets où mon expérience peut être utile : **comprendre un existant**, stabiliser une application, faire évoluer un système métier, accompagner une équipe ou aider à remettre de l’ordre dans une base de code."
+                3: "Je recherche un cadre professionnel aligné avec ma manière de travailler : poser les bonnes questions, avancer étape par étape et privilégier les **solutions durables** plutôt que les réponses précipitées."
 
         website:
             title: "Pourquoi ce site existe"

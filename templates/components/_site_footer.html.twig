@@ -14,9 +14,7 @@
             </p>
 
             <address class="site-footer__address">
-                {{ 'footer.address'|trans }}<br>
-                {{ 'footer.company_number_label'|trans }}:
-                <span class="nowrap">{{ 'footer.company_number'|trans }}</span>
+                {{ 'footer.address'|trans }}
             </address>
         </section>
 
@@ -35,11 +33,6 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ path('app_terms_and_conditions', { _locale: app.request.locale }) }}">
-                        {{ 'footer.terms_and_conditions'|trans }}
-                    </a>
-                </li>
-                <li>
                     <a href="{{ path('app_privacy_policy', { _locale: app.request.locale }) }}">
                         {{ 'footer.privacy_policy'|trans }}
                     </a>
@@ -50,10 +43,6 @@
         <section class="site-footer__block site-footer__about" aria-label="{{ 'footer.about'|trans }}">
             <p>
                 {{ 'footer.signature'|trans }}
-            </p>
-
-            <p class="site-footer__tracking">
-                {{ 'footer.disclaimer_tracking'|trans }}
             </p>
         </section>
     </div>

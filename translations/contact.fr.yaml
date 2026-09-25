@@ -1,19 +1,19 @@
 contact:
     meta:
         title: "Contact | Benjamin Lemin"
-        description: "Contactez-moi pour une mission freelance, une reprise d'existant, une question technique ou un besoin de renfort backend."
+        description: "Contactez Benjamin Lemin pour une opportunité professionnelle salariée, un poste de développeur web expérimenté ou un échange autour de son parcours."
 
     hero:
         eyebrow: "Contact"
-        title: "Le plus simple: m'écrire directement."
+        title: "Le plus simple : m'écrire directement."
         intro: >
-            Si vous avez un **besoin concret**, une mission freelance, un projet à reprendre ou une question technique,
-            envoyez-moi quelques lignes sur le contexte et l'objectif. Je pourrai vous répondre plus vite et plus clairement.
+            Si vous souhaitez me parler d'une **opportunité professionnelle**, d'une équipe ou d'un poste,
+            envoyez-moi quelques lignes sur le contexte. Je pourrai vous répondre plus vite et plus clairement.
         actions:
             label: "Actions principales"
             email: "M'envoyer un email"
             linkedin: "Me contacter sur LinkedIn"
-        note: "Pour aller vite, le plus efficace est de m'envoyer **le contexte, le besoin et le délai souhaité**."
+        note: "Pour faciliter notre échange, quelques informations sur **votre contexte et l’opportunité envisagée** suffisent pour commencer."
 
     methods:
         eyebrow: "Canaux"
@@ -22,12 +22,7 @@ contact:
 
         linkedin:
             name: "LinkedIn"
-            description: "Pour échanger autour d'une **mission**, d'un projet ou de mon parcours."
-            action: "Ouvrir →"
-
-        malt:
-            name: "Malt"
-            description: "Pour les demandes de **mission freelance** structurées."
+            description: "Pour échanger autour d'une **opportunité professionnelle**, d'un projet ou de mon parcours."
             action: "Ouvrir →"
 
         email:
@@ -42,18 +37,19 @@ contact:
 
     details:
         request:
-            title: "Ce que j'ai besoin de savoir"
-            intro: "Pour vous répondre utilement, un message court suffit si vous partagez ces informations:"
-            item_1: "le **contexte** et le type de projet concerné;"
-            item_2: "le **besoin principal** ou le problème à résoudre;"
-            item_3: "le **délai** ou le niveau d'urgence;"
+            title: "Pour faciliter l'échange"
+            intro: "Pour vous répondre utilement, un message court peut préciser :"
+            item_1: "le **contexte** de l'opportunité ;"
+            item_2: "le **poste** ou le rôle envisagé ;"
+            item_3: "l'**équipe** et l'environnement technique ;"
             item_4: "le **canal de réponse** que vous préférez."
 
         availability:
-            title: "Disponibilité"
+            title: "Opportunités recherchées"
             paragraph_1: >
-                Je travaille actuellement sur des **missions freelance à temps partiel**,
-                dans un cadre structuré de **20h/semaine**, en parallèle d'activités de coaching et de projets personnels.
+                Je suis à l'écoute d'**opportunités professionnelles salariées** où mon expérience backend PHP,
+                Symfony et Drupal, ainsi que mon parcours full-stack, peuvent être utiles.
 
             paragraph_2: >
-                Si votre besoin est clair mais encore bref, je peux aussi vous aider à le structurer avant **d'aller plus loin**.
+                Je m'intéresse particulièrement à la **maintenance et l'évolution d'applications existantes**,
+                à la conception, à l'intégration et au travail au sein d'une équipe technique.

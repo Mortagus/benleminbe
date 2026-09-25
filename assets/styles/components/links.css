@@ -95,11 +95,6 @@
     -webkit-mask-image: url("../../images/logos/linkedin.svg");
 }
 
-.external-link-card__icon--malt {
-    mask-image: url("../../images/logos/malt_simplified.svg");
-    -webkit-mask-image: url("../../images/logos/malt_simplified.svg");
-}
-
 .external-link-card__icon--github {
     mask-image: url("../../images/logos/github.svg");
     -webkit-mask-image: url("../../images/logos/github.svg");

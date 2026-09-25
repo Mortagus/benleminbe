@@ -20,7 +20,7 @@ final class BusinessCardController extends AbstractController
             'sitemap' => [
                 'enabled' => true,
                 'locales' => ['fr', 'en'],
-                'lastmod' => '2026-05-14',
+                'lastmod' => '2026-09-22',
             ],
         ],
         methods: ['GET'],
@@ -48,15 +48,10 @@ final class BusinessCardController extends AbstractController
                 '',
                 '',
             ]),
-            'ORG:' . $this->escapeVcardText('Benjamin Lemin'),
-            'TITLE:' . $this->escapeVcardText('Développeur web freelance'),
+            'TITLE:' . $this->escapeVcardText('Développeur web expérimenté'),
             'EMAIL;TYPE=INTERNET:' . $this->escapeVcardText('benjamin@lemin.be'),
             'URL:' . $this->escapeVcardText('https://benlemin.be'),
-            'ADR;TYPE=WORK:;;;'
-                . $this->escapeVcardText('Opheylissem')
-                . ';;;'
-                . $this->escapeVcardText('Belgique'),
-            'NOTE:' . $this->escapeVcardText('Développeur web freelance spécialisé en PHP, Symfony et Drupal'),
+            'NOTE:' . $this->escapeVcardText('Développeur web expérimenté spécialisé en backend PHP, Symfony et Drupal, avec une expérience full-stack'),
             'END:VCARD',
             '',
         ];

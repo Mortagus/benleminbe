@@ -6,9 +6,9 @@ card:
     hero:
         eyebrow: "Carte de visite"
         title: "Benjamin Lemin"
-        subtitle: "Développeur web freelance PHP, Symfony & Drupal"
+        subtitle: "Développeur web expérimenté PHP, Symfony & Drupal"
         intro: >
-            Vous pouvez visiter mon site pour découvrir mon parcours, mes projets et mes services,
+            Vous pouvez visiter mon site pour découvrir mon parcours, mes compétences et mes projets,
             ou enregistrer directement mes coordonnées dans vos contacts.
 
     actions:

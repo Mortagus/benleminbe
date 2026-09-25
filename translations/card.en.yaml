@@ -6,9 +6,9 @@ card:
     hero:
         eyebrow: "Business card"
         title: "Benjamin Lemin"
-        subtitle: "Freelance PHP, Symfony & Drupal web developer"
+        subtitle: "Experienced PHP, Symfony & Drupal web developer"
         intro: >
-            You can visit my website to discover my background, projects and services,
+            You can visit my website to discover my background, skills and projects,
             or save my contact details directly to your contacts.
 
     actions:

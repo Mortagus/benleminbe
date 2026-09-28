@@ -73,6 +73,7 @@ Etat fonctionnel actuel :
 - le bloc "Activite recente" du dashboard affiche maintenant le contact concerne, son entreprise et son role quand ces informations existent, avec des fallback propres quand elles manquent ;
 - pages de listing et de fiche pour les plateformes et les contacts ;
 - creation et edition des plateformes ;
+- suppression definitive des plateformes depuis leur liste ;
 - export et import JSON des plateformes via la page de liste ;
 - creation et edition des contacts ;
 - ajout d'interactions sur les fiches contact ;
@@ -86,7 +87,7 @@ Etat d'organisation :
 - `Organization` reste un champ du contact ;
 - `Platform` et le profil de plateforme restent fusionnes ;
 - `ImportLog` sert de journal minimal ;
-- le backup de reference des plateformes vit dans `data/private/network/platforms.json` ;
+- le backup de reference des plateformes vit dans `data/private/network/platforms.json` ; il ne restaure pas automatiquement une liste vide ;
 - `tags` restent en JSON ;
 - les statuts sont formalises en enums.
 

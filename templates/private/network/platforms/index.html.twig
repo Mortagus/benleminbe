@@ -92,6 +92,16 @@
                             <div class="private-platform-item__actions private-actions private-actions--inline">
                                 <a href="{{ path('app_private_network_platform_show', { slug: platform.slug }) }}">Voir</a>
                                 <a href="{{ path('app_private_network_platform_edit', { slug: platform.slug }) }}">Modifier</a>
+                                <form
+                                    class="private-inline-form"
+                                    method="post"
+                                    action="{{ path('app_private_network_platform_delete', { slug: platform.slug }) }}"
+                                    data-private-confirm="Supprimer {{ platform.name }} ? Cette action est irréversible."
+                                >
+                                    <input type="hidden" name="_token" value="{{ csrf_token('private-network-platform-delete-' ~ platform.slug) }}">
+                                    <input type="hidden" name="q" value="{{ currentQuery }}">
+                                    <button class="private-link-button private-link-button--danger" type="submit">Supprimer</button>
+                                </form>
                             </div>
                         </article>
                     {% endfor %}

@@ -36,7 +36,7 @@ abstract class NetworkWebTestCase extends WebTestCase
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/private/login');
-        $form = $crawler->selectButton('Se connecter')->form([
+        $form = $crawler->filter('form[action="/private/login"]')->form([
             '_username' => 'private_admin',
             '_password' => 'private-dev-password',
         ]);

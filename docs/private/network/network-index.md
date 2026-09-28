@@ -25,6 +25,7 @@ Documentation du premier outil prive `Contacts et reseau`.
 - revue des doublons `/private/network/contact-merge-reviews` comme action contextuelle du flux Contacts;
 - liste des plateformes `/private/network/platforms`;
 - fiche plateforme `/private/network/platforms/{slug}`;
+- suppression d'une plateforme `/private/network/platforms/{slug}/delete`;
 - import et export des plateformes `/private/network/platforms/import` et `/private/network/platforms/export`.
 
 ## Perimetre

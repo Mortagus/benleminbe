@@ -9,21 +9,14 @@ use App\Enum\Network\PlatformStatus;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
-use JsonException;
-use RuntimeException;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class PlatformService
 {
     private const int PLATFORM_BACKUP_SCHEMA_VERSION = 1;
 
-    private bool $seeded = false;
-
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        #[Autowire('%kernel.project_dir%')]
-        private readonly string $projectDir,
     ) {
     }
 
@@ -32,8 +25,6 @@ final class PlatformService
      */
     public function listPlatforms(string $query = ''): array
     {
-        $this->ensureSeeded();
-
         $platforms = $this->decoratePlatforms($this->loadPlatforms());
         $query = mb_strtolower(trim($query));
 
@@ -61,8 +52,6 @@ final class PlatformService
      */
     public function getPlatform(string $slug): array
     {
-        $this->ensureSeeded();
-
         $platform = $this->entityManager->getRepository(Platform::class)->find($slug);
         if (!$platform instanceof Platform) {
             throw new NotFoundHttpException(sprintf('Platform "%s" was not found.', $slug));
@@ -78,8 +67,6 @@ final class PlatformService
      */
     public function savePlatform(array $payload, ?string $existingSlug = null): array
     {
-        $this->ensureSeeded();
-
         $platforms = $this->loadPlatforms();
         $data = $this->normalizePlatformPayload($payload, $existingSlug, $platforms);
 
@@ -96,6 +83,19 @@ final class PlatformService
         $this->entityManager->flush();
 
         return $this->decoratePlatform($platform);
+    }
+
+    public function deletePlatform(string $slug): void
+    {
+        $this->entityManager->wrapInTransaction(function (EntityManagerInterface $entityManager) use ($slug): void {
+            $platform = $entityManager->getRepository(Platform::class)->find($slug);
+            if (!$platform instanceof Platform) {
+                throw new NotFoundHttpException(sprintf('Platform "%s" was not found.', $slug));
+            }
+
+            $entityManager->remove($platform);
+            $entityManager->flush();
+        });
     }
 
     /**
@@ -128,7 +128,6 @@ final class PlatformService
      */
     public function exportPlatformsBackup(): array
     {
-        $this->ensureSeeded();
         $platforms = array_map(
             fn (Platform $platform): array => $this->platformToBackupRecord($platform),
             $this->loadPlatforms(),
@@ -160,27 +159,6 @@ final class PlatformService
     private function loadPlatforms(): array
     {
         return $this->entityManager->getRepository(Platform::class)->findAll();
-    }
-
-    private function ensureSeeded(): void
-    {
-        if ($this->seeded) {
-            return;
-        }
-
-        $this->seeded = true;
-
-        if ($this->entityManager->getRepository(Platform::class)->count([]) > 0) {
-            return;
-        }
-
-        foreach ($this->loadDefaultPlatformRecords() as $data) {
-            $platform = new Platform();
-            $this->applyPlatformData($platform, $data);
-            $this->entityManager->persist($platform);
-        }
-
-        $this->entityManager->flush();
     }
 
     /**
@@ -298,46 +276,6 @@ final class PlatformService
     /**
      * @return list<array<string, mixed>>
      */
-    private function loadDefaultPlatformRecords(): array
-    {
-        $backup = $this->readBackupFile();
-        $records = $this->extractBackupRecords($backup);
-
-        return $this->normalizeBackupRecords($records);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function readBackupFile(): array
-    {
-        $path = $this->getBackupFilePath();
-
-        if (!is_file($path)) {
-            throw new RuntimeException(sprintf('Platform backup file not found at "%s".', $path));
-        }
-
-        $contents = file_get_contents($path);
-        if ($contents === false) {
-            throw new RuntimeException(sprintf('Unable to read platform backup file at "%s".', $path));
-        }
-
-        try {
-            $payload = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $exception) {
-            throw new InvalidArgumentException('The platform backup file contains invalid JSON.', 0, $exception);
-        }
-
-        if (!is_array($payload)) {
-            throw new InvalidArgumentException('The platform backup file must decode to an array.');
-        }
-
-        return $payload;
-    }
-
-    /**
-     * @return list<array<string, mixed>>
-     */
     private function extractBackupRecords(array $payload): array
     {
         if (array_is_list($payload)) {
@@ -441,11 +379,6 @@ final class PlatformService
                 'total' => count($platformsData),
             ];
         });
-    }
-
-    private function getBackupFilePath(): string
-    {
-        return rtrim($this->projectDir, '/\\') . '/data/private/network/platforms.json';
     }
 
     private function normalizeBackupStatus(mixed $status, int $position): string

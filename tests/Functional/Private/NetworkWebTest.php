@@ -541,6 +541,14 @@ final class NetworkWebTest extends NetworkWebTestCase
     public function testPlatformBackupExportDownloadsJsonSnapshot(): void
     {
         $client = $this->createAuthenticatedClient();
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+
+        $platform = new Platform();
+        $platform->setSlug('export-check');
+        $platform->setName('Export Check');
+        $platform->setCategory('reseau');
+        $entityManager->persist($platform);
+        $entityManager->flush();
 
         $client->request('GET', '/private/network/platforms/export');
 
@@ -552,8 +560,98 @@ final class NetworkWebTest extends NetworkWebTestCase
 
         self::assertSame(1, $payload['schema_version']);
         self::assertArrayHasKey('exported_at', $payload);
-        self::assertCount(7, $payload['platforms']);
-        self::assertContains('linkedin', array_column($payload['platforms'], 'slug'));
+        self::assertCount(1, $payload['platforms']);
+        self::assertSame('export-check', $payload['platforms'][0]['slug']);
+    }
+
+    public function testPlatformReferenceSnapshotExcludesObsoleteFreelancePlatforms(): void
+    {
+        $snapshotPath = self::getContainer()->getParameter('kernel.project_dir') . '/data/private/network/platforms.json';
+        $contents = file_get_contents($snapshotPath);
+
+        self::assertNotFalse($contents);
+
+        $snapshot = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        $slugs = array_column($snapshot['platforms'], 'slug');
+
+        self::assertSame(['linkedin', 'indeed', 'superprof', 'apprentus'], $slugs);
+        self::assertNotContains('malt', $slugs);
+        self::assertNotContains('lehibou', $slugs);
+        self::assertNotContains('wiggli', $slugs);
+    }
+
+    public function testPlatformDeleteActionRemovesThePlatformWithoutReseedingTheList(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+
+        $platform = new Platform();
+        $platform->setSlug('obsolete-platform');
+        $platform->setName('Obsolete Platform');
+        $platform->setCategory('freelance');
+        $platform->setProfileUrl('https://example.com/obsolete-platform');
+        $platform->setNote('Donnée à supprimer avec la plateforme.');
+        $entityManager->persist($platform);
+        $entityManager->flush();
+
+        $crawler = $client->request('GET', '/private/network/platforms?q=obsolete');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('form[action="/private/network/platforms/obsolete-platform/delete"]');
+
+        $deleteFormCrawler = $crawler->filter('form[action="/private/network/platforms/obsolete-platform/delete"]');
+        self::assertStringContainsString('Supprimer Obsolete Platform', (string) $deleteFormCrawler->attr('data-private-confirm'));
+
+        $deleteForm = $deleteFormCrawler->form();
+        $client->submit($deleteForm);
+
+        self::assertResponseRedirects('/private/network/platforms?q=obsolete');
+        $client->followRedirect();
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('.private-empty', 'Aucune plateforme enregistrée.');
+        self::assertSame('0', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_platforms'));
+
+        $client->request('GET', '/private/network/platforms/obsolete-platform');
+        self::assertResponseStatusCodeSame(404);
+    }
+
+    public function testPlatformDeleteRejectsInvalidAndUnknownTargetsWithoutMutatingData(): void
+    {
+        $client = $this->createAuthenticatedClient();
+        $entityManager = self::getContainer()->get('doctrine')->getManager();
+        $connection = self::getContainer()->get('doctrine')->getConnection();
+
+        $platform = new Platform();
+        $platform->setSlug('protected-platform');
+        $platform->setName('Protected Platform');
+        $platform->setCategory('reseau');
+        $entityManager->persist($platform);
+        $entityManager->flush();
+
+        $crawler = $client->request('GET', '/private/network/platforms');
+        $deleteForm = $crawler->filter('form[action="/private/network/platforms/protected-platform/delete"]')->form();
+        $csrfToken = $deleteForm->get('_token')->getValue();
+
+        $client->request('POST', '/private/network/platforms/protected-platform/delete', ['_token' => 'invalid']);
+        self::assertResponseRedirects('/private/network/platforms');
+        self::assertSame('1', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_platforms'));
+
+        $client->request('POST', '/private/network/platforms/protected-platform/delete', ['_token' => $csrfToken]);
+        self::assertResponseRedirects('/private/network/platforms');
+        self::assertSame('0', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_platforms'));
+
+        $client->request('POST', '/private/network/platforms/protected-platform/delete', ['_token' => $csrfToken]);
+        self::assertResponseRedirects('/private/network/platforms');
+        self::assertSame('0', (string) $connection->fetchOne('SELECT COUNT(*) FROM network_platforms'));
+    }
+
+    public function testPlatformDeleteRedirectsGuestsToLogin(): void
+    {
+        $client = static::createClient();
+
+        $client->request('POST', '/private/network/platforms/protected-platform/delete');
+
+        self::assertResponseRedirects('/private/login');
     }
 
     public function testPlatformBackupImportRestoresPlatformsFromJson(): void

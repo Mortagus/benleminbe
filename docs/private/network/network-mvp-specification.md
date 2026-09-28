@@ -303,7 +303,7 @@ Role :
 
 Le premier jet implementé suit une approche volontairement legere :
 
-- snapshot JSON versionne dans `data/private/network/platforms.json` pour le seed, l'export et la restauration des plateformes ;
+- snapshot JSON versionne dans `data/private/network/platforms.json` comme reference de sauvegarde ; une liste de plateformes vide reste intentionnelle ;
 - dashboard prive sur `/private/network` ;
 - listes et fiches pour les plateformes et les contacts ;
 - edition par formulaires simples ;

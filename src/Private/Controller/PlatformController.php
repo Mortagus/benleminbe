@@ -170,6 +170,30 @@ final class PlatformController extends AbstractController
         ]);
     }
 
+    #[Route('/platforms/{slug}/delete', name: 'platform_delete', methods: ['POST'])]
+    public function platformDelete(string $slug, Request $request): RedirectResponse
+    {
+        $query = $request->request->getString('q');
+
+        if (!$this->isCsrfTokenValid('private-network-platform-delete-' . $slug, $request->request->getString('_token'))) {
+            $this->addFlash('error', 'Le formulaire de suppression a expiré. Réessaie.');
+
+            return $this->redirectToRoute('app_private_network_platforms', $query === '' ? [] : ['q' => $query]);
+        }
+
+        try {
+            $this->platformService->deletePlatform($slug);
+        } catch (NotFoundHttpException) {
+            $this->addFlash('error', 'La plateforme à supprimer est introuvable.');
+
+            return $this->redirectToRoute('app_private_network_platforms', $query === '' ? [] : ['q' => $query]);
+        }
+
+        $this->addFlash('success', 'Plateforme supprimée.');
+
+        return $this->redirectToRoute('app_private_network_platforms', $query === '' ? [] : ['q' => $query]);
+    }
+
     /**
      * @return array{values: array<string, mixed>, errors: list<string>}|RedirectResponse
      */

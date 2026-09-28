@@ -242,7 +242,11 @@
     }
 
     .private-platform-item__actions {
-        display: none;
+        position: relative;
+        z-index: 2;
+        display: flex;
+        grid-column: 1 / -1;
+        place-self: start;
     }
 
     .private-platform-item__note {

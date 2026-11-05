@@ -17,6 +17,7 @@ Le site est aussi pensé comme un ensemble d'univers fonctionnels clairement sé
 - Twig
 - Symfony Asset Mapper et Importmap
 - JavaScript sans framework front-end
+- p5.js (version 1.x, importée via Importmap) pour les simulations du Lab uniquement
 - CSS découpé par bases, composants, layouts, pages et modules
 - Composer pour PHP
 - npm pour les outils front-end
@@ -74,7 +75,9 @@ tools/dnd/
 docs/lab/
 ```
 
-`LabController` sert de point d'entrée général pour les outils publics du lab et porte aussi les routes du tracker DnD.
+`LabController` sert de point d'entrée général pour les outils publics du lab et porte aussi les routes du tracker DnD et des simulations.
+
+Les simulations (`/lab/simulations`) vivent dans `assets/scripts/lab/simulations/`. Elles séparent la logique pure (testée avec Vitest, sans p5) du rendu p5.js. Détails dans [simulations.md](lab/simulations.md).
 
 Le lab reste public, mais séparé du contenu professionnel par ses routes, templates, styles, scripts et documents dédiés.
 

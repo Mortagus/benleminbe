@@ -38,3 +38,40 @@ tools:
             3: "Symfony / Twig"
             4: "D&D"
         action: "Open the tracker"
+    simulations:
+        label: "Simulations"
+        title: "Simulations"
+        description: "**Interactive simulations** in JavaScript: emergent behaviour, simple rules and parameters you can tweak live. The first one, boids, reproduces a flock of birds."
+        meta_label: "Simulations metadata"
+        meta:
+            1: "Public tool"
+            2: "p5.js"
+            3: "Boids"
+        action: "View simulations"
+
+simulations:
+    meta:
+        title: "Simulations"
+        description: "Interactive simulations in JavaScript and p5.js: boids and emergent behaviour."
+    hero:
+        eyebrow: "Lab"
+        title: "Simulations"
+        intro: "Interactive simulations where **simple rules** produce collective behaviour. Each one can be tuned live and lives inside the site's own code."
+    boids:
+        title: "Boids"
+        description: "Each boid follows only **three local rules**: align with its neighbours, move away from those that are too close, and steer towards their centre. Flocking emerges with no leader and no global plan. Model by Craig Reynolds (1986)."
+        canvas_label: "Boids simulation: triangles move together over a plain background."
+        controls:
+            label: "Simulation controls"
+            pause: "Pause"
+            resume: "Resume"
+            reset: "Reset"
+            count: "Number of boids"
+            perception: "Perception radius"
+            speed: "Maximum speed"
+            force: "Maximum steering force"
+        rules:
+            title: "The three rules"
+            alignment: "**Alignment**: match the average heading of neighbours."
+            separation: "**Separation**: move away from neighbours that are too close."
+            cohesion: "**Cohesion**: steer towards the centre of neighbours."

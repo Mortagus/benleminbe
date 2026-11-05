@@ -2,10 +2,12 @@ import js from '@eslint/js';
 
 const browserGlobals = {
     document: 'readonly',
+    getComputedStyle: 'readonly',
     HTMLAnchorElement: 'readonly',
     HTMLElement: 'readonly',
     localStorage: 'readonly',
     navigator: 'readonly',
+    ResizeObserver: 'readonly',
     Node: 'readonly',
     window: 'readonly',
 };
@@ -18,6 +20,7 @@ export default [
     {
         ignores: [
             'assets/scripts/lab/dnd/bestiary.js',
+            'assets/vendor/**',
             'node_modules/**',
             'public/assets/**',
             'var/**',

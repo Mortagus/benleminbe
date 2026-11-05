@@ -106,6 +106,7 @@ Le `Lab` regroupe les expérimentations publiques utiles, intégrées au même s
 - `app_lab_index` -> `/lab`
 - `app_lab_dnd_initiative` -> `/lab/dnd-initiative`
 - `app_lab_dnd_player_import` -> `/lab/dnd-initiative/import-player`
+- `app_lab_simulations` -> `/lab/simulations`
 - `app_lab_game_simon` -> `/lab/game-simon` avec redirection permanente vers `app_games_simon`
 
 ### Navigation Locale Actuelle

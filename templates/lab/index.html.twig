@@ -66,6 +66,26 @@
                             </a>
                         </div>
                     </article>
+
+                    <article class="lab-tool-card">
+                        <p class="lab-tool-card__eyebrow">{{ 'tools.simulations.label'|trans }}</p>
+
+                        <h3>{{ 'tools.simulations.title'|trans }}</h3>
+
+                        <p>{{ 'tools.simulations.description'|trans|highlight_keywords }}</p>
+
+                        <ul class="lab-tool-card__meta" aria-label="{{ 'tools.simulations.meta_label'|trans }}">
+                            <li>{{ 'tools.simulations.meta.1'|trans }}</li>
+                            <li>{{ 'tools.simulations.meta.2'|trans }}</li>
+                            <li>{{ 'tools.simulations.meta.3'|trans }}</li>
+                        </ul>
+
+                        <div class="lab-tool-card__actions">
+                            <a href="{{ path('app_lab_simulations') }}" class="button">
+                                {{ 'tools.simulations.action'|trans }}
+                            </a>
+                        </div>
+                    </article>
                 </div>
             </div>
         </section>

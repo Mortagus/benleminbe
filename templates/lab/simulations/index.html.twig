@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'lab' %}
+
+{% block title %}{{ 'simulations.meta.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'simulations.meta.description'|trans }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_lab', 'lab_simulations_boids']) }}{% endblock %}
+
+{% block body %}
+    <main class="lab-home lab-simulations">
+        <header class="lab-home__hero">
+            <p class="eyebrow">{{ 'simulations.hero.eyebrow'|trans }}</p>
+
+            <h1>{{ 'simulations.hero.title'|trans }}</h1>
+
+            <p class="lab-home__intro">
+                {{ 'simulations.hero.intro'|trans|highlight_keywords }}
+            </p>
+        </header>
+
+        <section class="content-section" aria-labelledby="simulation-boids-title">
+            <div class="card lab-panel" data-boids-simulation>
+                <div class="lab-panel__intro">
+                    <h2 id="simulation-boids-title">{{ 'simulations.boids.title'|trans }}</h2>
+
+                    <p>{{ 'simulations.boids.description'|trans|highlight_keywords }}</p>
+                </div>
+
+                <div
+                    class="boids-canvas"
+                    data-boids-canvas
+                    data-canvas-label="{{ 'simulations.boids.canvas_label'|trans }}"
+                ></div>
+
+                <div class="boids-controls" role="group" aria-label="{{ 'simulations.boids.controls.label'|trans }}">
+                    <div class="boids-controls__buttons">
+                        <button
+                            type="button"
+                            class="button"
+                            data-boids-toggle
+                            data-label-pause="{{ 'simulations.boids.controls.pause'|trans }}"
+                            data-label-resume="{{ 'simulations.boids.controls.resume'|trans }}"
+                        >
+                            {{ 'simulations.boids.controls.pause'|trans }}
+                        </button>
+
+                        <button type="button" class="button button-secondary" data-boids-reset>
+                            {{ 'simulations.boids.controls.reset'|trans }}
+                        </button>
+                    </div>
+
+                    <div class="boids-controls__sliders">
+                        {% for slider in [
+                            { name: 'count', label: 'count', min: 10, max: 300, step: 10 },
+                            { name: 'perceptionRadius', label: 'perception', min: 10, max: 150, step: 5 },
+                            { name: 'maxSpeed', label: 'speed', min: 1, max: 8, step: 0.5 },
+                            { name: 'maxForce', label: 'force', min: 0.05, max: 1, step: 0.05 },
+                        ] %}
+                            <label class="boids-slider">
+                                <span class="boids-slider__label">
+                                    {{ ('simulations.boids.controls.' ~ slider.label)|trans }}
+                                    <output data-boids-output="{{ slider.name }}"></output>
+                                </span>
+                                <input
+                                    type="range"
+                                    min="{{ slider.min }}"
+                                    max="{{ slider.max }}"
+                                    step="{{ slider.step }}"
+                                    data-boids-parameter="{{ slider.name }}"
+                                >
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="lab-panel__intro">
+                    <h3>{{ 'simulations.boids.rules.title'|trans }}</h3>
+
+                    <ul class="boids-rules">
+                        <li>{{ 'simulations.boids.rules.alignment'|trans|highlight_keywords }}</li>
+                        <li>{{ 'simulations.boids.rules.separation'|trans|highlight_keywords }}</li>
+                        <li>{{ 'simulations.boids.rules.cohesion'|trans|highlight_keywords }}</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

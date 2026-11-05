@@ -23,6 +23,7 @@ deploy:
 	$(MAKE) migrate MIGRATION_ENV=prod
 	php bin/console cache:clear --env=prod
 	php bin/console cache:warmup --env=prod
+	php bin/console importmap:install --env=prod
 	php bin/console asset-map:compile --env=prod
 	php bin/console app:generate-sitemap --env=prod
 	$(MAKE) private-prod-check

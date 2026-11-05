@@ -38,3 +38,40 @@ tools:
             3: "Symfony / Twig"
             4: "D&D"
         action: "Ouvrir le tracker"
+    simulations:
+        label: "Simulations"
+        title: "Simulations"
+        description: "Des **simulations interactives** en JavaScript : comportements émergents, règles simples et paramètres à ajuster en direct. La première, les boids, reproduit un vol d’oiseaux."
+        meta_label: "Métadonnées des simulations"
+        meta:
+            1: "Outil public"
+            2: "p5.js"
+            3: "Boids"
+        action: "Voir les simulations"
+
+simulations:
+    meta:
+        title: "Simulations"
+        description: "Simulations interactives en JavaScript et p5.js : boids et comportements émergents."
+    hero:
+        eyebrow: "Lab"
+        title: "Simulations"
+        intro: "Des simulations interactives où **des règles simples** produisent des comportements d’ensemble. Chacune se règle en direct et reste intégrée au code du site."
+    boids:
+        title: "Boids"
+        description: "Chaque boid ne suit que **trois règles locales** : s’aligner sur ses voisins, s’en éloigner s’ils sont trop proches et rejoindre leur centre. Le vol de groupe en émerge sans chef ni plan global. Modèle de Craig Reynolds (1986)."
+        canvas_label: "Simulation de boids : des triangles se déplacent en groupe sur un fond uni."
+        controls:
+            label: "Contrôles de la simulation"
+            pause: "Pause"
+            resume: "Reprendre"
+            reset: "Réinitialiser"
+            count: "Nombre de boids"
+            perception: "Rayon de perception"
+            speed: "Vitesse maximale"
+            force: "Force de braquage maximale"
+        rules:
+            title: "Les trois règles"
+            alignment: "**Alignement** : prendre la direction moyenne des voisins."
+            separation: "**Séparation** : s’écarter des voisins trop proches."
+            cohesion: "**Cohésion** : se rapprocher du centre des voisins."

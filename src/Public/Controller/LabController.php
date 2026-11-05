@@ -28,6 +28,12 @@ final class LabController extends AbstractController
         return $this->render('lab/dnd/initiative_tracker.html.twig');
     }
 
+    #[Route(path: '/simulations', name: 'simulations', methods: ['GET'])]
+    public function simulations(): Response
+    {
+        return $this->render('lab/simulations/index.html.twig');
+    }
+
     #[Route(path: '/game-simon', name: 'game_simon', methods: ['GET'])]
     public function redirectSimonToGames(Request $request): Response
     {

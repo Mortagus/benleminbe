@@ -19,7 +19,7 @@ Le site contient notamment :
 - une carte de visite web avec export vCard ;
 - des CV PDF en français et en anglais ;
 - des pages légales ;
-- un espace `lab` pour des expérimentations publiques rattachées au code du site, dont un outil de suivi d'initiative pour D&D.
+- un espace `lab` pour des expérimentations publiques rattachées au code du site, dont un outil de suivi d'initiative pour D&D et des simulations interactives (boids).
 
 Le site est disponible en français et en anglais, avec un sélecteur de langue, un thème clair/sombre et un sitemap généré depuis les routes du site.
 
@@ -31,7 +31,7 @@ Le projet est développé avec :
 - Symfony 8 ;
 - Twig ;
 - Symfony Asset Mapper / Importmap ;
-- JavaScript sans framework front-end ;
+- JavaScript sans framework front-end, avec p5.js réservé aux simulations du `lab` ;
 - CSS organisé par bases, composants, layouts et pages ;
 - Composer pour les dépendances PHP ;
 - npm pour les outils front-end ;

@@ -9,6 +9,7 @@ header:
         contact: "Contact"
         lab: "Lab"
         dnd_initiative: "DnD Initiative Tracker"
+        simulations: "Simulations"
         open_menu: "Open main menu"
         close_menu: "Close main menu"
 

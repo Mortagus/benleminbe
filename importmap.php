@@ -72,6 +72,10 @@ return [
         'path' => './assets/scripts/lab/dnd/dnd_initiative.js',
         'entrypoint' => true,
     ],
+    'lab_simulations_boids' => [
+        'path' => './assets/scripts/lab/simulations/boids/main.js',
+        'entrypoint' => true,
+    ],
     'private' => [
         'path' => './assets/scripts/private/private.js',
         'entrypoint' => true,
@@ -79,5 +83,8 @@ return [
     'private_workout_prototype' => [
         'path' => './assets/pages/private_workout_prototype.js',
         'entrypoint' => true,
+    ],
+    'p5' => [
+        'version' => '1.11.11',
     ],
 ];

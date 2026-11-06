@@ -33,7 +33,14 @@ Choix de conception :
 - p5.js ne gère que le canvas et la boucle `draw`. Les règles (alignement, séparation, cohésion) sont dans `flocking.js`, sans dépendance à p5 ni au DOM, pour rester testables avec Vitest.
 - Un boid est un objet `{ x, y, vx, vy }` et les calculs utilisent des nombres bruts, sans `p5.Vector` ni helpers vectoriels : p5 reste cantonné au rendu et la logique reste testable sans canvas.
 - Chaque frame calcule toutes les accélérations à partir d'un même instantané du groupe : le résultat ne dépend pas de l'ordre des boids.
-- Chaque règle a un poids réglable (alignement, séparation, cohésion). La séparation agit sur un rayon plus court (`separationRadius`) que la perception, et sa poussée croît en 1/distance, pour que les boids ne se superposent pas.
+- Chaque règle a un poids réglable (alignement, séparation, cohésion) et renvoie une accélération d'au plus `maxForce`, dont l'intensité varie progressivement avec la distance. Il n'y a pas de seuil qui active ou coupe brutalement une force, ce qui évite l'effet « tremblant » :
+  - la séparation agit dans un rayon d'espace personnel (`separationRadius`, plus court que la perception) et s'estompe jusqu'à zéro au bord de ce rayon ;
+  - la cohésion est d'autant plus forte que le boid est loin du centre de ses voisins ;
+  - l'alignement corrige proportionnellement à l'écart de vitesse avec les voisins.
+- Perception : un voisin n'est pris en compte pour l'alignement et la cohésion que s'il est dans `perceptionRadius`, dans le champ de vision `perceptionAngle` (en degrés, centré sur le cap ; au-delà de 360° le boid voit tout, en dessous il a un angle mort derrière lui) et parmi les `maxNeighbours` plus proches. Le test d'angle utilise un produit scalaire, sans trigonométrie par paire. La séparation voit tous les boids de l'espace personnel, quel que soit le champ de vision.
+- Une force de croisière ramène la vitesse vers `maxSpeed * cruiseSpeedRatio` : sans elle, l'angle mort place les voisins visibles surtout devant le boid, la cohésion tire toujours vers l'avant et tout le groupe finit à la vitesse maximale.
+- L'accélération de chaque frame est mélangée avec celle de la frame précédente (`smoothing`, de 0 à 1) : plus la valeur est haute, plus les virages sont lents et fluides. Chaque boid porte donc `ax` et `ay`. La force du pointeur n'est pas lissée, pour que les clics restent réactifs.
+- Le cap dessiné est lissé séparément dans `sketch.js` (`smoothAngle`), sans effet sur la simulation.
 - La frontière de rebouclage est hors champ : un boid ne réapparaît de l'autre côté qu'après avoir dépassé `BOUNDARY_MARGIN` pixels au-delà du canvas, donc la téléportation n'est pas visible.
 - Souris : clic gauche maintenu = le curseur repousse les boids, clic droit maintenu = il les attire (rayon `pointerRadius`). Le tactile ne gère que le « clic gauche » ; le navigateur peut annuler le geste pour défiler la page.
 - La vitesse est plafonnée à `maxSpeed` (absent de la version d'origine).

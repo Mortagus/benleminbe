@@ -1,19 +1,32 @@
 /**
  * Flocking rules (Reynolds, 1986) on plain numbers, with no dependency on p5 or the DOM so they can be unit tested.
  *
- * @typedef {{ x: number, y: number, vx: number, vy: number }} Boid Position and velocity.
+ * Each rule returns an acceleration whose length is at most `maxForce` and that fades smoothly with distance,
+ * so a boid never gets a sudden kick when a neighbour crosses a threshold.
+ *
+ * @typedef {{ x: number, y: number, vx: number, vy: number, ax: number, ay: number }} Boid
+ *   Position, velocity and the smoothed acceleration applied on the previous frame.
  * @typedef {{ x: number, y: number, mode: 'repel' | 'attract' }} Pointer
  */
 
 export const DEFAULT_PARAMETERS = Object.freeze({
     count: 100,
+    // Perception: neighbours must be within `perceptionRadius`, inside the field of view (in degrees,
+    // centred on the heading), and only the `maxNeighbours` nearest ones are taken into account.
     perceptionRadius: 50,
+    perceptionAngle: 300,
+    maxNeighbours: 7,
+    // Personal space: separation sees every boid within this radius, whatever the field of view.
     separationRadius: 22,
     maxSpeed: 5,
+    // Boids like to fly at this fraction of the maximum speed (the cap is only reached when pushed).
+    cruiseSpeedRatio: 0.7,
     maxForce: 0.3,
     alignmentWeight: 1,
     separationWeight: 2.5,
     cohesionWeight: 1,
+    // 0 applies the rules instantly; closer to 1 reacts more slowly, so turns are smoother.
+    smoothing: 0.6,
     pointerRadius: 150,
     pointerWeight: 3,
 });
@@ -24,7 +37,10 @@ export const DEFAULT_PARAMETERS = Object.freeze({
  */
 export const BOUNDARY_MARGIN = 25;
 
-const NO_ACCELERATION = Object.freeze({ x: 0, y: 0 });
+// Acceleration per unit of speed difference with the cruise speed, before it is capped by maxForce.
+const CRUISE_GAIN = 0.5;
+
+const NO_FORCE = Object.freeze({ x: 0, y: 0 });
 
 /**
  * @param {() => number} random Returns a number in [0, 1).
@@ -39,6 +55,8 @@ export function createBoid(random, width, height) {
         y: random() * height,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
+        ax: 0,
+        ay: 0,
     };
 }
 
@@ -57,100 +75,177 @@ export function resizeFlock(flock, count, random, width, height) {
     return [...flock, ...createFlock(count - flock.length, random, width, height)];
 }
 
-/**
- * Steering force that turns the boid's current velocity towards the desired direction.
- * Only the direction of (desiredX, desiredY) matters: the boid wants to travel that way at full speed.
- * The result is capped by maxForce, then multiplied by the rule's weight.
- */
-function steer(boid, desiredX, desiredY, weight, parameters) {
-    const length = Math.hypot(desiredX, desiredY);
+function limitLength(x, y, maxLength) {
+    const length = Math.hypot(x, y);
 
-    if (length === 0) {
-        return { x: 0, y: 0 };
-    }
-
-    let steerX = (desiredX / length) * parameters.maxSpeed - boid.vx;
-    let steerY = (desiredY / length) * parameters.maxSpeed - boid.vy;
-    const steerLength = Math.hypot(steerX, steerY);
-
-    if (steerLength > parameters.maxForce) {
-        steerX *= parameters.maxForce / steerLength;
-        steerY *= parameters.maxForce / steerLength;
-    }
-
-    return { x: steerX * weight, y: steerY * weight };
+    return length > maxLength ? { x: (x / length) * maxLength, y: (y / length) * maxLength } : { x, y };
 }
 
 /**
- * Reynolds steering rules for one boid, each scaled by its weight:
- * - alignment: match the average velocity of neighbours within perceptionRadius;
- * - cohesion: head for the average position of those neighbours;
- * - separation: move away from neighbours within separationRadius, the closer the harder.
+ * The boids this one reacts to for alignment and cohesion: within the perception radius, inside the field of view,
+ * and at most `maxNeighbours` of them, the nearest first.
  *
  * @param {Boid} boid
  * @param {Boid[]} flock
- * @returns {{ x: number, y: number }}
+ * @returns {{ boid: Boid, distance: number }[]}
  */
-export function computeAcceleration(boid, flock, parameters) {
-    const separationRadius = Math.min(parameters.separationRadius, parameters.perceptionRadius);
-    let neighbours = 0;
-    let velocitySumX = 0;
-    let velocitySumY = 0;
-    let positionSumX = 0;
-    let positionSumY = 0;
-    let pushX = 0;
-    let pushY = 0;
+function findNeighbours(boid, flock, parameters) {
+    const heading = Math.hypot(boid.vx, boid.vy);
+    const seesEverything = parameters.perceptionAngle >= 360;
+    // The field of view is centred on the heading, so a neighbour is visible when the angle between the heading
+    // and the direction to it is at most half the field of view.
+    const cosHalfAngle = Math.cos((parameters.perceptionAngle * Math.PI) / 360);
+    const visible = [];
 
     for (const other of flock) {
         if (other === boid) {
             continue;
         }
 
-        const awayX = boid.x - other.x;
-        const awayY = boid.y - other.y;
-        const distance = Math.hypot(awayX, awayY);
+        const towardsX = other.x - boid.x;
+        const towardsY = other.y - boid.y;
+        const distance = Math.hypot(towardsX, towardsY);
 
         if (distance >= parameters.perceptionRadius) {
             continue;
         }
 
-        neighbours++;
-        velocitySumX += other.vx;
-        velocitySumY += other.vy;
-        positionSumX += other.x;
-        positionSumY += other.y;
+        // dot(velocity, towards) = |velocity| * |towards| * cos(angle between them), so comparing it with
+        // cos(half angle) * |velocity| * |towards| tells whether the angle is small enough, without any trigonometry
+        // per pair. A smaller field of view means a larger blind spot behind the boid.
+        const dot = boid.vx * towardsX + boid.vy * towardsY;
 
-        if (distance > 0 && distance < separationRadius) {
-            // (awayX, awayY) / distance is the unit direction away from the neighbour;
-            // dividing by distance once more makes the push grow as the neighbour gets closer.
-            pushX += awayX / (distance * distance);
-            pushY += awayY / (distance * distance);
+        if (!seesEverything && dot < cosHalfAngle * heading * distance) {
+            continue;
         }
+
+        visible.push({ boid: other, distance });
     }
 
-    if (neighbours === 0) {
-        return { ...NO_ACCELERATION };
+    return visible.sort((a, b) => a.distance - b.distance).slice(0, parameters.maxNeighbours);
+}
+
+/** Match the average velocity of the neighbours: the larger the difference, the stronger the correction. */
+function alignmentForce(boid, neighbours, parameters) {
+    if (neighbours.length === 0) {
+        return NO_FORCE;
     }
 
-    const alignment = steer(boid, velocitySumX / neighbours, velocitySumY / neighbours, parameters.alignmentWeight, parameters);
-    const cohesion = steer(
-        boid,
-        positionSumX / neighbours - boid.x,
-        positionSumY / neighbours - boid.y,
-        parameters.cohesionWeight,
-        parameters,
+    let velocityX = 0;
+    let velocityY = 0;
+
+    for (const { boid: other } of neighbours) {
+        velocityX += other.vx;
+        velocityY += other.vy;
+    }
+
+    return limitLength(
+        velocityX / neighbours.length - boid.vx,
+        velocityY / neighbours.length - boid.vy,
+        parameters.maxForce,
     );
-    const separation = steer(boid, pushX, pushY, parameters.separationWeight, parameters);
-    const noPush = pushX === 0 && pushY === 0;
+}
+
+/** Head for the centre of the neighbours: the farther from it, the stronger the pull, so there is no overshoot. */
+function cohesionForce(boid, neighbours, parameters) {
+    if (neighbours.length === 0) {
+        return NO_FORCE;
+    }
+
+    let centreX = 0;
+    let centreY = 0;
+
+    for (const { boid: other } of neighbours) {
+        centreX += other.x;
+        centreY += other.y;
+    }
+
+    const towardsX = centreX / neighbours.length - boid.x;
+    const towardsY = centreY / neighbours.length - boid.y;
+    const distance = Math.hypot(towardsX, towardsY);
+
+    if (distance === 0) {
+        return NO_FORCE;
+    }
+
+    const strength = Math.min(distance / parameters.perceptionRadius, 1) * parameters.maxForce;
+
+    return { x: (towardsX / distance) * strength, y: (towardsY / distance) * strength };
+}
+
+/** Move away from boids inside the personal space: the push fades from full strength (touching) to nothing (edge). */
+function separationForce(boid, flock, parameters) {
+    const radius = Math.min(parameters.separationRadius, parameters.perceptionRadius);
+    let pushX = 0;
+    let pushY = 0;
+
+    for (const other of flock) {
+        const awayX = boid.x - other.x;
+        const awayY = boid.y - other.y;
+        const distance = Math.hypot(awayX, awayY);
+
+        if (distance === 0 || distance >= radius) {
+            continue;
+        }
+
+        const closeness = 1 - distance / radius;
+
+        pushX += (awayX / distance) * closeness;
+        pushY += (awayY / distance) * closeness;
+    }
+
+    const push = limitLength(pushX, pushY, 1);
+
+    return { x: push.x * parameters.maxForce, y: push.y * parameters.maxForce };
+}
+
+/**
+ * Gently brings the speed back to the cruise speed, along the heading. Without it the field of view makes the
+ * flock accelerate (the visible neighbours are mostly ahead, so cohesion always pulls forwards) up to the maximum speed.
+ */
+function cruiseForce(boid, parameters) {
+    const speed = Math.hypot(boid.vx, boid.vy);
+
+    if (speed === 0) {
+        return NO_FORCE;
+    }
+
+    const cruiseSpeed = parameters.maxSpeed * parameters.cruiseSpeedRatio;
+    const strength = Math.max(-parameters.maxForce, Math.min((cruiseSpeed - speed) * CRUISE_GAIN, parameters.maxForce));
+
+    return { x: (boid.vx / speed) * strength, y: (boid.vy / speed) * strength };
+}
+
+/**
+ * Reynolds steering rules for one boid, each scaled by its weight, plus the cruise speed regulation.
+ *
+ * @param {Boid} boid
+ * @param {Boid[]} flock
+ * @returns {{ x: number, y: number }}
+ */
+export function computeAcceleration(boid, flock, parameters) {
+    const neighbours = findNeighbours(boid, flock, parameters);
+    const alignment = alignmentForce(boid, neighbours, parameters);
+    const cohesion = cohesionForce(boid, neighbours, parameters);
+    const separation = separationForce(boid, flock, parameters);
+    const cruise = cruiseForce(boid, parameters);
 
     return {
-        x: alignment.x + cohesion.x + (noPush ? 0 : separation.x),
-        y: alignment.y + cohesion.y + (noPush ? 0 : separation.y),
+        x:
+            alignment.x * parameters.alignmentWeight +
+            cohesion.x * parameters.cohesionWeight +
+            separation.x * parameters.separationWeight +
+            cruise.x,
+        y:
+            alignment.y * parameters.alignmentWeight +
+            cohesion.y * parameters.cohesionWeight +
+            separation.y * parameters.separationWeight +
+            cruise.y,
     };
 }
 
 /**
- * Force exerted by the pointer: it pushes boids away or pulls them in when they are within pointerRadius.
+ * Force exerted by the pointer: it pushes boids away or pulls them in, fading to nothing at `pointerRadius`.
  *
  * @param {Boid} boid
  * @param {Pointer | null} pointer
@@ -158,19 +253,21 @@ export function computeAcceleration(boid, flock, parameters) {
  */
 export function computePointerAcceleration(boid, pointer, parameters) {
     if (!pointer) {
-        return { ...NO_ACCELERATION };
+        return NO_FORCE;
     }
 
     const towardsX = pointer.x - boid.x;
     const towardsY = pointer.y - boid.y;
+    const distance = Math.hypot(towardsX, towardsY);
 
-    if (Math.hypot(towardsX, towardsY) >= parameters.pointerRadius) {
-        return { ...NO_ACCELERATION };
+    if (distance === 0 || distance >= parameters.pointerRadius) {
+        return NO_FORCE;
     }
 
     const direction = pointer.mode === 'repel' ? -1 : 1;
+    const strength = (1 - distance / parameters.pointerRadius) * parameters.maxForce * parameters.pointerWeight;
 
-    return steer(boid, towardsX * direction, towardsY * direction, parameters.pointerWeight, parameters);
+    return { x: (towardsX / distance) * strength * direction, y: (towardsY / distance) * strength * direction };
 }
 
 /**
@@ -188,35 +285,38 @@ function wrap(value, size) {
     return value < min ? value + period : value;
 }
 
-function limitSpeed(vx, vy, maxSpeed) {
-    const speed = Math.hypot(vx, vy);
+/**
+ * Moves an angle towards a target by a fraction of the shortest way round, so the result never spins the long way.
+ * Meant for drawing: it smooths how a boid is rotated without affecting the simulation.
+ */
+export function smoothAngle(current, target, factor) {
+    const difference = Math.atan2(Math.sin(target - current), Math.cos(target - current));
 
-    return speed > maxSpeed ? { vx: (vx / speed) * maxSpeed, vy: (vy / speed) * maxSpeed } : { vx, vy };
+    return current + difference * factor;
 }
 
 /**
  * Advances the simulation by one frame and returns a new flock.
  * Every acceleration is computed from the same snapshot, so the result does not depend on boid order.
+ * The flocking acceleration is blended with the previous one to avoid abrupt turns; the pointer is applied as is
+ * so that clicks stay responsive.
  *
  * @param {Boid[]} flock
  * @param {Pointer | null} [pointer]
  * @returns {Boid[]}
  */
 export function stepFlock(flock, parameters, width, height, pointer = null) {
+    const responsiveness = 1 - parameters.smoothing;
+
     return flock.map((boid) => {
         const flocking = computeAcceleration(boid, flock, parameters);
         const fromPointer = computePointerAcceleration(boid, pointer, parameters);
-        const { vx, vy } = limitSpeed(
-            boid.vx + flocking.x + fromPointer.x,
-            boid.vy + flocking.y + fromPointer.y,
-            parameters.maxSpeed,
-        );
+        const ax = boid.ax + (flocking.x - boid.ax) * responsiveness;
+        const ay = boid.ay + (flocking.y - boid.ay) * responsiveness;
+        const velocity = limitLength(boid.vx + ax + fromPointer.x, boid.vy + ay + fromPointer.y, parameters.maxSpeed);
+        const vx = velocity.x;
+        const vy = velocity.y;
 
-        return {
-            x: wrap(boid.x + vx, width),
-            y: wrap(boid.y + vy, height),
-            vx,
-            vy,
-        };
+        return { x: wrap(boid.x + vx, width), y: wrap(boid.y + vy, height), vx, vy, ax, ay };
     });
 }

@@ -6,14 +6,16 @@ import {
     computePointerAcceleration,
     createFlock,
     resizeFlock,
+    smoothAngle,
     stepFlock,
 } from '../../../../assets/scripts/lab/simulations/boids/flocking.js';
 
 const parameters = { ...DEFAULT_PARAMETERS };
+const cruising = parameters.maxSpeed * parameters.cruiseSpeedRatio;
 const totalWeight = parameters.alignmentWeight + parameters.separationWeight + parameters.cohesionWeight;
 
 function boid(x, y, vx = 0, vy = 0) {
-    return { x, y, vx, vy };
+    return { x, y, vx, vy, ax: 0, ay: 0 };
 }
 
 function speed({ vx, vy }) {
@@ -22,13 +24,13 @@ function speed({ vx, vy }) {
 
 describe('boids flocking rules', () => {
     test('a lone boid receives no acceleration', () => {
-        const alone = boid(100, 100, 1, 0);
+        const alone = boid(100, 100, cruising, 0);
 
         expect(computeAcceleration(alone, [alone], parameters)).toEqual({ x: 0, y: 0 });
     });
 
     test('boids outside the perception radius are ignored', () => {
-        const first = boid(0, 0, 1, 0);
+        const first = boid(0, 0, cruising, 0);
         const far = boid(parameters.perceptionRadius + 10, 0, 0, 1);
 
         expect(computeAcceleration(first, [first, far], parameters)).toEqual({ x: 0, y: 0 });
@@ -37,7 +39,7 @@ describe('boids flocking rules', () => {
     test('separation pushes a boid away from a close neighbour', () => {
         const first = boid(100, 100);
         const neighbour = boid(110, 100);
-        const acceleration = computeAcceleration(first, [first, neighbour], { ...parameters, alignmentWeight: 0, cohesionWeight: 0 });
+        const acceleration = computeAcceleration(first, [first, neighbour], { ...parameters, alignmentWeight: 0, cohesionWeight: 0, cruiseSpeedRatio: 0 });
 
         expect(acceleration.x).toBeLessThan(0);
         expect(acceleration.y).toBeCloseTo(0);
@@ -61,7 +63,7 @@ describe('boids flocking rules', () => {
     test('the closest neighbour dominates the separation direction', () => {
         const first = boid(100, 100);
         const flock = [first, boid(95, 100), boid(115, 100)];
-        const acceleration = computeAcceleration(first, flock, { ...parameters, alignmentWeight: 0, cohesionWeight: 0 });
+        const acceleration = computeAcceleration(first, flock, { ...parameters, alignmentWeight: 0, cohesionWeight: 0, cruiseSpeedRatio: 0 });
 
         // The neighbour 5px to the left pushes harder than the one 15px to the right.
         expect(acceleration.x).toBeGreaterThan(0);
@@ -86,9 +88,11 @@ describe('boids flocking rules', () => {
     test('a weight of zero disables its rule', () => {
         const first = boid(100, 100, 1, 0);
         const neighbour = boid(100, 130, 0, 3);
-        const none = { ...parameters, alignmentWeight: 0, separationWeight: 0, cohesionWeight: 0 };
+        const none = { ...parameters, alignmentWeight: 0, separationWeight: 0, cohesionWeight: 0, cruiseSpeedRatio: 0.2 };
+        const acceleration = computeAcceleration(first, [first, neighbour], none);
 
-        expect(computeAcceleration(first, [first, neighbour], none)).toEqual({ x: 0, y: 0 });
+        expect(acceleration.x).toBeCloseTo(0);
+        expect(acceleration.y).toBeCloseTo(0);
     });
 
     test('each steering contribution is capped by the maximum force times its weight', () => {
@@ -96,7 +100,58 @@ describe('boids flocking rules', () => {
         const flock = [first, boid(101, 100, -5, 0), boid(100, 101, 0, -5)];
         const acceleration = computeAcceleration(first, flock, parameters);
 
-        expect(Math.hypot(acceleration.x, acceleration.y)).toBeLessThanOrEqual(parameters.maxForce * totalWeight + 1e-9);
+        // Three weighted rules plus the cruise speed regulation, each at most maxForce long.
+        expect(Math.hypot(acceleration.x, acceleration.y)).toBeLessThanOrEqual(parameters.maxForce * (totalWeight + 1) + 1e-9);
+    });
+
+    test('separation fades to nothing at the edge of the personal space', () => {
+        const separationOnly = { ...parameters, alignmentWeight: 0, cohesionWeight: 0 };
+        const first = boid(100, 100);
+        const almostTouching = computeAcceleration(first, [first, boid(101, 100)], separationOnly);
+        const nearTheEdge = computeAcceleration(first, [first, boid(100 + parameters.separationRadius - 0.5, 100)], separationOnly);
+
+        expect(Math.abs(nearTheEdge.x)).toBeLessThan(Math.abs(almostTouching.x) / 10);
+    });
+
+    test('cohesion gets weaker as the boid reaches the centre of its neighbours', () => {
+        const cohesionOnly = { ...parameters, alignmentWeight: 0, separationWeight: 0, cruiseSpeedRatio: 0 };
+        const first = boid(100, 100);
+        const far = computeAcceleration(first, [first, boid(100 + parameters.separationRadius + 20, 100)], cohesionOnly);
+        const near = computeAcceleration(first, [first, boid(100 + parameters.separationRadius + 2, 100)], cohesionOnly);
+
+        expect(far.x).toBeGreaterThan(near.x);
+    });
+
+    test('neighbours in the blind spot behind the boid are ignored', () => {
+        const heading = boid(100, 100, 3, 0);
+        const behind = boid(70, 100, 0, 3);
+        const alignmentOnly = { ...parameters, separationWeight: 0, cohesionWeight: 0, cruiseSpeedRatio: 0.6 };
+
+        expect(computeAcceleration(heading, [heading, behind], { ...alignmentOnly, perceptionAngle: 300 })).toEqual({ x: 0, y: 0 });
+        expect(computeAcceleration(heading, [heading, behind], { ...alignmentOnly, perceptionAngle: 360 }).y).toBeGreaterThan(0);
+    });
+
+    test('neighbours ahead are seen even with a narrow field of view', () => {
+        const heading = boid(100, 100, 3, 0);
+        const ahead = boid(130, 100, 3, 3);
+        const alignmentOnly = { ...parameters, separationWeight: 0, cohesionWeight: 0, perceptionAngle: 60 };
+
+        expect(computeAcceleration(heading, [heading, ahead], alignmentOnly).y).toBeGreaterThan(0);
+    });
+
+    test('only the nearest neighbours are taken into account', () => {
+        const first = boid(100, 100, 3, 0);
+        const flock = [first, boid(120, 100, 3, 3), boid(140, 100, 3, -3), boid(140, 105, 3, -3)];
+        const alignmentOnly = { ...parameters, separationWeight: 0, cohesionWeight: 0 };
+
+        expect(computeAcceleration(first, flock, { ...alignmentOnly, maxNeighbours: 1 }).y).toBeGreaterThan(0);
+        expect(computeAcceleration(first, flock, { ...alignmentOnly, maxNeighbours: 3 }).y).toBeLessThan(0);
+    });
+
+    test('a boid slower than the cruise speed accelerates along its heading', () => {
+        const slow = boid(100, 100, 1, 0);
+
+        expect(computeAcceleration(slow, [slow], parameters).x).toBeGreaterThan(0);
     });
 
     test('does not produce NaN when two boids share the same position', () => {
@@ -165,17 +220,25 @@ describe('boids flock lifecycle', () => {
     });
 
     test('a boid keeps flying past the visible edge instead of wrapping immediately', () => {
-        const [right] = stepFlock([boid(399.5, 100, 2, 0)], parameters, 400, 300);
+        const [right] = stepFlock([boid(399.5, 100, cruising, 0)], parameters, 400, 300);
 
-        expect(right.x).toBeCloseTo(401.5);
+        expect(right.x).toBeCloseTo(399.5 + cruising);
     });
 
     test('boids wrap around once they are fully outside the margin', () => {
-        const flock = [boid(400 + BOUNDARY_MARGIN - 0.5, 100, 2, 0), boid(100, -BOUNDARY_MARGIN + 0.5, 0, -2)];
+        const flock = [boid(400 + BOUNDARY_MARGIN - 0.5, 100, cruising, 0), boid(100, -BOUNDARY_MARGIN + 0.5, 0, -cruising)];
         const [right, top] = stepFlock(flock, parameters, 400, 300);
 
-        expect(right.x).toBeCloseTo(-BOUNDARY_MARGIN + 1.5);
-        expect(top.y).toBeCloseTo(300 + BOUNDARY_MARGIN - 1.5);
+        expect(right.x).toBeCloseTo(-BOUNDARY_MARGIN - 0.5 + cruising);
+        expect(top.y).toBeCloseTo(300 + BOUNDARY_MARGIN + 0.5 - cruising);
+    });
+
+    test('smoothing makes a boid react more slowly to a new situation', () => {
+        const crowded = () => [boid(100, 100, 3.5, 0), boid(110, 100, 3.5, 0)];
+        const [instant] = stepFlock(crowded(), { ...parameters, smoothing: 0 }, 400, 300);
+        const [smooth] = stepFlock(crowded(), { ...parameters, smoothing: 0.9 }, 400, 300);
+
+        expect(Math.abs(smooth.ax)).toBeLessThan(Math.abs(instant.ax));
     });
 
     test('resizeFlock keeps existing boids when growing and truncates when shrinking', () => {
@@ -206,6 +269,18 @@ describe('boids flock lifecycle', () => {
         }
 
         expect(overlapping).toBe(0);
+    });
+});
+
+describe('smoothAngle', () => {
+    test('moves part of the way towards the target', () => {
+        expect(smoothAngle(0, 1, 0.25)).toBeCloseTo(0.25);
+    });
+
+    test('takes the shortest way round the circle', () => {
+        const next = smoothAngle(Math.PI - 0.1, -Math.PI + 0.1, 0.5);
+
+        expect(Math.cos(next)).toBeLessThan(-0.99);
     });
 });
 

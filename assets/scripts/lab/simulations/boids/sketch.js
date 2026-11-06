@@ -1,9 +1,11 @@
 import p5 from 'p5';
-import { createFlock, resizeFlock, stepFlock } from './flocking.js';
+import { createFlock, resizeFlock, smoothAngle, stepFlock } from './flocking.js';
 
 const CANVAS_RATIO = 9 / 16;
 const MAX_CANVAS_HEIGHT = 520;
 const THEME_REFRESH_FRAMES = 30;
+// Fraction of the remaining rotation applied each frame: boids are drawn turning smoothly towards their heading.
+const HEADING_SMOOTHING = 0.25;
 
 /**
  * Runs the boids simulation in a p5 instance bound to `container`.
@@ -14,7 +16,7 @@ const THEME_REFRESH_FRAMES = 30;
  * @param {{ paused: boolean }} initialState
  */
 export function startBoidsSketch(container, parameters, initialState) {
-    const state = { paused: initialState.paused, flock: [], colors: null, pointer: null };
+    const state = { paused: initialState.paused, flock: [], headings: [], colors: null, pointer: null };
     let instance = null;
 
     function canvasSize() {
@@ -32,10 +34,19 @@ export function startBoidsSketch(container, parameters, initialState) {
         };
     }
 
-    function drawBoid(p, { x, y, vx, vy }) {
+    // Drawn angles are kept per boid (same index as in the flock) and only affect rendering, not the simulation.
+    function updateHeadings() {
+        state.headings = state.flock.map((boid, index) => {
+            const target = Math.atan2(boid.vy, boid.vx);
+
+            return smoothAngle(state.headings[index] ?? target, target, HEADING_SMOOTHING);
+        });
+    }
+
+    function drawBoid(p, { x, y }, heading) {
         p.push();
         p.translate(x, y);
-        p.rotate(Math.atan2(vy, vx));
+        p.rotate(heading);
         p.triangle(0, 0, -15, 5, -15, -5);
         p.pop();
     }
@@ -59,6 +70,7 @@ export function startBoidsSketch(container, parameters, initialState) {
             canvas.attribute('role', 'img');
             canvas.attribute('aria-label', container.dataset.canvasLabel ?? 'Boids simulation');
             state.flock = createFlock(parameters.count, Math.random, width, height);
+            updateHeadings();
             state.colors = readColors();
         };
 
@@ -70,13 +82,14 @@ export function startBoidsSketch(container, parameters, initialState) {
             if (!state.paused) {
                 state.flock = resizeFlock(state.flock, parameters.count, Math.random, p.width, p.height);
                 state.flock = stepFlock(state.flock, parameters, p.width, p.height, state.pointer);
+                updateHeadings();
             }
 
             p.background(state.colors.background);
             p.stroke(state.colors.boid);
             p.strokeWeight(1);
             p.noFill();
-            state.flock.forEach((boid) => drawBoid(p, boid));
+            state.flock.forEach((boid, index) => drawBoid(p, boid, state.headings[index] ?? 0));
             drawPointer(p);
         };
     }
@@ -104,6 +117,8 @@ export function startBoidsSketch(container, parameters, initialState) {
         },
         reset() {
             state.flock = createFlock(parameters.count, Math.random, instance.width, instance.height);
+            state.headings = [];
+            updateHeadings();
         },
     };
 }

@@ -12,6 +12,12 @@
     max-width: 100%;
 }
 
+.boids-hint {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
 .boids-controls {
     display: grid;
     gap: 1.25rem;

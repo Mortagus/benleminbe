@@ -1,17 +1,23 @@
 import { describe, expect, test } from 'vitest';
 import {
+    BOUNDARY_MARGIN,
     DEFAULT_PARAMETERS,
     computeAcceleration,
+    computePointerAcceleration,
     createFlock,
     resizeFlock,
     stepFlock,
 } from '../../../../assets/scripts/lab/simulations/boids/flocking.js';
-import { magnitude } from '../../../../assets/scripts/lab/simulations/boids/vector.js';
 
 const parameters = { ...DEFAULT_PARAMETERS };
+const totalWeight = parameters.alignmentWeight + parameters.separationWeight + parameters.cohesionWeight;
 
 function boid(x, y, vx = 0, vy = 0) {
-    return { position: { x, y }, velocity: { x: vx, y: vy } };
+    return { x, y, vx, vy };
+}
+
+function speed({ vx, vy }) {
+    return Math.hypot(vx, vy);
 }
 
 describe('boids flocking rules', () => {
@@ -31,11 +37,42 @@ describe('boids flocking rules', () => {
     test('separation pushes a boid away from a close neighbour', () => {
         const first = boid(100, 100);
         const neighbour = boid(110, 100);
-        const acceleration = computeAcceleration(first, [first, neighbour], parameters);
+        const acceleration = computeAcceleration(first, [first, neighbour], { ...parameters, alignmentWeight: 0, cohesionWeight: 0 });
 
-        // Cohesion pulls towards the neighbour (+x) and separation pushes away (-x); both are capped by maxForce.
+        expect(acceleration.x).toBeLessThan(0);
         expect(acceleration.y).toBeCloseTo(0);
-        expect(magnitude(acceleration)).toBeLessThanOrEqual(parameters.maxForce * 3 + 1e-9);
+    });
+
+    test('separation outweighs cohesion when a neighbour is very close', () => {
+        const first = boid(100, 100);
+        const neighbour = boid(105, 100);
+
+        expect(computeAcceleration(first, [first, neighbour], parameters).x).toBeLessThan(0);
+    });
+
+    test('separation ignores neighbours beyond the separation radius', () => {
+        const first = boid(100, 100);
+        const neighbour = boid(100 + parameters.separationRadius + 5, 100);
+        const acceleration = computeAcceleration(first, [first, neighbour], { ...parameters, alignmentWeight: 0, cohesionWeight: 0 });
+
+        expect(acceleration).toEqual({ x: 0, y: 0 });
+    });
+
+    test('the closest neighbour dominates the separation direction', () => {
+        const first = boid(100, 100);
+        const flock = [first, boid(95, 100), boid(115, 100)];
+        const acceleration = computeAcceleration(first, flock, { ...parameters, alignmentWeight: 0, cohesionWeight: 0 });
+
+        // The neighbour 5px to the left pushes harder than the one 15px to the right.
+        expect(acceleration.x).toBeGreaterThan(0);
+    });
+
+    test('cohesion pulls a boid towards its neighbours', () => {
+        const first = boid(100, 100);
+        const neighbour = boid(100 + parameters.separationRadius + 10, 100);
+        const acceleration = computeAcceleration(first, [first, neighbour], { ...parameters, alignmentWeight: 0 });
+
+        expect(acceleration.x).toBeGreaterThan(0);
     });
 
     test('alignment steers towards the heading of neighbours', () => {
@@ -46,11 +83,20 @@ describe('boids flocking rules', () => {
         expect(acceleration.y).toBeGreaterThan(0);
     });
 
-    test('each steering contribution is capped by the maximum force', () => {
+    test('a weight of zero disables its rule', () => {
+        const first = boid(100, 100, 1, 0);
+        const neighbour = boid(100, 130, 0, 3);
+        const none = { ...parameters, alignmentWeight: 0, separationWeight: 0, cohesionWeight: 0 };
+
+        expect(computeAcceleration(first, [first, neighbour], none)).toEqual({ x: 0, y: 0 });
+    });
+
+    test('each steering contribution is capped by the maximum force times its weight', () => {
         const first = boid(100, 100, 5, 0);
         const flock = [first, boid(101, 100, -5, 0), boid(100, 101, 0, -5)];
+        const acceleration = computeAcceleration(first, flock, parameters);
 
-        expect(magnitude(computeAcceleration(first, flock, parameters))).toBeLessThanOrEqual(parameters.maxForce * 3 + 1e-9);
+        expect(Math.hypot(acceleration.x, acceleration.y)).toBeLessThanOrEqual(parameters.maxForce * totalWeight + 1e-9);
     });
 
     test('does not produce NaN when two boids share the same position', () => {
@@ -63,16 +109,49 @@ describe('boids flocking rules', () => {
     });
 });
 
+describe('boids pointer interaction', () => {
+    const at = (mode, x = 100, y = 100) => ({ x, y, mode });
+
+    test('without a pointer there is no extra force', () => {
+        expect(computePointerAcceleration(boid(50, 50), null, parameters)).toEqual({ x: 0, y: 0 });
+    });
+
+    test('a repelling pointer pushes a boid away', () => {
+        const acceleration = computePointerAcceleration(boid(120, 100), at('repel'), parameters);
+
+        expect(acceleration.x).toBeGreaterThan(0);
+    });
+
+    test('an attracting pointer pulls a boid in', () => {
+        const acceleration = computePointerAcceleration(boid(120, 100), at('attract'), parameters);
+
+        expect(acceleration.x).toBeLessThan(0);
+    });
+
+    test('the pointer has no effect beyond its radius', () => {
+        const far = boid(100 + parameters.pointerRadius + 1, 100);
+
+        expect(computePointerAcceleration(far, at('repel'), parameters)).toEqual({ x: 0, y: 0 });
+    });
+
+    test('stepFlock moves boids away from a repelling pointer', () => {
+        const [moved] = stepFlock([boid(120, 100)], parameters, 400, 300, at('repel'));
+
+        expect(moved.vx).toBeGreaterThan(0);
+        expect(moved.x).toBeGreaterThan(120);
+    });
+});
+
 describe('boids flock lifecycle', () => {
     test('stepFlock never exceeds the maximum speed', () => {
         let flock = createFlock(50, seededRandom(1), 400, 300);
 
         for (let frame = 0; frame < 100; frame++) {
-            flock = stepFlock(flock, parameters, 400, 300);
+            flock = stepFlock(flock, parameters, 400, 300, { x: 200, y: 150, mode: 'attract' });
         }
 
-        for (const { velocity } of flock) {
-            expect(magnitude(velocity)).toBeLessThanOrEqual(parameters.maxSpeed + 1e-9);
+        for (const member of flock) {
+            expect(speed(member)).toBeLessThanOrEqual(parameters.maxSpeed + 1e-9);
         }
     });
 
@@ -85,12 +164,18 @@ describe('boids flock lifecycle', () => {
         expect(flock).toEqual(snapshot);
     });
 
-    test('boids wrap around the edges of the playfield', () => {
-        const flock = [boid(399.5, 100, 2, 0), boid(100, 0.5, 0, -2)];
+    test('a boid keeps flying past the visible edge instead of wrapping immediately', () => {
+        const [right] = stepFlock([boid(399.5, 100, 2, 0)], parameters, 400, 300);
+
+        expect(right.x).toBeCloseTo(401.5);
+    });
+
+    test('boids wrap around once they are fully outside the margin', () => {
+        const flock = [boid(400 + BOUNDARY_MARGIN - 0.5, 100, 2, 0), boid(100, -BOUNDARY_MARGIN + 0.5, 0, -2)];
         const [right, top] = stepFlock(flock, parameters, 400, 300);
 
-        expect(right.position.x).toBe(0);
-        expect(top.position.y).toBe(300);
+        expect(right.x).toBeCloseTo(-BOUNDARY_MARGIN + 1.5);
+        expect(top.y).toBeCloseTo(300 + BOUNDARY_MARGIN - 1.5);
     });
 
     test('resizeFlock keeps existing boids when growing and truncates when shrinking', () => {
@@ -101,6 +186,26 @@ describe('boids flock lifecycle', () => {
         expect(grown).toHaveLength(5);
         expect(grown.slice(0, 3)).toEqual(flock);
         expect(shrunk).toEqual(flock.slice(0, 2));
+    });
+
+    test('with default parameters a settled flock does not visibly overlap', () => {
+        let flock = createFlock(100, seededRandom(7), 900, 506);
+
+        for (let frame = 0; frame < 600; frame++) {
+            flock = stepFlock(flock, parameters, 900, 506);
+        }
+
+        let overlapping = 0;
+
+        for (let i = 0; i < flock.length; i++) {
+            for (let j = i + 1; j < flock.length; j++) {
+                if (Math.hypot(flock[i].x - flock[j].x, flock[i].y - flock[j].y) < 8) {
+                    overlapping++;
+                }
+            }
+        }
+
+        expect(overlapping).toBe(0);
     });
 });
 

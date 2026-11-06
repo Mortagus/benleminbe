@@ -10,11 +10,11 @@ const THEME_REFRESH_FRAMES = 30;
  * p5 only handles the canvas and the draw loop; the flocking rules live in flocking.js.
  *
  * @param {HTMLElement} container
- * @param {{ count: number, perceptionRadius: number, maxSpeed: number, maxForce: number }} parameters Mutated live by the controls.
+ * @param {typeof import('./flocking.js').DEFAULT_PARAMETERS} parameters Mutated live by the controls.
  * @param {{ paused: boolean }} initialState
  */
 export function startBoidsSketch(container, parameters, initialState) {
-    const state = { paused: initialState.paused, flock: [], colors: null };
+    const state = { paused: initialState.paused, flock: [], colors: null, pointer: null };
     let instance = null;
 
     function canvasSize() {
@@ -32,12 +32,23 @@ export function startBoidsSketch(container, parameters, initialState) {
         };
     }
 
-    function drawBoid(p, { position, velocity }) {
+    function drawBoid(p, { x, y, vx, vy }) {
         p.push();
-        p.translate(position.x, position.y);
-        p.rotate(Math.atan2(velocity.y, velocity.x));
+        p.translate(x, y);
+        p.rotate(Math.atan2(vy, vx));
         p.triangle(0, 0, -15, 5, -15, -5);
         p.pop();
+    }
+
+    // Faint ring showing the area of influence of the pointer while a button is held.
+    function drawPointer(p) {
+        if (!state.pointer) {
+            return;
+        }
+
+        p.drawingContext.globalAlpha = 0.35;
+        p.circle(state.pointer.x, state.pointer.y, parameters.pointerRadius * 2);
+        p.drawingContext.globalAlpha = 1;
     }
 
     function sketch(p) {
@@ -58,7 +69,7 @@ export function startBoidsSketch(container, parameters, initialState) {
 
             if (!state.paused) {
                 state.flock = resizeFlock(state.flock, parameters.count, Math.random, p.width, p.height);
-                state.flock = stepFlock(state.flock, parameters, p.width, p.height);
+                state.flock = stepFlock(state.flock, parameters, p.width, p.height, state.pointer);
             }
 
             p.background(state.colors.background);
@@ -66,6 +77,7 @@ export function startBoidsSketch(container, parameters, initialState) {
             p.strokeWeight(1);
             p.noFill();
             state.flock.forEach((boid) => drawBoid(p, boid));
+            drawPointer(p);
         };
     }
 
@@ -85,6 +97,10 @@ export function startBoidsSketch(container, parameters, initialState) {
         },
         isPaused() {
             return state.paused;
+        },
+        /** @param {import('./flocking.js').Pointer | null} pointer Position in canvas coordinates, or null when released. */
+        setPointer(pointer) {
+            state.pointer = pointer;
         },
         reset() {
             state.flock = createFlock(parameters.count, Math.random, instance.width, instance.height);

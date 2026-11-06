@@ -61,6 +61,7 @@ simulations:
         title: "Boids"
         description: "Chaque boid ne suit que **trois règles locales** : s’aligner sur ses voisins, s’en éloigner s’ils sont trop proches et rejoindre leur centre. Le vol de groupe en émerge sans chef ni plan global. Modèle de Craig Reynolds (1986)."
         canvas_label: "Simulation de boids : des triangles se déplacent en groupe sur un fond uni."
+        pointer_hint: "Clic gauche maintenu : repousse les boids. Clic droit maintenu : les attire."
         controls:
             label: "Contrôles de la simulation"
             pause: "Pause"
@@ -70,6 +71,9 @@ simulations:
             perception: "Rayon de perception"
             speed: "Vitesse maximale"
             force: "Force de braquage maximale"
+            alignment_weight: "Poids de l’alignement"
+            separation_weight: "Poids de la séparation"
+            cohesion_weight: "Poids de la cohésion"
         rules:
             title: "Les trois règles"
             alignment: "**Alignement** : prendre la direction moyenne des voisins."

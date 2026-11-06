@@ -37,5 +37,44 @@ if (root) {
         input.addEventListener('input', apply);
     });
 
+    // Left button repels boids, right button attracts them, for as long as it is held.
+    const POINTER_MODES = { 0: 'repel', 2: 'attract' };
+    let activeButton = null;
+
+    const updatePointer = (event) => {
+        const rect = container.getBoundingClientRect();
+
+        simulation.setPointer({
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top,
+            mode: POINTER_MODES[activeButton],
+        });
+    };
+
+    const releasePointer = () => {
+        activeButton = null;
+        simulation.setPointer(null);
+    };
+
+    container.addEventListener('pointerdown', (event) => {
+        if (!(event.button in POINTER_MODES)) {
+            return;
+        }
+
+        activeButton = event.button;
+        container.setPointerCapture(event.pointerId);
+        updatePointer(event);
+    });
+
+    container.addEventListener('pointermove', (event) => {
+        if (activeButton !== null) {
+            updatePointer(event);
+        }
+    });
+
+    container.addEventListener('pointerup', releasePointer);
+    container.addEventListener('pointercancel', releasePointer);
+    container.addEventListener('contextmenu', (event) => event.preventDefault());
+
     syncToggleLabel();
 }

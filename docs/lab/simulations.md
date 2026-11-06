@@ -19,10 +19,9 @@ Les routes du Lab ne portent pas de préfixe de langue et ne sont pas dans le si
 
 ```text
 assets/scripts/lab/simulations/boids/
-├── vector.js    # helpers vectoriels 2D immuables
-├── flocking.js  # règles de Reynolds, logique pure
+├── flocking.js  # règles de Reynolds et force du pointeur, logique pure sur nombres bruts
 ├── sketch.js    # rendu p5.js (mode instance), canvas responsive
-└── main.js      # branchement DOM : pause, reset, curseurs
+└── main.js      # branchement DOM : pause, reset, curseurs, clics sur le canvas
 assets/styles/lab/simulations.css
 tests/js/lab/simulations/flocking.test.js
 ```
@@ -32,7 +31,11 @@ Entrypoint Importmap : `lab_simulations_boids`.
 Choix de conception :
 
 - p5.js ne gère que le canvas et la boucle `draw`. Les règles (alignement, séparation, cohésion) sont dans `flocking.js`, sans dépendance à p5 ni au DOM, pour rester testables avec Vitest.
+- Un boid est un objet `{ x, y, vx, vy }` et les calculs utilisent des nombres bruts, sans `p5.Vector` ni helpers vectoriels : p5 reste cantonné au rendu et la logique reste testable sans canvas.
 - Chaque frame calcule toutes les accélérations à partir d'un même instantané du groupe : le résultat ne dépend pas de l'ordre des boids.
+- Chaque règle a un poids réglable (alignement, séparation, cohésion). La séparation agit sur un rayon plus court (`separationRadius`) que la perception, et sa poussée croît en 1/distance, pour que les boids ne se superposent pas.
+- La frontière de rebouclage est hors champ : un boid ne réapparaît de l'autre côté qu'après avoir dépassé `BOUNDARY_MARGIN` pixels au-delà du canvas, donc la téléportation n'est pas visible.
+- Souris : clic gauche maintenu = le curseur repousse les boids, clic droit maintenu = il les attire (rayon `pointerRadius`). Le tactile ne gère que le « clic gauche » ; le navigateur peut annuler le geste pour défiler la page.
 - La vitesse est plafonnée à `maxSpeed` (absent de la version d'origine).
 - Les couleurs sont lues depuis les variables CSS du site (`--card`, `--accent-text`) pour suivre le thème clair/sombre.
 - Si `prefers-reduced-motion` est actif, la simulation démarre en pause.

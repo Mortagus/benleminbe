@@ -61,6 +61,7 @@ simulations:
         title: "Boids"
         description: "Each boid follows only **three local rules**: align with its neighbours, move away from those that are too close, and steer towards their centre. Flocking emerges with no leader and no global plan. Model by Craig Reynolds (1986)."
         canvas_label: "Boids simulation: triangles move together over a plain background."
+        pointer_hint: "Hold left click to repel the boids. Hold right click to attract them."
         controls:
             label: "Simulation controls"
             pause: "Pause"
@@ -70,6 +71,9 @@ simulations:
             perception: "Perception radius"
             speed: "Maximum speed"
             force: "Maximum steering force"
+            alignment_weight: "Alignment weight"
+            separation_weight: "Separation weight"
+            cohesion_weight: "Cohesion weight"
         rules:
             title: "The three rules"
             alignment: "**Alignment**: match the average heading of neighbours."

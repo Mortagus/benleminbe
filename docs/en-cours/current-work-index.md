@@ -4,6 +4,7 @@ Ce dossier contient les documents qui servent encore de fil de reprise, de backl
 
 ## Documents Actuels
 
+- [Évolutions des simulations boids](boids-evolutions-notes.md) : lot B (5000 boids), piste 3D et décisions à prendre.
 - [Audit contenu et impact](content-impact-audit-notes.md) : recommandations à transformer en observations, tests ou ajustements de contenu.
 - [Backlog DnD Initiative Tracker](dnd-initiative-tracker-backlog.md) : prochaines évolutions du module lab DnD.
 - [Backlog du module Workout](muscu-module-backlog.md) : cadrage et implementation progressive du suivi prive de musculation.

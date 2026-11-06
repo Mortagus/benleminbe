@@ -36,8 +36,26 @@
 }
 
 .boids-slider {
+    --boids-thumb-size: 1rem;
+
+    position: relative;
     display: grid;
     gap: 0.4rem;
+    padding-bottom: 0.6rem;
+}
+
+/* Tick marking the default value; --default-ratio (0 to 1) is set from main.js. */
+.boids-slider::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: calc(var(--boids-thumb-size) / 2 + var(--default-ratio, 0) * (100% - var(--boids-thumb-size)));
+    width: 2px;
+    height: 0.4rem;
+    border-radius: 1px;
+    background: var(--muted);
+    transform: translateX(-50%);
+    pointer-events: none;
 }
 
 .boids-slider__label {

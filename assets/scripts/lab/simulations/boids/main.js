@@ -32,6 +32,10 @@ if (root) {
             output.textContent = input.value;
         };
 
+        // Lets the stylesheet draw a tick at the default value, as a fraction of the slider range.
+        const range = Number(input.max) - Number(input.min);
+        input.closest('.boids-slider').style.setProperty('--default-ratio', (parameters[name] - Number(input.min)) / range);
+
         input.value = parameters[name];
         apply();
         input.addEventListener('input', apply);

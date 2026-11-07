@@ -1,5 +1,6 @@
 import p5 from 'p5';
 import { SCENE_SIZE_3D, createFlock, resizeFlock, stepFlock, updateDirections } from '../boids/flocking.js';
+import { cameraPosition, limitCamera, orbit, stateFromPosition, zoom } from './camera.js';
 import { buildLandscape } from './landscape.js';
 import { orientationMatrix, updateUps } from './orientation.js';
 import { roostPosition } from './roost.js';
@@ -32,6 +33,15 @@ const CAMERA_DISTANCE = 1150;
 // The camera aims a little below the centre of the flock (y points down), so that the ground and the trees stay in the
 // frame now that the flight zone is tall and the ground is far below its centre.
 const LOOK_AT_HEIGHT = 200;
+// Orbit camera: it can go anywhere around the scene, but never under the ground, nearer than a flock's width or beyond the
+// ring of hills (at 4800 units).
+const CAMERA_TARGET = Object.freeze([0, LOOK_AT_HEIGHT, 0]);
+const CAMERA_CLEARANCE = 20;
+const CAMERA_MIN_DISTANCE = 300;
+const CAMERA_MAX_DISTANCE = 4000;
+const CAMERA_MAX_PITCH = (85 * Math.PI) / 180;
+const ORBIT_SENSITIVITY = 0.005;
+const WHEEL_SENSITIVITY = 0.001;
 const FIELD_OF_VIEW = Math.PI / 3.2;
 
 /**
@@ -47,7 +57,7 @@ const FIELD_OF_VIEW = Math.PI / 3.2;
  */
 export function startBoids3dSketch(container, parameters, initialState, options = {}) {
     const birdScale = options.birdScale ?? DEFAULT_BIRD_SCALE;
-    const state = { paused: initialState.paused, flock: null, directions: new Float32Array(0), ups: new Float32Array(0), bird: null, ground: null, scenery: null, frame: 0 };
+    const state = { paused: initialState.paused, flock: null, directions: new Float32Array(0), ups: new Float32Array(0), bird: null, ground: null, scenery: null, frame: 0, camera: null, cameraLimits: null };
     const attitude = new Float64Array(16);
     const centre = SCENE_SIZE_3D.map((extent) => extent / 2);
     let instance = null;
@@ -140,6 +150,77 @@ export function startBoids3dSketch(container, parameters, initialState, options 
         state.ups = updateUps(state.ups, state.directions, UP_SMOOTHING);
     }
 
+    function moveCamera(change) {
+        state.camera = limitCamera(change(state.camera), CAMERA_TARGET, state.cameraLimits);
+    }
+
+    /**
+     * Mouse and touch controls on the container: one pointer drags to turn the camera, two pointers pinch to zoom,
+     * and the wheel zooms. Every move goes through `limitCamera`, so the camera never goes under the ground.
+     */
+    function attachCameraControls() {
+        const pointers = new Map();
+        let pinchDistance = 0;
+
+        // Without this the browser would scroll or zoom the page when a finger drags on the scene.
+        container.style.touchAction = 'none';
+
+        const spread = () => {
+            const [a, b] = [...pointers.values()];
+
+            return Math.hypot(a.x - b.x, a.y - b.y);
+        };
+
+        container.addEventListener('pointerdown', (event) => {
+            if (event.pointerType === 'mouse' && event.button !== 0) {
+                return;
+            }
+
+            container.setPointerCapture(event.pointerId);
+            pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+            pinchDistance = pointers.size === 2 ? spread() : 0;
+        });
+
+        container.addEventListener('pointermove', (event) => {
+            const previous = pointers.get(event.pointerId);
+
+            if (!previous) {
+                return;
+            }
+
+            const dx = event.clientX - previous.x;
+            const dy = event.clientY - previous.y;
+
+            pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+            if (pointers.size === 1) {
+                moveCamera((camera) => orbit(camera, dx, dy, ORBIT_SENSITIVITY));
+            } else if (pointers.size === 2 && pinchDistance > 0) {
+                const distance = spread();
+
+                // Fingers moving apart bring the scene closer.
+                moveCamera((camera) => zoom(camera, pinchDistance / distance));
+                pinchDistance = distance;
+            }
+        });
+
+        const release = (event) => {
+            pointers.delete(event.pointerId);
+            pinchDistance = pointers.size === 2 ? spread() : 0;
+        };
+
+        container.addEventListener('pointerup', release);
+        container.addEventListener('pointercancel', release);
+        container.addEventListener(
+            'wheel',
+            (event) => {
+                event.preventDefault();
+                moveCamera((camera) => zoom(camera, Math.exp(event.deltaY * WHEEL_SENSITIVITY)));
+            },
+            { passive: false },
+        );
+    }
+
     function sketch(p) {
         p.setup = () => {
             const { width, height } = canvasSize();
@@ -156,7 +237,19 @@ export function startBoids3dSketch(container, parameters, initialState, options 
 
             const landscape = buildLandscape();
 
-            p.camera(0, landscape.groundY - CAMERA_HEIGHT_ABOVE_GROUND, CAMERA_DISTANCE, 0, LOOK_AT_HEIGHT, 0, 0, 1, 0);
+            state.cameraLimits = {
+                groundY: landscape.groundY,
+                clearance: CAMERA_CLEARANCE,
+                minDistance: CAMERA_MIN_DISTANCE,
+                maxDistance: CAMERA_MAX_DISTANCE,
+                maxPitch: CAMERA_MAX_PITCH,
+            };
+            state.camera = limitCamera(
+                stateFromPosition([0, landscape.groundY - CAMERA_HEIGHT_ABOVE_GROUND, CAMERA_DISTANCE], CAMERA_TARGET),
+                CAMERA_TARGET,
+                state.cameraLimits,
+            );
+            attachCameraControls();
             state.ground = buildTriangles(p, GROUND_COLOR, landscape.ground);
             state.scenery = buildTriangles(p, SCENERY_COLOR, landscape.horizon, landscape.silhouettes);
             state.flock = createFlock(parameters.count, Math.random, SCENE_SIZE_3D);
@@ -177,7 +270,7 @@ export function startBoids3dSketch(container, parameters, initialState, options 
             // Transparent background: the CSS sky shows through.
             p.clear();
             p.perspective(FIELD_OF_VIEW, p.width / p.height, NEAR_PLANE, FAR_PLANE);
-            p.orbitControl();
+            p.camera(...cameraPosition(state.camera, CAMERA_TARGET), ...CAMERA_TARGET, 0, 1, 0);
             p.noStroke();
 
             // The landscape is static: two draw calls, whatever the number of trees. Each geometry carries its colour.
@@ -213,6 +306,10 @@ export function startBoids3dSketch(container, parameters, initialState, options 
             state.directions = new Float32Array(0);
             state.ups = new Float32Array(0);
             updateAttitudes();
+        },
+        /** Position of the camera, for diagnostics. */
+        cameraPosition() {
+            return cameraPosition(state.camera, CAMERA_TARGET);
         },
         /** Measured frame rate, for diagnostics. */
         frameRate() {

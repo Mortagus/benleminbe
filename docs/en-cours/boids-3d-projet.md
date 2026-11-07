@@ -105,7 +105,7 @@ Le ciel est fixe : pas de cycle jour/nuit, pas de lien avec le thème du site. L
 
 Chaque boid est une forme 3D simple et statique évoquant un petit oiseau (corps effilé et deux ailes fixes, par exemple), orientée selon sa vitesse. Le cap dessiné est lissé comme en 2D, mais en gardant pour chaque boid un vecteur direction lissé plutôt qu'un angle, ce qui évite les sauts d'angle et le blocage de cardan. Silhouettes en couleur unie, sans éclairage. Risque esthétique : sans éclairage, la profondeur ne se lit que par la taille ; une légère variation de teinte selon la distance à la caméra pourrait être nécessaire.
 
-### D6. Caméra — Proposé : orbite personnalisée limitée au-dessus du sol
+### D6. Caméra — Validé et fait (TASK-6.8) : orbite personnalisée limitée au-dessus du sol
 
 Benj : sans sol ni éléments de paysage, changer l'orientation de la caméra n'a pas de sens ; il choisit l'orbite autour de la scène, au-dessus du sol. Comme `orbitControl` de p5 ne limite pas l'angle, la caméra est écrite à la main : un état (azimut, hauteur d'angle, distance), une fonction pure qui en déduit la position de la caméra (testable, avec une hauteur d'angle minimale qui interdit de passer sous le sol et une distance bornée), et la souris, le tactile et la molette qui modifient cet état. Une rotation lente automatique, interrompue au toucher, est un raffinement ultérieur.
 
@@ -223,6 +223,8 @@ Reste ouvert : les couleurs exactes du dégradé et la forme exacte de l'oiseau,
 - **TASK-6.13, repères d'échelle** : brume lointaine cuite dans les couleurs des sommets, maison ou grange, clocher ou silhouette lointaine, route avec voiture.
 - puis TASK-6.8 (caméra au-dessus du sol), TASK-6.3 (intégration à la page) et TASK-6.4 (réglage visuel).
 
+**Ordre modifié le 2026-11-07, à la demande de Benj** : la caméra au-dessus du sol (TASK-6.8) passe maintenant avant les autres étapes restantes, car la caméra peut passer sous le sol. Benj demande aussi que la trajectoire passe plus près du sol ; comme plus près du sol veut dire parmi les arbres, cela relève de l'évitement des arbres (TASK-6.11), à placer juste après la caméra, avant les meneurs (TASK-6.12), si Benj est d'accord.
+
 Numérotation Backlog.md : les identifiants suivent l'ordre de création, pas l'ordre d'exécution ; l'ordre d'exécution est 6.9, 6.10, 6.12, 6.11, 6.13, 6.8, 6.3, 6.4, porté par les dépendances des tâches.
 
 ## Résultats De L'Étape 1
@@ -266,7 +268,7 @@ Décor en silhouettes fait le 2026-11-07, avant la fin de l'étape 4 (TASK-6.7),
 - **Caméra de départ abaissée** : à 91 unités du sol, regardant vers la nuée. À l'altitude de la nuée, les arbres sont vus de dessus et se confondent avec le sol ; près du sol, ils se détachent sur le ciel comme sur une photographie de murmuration.
 - **Couleurs** : une géométrie p5 garde la couleur active au moment où elle est construite ; un `fill()` appelé ensuite au dessin ne la change pas. Le sol, le décor et les oiseaux ont donc chacun leur couleur fixée avant leur construction (oiseaux les plus sombres, décor un peu plus clair, sol plus clair encore).
 - **Mesuré** (Chrome headless, rendu logiciel donc pessimiste) : 42 images par seconde à 200 boids et 31 à 500, contre 52 et 36 sans le décor. Aucune erreur JS.
-- **Limite connue** : `orbitControl` n'a pas de limite d'angle, donc la caméra peut passer sous le sol, qui la masque alors entièrement. C'est l'objet de l'étape « caméra » (TASK-6.8).
+- **Limite connue** : `orbitControl` n'avait pas de limite d'angle, donc la caméra pouvait passer sous le sol, qui la masquait alors entièrement. Corrigé par TASK-6.8 (caméra à limites).
 - **Tests** : 18 tests dans `landscape.test.js` ; 5 défauts réinjectés sur 6 sont détectés. Le sixième (retirer la règle « aucun arbre sous la nuée ») ne l'est pas : avec ce placement par bosquets, la règle ne se déclenche presque jamais, donc les tests ne peuvent pas la faire échouer. C'est une garde défensive non exercée.
 
 ## Résultats De TASK-6.10 (Trajectoire Plus Ample)
@@ -290,6 +292,16 @@ Fait le 2026-11-07, en attente de la validation visuelle de Benj.
 
 - **Caméra** : la hauteur de la caméra suit le sol (91 unités au-dessus) et elle vise un point un peu plus bas que le centre de la nuée (200 unités sous le centre) : sans cela, le sol plus bas ne tenait plus que dans 9 % du bas de l'image au lieu de 22 %, ce que les captures ont montré.
 - **Limite** : le parcours en profondeur reste modeste (290 unités), par choix. Les arbres sont toujours sous la zone de vol : l'évitement (TASK-6.11) les rapprochera.
+
+## Résultats De TASK-6.8 (Caméra Au-Dessus Du Sol)
+
+Fait le 2026-11-07 à la demande de Benj (« la caméra peut passer sous le sol, il faudrait ajouter une limite »), en attente de sa validation visuelle.
+
+- **Fichiers** : `assets/scripts/lab/simulations/boids3d/camera.js` (maths pures : `cameraPosition`, `stateFromPosition`, `limitCamera`, `orbit`, `zoom`) ; les entrées (souris, tactile, molette) sont dans `boids3d/sketch.js`. `orbitControl` de p5 n'est plus utilisé.
+- **Principe** : la caméra est un azimut, une hauteur d'angle et une distance autour d'un point visé fixe (le centre de la scène, 200 unités sous le centre de la nuée). Après chaque mouvement, `limitCamera` la ramène dans ce qui est permis : au moins 20 unités au-dessus du sol (c'est une borne sur la hauteur de la caméra, donc l'angle minimal dépend de la distance : plus la caméra est loin, moins elle peut regarder vers le haut depuis le bas), à plus de 300 et moins de 4000 unités de la cible (en deçà de l'anneau de collines à 4800), et jamais plus haut que 85° pour ne pas passer par le pôle.
+- **Entrées** : glisser à la souris ou à un doigt pour tourner ; molette ou pincement à deux doigts pour zoomer (écarter les doigts rapproche la scène) ; pas de déplacement latéral de la cible. `touch-action: none` est posé sur le conteneur pour que le navigateur ne fasse pas défiler la page quand un doigt glisse sur la scène : sur un vrai tactile, on ne pourra donc plus faire défiler la page en posant le doigt sur le canvas (à traiter avec TASK-5, mobile).
+- **Vérifié dans le navigateur** (position réelle de la caméra lue après des gestes extrêmes) : glisser de 2000 px vers le haut, deux fois, laisse la caméra à 20 unités au-dessus du sol ; glisser de 4000 px vers le bas la monte à la limite de 85° ; la molette borne la distance entre 300 et 4000 ; tactile émulé : un doigt tourne la caméra, deux doigts qui s'écartent la rapprochent ; aucune erreur JS. Les captures des deux vues extrêmes (au ras du sol, et du dessus) montrent une scène lisible.
+- **Tests** : 19 tests dans `camera.test.js`, dont une session aléatoire de 5000 gestes limités à chaque étape ; 6 défauts réinjectés sont tous détectés (dont le retrait de la limite du sol, qui casse 4 tests).
 
 ## Retour De Benj Sur L'Étape 2
 

@@ -1,14 +1,15 @@
 ---
 id: TASK-6.3
-title: 'Boids 3D, étape 3 : intégration à la page'
+title: 'Boids 3D, étape 7 : intégration à la page'
 status: To Do
 assignee: []
 created_date: '2026-11-07 09:24'
+updated_date: '2026-11-07 09:54'
 labels:
   - lab
   - 3d
 dependencies:
-  - TASK-6.2
+  - TASK-6.8
 documentation:
   - docs/lab/simulations.md
 parent_task_id: TASK-6

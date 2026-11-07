@@ -4,7 +4,7 @@ Document de cadrage du projet de version 3D des boids du Lab, produit avec `~/.a
 
 Légende des statuts : **Validé** (approuvé par Benj), **Proposé** (recommandation en attente d'accord), **Ouvert** (non tranché).
 
-Statut global au 2026-11-07 : cadrage terminé, **plan d'implémentation approuvé par Benj**. Suivi : TASK-6 dans Backlog.md. Étape 1 en cours.
+Statut global au 2026-11-07 : étapes 1 et 2 faites. Le retour de Benj sur l'étape 2 a ajouté un **décor** (sol, arbres, lignes électriques) absent du cadrage : le périmètre est tranché (voir le tableau) et **le plan révisé a été approuvé par Benj**, qui y a ajouté trois exigences (orientation haut/bas, trajectoires 3D, espacement), ce qui porte le plan à 8 étapes. Suivi : TASK-6 dans Backlog.md.
 
 ## Problème Et Succès
 
@@ -21,7 +21,10 @@ Statut global au 2026-11-07 : cadrage terminé, **plan d'implémentation approuv
 | -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | But                  | Validé  | Pièce visuelle, avec peu de réglages ; le 2D reste la version pédagogique complète.                                            |
 | Interaction          | Validé  | Caméra seulement (rotation, zoom). Pas de perturbation des boids par un clic.                                                  |
-| Comportement         | Validé  | Règles actuelles d'abord (voisins topologiques, angle mort, lissage), passées en 3D. Le point d'attraction et l'inclinaison viendront après, si le résultat le justifie. |
+| Comportement         | Validé  | Règles actuelles (voisins topologiques, angle mort, lissage) passées en 3D, jugées « vraiment réussies » par Benj. Deux ajouts le 2026-11-07 : espacement entre voisins et trajectoires qui exploitent les 3 dimensions (voir ci-dessous). |
+| Orientation          | Validé  | Les oiseaux ont un haut et un bas : ventre vers le bas, jamais de retournement qui n'aurait pas de sens dans la vraie vie. L'inclinaison dans les virages reste hors périmètre. |
+| Espacement           | Validé  | Un oiseau garde un peu d'espace avec ses voisins : à 350 à 500 boids, ils sont aujourd'hui trop rapprochés. Réglage mesuré proposé : D9. |
+| Trajectoires 3D      | **Ouvert** | La vision finale de Benj : les boids varient leurs trajectoires en exploitant les 3 dimensions. Aujourd'hui ils tournent en ronds comme un banc de poissons. Le mécanisme est à choisir (D10, Q12). |
 | Mobile               | Validé  | Ordinateur d'abord. Le mobile ne doit pas planter ; son confort relève de TASK-5. Pause au démarrage si `prefers-reduced-motion`, comme en 2D. |
 | Calcul               | Validé  | Version générique en N dimensions : le calcul de `flocking.js` est réutilisé tel quel avec `dim = 3`, sans duplication.        |
 | Forme du boid        | Validé  | Une forme 3D simple et statique qui évoque un petit oiseau. Aucun battement d'ailes ni animation.                              |
@@ -29,7 +32,10 @@ Statut global au 2026-11-07 : cadrage terminé, **plan d'implémentation approuv
 | Bords                | Validé  | Confinement dans la scène. Une autre stratégie de peuplement de la scène reste envisageable plus tard si le confinement ne convient pas visuellement. |
 | Réglages             | Validé  | Proposition de départ : pause, réinitialisation, nombre de boids (100 à 500, 200 par défaut). Ajustements ou ajouts à décider plus tard. |
 | Plan                 | Validé  | Plan d'implémentation en 4 étapes ci-dessous, approuvé le 2026-11-07.                                                          |
-| Hors périmètre       | Validé  | Bruit de direction (« wander »), point d'attraction, inclinaison dans les virages, battement d'ailes ou toute animation du corps, pointeur 3D, simulateur de fluide. |
+| Décor                | Validé  | Benj attendait une scène réaliste avec un sol et des éléments de paysage. Retenu : **silhouettes sombres** sur le ciel (style photo de murmuration à la tombée du jour). Première version : sol ou champ avec horizon, arbres, lignes électriques aériennes. Routes, buissons et bâtiments viendront plus tard. |
+| Caméra               | Validé  | Orbite autour de la scène **au-dessus du sol** : elle ne passe jamais sous le sol, le décor est tout autour de la zone de vol. Remplace l'orbite libre de l'étape 2.          |
+| Nuée et décor        | Validé  | La nuée reste au-dessus du sol et du décor, sans s'y poser. Pas de nouvelle règle de comportement (le point d'attraction du dortoir reste hors périmètre). |
+| Hors périmètre       | Validé  | Inclinaison dans les virages, battement d'ailes ou toute animation du corps, pointeur 3D, simulateur de fluide. Le bruit de direction et le point d'attraction étaient hors périmètre : ils sont à réexaminer selon le mécanisme choisi pour les trajectoires 3D (D10). |
 
 ## Faits Établis
 
@@ -62,7 +68,7 @@ p5 coûte environ 11 µs par boid (un appel de dessin par boid), contre un seul 
 
 ## Décisions Techniques
 
-### D1. Bibliothèque de rendu — Validé : p5.js WEBGL d'abord
+### D1. Bibliothèque de rendu — Proposé : p5.js WEBGL reste le choix, malgré le décor
 
 |                              | p5.js WEBGL                                                  | Three.js                                                           |
 | ---------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------ |
@@ -74,6 +80,8 @@ p5 coûte environ 11 µs par boid (un appel de dessin par boid), contre un seul 
 | Caméra à la souris           | `orbitControl()` intégré (à vérifier au tactile)             | `OrbitControls` à ajouter                                          |
 
 Décision : commencer en p5 WEBGL, car le périmètre validé (quelques centaines de boids, silhouettes, pas de battement d'ailes) tient dans ses capacités et n'ajoute aucune dépendance. Le rendu sera isolé dans un fichier dédié, la logique pure ne changeant pas, donc un passage à Three.js resterait un remplacement d'un seul fichier. Critères de bascule : besoin de plus de ~800 boids ou rendu p5 trop coûteux sur des machines modestes (le battement d'ailes, écarté, n'est plus un critère).
+
+Impact du décor, réexaminé le 2026-11-07 : le coût de p5 vient d'un appel de dessin par boid (environ 11 µs). Un décor statique en silhouettes unies peut être fusionné en **une seule géométrie** construite une fois (`buildGeometry`) et dessinée par un seul appel : son coût par frame est négligeable, quel que soit le nombre d'arbres. Le motif de rouvrir D1 ne tient donc pas pour un décor en silhouettes. Il tiendrait pour un décor éclairé ou texturé, ce qui est écarté. Point à noter : p5 n'offre pas de limite d'angle à `orbitControl` (la caméra pourrait passer sous le sol), alors que `OrbitControls` de Three.js en a une ; avec p5 il faut écrire cette limite (voir D6).
 
 Ajouter Three.js est une nouvelle dépendance : elle demandera ton accord explicite si on y vient.
 
@@ -97,15 +105,74 @@ Le ciel est fixe : pas de cycle jour/nuit, pas de lien avec le thème du site. L
 
 Chaque boid est une forme 3D simple et statique évoquant un petit oiseau (corps effilé et deux ailes fixes, par exemple), orientée selon sa vitesse. Le cap dessiné est lissé comme en 2D, mais en gardant pour chaque boid un vecteur direction lissé plutôt qu'un angle, ce qui évite les sauts d'angle et le blocage de cardan. Silhouettes en couleur unie, sans éclairage. Risque esthétique : sans éclairage, la profondeur ne se lit que par la taille ; une légère variation de teinte selon la distance à la caméra pourrait être nécessaire.
 
-### D6. Caméra — Validé : `orbitControl` seul
+### D6. Caméra — Proposé : orbite personnalisée limitée au-dessus du sol
 
-Rotation et zoom manuels. Une rotation lente automatique, interrompue au toucher, est un raffinement ultérieur.
+Benj : sans sol ni éléments de paysage, changer l'orientation de la caméra n'a pas de sens ; il choisit l'orbite autour de la scène, au-dessus du sol. Comme `orbitControl` de p5 ne limite pas l'angle, la caméra est écrite à la main : un état (azimut, hauteur d'angle, distance), une fonction pure qui en déduit la position de la caméra (testable, avec une hauteur d'angle minimale qui interdit de passer sous le sol et une distance bornée), et la souris, le tactile et la molette qui modifient cet état. Une rotation lente automatique, interrompue au toucher, est un raffinement ultérieur.
 
-### D7. Réglages — Validé comme point de départ
+### D7. Décor en silhouettes — Proposé
+
+Un générateur **pur et déterministe** (graine fixe) produit la liste des éléments : sol, ligne d'horizon, arbres, poteaux avec leurs câbles. Les tests vérifient les règles de placement : aucun élément n'entre dans la zone de vol, le résultat est reproductible, les câbles relient bien les poteaux. Le rendu fusionne tout en une géométrie construite une fois. Le sol est un grand disque sombre dont le bord rejoint l'horizon. Hauteurs stylisées (arbres et poteaux de l'ordre de 100 à 150 unités, un boid fait environ 20 unités de long) : des proportions réelles donneraient des arbres gigantesques par rapport aux oiseaux.
+
+La zone de vol reste l'ellipsoïde du confinement (D3) ; le **sol est placé sous son point le plus bas, plus la hauteur du plus grand élément et une marge**, pour que la nuée ne traverse jamais le décor.
+
+### D8. Réglages — Validé comme point de départ
 
 Pause, réinitialisation et nombre de boids (100 à 500, 200 par défaut). Benj : « suis ton idée pour le moment », les ajouts viendront plus tard. Les valeurs par défaut du calcul sont celles du 2D : elles seront à réajuster à l'œil pour la 3D (par exemple, rayon de perception et poids de cohésion), ce qui fait partie de la première étape.
 
+### D9. Espacement entre voisins — Proposé : séparation de 40 px, poids 4
+
+Constat mesuré le 2026-11-07, avec les réglages 3D actuels (séparation de 26 px) : le plus proche voisin est à 21 px au 5e centile à 200 boids, 18 à 350 et 17 à 500, et 94 boids sur 350 puis 170 sur 500 sont à moins de 20 px d'un voisin. Un oiseau fait environ 21 px de long et 34 px d'envergure : les silhouettes se chevauchent. La séparation (26 px) est plus petite que l'envergure.
+
+Candidats mesurés (moyenne de 3 graines, 800 frames) :
+
+| Séparation / poids | Effectif | 5e centile du plus proche voisin | Boids à moins de 28 px d'un voisin | Éloignement max du centre |
+| ------------------ | -------- | -------------------------------- | ---------------------------------- | ------------------------- |
+| 26 / 2,5 (actuel)  | 350      | 20,1 px                          | 350 sur 350                        | 0,87                      |
+| 26 / 2,5 (actuel)  | 500      | 16,7 px                          | 500 sur 500                        | 0,89                      |
+| 40 / 2,5           | 500      | 24,4 px                          | 136 sur 500                        | 0,99                      |
+| **40 / 4**         | 350      | 31,3 px                          | 1 sur 350                          | 0,96                      |
+| **40 / 4**         | 500      | 29,4 px                          | 11 sur 500                         | 0,95                      |
+| 48 / 4             | 500      | 30,2 px                          | 11 sur 500                         | 1,03 (sort de la zone)    |
+
+Dans tous les cas, personne n'est isolé (aucun boid sans voisin dans le rayon de perception). Proposition : séparation 40 px et poids 4, qui gardent au moins ~29 px entre voisins jusqu'à 500 boids sans casser la cohésion. À confirmer à l'écran.
+
+### D10. Trajectoires qui exploitent les 3 dimensions — Ouvert
+
+Constat mesuré le 2026-11-07 sur 6 parties de 1200 frames (200 et 500 boids) : la part verticale de la vitesse est de 31 à 36 % (un mouvement réellement 3D donnerait environ 50 %), la nuée est moins étalée en hauteur qu'en largeur (écart type vertical de 30 à 75 px contre 30 à 120 en largeur et profondeur), et dans 3 parties sur 6 elle tourne en bloc autour d'un axe (rotation de 0,48 à 0,60 sur une échelle de 0 à 1) : c'est l'effet « banc de poissons » que décrit Benj.
+
+Mécanismes possibles :
+
+| Mécanisme                              | Principe                                                                                                       | Avantages                                              | Inconvénients                                                                    |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| Cible mobile en 3D                     | Un point virtuel suit un chemin lisse en 3D (montées, descentes, virages) et attire faiblement la nuée          | Trajectoires de groupe, cohérentes, qui montent et descendent comme une vraie nuée | Une règle de plus (le « point d'attraction » qui était hors périmètre) à régler |
+| Champ de courants 3D                   | Un champ d'accélération qui varie lentement dans l'espace et le temps pousse les boids vers le haut et le bas   | Déformations naturelles de la nuée, sans point visible | Plus difficile à régler et à prévoir ; effet moins lisible                       |
+| Bruit de direction par boid (« wander ») | Chaque boid reçoit un petit bruit de direction, avec une composante verticale                                   | Simple                                                 | Agite les individus plus qu'il ne déforme le groupe ; peu de trajectoires collectives |
+| Volume plus haut, sans nouvelle règle  | Agrandir la hauteur de la zone de vol et ajuster cohésion et alignement                                         | Aucune règle de plus                                   | N'empêche pas le tournoiement ; effet limité                                     |
+
+Recommandation : la cible mobile en 3D, éventuellement avec un volume un peu plus haut, car elle produit des trajectoires collectives qui exploitent la hauteur (une nuée réelle monte, plonge et tourne ensemble) avec une seule règle, déterministe et testable. Critères de réussite mesurables proposés : part verticale de la vitesse d'au moins 45 %, rotation en bloc inférieure à 0,3 dans toutes les parties testées, déplacement vertical du centre de la nuée d'au moins 40 % de la demi-hauteur de la zone. Le jugement final reste visuel, par Benj.
+
+### D11. Orientation haut/bas des oiseaux — Proposé
+
+Cause du retournement : l'orientation actuelle est la rotation la plus courte qui amène le nez sur la direction. Elle ne dépend que de la direction, donc le roulis (l'orientation des ailes autour de l'axe du nez) change brusquement dès que la direction passe près de l'arrière, où tous les axes sont possibles.
+
+Correctif : une orientation avec un haut fixe. Le haut du boid est le haut du monde projeté perpendiculairement à sa direction ; ventre vers le bas, ailes à l'horizontale en vol de croisière. Pour éviter un saut quand l'oiseau devient presque vertical (où le haut du monde est ambigu), on garde pour chaque boid un vecteur haut lissé, qui se rapproche de la cible sans la suivre instantanément, et qui est conservé tel quel quand la cible n'existe pas. La fonction est pure et testée : le haut ne se retourne jamais en vol horizontal, y compris quand la direction fait un demi-tour complet. Une inclinaison dans les virages pourrait venir plus tard à partir de l'accélération, mais elle est hors périmètre.
+
 ## Questions Tranchées
+
+Questions du 2026-11-07 après un second essai de Benj :
+
+- **Q10. Haut et bas des oiseaux :** à ajouter, pas de retournement sans sens physique (D11). *Validé.*
+- **Q11. Espacement :** à ajouter, un oiseau garde de l'espace avec ses voisins, surtout entre 350 et 500 boids (D9). *Validé.*
+- **Q12. Trajectoires 3D :** la vision finale est que les boids exploitent les 3 dimensions ; le mécanisme est à choisir (D10). *Ouvert.*
+
+Questions du 2026-11-07 sur le décor, après le retour de Benj sur l'étape 2 :
+
+- **Q6. Style du décor :** silhouettes sombres. *Validé.*
+- **Q7. Caméra :** orbite autour de la scène au-dessus du sol. *Validé.*
+- **Q8. Nuée et décor :** reste au-dessus, pas de dortoir. *Validé.*
+- **Q9. Éléments de la première version :** sol ou champ avec horizon, arbres, lignes électriques. Routes, buissons, bâtiments plus tard. *Validé.*
+
+Questions du cadrage initial :
 
 - **Q1. Battement d'ailes :** non, une forme 3D simple d'oiseau suffit, aucune animation complexe. *Validé.*
 - **Q2. Ciel :** coucher de soleil fixe, sans évolution de luminosité, référence novembre. *Validé.*
@@ -117,12 +184,16 @@ Reste ouvert : les couleurs exactes du dégradé et la forme exacte de l'oiseau,
 
 ## Plan D'Implémentation
 
-**Validé le 2026-11-07.** Chaque étape est un commit séparé, vérifiée par `make check`, sans push. Suivi : TASK-6 (étapes 1 à 4 : TASK-6.1 à TASK-6.4) dans Backlog.md.
+**Approuvé par Benj le 2026-11-07, puis complété par ses trois ajouts le même jour** : le plan compte 8 étapes. Chaque étape est un commit séparé, vérifiée par `make check`, sans push. Le comportement passe avant le décor, car la hauteur de la zone de vol, qui dépend du comportement, fixe la hauteur du sol.
 
-1. **Logique 3D pure.** Paramètres par défaut 3D, force de confinement doux, directions lissées des boids, avec tests Vitest. Livrable : tests verts et benchmark 3D consigné. Aucune interface. Vérification : `npx vitest run tests/js/lab/simulations`, `make check`.
-2. **Rendu minimal.** Fichier de rendu p5 WEBGL : canvas transparent, dégradé CSS de coucher de soleil, boids en forme simple d'oiseau orientée, `orbitControl`. Livrable : la scène tourne dans une page de test. Vérification : mesure des images par seconde dans Chrome headless à 200 et 500 boids, et vérification de l'`orbitControl` ; l'aspect visuel est validé par Benj.
-3. **Intégration à la page.** Section dans `/lab/simulations`, entrypoint Importmap, pause/réinitialisation/nombre de boids, textes FR et EN, pause si `prefers-reduced-motion`, mise à jour de `simulations.md`. Livrable : fonctionnalité visible. Vérification : `make check`, essai manuel.
-4. **Réglage visuel et décision de finition.** Réglage des valeurs par défaut à l'œil, teinte selon la profondeur si nécessaire, décision sur le passage à Three.js d'après les critères de D1. Livrable : mesures et décision consignées.
+1. **Logique 3D pure.** *Faite* (TASK-6.1).
+2. **Rendu minimal.** *Fait* (TASK-6.2), validé par Benj avec réserves.
+3. **Orientation haut/bas des oiseaux** (TASK-6.5, D11). Remplacer l'orientation par rotation la plus courte par une orientation à haut lissé, fonction pure testée. Vérification : tests sur le haut en vol horizontal, sur un demi-tour complet et près de la verticale ; vérification que la rotation appliquée par p5 donne bien le repère attendu ; capture d'écran.
+4. **Comportement 3D** (TASK-6.6, D9 et D10). Espacement : séparation 40 et poids 4 sauf mesure contraire. Trajectoires 3D : mécanisme à décider (Q12). Vérification : les mesures de D9 et de D10 refaites avec les critères proposés, tests Vitest, trajectoires 2D inchangées, validation visuelle de Benj.
+5. **Décor en silhouettes** (TASK-6.7, D7). Générateur pur et déterministe (sol, horizon, arbres, poteaux et câbles) avec tests de placement, puis géométrie fusionnée dessinée par un seul appel ; sol placé sous la zone de vol. Vérification : tests Vitest, mesure des images par seconde avec et sans décor, capture d'écran, validation de Benj.
+6. **Caméra orbitale au-dessus du sol** (TASK-6.8, D6). Remplacer `orbitControl` : état azimut, hauteur d'angle et distance, fonction pure de position de caméra avec limites, souris, tactile et molette. Vérification : tests sur la fonction pure, essai souris et tactile émulé, essai manuel de Benj.
+7. **Intégration à la page** (TASK-6.3). Section dans `/lab/simulations`, entrypoint Importmap, pause, réinitialisation et nombre de boids (100 à 500, 200 par défaut), textes FR et EN, pause si `prefers-reduced-motion`, mise à jour de `simulations.md`.
+8. **Réglage visuel et finitions** (TASK-6.4). Contraste entre oiseaux et sol, couleurs du ciel (Benj : elles ne reflètent pas exactement celles qu'il avait en tête), volume des oiseaux (ils paraissent plats de face), décision finale sur Three.js d'après les mesures.
 
 ## Résultats De L'Étape 1
 
@@ -142,9 +213,35 @@ Rendu minimal fait le 2026-11-07 (TASK-6.2), en attente de la validation visuell
 - **Vérifié** : la rotation de p5 (`rotate(angle, axe)`) donne bien la direction attendue sur 5 cas ; aucune erreur JS ni avertissement ; une capture de la scène montre des oiseaux lisibles, orientés dans le même sens, sur le dégradé.
 - **Caméra** : `orbitControl` répond à un glisser à la souris et à un glisser au doigt (tactile émulé), nuée en pause. Le zoom à la molette modifie l'image mais ce signal est faible : à confirmer à la main.
 - **Images par seconde** (Chrome headless, rendu logiciel donc pessimiste) : 55 images par seconde à 200 boids, 36 à 500 boids.
-- **À régler à l'étape 4** : la nuée est compacte et petite à l'écran (un groupe d'environ 120 px de large dans un canvas de 1000 px). Pistes : caméra plus proche, oiseaux plus grands, nuée moins resserrée (rayon de perception, séparation).
+- **Constat initial, infirmé par Benj** : j'avais jugé la nuée petite et compacte à l'écran (un groupe d'environ 120 px de large dans un canvas de 1000 px). Benj trouve au contraire sa taille et sa densité bonnes.
+
+## Retour De Benj Sur L'Étape 2
+
+2026-11-07, après avoir regardé la page de test.
+
+- **Ciel** : validé. Les couleurs ne reflètent pas exactement celles que Benj avait en tête, à retravailler plus tard.
+- **Forme des oiseaux** : validée pour le moment. Elle ressemble à une forme plate : quand tous les oiseaux font face à la caméra, ils paraissent tout plats, ce qui produit des effets visuels particuliers. À améliorer (volume réel du corps et des ailes).
+- **Taille et densité de la nuée** : bonnes. Le constat de l'étape 2 (« nuée compacte et petite ») ne se confirme donc pas côté ressenti ; à retirer des points à régler à l'étape 4.
+- **Comportement** : « vraiment réussi ».
+- **Décor** : manquant. Benj avait en tête une scène réaliste, avec un sol et des éléments de paysage (arbres, routes, buissons, lignes électriques aériennes). Sans eux, changer l'orientation de la caméra ne veut rien dire.
+
+## Évolution De Périmètre (Tranchée Le 2026-11-07)
+
+Le cadrage validé ne prévoyait ni sol ni paysage (« silhouettes sur un ciel de coucher de soleil »). L'attente de Benj est plus large. Ajouter un décor a des conséquences à décider avant toute implémentation, car elles touchent des décisions déjà prises :
+
+- **Rendu (D1)** : un sol et des éléments de paysage ajoutent beaucoup de géométrie, de la perspective, peut-être du brouillard et des textures. Le choix p5 WEBGL ou Three.js, fondé sur « quelques centaines de boids et aucun décor », est à rouvrir pour un motif nouveau et réel.
+- **Caméra (D6)** : avec un sol, la caméra ne peut plus orbiter librement autour de la nuée (on passerait sous le sol) ; un point de vue à hauteur d'œil dans le paysage est plus naturel.
+- **Comportement (D3)** : la nuée doit rester au-dessus du sol, donc la zone de confinement change de forme et de position.
+- **Style** : un décor en silhouettes sombres sur le ciel (arbres, lignes électriques, horizon) est peu coûteux et cohérent avec l'esthétique actuelle ; un décor 3D réaliste éclairé et coloré est un projet bien plus gros.
+- **Plan** : l'intégration à la page et le réglage visuel dépendaient de ces décisions ; ils passent après deux étapes nouvelles (décor, caméra).
+
+Benj a tranché les questions : voir les tableaux ci-dessus (décor, caméra, nuée et décor) et Q6 à Q9. Le plan est révisé en conséquence.
 
 ## Risques
+
+- **Contraste oiseaux et sol** : oiseaux et sol sont tous deux sombres, donc vus de dessus ou à contre-jour avec le sol derrière eux, les oiseaux risquent de disparaître. À traiter par une teinte distincte du sol (plus chaude, dégradée vers l'horizon) et une hauteur d'angle minimale de la caméra ; à juger à l'écran.
+- **Caméra écrite à la main** : plus de code que `orbitControl`, et le comportement au tactile à vérifier ; atténué par une fonction pure testée.
+- **Proportions** : décor et oiseaux n'ont pas la même échelle réelle ; les hauteurs stylisées sont à régler à l'œil.
 
 - **Coût de p5 sur les machines modestes** : mesuré en CPU seulement, avec un rendu logiciel ; le GPU réel n'est pas mesuré. Marge faible à 500 boids.
 - **Canvas transparent et `orbitControl` au tactile** : non vérifiés, à contrôler en étape 2.

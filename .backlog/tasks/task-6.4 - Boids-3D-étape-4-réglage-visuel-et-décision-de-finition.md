@@ -1,9 +1,10 @@
 ---
 id: TASK-6.4
-title: 'Boids 3D, étape 4 : réglage visuel et décision de finition'
+title: 'Boids 3D, étape 8 : réglage visuel et finitions'
 status: To Do
 assignee: []
 created_date: '2026-11-07 09:24'
+updated_date: '2026-11-07 09:54'
 labels:
   - lab
   - 3d
@@ -18,7 +19,7 @@ ordinal: 14000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Régler à l’œil les valeurs par défaut, la teinte selon la profondeur si la profondeur est peu lisible, et décider d’un éventuel passage à Three.js d’après les critères du document de cadrage. Étape 4 du plan de docs/en-cours/boids-3d-projet.md.
+Régler à l’œil le contraste entre oiseaux et sol, les couleurs du ciel (elles ne reflètent pas exactement celles que Benj avait en tête), le volume des oiseaux (ils paraissent plats de face), et décider d’un éventuel passage à Three.js d’après les critères du document de cadrage. Dernière étape du plan de docs/en-cours/boids-3d-projet.md.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria

@@ -242,6 +242,20 @@ Orientation haut/bas faite le 2026-11-07 (TASK-6.5), en attente de la validation
 - **Vérifié dans le navigateur** : `applyMatrix` de p5 applique exactement la matrice attendue (écart nul sur 5 attitudes), aucune erreur JS, environ 52 images par seconde à 200 boids (Chrome headless, rendu logiciel).
 - **Tests** : 17 tests dans `orientation.test.js` ; 5 défauts réinjectés volontairement sont tous détectés. L'un d'eux ne l'était pas au départ (un boid vertical aurait emprunté la cible du boid précédent) ; un test a été ajouté.
 
+## Résultats De L'Étape 5
+
+Décor en silhouettes fait le 2026-11-07, avant la fin de l'étape 4 (TASK-6.7), en attente de la validation visuelle de Benj.
+
+- **Fichiers** : `assets/scripts/lab/simulations/boids3d/landscape.js` (générateur pur et déterministe, graine fixe) ; le rendu dans `boids3d/sketch.js`.
+- **Contenu** : un sol (disque plat de 6000 unités), une couronne de collines à l'horizon, 78 arbres (conifères et feuillus, par bosquets), deux lignes de poteaux (11 poteaux chacune) avec leurs câbles qui s'affaissent. Environ 7 000 triangles au total, construits une seule fois.
+- **Rendu** : deux géométries fusionnées (le sol, le reste du décor), donc deux appels de dessin par frame quel que soit le nombre d'arbres. Le plan lointain de la caméra est repoussé à 15 000 pour voir l'horizon.
+- **Sol sous la zone de vol** : il est à 421 unités sous le centre de la scène, soit la limite basse de la nuée (1,1 fois la demi-hauteur) plus la hauteur du plus grand élément (150) plus 40 de marge. Le test vérifie qu'aucun sommet du décor n'entre dans l'ellipsoïde de vol.
+- **Caméra de départ abaissée** : à 91 unités du sol, regardant vers la nuée. À l'altitude de la nuée, les arbres sont vus de dessus et se confondent avec le sol ; près du sol, ils se détachent sur le ciel comme sur une photographie de murmuration.
+- **Couleurs** : une géométrie p5 garde la couleur active au moment où elle est construite ; un `fill()` appelé ensuite au dessin ne la change pas. Le sol, le décor et les oiseaux ont donc chacun leur couleur fixée avant leur construction (oiseaux les plus sombres, décor un peu plus clair, sol plus clair encore).
+- **Mesuré** (Chrome headless, rendu logiciel donc pessimiste) : 42 images par seconde à 200 boids et 31 à 500, contre 52 et 36 sans le décor. Aucune erreur JS.
+- **Limite connue** : `orbitControl` n'a pas de limite d'angle, donc la caméra peut passer sous le sol, qui la masque alors entièrement. C'est l'objet de l'étape « caméra » (TASK-6.8).
+- **Tests** : 18 tests dans `landscape.test.js` ; 5 défauts réinjectés sur 6 sont détectés. Le sixième (retirer la règle « aucun arbre sous la nuée ») ne l'est pas : avec ce placement par bosquets, la règle ne se déclenche presque jamais, donc les tests ne peuvent pas la faire échouer. C'est une garde défensive non exercée.
+
 ## Retour De Benj Sur L'Étape 2
 
 2026-11-07, après avoir regardé la page de test.

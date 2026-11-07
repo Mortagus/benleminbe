@@ -32,6 +32,10 @@ Travail réalisé :
 - rendu p5 : mesuré, 60 images par seconde jusqu'à 1000 boids, 30 à 2500, 13,5 à 5000 ; pas de rendu simplifié, la limite à 1000 suffit ;
 - tests, `sketch.js` et `simulations.md` : adaptés.
 
+## Mobile À Retravailler
+
+Retour de Benj le 2026-11-07, après test en production sur téléphone : le canvas est très petit (peu de boids visibles en même temps) et les contrôles sont pénibles. À reprendre plus tard, aucune décision prise. Suivi : TASK-5 dans Backlog.md. Le tactile ne gère aujourd'hui que le « clic gauche » (voir `simulations.md`).
+
 ## Piste 3D
 
 Idée : une scène 3D avec quelques centaines de boids imitant une nuée d'oiseaux, silhouettes découpées sur un ciel de coucher de soleil.

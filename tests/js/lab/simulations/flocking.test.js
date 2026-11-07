@@ -2,6 +2,8 @@ import { describe, expect, test } from 'vitest';
 import {
     BOUNDARY_MARGIN,
     DEFAULT_PARAMETERS,
+    DEFAULT_PARAMETERS_3D,
+    SCENE_SIZE_3D,
     allocateFlock,
     buildGrid,
     computeAcceleration,
@@ -10,6 +12,7 @@ import {
     resizeFlock,
     smoothAngle,
     stepFlock,
+    updateDirections,
 } from '../../../../assets/scripts/lab/simulations/boids/flocking.js';
 
 const parameters = { ...DEFAULT_PARAMETERS };
@@ -58,6 +61,17 @@ function pointerAccelerationOn(member, pointer) {
 }
 
 const size = [400, 300];
+
+function readFlockAcceleration(flock) {
+    return [...flock.acc];
+}
+
+// Distance of each boid from the centre of the playfield, as a fraction of the radius of the inscribed ellipsoid.
+function reachOfEach(flock, field) {
+    return Array.from({ length: flock.count }, (_, i) =>
+        Math.sqrt(field.reduce((sum, extent, d) => sum + ((flock.pos[i * flock.dim + d] - extent / 2) / (extent / 2)) ** 2, 0)),
+    );
+}
 
 describe('boids flocking rules', () => {
     test('a lone boid receives no acceleration', () => {
@@ -455,6 +469,257 @@ describe('boids spatial grid', () => {
                 expect(next.acc[i * 2 + d]).toBeCloseTo(naive[d] * responsiveness, 5);
             }
         }
+    });
+});
+
+describe('boids 2D behaviour is unchanged by the 3D work', () => {
+    test('confinement is off by default, so boids wrap around', () => {
+        expect(DEFAULT_PARAMETERS.confinementWeight).toBe(0);
+    });
+
+    // Reference values recorded from the implementation validated before the 3D work (commit 4e8bce9).
+    test('a seeded 2D flock follows the same trajectories as before', () => {
+        const field = [900, 506];
+        let flock = createFlock(100, seededRandom(31), field);
+
+        for (let frame = 0; frame < 120; frame++) {
+            flock = stepFlock(flock, parameters, field);
+        }
+
+        const expected = [
+            [0, 123.260666, 322.196716, 1.856991, 3.046019],
+            [1, 491.726318, 517.40686, -3.443644, 0.52571],
+            [50, 129.108932, 296.722595, 1.787505, 3.14028],
+            [99, 816.757874, 273.19931, 1.430175, 3.245034],
+        ];
+
+        for (const [index, x, y, vx, vy] of expected) {
+            const actual = readBoid(flock, index);
+
+            expect(actual.x).toBeCloseTo(x, 4);
+            expect(actual.y).toBeCloseTo(y, 4);
+            expect(actual.vx).toBeCloseTo(vx, 4);
+            expect(actual.vy).toBeCloseTo(vy, 4);
+        }
+    });
+});
+
+describe('boids soft confinement', () => {
+    const confining = { ...parameters, confinementWeight: 4, smoothing: 0 };
+    const alone = (member, testParameters = confining, field = size) => stepFlock(flockOf(member), testParameters, field);
+
+    test('does not touch a boid inside the inner part of the ellipsoid', () => {
+        const confined = readBoid(alone(boid(200, 150, cruising, 0)), 0);
+        const free = readBoid(alone(boid(200, 150, cruising, 0), { ...confining, confinementWeight: 0 }), 0);
+
+        expect(confined.vx).toBeCloseTo(free.vx);
+        expect(confined.vy).toBeCloseTo(free.vy);
+    });
+
+    test('pushes a boid back towards the centre once it goes beyond the start radius', () => {
+        // 190 of 200 px from the centre along x: 0.95 of the radius, past the 0.7 start.
+        const pushed = readBoid(alone(boid(390, 150, cruising, 0)), 0);
+
+        expect(pushed.ax).toBeLessThan(0);
+        expect(pushed.vx).toBeLessThan(cruising);
+        expect(pushed.ay).toBeCloseTo(0);
+    });
+
+    test('pushes harder the further the boid is from the centre', () => {
+        // 150 and 195 px from the centre along x: 0.75 and 0.975 of the radius, both past the 0.7 start.
+        const near = readBoid(alone(boid(350, 150)), 0);
+        const far = readBoid(alone(boid(395, 150)), 0);
+
+        expect(Math.abs(far.ax)).toBeGreaterThan(Math.abs(near.ax));
+        expect(near.ax).toBeLessThan(0);
+    });
+
+    test('never pushes harder than maxForce times its weight, however far the boid is', () => {
+        const cap = parameters.maxForce * confining.confinementWeight;
+
+        for (const x of [400, 600, 5000]) {
+            expect(Math.hypot(...[readBoid(alone(boid(x, 150)), 0).ax])).toBeCloseTo(cap, 5);
+        }
+    });
+
+    test('does not wrap boids that leave the playfield, it brings them back instead', () => {
+        // Without confinement a boid this far out would reappear on the other side.
+        const confined = readBoid(alone(boid(500, 150)), 0);
+        const wrapped = readBoid(alone(boid(500, 150), { ...confining, confinementWeight: 0 }), 0);
+
+        expect(confined.x).toBeGreaterThan(400);
+        // 500 is past the wrap limit of 425 on a 400 px wide playfield: it comes back 450 px lower.
+        expect(wrapped.x).toBeCloseTo(50);
+    });
+
+    test('points towards the centre on every axis in three dimensions', () => {
+        const flock = allocateFlock(1, 3);
+        const field = [400, 300, 200];
+
+        flock.pos.set([380, 20, 190]);
+
+        const pushed = readFlockAcceleration(stepFlock(flock, confining, field));
+
+        expect(pushed[0]).toBeLessThan(0);
+        expect(pushed[1]).toBeGreaterThan(0);
+        expect(pushed[2]).toBeLessThan(0);
+    });
+
+    test('a flat playfield gives a flat ellipsoid', () => {
+        // 100 px from the centre is 0.2 of the radius along x but 0.9 along the thin y axis.
+        const flat = [1000, 100];
+        const alongX = readBoid(alone(boid(600, 50), confining, flat), 0);
+        const alongY = readBoid(alone(boid(500, 95), confining, flat), 0);
+
+        expect(alongX.ax).toBeCloseTo(0);
+        expect(alongY.ay).toBeLessThan(0);
+    });
+
+    test('a 3D flock stays inside the scene and does not overlap', () => {
+        const field = SCENE_SIZE_3D;
+        let flock = createFlock(DEFAULT_PARAMETERS_3D.count, seededRandom(5), field);
+        let farthest = 0;
+
+        for (let frame = 0; frame < 800; frame++) {
+            flock = stepFlock(flock, DEFAULT_PARAMETERS_3D, field);
+
+            if (frame >= 200 && frame % 20 === 0) {
+                farthest = Math.max(farthest, ...reachOfEach(flock, field));
+            }
+        }
+
+        expect(farthest).toBeLessThan(1.1);
+
+        let overlapping = 0;
+
+        for (let i = 0; i < flock.count; i++) {
+            for (let j = i + 1; j < flock.count; j++) {
+                if (Math.hypot(flock.pos[i * 3] - flock.pos[j * 3], flock.pos[i * 3 + 1] - flock.pos[j * 3 + 1], flock.pos[i * 3 + 2] - flock.pos[j * 3 + 2]) < 8) {
+                    overlapping++;
+                }
+            }
+        }
+
+        expect(overlapping).toBe(0);
+    });
+
+    test('a 3D flock stays together as a group', () => {
+        const field = SCENE_SIZE_3D;
+        let flock = createFlock(DEFAULT_PARAMETERS_3D.count, seededRandom(6), field);
+
+        for (let frame = 0; frame < 600; frame++) {
+            flock = stepFlock(flock, DEFAULT_PARAMETERS_3D, field);
+        }
+
+        // Every boid has a good number of others within perception range, so nobody is flying alone.
+        let alone = 0;
+
+        for (let i = 0; i < flock.count; i++) {
+            let near = 0;
+
+            for (let j = 0; j < flock.count; j++) {
+                if (i !== j && Math.hypot(flock.pos[i * 3] - flock.pos[j * 3], flock.pos[i * 3 + 1] - flock.pos[j * 3 + 1], flock.pos[i * 3 + 2] - flock.pos[j * 3 + 2]) < DEFAULT_PARAMETERS_3D.perceptionRadius) {
+                    near++;
+                }
+            }
+
+            if (near === 0) {
+                alone++;
+            }
+        }
+
+        expect(alone).toBe(0);
+    });
+});
+
+describe('boid directions for drawing', () => {
+    const unit = (directions, index, dim) => Math.hypot(...directions.subarray(index * dim, index * dim + dim));
+
+    test('a new boid takes the direction of its velocity at once', () => {
+        const flock = flockOf(boid(0, 0, 3, 4));
+        const directions = updateDirections(new Float32Array(2), flock, 0.25);
+
+        expect(directions[0]).toBeCloseTo(0.6);
+        expect(directions[1]).toBeCloseTo(0.8);
+    });
+
+    test('turns part of the way towards the new velocity and stays a unit vector', () => {
+        const flock = flockOf(boid(0, 0, 0, 5));
+        const directions = updateDirections(Float32Array.of(1, 0), flock, 0.5);
+
+        // (1, 0) + ((0, 1) - (1, 0)) * 0.5 = (0.5, 0.5), brought back to length 1.
+        expect(directions[0]).toBeCloseTo(Math.SQRT1_2);
+        expect(directions[1]).toBeCloseTo(Math.SQRT1_2);
+        expect(unit(directions, 0, 2)).toBeCloseTo(1);
+    });
+
+    test('converges to the velocity direction over several calls', () => {
+        const flock = flockOf(boid(0, 0, 0, 5));
+        let directions = Float32Array.of(1, 0);
+
+        for (let call = 0; call < 60; call++) {
+            directions = updateDirections(directions, flock, 0.25);
+        }
+
+        expect(directions[0]).toBeCloseTo(0, 3);
+        expect(directions[1]).toBeCloseTo(1, 3);
+    });
+
+    test('keeps the direction of a boid that does not move', () => {
+        const flock = flockOf(boid(0, 0, 0, 0));
+        const directions = updateDirections(Float32Array.of(0, -1), flock, 0.5);
+
+        expect([...directions]).toEqual([0, -1]);
+    });
+
+    test('gives a motionless new boid a default axis instead of a zero vector', () => {
+        const directions = updateDirections(new Float32Array(2), flockOf(boid(0, 0, 0, 0)), 0.5);
+
+        expect(unit(directions, 0, 2)).toBeCloseTo(1);
+    });
+
+    test('does not produce NaN when the boid turns exactly the opposite way', () => {
+        const flock = flockOf(boid(0, 0, -5, 0));
+        const directions = updateDirections(Float32Array.of(1, 0), flock, 0.5);
+
+        expect(Number.isNaN(directions[0])).toBe(false);
+        expect(directions[0]).toBeCloseTo(-1);
+        expect(unit(directions, 0, 2)).toBeCloseTo(1);
+    });
+
+    test('works in three dimensions', () => {
+        const flock = allocateFlock(1, 3);
+
+        flock.vel.set([0, 0, 2]);
+
+        const directions = updateDirections(Float32Array.of(1, 0, 0), flock, 0.5);
+
+        expect(unit(directions, 0, 3)).toBeCloseTo(1);
+        expect(directions[0]).toBeCloseTo(Math.SQRT1_2);
+        expect(directions[2]).toBeCloseTo(Math.SQRT1_2);
+    });
+
+    test('updates the array in place when the flock size did not change', () => {
+        const flock = flockOf(boid(0, 0, 0, 5), boid(0, 0, 5, 0));
+        const directions = new Float32Array(4);
+
+        expect(updateDirections(directions, flock, 0.5)).toBe(directions);
+    });
+
+    test('keeps the directions of existing boids when the flock grows or shrinks', () => {
+        const flock = flockOf(boid(0, 0, 0, 5), boid(0, 0, 5, 0), boid(0, 0, 0, -5));
+        const directions = Float32Array.of(1, 0, 0, 1);
+
+        const grown = updateDirections(directions, flock, 0);
+
+        expect(grown).toHaveLength(6);
+        expect([...grown.subarray(0, 4)]).toEqual([1, 0, 0, 1]);
+        expect(grown[5]).toBeCloseTo(-1);
+
+        const shrunk = updateDirections(grown, flockOf(boid(0, 0, 0, 5)), 0);
+
+        expect(shrunk).toHaveLength(2);
+        expect([...shrunk]).toEqual([1, 0]);
     });
 });
 

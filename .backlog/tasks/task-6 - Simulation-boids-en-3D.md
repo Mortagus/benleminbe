@@ -1,9 +1,11 @@
 ---
 id: TASK-6
 title: Simulation boids en 3D
-status: To Do
-assignee: []
+status: In Progress
+assignee:
+  - '@claude'
 created_date: '2026-11-07 09:24'
+updated_date: '2026-11-07 09:29'
 labels:
   - lab
   - 3d
@@ -29,3 +31,9 @@ Ajouter au Lab une simulation 3D d’une nuée d’oiseaux (quelques centaines d
 - [ ] #4 Pause, réinitialisation et nombre de boids (100 à 500) sont disponibles, avec textes FR et EN
 - [ ] #5 `docs/lab/simulations.md` et `docs/en-cours/boids-3d-projet.md` sont à jour, `make check` passe
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+2026-11-07 : étape 1 terminée (TASK-6.1). Prochaine : TASK-6.2, rendu minimal p5 WEBGL.
+<!-- SECTION:NOTES:END -->

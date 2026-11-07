@@ -43,6 +43,31 @@ export const DEFAULT_PARAMETERS = Object.freeze({
     smoothing: 0.6,
     pointerRadius: 150,
     pointerWeight: 3,
+    // Soft confinement: 0 disables it and boids wrap around the playfield instead. Otherwise boids are pushed back
+    // towards the centre of the ellipsoid inscribed in the playfield, from `confinementStart` (a fraction of its radius)
+    // to its surface, where the push reaches `maxForce * confinementWeight`.
+    confinementWeight: 0,
+    confinementStart: 0.7,
+});
+
+/**
+ * Playfield of the 3D simulation (width, height, depth). It is the bounding box of the ellipsoid in which the
+ * confinement keeps the flock; the camera looks at its centre.
+ */
+export const SCENE_SIZE_3D = Object.freeze([700, 420, 700]);
+
+/**
+ * Starting point for the 3D simulation: with the 2D radii a few hundred boids would almost never see each other in
+ * this volume. Measured over 12 runs of 800 frames (100, 200 and 500 boids, 4 seeds): the flock stays in one group,
+ * never goes beyond 0.92 of the confinement radius and keeps at least 13 px between boids. To be tuned by eye.
+ */
+export const DEFAULT_PARAMETERS_3D = Object.freeze({
+    ...DEFAULT_PARAMETERS,
+    count: 200,
+    perceptionRadius: 100,
+    separationRadius: 26,
+    maxSpeed: 4,
+    confinementWeight: 4,
 });
 
 /**
@@ -507,6 +532,39 @@ function accelerationInto(out, flock, index, parameters, workspace, grid) {
     addCruise(out, flock, index, parameters);
 }
 
+/**
+ * Adds the soft confinement: a push towards the centre of the ellipsoid inscribed in the playfield, which grows
+ * smoothly from nothing at `confinementStart` to `maxForce * confinementWeight` at the surface and stays there
+ * beyond it. Distances are normalised by the half extent on each axis, so a flat playfield gives a flat ellipsoid.
+ */
+function addConfinement(out, flock, index, size, parameters) {
+    const { dim, pos } = flock;
+    const base = index * dim;
+    let normalisedSquared = 0;
+    let distanceSquared = 0;
+
+    for (let d = 0; d < dim; d++) {
+        const offset = pos[base + d] - size[d] / 2;
+
+        normalisedSquared += (offset / (size[d] / 2)) ** 2;
+        distanceSquared += offset * offset;
+    }
+
+    const start = parameters.confinementStart;
+    const reach = Math.sqrt(normalisedSquared);
+
+    if (reach <= start || distanceSquared === 0) {
+        return;
+    }
+
+    const distance = Math.sqrt(distanceSquared);
+    const strength = Math.min((reach - start) / (1 - start), 1) * parameters.maxForce * parameters.confinementWeight;
+
+    for (let d = 0; d < dim; d++) {
+        out[d] -= ((pos[base + d] - size[d] / 2) / distance) * strength;
+    }
+}
+
 /** Writes into `out` the force exerted by the pointer: it fades to nothing at `pointerRadius`. */
 function pointerAccelerationInto(out, flock, index, pointer, parameters) {
     out.fill(0);
@@ -597,11 +655,81 @@ export function smoothAngle(current, target, factor) {
 }
 
 /**
+ * Moves a unit direction per boid towards the direction of its velocity, by a fraction of the way each call, so
+ * a drawn boid turns smoothly. Meant for drawing: it does not affect the simulation. Unlike an angle, a direction
+ * vector has no wrap-around and no gimbal lock, and works in any number of dimensions.
+ *
+ * A boid without a direction yet (new, or the array was just created) takes its velocity direction at once. A boid
+ * that does not move keeps its direction.
+ *
+ * @param {Float32Array} directions Unit vectors, `flock.dim` values per boid; may be shorter or longer than the flock.
+ * @param {Flock} flock
+ * @param {number} factor Fraction of the remaining turn applied per call, from 0 to 1.
+ * @returns {Float32Array} The same array when its length already matches the flock, otherwise a new one that keeps
+ *   the directions of the boids still present.
+ */
+export function updateDirections(directions, flock, factor) {
+    const { count, dim, vel } = flock;
+    let result = directions;
+
+    if (directions.length !== count * dim) {
+        result = new Float32Array(count * dim);
+        result.set(directions.subarray(0, Math.min(directions.length, count * dim)));
+    }
+
+    for (let i = 0; i < count; i++) {
+        const base = i * dim;
+        let speedSquared = 0;
+        let currentSquared = 0;
+
+        for (let d = 0; d < dim; d++) {
+            speedSquared += vel[base + d] * vel[base + d];
+            currentSquared += result[base + d] * result[base + d];
+        }
+
+        if (speedSquared === 0) {
+            if (currentSquared === 0) {
+                result[base] = 1;
+            }
+
+            continue;
+        }
+
+        const speed = Math.sqrt(speedSquared);
+
+        if (currentSquared === 0) {
+            for (let d = 0; d < dim; d++) {
+                result[base + d] = vel[base + d] / speed;
+            }
+
+            continue;
+        }
+
+        let lengthSquared = 0;
+
+        for (let d = 0; d < dim; d++) {
+            const target = vel[base + d] / speed;
+
+            result[base + d] += (target - result[base + d]) * factor;
+            lengthSquared += result[base + d] * result[base + d];
+        }
+
+        // Turning exactly the opposite way would cancel out: fall back to the target direction.
+        for (let d = 0; d < dim; d++) {
+            result[base + d] = lengthSquared < 1e-12 ? vel[base + d] / speed : result[base + d] / Math.sqrt(lengthSquared);
+        }
+    }
+
+    return result;
+}
+
+/**
  * Advances the simulation by one frame and returns a new flock; the previous one is left untouched.
  * Every acceleration is computed from the same snapshot, so the result does not depend on boid order.
  * Neighbours are looked up through a grid rebuilt each frame, so the cost grows roughly linearly with the flock size.
  * The flocking acceleration is blended with the previous one to avoid abrupt turns; the pointer is applied as is
- * so that clicks stay responsive.
+ * so that clicks stay responsive. With `confinementWeight` above zero, boids are pushed back into the playfield
+ * instead of wrapping around it.
  *
  * @param {Flock} flock
  * @param {ArrayLike<number>} size Extent of the playfield on each axis.
@@ -614,12 +742,18 @@ export function stepFlock(flock, parameters, size, pointer = null) {
     const workspace = createWorkspace(dim, parameters.maxNeighbours, count);
     const grid = buildGrid(flock, Math.max(parameters.perceptionRadius, 1), size);
     const responsiveness = 1 - parameters.smoothing;
+    const confined = parameters.confinementWeight > 0;
 
     for (let i = 0; i < count; i++) {
         const base = i * dim;
         let speedSquared = 0;
 
         accelerationInto(workspace.flocking, flock, i, parameters, workspace, grid);
+
+        if (confined) {
+            addConfinement(workspace.flocking, flock, i, size, parameters);
+        }
+
         pointerAccelerationInto(workspace.pointer, flock, i, pointer, parameters);
 
         for (let d = 0; d < dim; d++) {
@@ -636,7 +770,10 @@ export function stepFlock(flock, parameters, size, pointer = null) {
 
         for (let d = 0; d < dim; d++) {
             next.vel[base + d] *= limit;
-            next.pos[base + d] = wrap(flock.pos[base + d] + next.vel[base + d], size[d]);
+            // Wrapping is done before the value is rounded to float32, as it always was.
+            const position = flock.pos[base + d] + next.vel[base + d];
+
+            next.pos[base + d] = confined ? position : wrap(position, size[d]);
         }
     }
 

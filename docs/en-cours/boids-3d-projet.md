@@ -124,6 +124,15 @@ Reste ouvert : les couleurs exactes du dégradé et la forme exacte de l'oiseau,
 3. **Intégration à la page.** Section dans `/lab/simulations`, entrypoint Importmap, pause/réinitialisation/nombre de boids, textes FR et EN, pause si `prefers-reduced-motion`, mise à jour de `simulations.md`. Livrable : fonctionnalité visible. Vérification : `make check`, essai manuel.
 4. **Réglage visuel et décision de finition.** Réglage des valeurs par défaut à l'œil, teinte selon la profondeur si nécessaire, décision sur le passage à Three.js d'après les critères de D1. Livrable : mesures et décision consignées.
 
+## Résultats De L'Étape 1
+
+Logique 3D pure faite le 2026-11-07 (TASK-6.1).
+
+- **Confinement doux** : force progressive vers le centre de l'ellipsoïde de la scène, plafonnée à `maxForce * confinementWeight`, désactivée par défaut (`confinementWeight` à 0), donc le 2D ne change pas.
+- **Paramètres 3D** : `SCENE_SIZE_3D` (700×420×700) et `DEFAULT_PARAMETERS_3D` (200 boids, perception 100, séparation 26, vitesse max 4, confinement 4). Mesurés sur 12 parties de 800 frames : un seul groupe, jamais au-delà de 0,92 du rayon de confinement, au moins 13 px entre boids. Coût du calcul avec ces réglages : 0,4 à 0,5 ms par frame à 100 boids, 1,1 à 1,6 ms à 200, 4,4 à 5,7 ms à 500. À 500 boids, le calcul et le rendu p5 (environ 5 ms) approchent ensemble le budget d'une frame, ce qui justifie le plafond du curseur à 500. Ces valeurs sont un point de départ à régler à l'œil à l'étape 4.
+- **Directions lissées** : `updateDirections`, un vecteur unitaire par boid, sans saut d'angle.
+- **2D inchangé** : trajectoires strictement identiques à celles d'avant le projet, protégées par un test de non-régression.
+
 ## Risques
 
 - **Coût de p5 sur les machines modestes** : mesuré en CPU seulement, avec un rendu logiciel ; le GPU réel n'est pas mesuré. Marge faible à 500 boids.

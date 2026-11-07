@@ -18,7 +18,7 @@ Livré (commits `6fe7817`, `abab182`, `e4a8086`) :
 
 Constat à garder en tête : sans perturbation, le groupe converge vers un bloc unique qui vole en ligne droite (polarisation proche de 1). Le pointeur permet de le casser. Un petit bruit de direction par boid (« wander ») est une piste possible, qui demanderait de passer un générateur aléatoire à `stepFlock`.
 
-Point technique ouvert : `tests/js/lab/dnd/turn-order.test.js` échoue de façon intermittente (timeout, plusieurs tests différents) et peut bloquer le hook pre-commit. Sans lien avec les boids ; à traiter séparément.
+Point technique ouvert : des tests JS (DnD, Simon, et même ceux des boids) expirent de façon intermittente sous charge et peuvent bloquer le hook pre-commit. Sans lien avec les boids ; un contournement est en place, voir [vitest-timeouts-notes.md](vitest-timeouts-notes.md).
 
 ## Lot B : Jusqu'à 5000 Boids
 

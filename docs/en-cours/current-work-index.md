@@ -12,6 +12,7 @@ Ce dossier contient les documents qui servent encore de fil de reprise, de backl
 - [PageSpeed Protocol](pagespeed-protocol.md) : protocole de suivi PageSpeed et baseline initiale.
 - [Reprise du chantier prive du 2026-05-29](private-network-reprise-2026-05-29.md) : point de reprise pour la suite des regles de fusion automatique.
 - [Suivi du chantier privé du 2026-05-28](private-network-morning-2026-05-28.md) : récapitulatif du travail du matin sur la zone privée et prochaine étape.
+- [Timeouts intermittents des tests Vitest](vitest-timeouts-notes.md) : contournement `testTimeout` en place, cause à identifier et contournement à retirer.
 - [Strategie de test import reseau prive](private-network-import-test-spec.md) : fixtures minimales et logique de test pour les imports vCard et LinkedIn CSV.
 
 ## Regle De Sortie

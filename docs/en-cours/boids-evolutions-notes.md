@@ -2,7 +2,7 @@
 
 Note de suivi des évolutions envisagées pour la simulation des boids du Lab. La référence stable de l'existant est [simulations.md](../lab/simulations.md).
 
-Statut au 2026-11-07 : le lot A est livré, le lot B est livré (suivi : TASK-3 dans Backlog.md) avec un curseur limité à 1000 boids, la piste 3D est un projet séparé à cadrer.
+Statut au 2026-11-07 : le lot A est livré, le lot B est livré (suivi : TASK-3 dans Backlog.md) avec un curseur limité à 1000 boids, la 3D est un projet séparé, cadré dans boids-3d-projet.md (plan approuvé, suivi TASK-6).
 
 ## État Actuel
 
@@ -38,30 +38,8 @@ Retour de Benj le 2026-11-07, après test en production sur téléphone : le can
 
 ## Piste 3D
 
-Idée : une scène 3D avec quelques centaines de boids imitant une nuée d'oiseaux, silhouettes découpées sur un ciel de coucher de soleil.
-
-Éléments de cadrage déjà établis :
-
-- le calcul passe de 2D à 3D pour environ 1,5 fois plus d'arithmétique ; les règles et le test de champ de vision (produit scalaire) restent valables ; la grille voisine passe de 9 à 27 cellules ;
-- le gros du travail est le rendu et la scène : caméra, ciel en dégradé, silhouettes, battement d'ailes, inclinaison dans les virages ;
-- le rebouclage en tore est peu naturel en 3D : une nuée réelle tourne autour d'un point d'attraction (dortoir) ou est ramenée en douceur vers une zone.
-
-### Décisions À Prendre
-
-| #   | Décision                 | Options                                                                                                                                                                                          | Recommandation                                                                                                           |
-| --- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
-| 1   | Bibliothèque de rendu    | p5.js en mode WEBGL (déjà présent, aucune nouvelle dépendance, plus limité pour ciel et effets) ou Three.js (mieux adapté, mais nouvelle dépendance dans l'importmap, plusieurs centaines de Ko) | Commencer en p5 WEBGL ; passer à Three.js si le rendu ne suffit pas, la logique pure restant inchangée                   |
-| 2   | Emplacement              | Deuxième simulation sur `/lab/simulations`, à côté du 2D, ou remplacement du 2D                                                                                                                  | Deuxième simulation, le 2D reste comme version pédagogique                                                               |
-| 3   | Code partagé ou dupliqué | `flocking3d.js` séparé (simple, duplication des règles) ou version générique en N dimensions (pas de duplication, plus d'abstraction)                                                            | Tranché le 2026-11-07 : version générique en N dimensions (les règles sont écrites sur `dim`)                          |
-| 4   | Ordre avec le lot B      | Lot B en 2D d'abord, ou lot B conçu dès maintenant avec une dimension paramétrable                                                                                                               | Tranché le 2026-11-07 : lot B en 2D d'abord, avec un stride `dim` paramétrable dans les tableaux plats                 |
-| 5   | Méthode                  | Utiliser `~/.ai-context/project-start.md` pour cadrer le chantier, ou procéder directement                                                                                                       | Le chantier est large et touche une dépendance possible : le workflow prévoit de le proposer, sans le lancer sans accord |
-
-### Questions Ouvertes
-
-- Réalisme visé : se contenter des comportements déjà présents (voisins topologiques, angle mort, lissage), ou ajouter le point d'attraction et l'inclinaison dans les virages ?
-- Le bruit de direction (« wander ») doit-il entrer dans le périmètre, en 2D comme en 3D ?
-- Faut-il une tâche Backlog.md pour le lot B et pour la 3D ? Aucun outil Backlog.md n'était exposé dans la session du 2026-11-06 : la tâche est à créer par Benj ou à reprendre quand le MCP est disponible.
+Projet séparé, cadré dans [boids-3d-projet.md](boids-3d-projet.md) : périmètre et décisions validés, plan d'implémentation approuvé (TASK-6 dans Backlog.md). Les anciennes décisions 3, 4 et 5 de cette note sont tranchées (voir ce document).
 
 ## Prochaine Action
 
-Finir le lot B (TASK-3.3 : mesure du rendu p5, puis curseur à 5000). La piste 3D est un projet séparé : décisions 1, 2 et 5 à reprendre quand elle sera cadrée.
+Lot B et unités des curseurs terminés. Prochaine action : suivre le plan de [boids-3d-projet.md](boids-3d-projet.md), étape en cours indiquée dans TASK-6.

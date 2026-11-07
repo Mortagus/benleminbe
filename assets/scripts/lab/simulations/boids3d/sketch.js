@@ -1,7 +1,7 @@
 import p5 from 'p5';
 import { SCENE_SIZE_3D, createFlock, resizeFlock, stepFlock, updateDirections } from '../boids/flocking.js';
 import { cameraPosition, limitCamera, orbit, stateFromPosition, zoom } from './camera.js';
-import { buildLandscape } from './landscape.js';
+import { buildEnvironment, buildLandscape } from './landscape.js';
 import { orientationMatrix, updateUps } from './orientation.js';
 import { roostPosition } from './roost.js';
 
@@ -30,9 +30,10 @@ const FAR_PLANE = 15000;
 // can still be moved by the user.
 const CAMERA_HEIGHT_ABOVE_GROUND = 91;
 const CAMERA_DISTANCE = 1150;
-// The camera aims a little below the centre of the flock (y points down), so that the ground and the trees stay in the
-// frame now that the flight zone is tall and the ground is far below its centre.
-const LOOK_AT_HEIGHT = 200;
+// The camera aims at the middle of the flock's range (y points down, the zone is centred on 0 and a little low): this puts
+// the horizon at about three quarters of the height of the image, so the ground takes a quarter of it and the flock, which
+// goes down to the height of the camera, is seen against the sky and the trees.
+const LOOK_AT_HEIGHT = 30;
 // Orbit camera: it can go anywhere around the scene, but never under the ground, nearer than a flock's width or beyond the
 // ring of hills (at 4800 units).
 const CAMERA_TARGET = Object.freeze([0, LOOK_AT_HEIGHT, 0]);
@@ -57,7 +58,7 @@ const FIELD_OF_VIEW = Math.PI / 3.2;
  */
 export function startBoids3dSketch(container, parameters, initialState, options = {}) {
     const birdScale = options.birdScale ?? DEFAULT_BIRD_SCALE;
-    const state = { paused: initialState.paused, flock: null, directions: new Float32Array(0), ups: new Float32Array(0), bird: null, ground: null, scenery: null, frame: 0, camera: null, cameraLimits: null };
+    const state = { paused: initialState.paused, flock: null, directions: new Float32Array(0), ups: new Float32Array(0), bird: null, ground: null, scenery: null, environment: null, frame: 0, camera: null, cameraLimits: null };
     const attitude = new Float64Array(16);
     const centre = SCENE_SIZE_3D.map((extent) => extent / 2);
     let instance = null;
@@ -142,6 +143,15 @@ export function startBoids3dSketch(container, parameters, initialState, options 
         p.applyMatrix(...attitude);
         p.model(state.bird);
         p.pop();
+    }
+
+    /** One step of the simulation: the roost pulls the whole flock gently along a path through the three dimensions. */
+    function advanceFlock(count) {
+        const roost = { position: roostPosition(state.frame, SCENE_SIZE_3D), mode: 'pull' };
+
+        state.frame++;
+        state.flock = resizeFlock(state.flock, count, Math.random, SCENE_SIZE_3D);
+        state.flock = stepFlock(state.flock, parameters, SCENE_SIZE_3D, roost, state.environment);
     }
 
     // The heading and the up of every boid, smoothed for drawing only.
@@ -250,6 +260,8 @@ export function startBoids3dSketch(container, parameters, initialState, options 
                 state.cameraLimits,
             );
             attachCameraControls();
+            // The trees and the ground, as what the flock goes round (in the coordinates of the flock, not of the landscape).
+            state.environment = buildEnvironment(landscape);
             state.ground = buildTriangles(p, GROUND_COLOR, landscape.ground);
             state.scenery = buildTriangles(p, SCENERY_COLOR, landscape.horizon, landscape.silhouettes);
             state.flock = createFlock(parameters.count, Math.random, SCENE_SIZE_3D);
@@ -258,12 +270,7 @@ export function startBoids3dSketch(container, parameters, initialState, options 
 
         p.draw = () => {
             if (!state.paused) {
-                state.flock = resizeFlock(state.flock, parameters.count, Math.random, SCENE_SIZE_3D);
-                // The roost pulls the whole flock gently along a path through the three dimensions.
-                const roost = { position: roostPosition(state.frame, SCENE_SIZE_3D), mode: 'pull' };
-
-                state.frame++;
-                state.flock = stepFlock(state.flock, parameters, SCENE_SIZE_3D, roost);
+                advanceFlock(parameters.count);
                 updateAttitudes();
             }
 
@@ -305,6 +312,14 @@ export function startBoids3dSketch(container, parameters, initialState, options 
             state.frame = 0;
             state.directions = new Float32Array(0);
             state.ups = new Float32Array(0);
+            updateAttitudes();
+        },
+        /** Runs `frames` steps of the simulation at once, without drawing them, for diagnostics. */
+        advance(frames) {
+            for (let i = 0; i < frames; i++) {
+                advanceFlock(parameters.count);
+            }
+
             updateAttitudes();
         },
         /** Position of the camera, for diagnostics. */

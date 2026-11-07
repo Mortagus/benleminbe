@@ -1,11 +1,11 @@
 ---
 id: TASK-6.8
 title: 'Boids 3D, étape 6 : caméra orbitale au-dessus du sol'
-status: In Progress
+status: Done
 assignee:
   - '@claude'
 created_date: '2026-11-07 09:54'
-updated_date: '2026-11-07 11:34'
+updated_date: '2026-11-07 11:38'
 labels:
   - lab
   - 3d
@@ -27,7 +27,7 @@ Avec un sol, orbitControl de p5 (sans limite d’angle) ferait passer la caméra
 <!-- AC:BEGIN -->
 - [x] #1 Une fonction pure donne la position de la caméra depuis azimut, hauteur d’angle et distance, avec des limites qui interdisent de passer sous le sol, vérifiée par des tests
 - [x] #2 La souris, le tactile et la molette modifient cet état, vérifié en navigateur (tactile émulé)
-- [ ] #3 Benj valide la manipulation de la caméra
+- [x] #3 Benj valide la manipulation de la caméra
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -50,4 +50,12 @@ Validé : 19 tests camera dont une session aléatoire de 5000 gestes, 6 mutation
 Limite : touch-action: none empêche de faire défiler la page en posant le doigt sur le canvas (à traiter avec TASK-5, mobile). Pas de déplacement latéral de la cible (choix de simplicité).
 Non vérifié : la manipulation ressentie par Benj (critère 3), un vrai écran tactile.
 Prochaine action : Benj valide la caméra ; puis, si Benj est d'accord, TASK-6.11 (évitement des arbres et trajectoire plus près du sol) avant TASK-6.12 (meneurs).
+
+Benj le 2026-11-07, en réponse à « la caméra te convient-elle (sens du glisser, vitesse, limite basse) ? » : « ok » : critère 3 validé (réponse brève, sans précision supplémentaire).
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Caméra orbitale écrite à la main (camera.js, pure) : au moins 20 unités au-dessus du sol, distance entre 300 et 4000, hauteur d’angle <= 85 degrés ; souris, molette, tactile (un doigt tourne, deux doigts zooment). Vérifiée en lisant la position réelle après des gestes extrêmes, 19 tests dont 5000 gestes aléatoires, 6 mutations détectées. Validée par Benj.
+<!-- SECTION:FINAL_SUMMARY:END -->

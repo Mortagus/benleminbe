@@ -14,8 +14,8 @@ import { SCENE_SIZE_3D } from '../boids/flocking.js';
 
 /** The tallest tree or pole, in scene units. A boid is about 20 units long, so these are stylised, not to scale. */
 export const MAX_ELEMENT_HEIGHT = 150;
-/** Empty space kept between the highest element of the landscape and the lowest point the flock reaches. */
-export const LANDSCAPE_MARGIN = 40;
+/** Empty space between the lowest point the flock reaches and the ground: the flock comes close to the ground. */
+export const GROUND_CLEARANCE = 25;
 /**
  * The lowest the flock goes: it can slightly overshoot the confinement ellipsoid (by 7% at most in the measurements), so
  * 1.1 times its half height.
@@ -26,8 +26,14 @@ const DEFAULT_SEED = 20261107;
 const GROUND_RADIUS = 6000;
 const HORIZON_RADIUS = 4800;
 const TREE_COUNT = 78;
-// Trees keep this far from the middle of the scene (the area under the flock) and from the power lines.
-const MIN_TREE_DISTANCE = 150;
+// More trees in the corridor the flock flies along (the whole width of its sweep, a little beyond its depth), and tall, so
+// that their crowns reach into the zone the flock flies in and it has to go round them.
+const CORRIDOR_TREE_COUNT = 40;
+const CORRIDOR_HALF_WIDTH = 800;
+const CORRIDOR_HALF_DEPTH = 350;
+const CORRIDOR_MIN_HEIGHT = 90;
+const TREE_SPACING = 30;
+// Trees keep this far from the power lines, so that no crown goes through a cable.
 const LINE_CLEARANCE = 70;
 const CLUSTER_COUNT = 7;
 // Two lines of poles, one behind the other, so that the cables overlap in layers when seen from the middle.
@@ -180,7 +186,7 @@ function buildTree(out, tree, groundY) {
     ellipsoid(out, [x, groundY - height * 0.62, z], [height * 0.34, height * 0.32, height * 0.34], 8, 5);
 }
 
-/** Trees in clumps with a few on their own, away from the middle of the scene and from the power lines. */
+/** Trees in clumps with a few on their own, away from the power lines, and more in the corridor the flock flies along. */
 function placeTrees(random) {
     const clusters = Array.from({ length: CLUSTER_COUNT }, () => {
         const angle = random() * Math.PI * 2;
@@ -208,15 +214,78 @@ function placeTrees(random) {
             z = Math.sin(angle) * distance;
         }
 
-        const farFromMiddle = Math.hypot(x, z) >= MIN_TREE_DISTANCE;
         const farFromLines = LINES.every((line) => Math.abs(z - line.z) >= LINE_CLEARANCE);
 
-        if (farFromMiddle && farFromLines) {
+        if (farFromLines) {
             trees.push({ x, z, height: 60 + random() * (MAX_ELEMENT_HEIGHT - 10 - 60), kind: random() < 0.55 ? 'conifer' : 'broadleaf' });
         }
     }
 
+    for (let attempts = 0, corridor = 0; corridor < CORRIDOR_TREE_COUNT && attempts < CORRIDOR_TREE_COUNT * 50; attempts++) {
+        const x = (random() * 2 - 1) * CORRIDOR_HALF_WIDTH;
+        const z = (random() * 2 - 1) * CORRIDOR_HALF_DEPTH;
+        const height = CORRIDOR_MIN_HEIGHT + random() * (MAX_ELEMENT_HEIGHT - 10 - CORRIDOR_MIN_HEIGHT);
+        const kind = random() < 0.55 ? 'conifer' : 'broadleaf';
+
+        // Not on top of another tree of the corridor, so that each one stands out.
+        if (trees.every((tree) => Math.hypot(tree.x - x, tree.z - z) >= TREE_SPACING)) {
+            trees.push({ x, z, height, kind });
+            corridor++;
+        }
+    }
+
     return trees;
+}
+
+/**
+ * The trees as obstacles for the flock: spheres standing in for their crowns. A broadleaf is one sphere. A conifer is three
+ * stacked cones and so three spheres, each at the lower third of its cone: a single cylinder would make boids avoid the
+ * empty air around the pointed top. They are approximations of the shapes, good enough to pass close without touching.
+ */
+function buildObstacles(trees, groundY) {
+    const centres = [];
+    const radii = [];
+
+    for (const { x, z, height, kind } of trees) {
+        if (kind === 'broadleaf') {
+            centres.push(x, groundY - height * 0.62, z);
+            radii.push(height * 0.34);
+
+            continue;
+        }
+
+        for (let level = 0; level < 3; level++) {
+            const baseY = groundY - height * 0.18 - level * height * 0.2;
+            const coneHeight = height * 0.42;
+            const baseRadius = height * 0.26 * (1 - 0.22 * level);
+
+            centres.push(x, baseY - coneHeight * 0.3, z);
+            radii.push(baseRadius * 0.62);
+        }
+    }
+
+    return { count: radii.length, centres: Float32Array.from(centres), radii: Float32Array.from(radii) };
+}
+
+/**
+ * What the flock must avoid, in the coordinates of the flock. The landscape is centred on the middle of the scene (that is
+ * how it is drawn), whereas the positions of the flock run from 0 to the size of the playfield, so everything is moved by half
+ * the size of the playfield.
+ *
+ * @param {ReturnType<typeof buildLandscape>} landscape
+ * @param {number} [floorMargin] How far above the ground the boids are kept: about the height of a bird.
+ * @returns {{ obstacles: { count: number, centres: Float32Array, radii: Float32Array }, floorLevel: number }}
+ */
+export function buildEnvironment(landscape, floorMargin = 8) {
+    const half = SCENE_SIZE_3D.map((extent) => extent / 2);
+    const { count, centres, radii } = landscape.obstacles;
+    const moved = new Float32Array(centres.length);
+
+    for (let i = 0; i < centres.length; i++) {
+        moved[i] = centres[i] + half[i % 3];
+    }
+
+    return { obstacles: { count, centres: moved, radii }, floorLevel: landscape.groundY + half[1] - floorMargin };
 }
 
 /**
@@ -227,6 +296,7 @@ function placeTrees(random) {
  *   horizon: number[],
  *   silhouettes: number[],
  *   trees: { x: number, z: number, height: number, kind: 'conifer' | 'broadleaf' }[],
+ *   obstacles: { count: number, centres: Float32Array, radii: Float32Array },
  *   lines: { index: number, z: number, spacing: number, height: number }[],
  *   poles: { line: number, x: number, z: number, height: number, attachments: number[][] }[],
  *   cables: { line: number, from: number[], to: number[], lowest: number }[],
@@ -235,8 +305,8 @@ function placeTrees(random) {
  */
 export function buildLandscape(seed = DEFAULT_SEED) {
     const random = createRandom(seed);
-    // Below the flock, plus room for the tallest element, plus a margin: nothing of the landscape reaches the flock.
-    const groundY = FLIGHT_BOTTOM + MAX_ELEMENT_HEIGHT + LANDSCAPE_MARGIN;
+    // Just below the lowest point the flock reaches. The trees stand up into the zone the flock flies in: it goes round them.
+    const groundY = FLIGHT_BOTTOM + GROUND_CLEARANCE;
     const silhouettes = [];
     const trees = placeTrees(random);
 
@@ -284,6 +354,7 @@ export function buildLandscape(seed = DEFAULT_SEED) {
         horizon: Float32Array.from(buildHorizon(groundY, random)),
         silhouettes: Float32Array.from(silhouettes),
         trees,
+        obstacles: buildObstacles(trees, groundY),
         lines,
         poles,
         cables,

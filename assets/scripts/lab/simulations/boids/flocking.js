@@ -19,6 +19,15 @@
  * @property {Int32Array} cellOf Cell index of each boid.
  * @property {Int32Array} cellStart Boids of cell `c` are `items[cellStart[c]]` to `items[cellStart[c + 1] - 1]`.
  * @property {Int32Array} items Boid indices grouped by cell.
+ * @typedef {object} Obstacles Spheres (circles in 2D) that boids go round.
+ * @property {number} count
+ * @property {Float32Array} centres `dim` values per sphere.
+ * @property {Float32Array} radii One radius per sphere.
+ * @typedef {object} Environment What the boids must not fly into.
+ * @property {Obstacles} [obstacles]
+ * @property {number} [floorLevel] Height of the ground on the second axis, which points down: boids stay above it.
+ * @property {{ obstacles: number, floor: number }} [stats] Counters, filled by `stepFlock` with the number of times the
+ *   safety net had to correct a boid (for measurements).
  * @typedef {{ position: ArrayLike<number>, mode: 'repel' | 'attract' | 'pull' }} Pointer
  *   A point that acts on the boids, with as many coordinates as the flock has dimensions. `repel` and `attract` act
  *   within `pointerRadius` and are strongest at the point. `pull` is a spring-like attraction instead: nothing at the
@@ -51,6 +60,16 @@ export const DEFAULT_PARAMETERS = Object.freeze({
     // to its surface, where the push reaches `maxForce * confinementWeight`.
     confinementWeight: 0,
     confinementStart: 0.7,
+    // Shape of the confined zone: 2 is an ellipsoid; higher values flatten it towards a box with rounded corners (4 is
+    // roundish, large values approach a box). An ellipsoid is very narrow at its bottom, so a flock cannot fly low across
+    // the width of the scene; a flatter bottom lets it.
+    confinementExponent: 2,
+    // Avoidance of obstacles, which only acts when `stepFlock` is given an environment: 0 disables it. A boid looks ahead
+    // along its velocity for `avoidanceLookahead` frames; if that path comes within `avoidanceClearance` of an obstacle or of
+    // the ground it is steered sideways (or up), the more so the closer and deeper the threat. Otherwise there is no force.
+    avoidanceWeight: 0,
+    avoidanceLookahead: 30,
+    avoidanceClearance: 12,
 });
 
 /**
@@ -67,11 +86,12 @@ export const SCENE_SIZE_3D = Object.freeze([1800, 700, 700]);
  * settings are those of the roost (see boids3d/roost.js): a weak spring-like `pull` towards a point that wanders through
  * the scene, which makes the flock climb, dive and turn instead of circling.
  *
- * Measured over 6 runs (3 seeds, 200 and 500 boids, 3600 frames) in the playfield above with the roost on: vertical
- * share of the velocity 0.46 in the median (0.44 at the lowest); rotation of the flock as a block 0.11 at most; the
- * centre of the flock travels about 1000 units across, 330 up and down and 290 in depth; 5th percentile of the
- * nearest-neighbour distance 33 px or more on average over time; nobody alone; at most 0.97 of the confinement radius.
- * To be tuned by eye.
+ * Measured over 6 runs (3 seeds, 200 and 500 boids, 3600 frames) in the real scene (the playfield above with a flat-bottomed
+ * confined zone, the trees as obstacles and the ground) with the roost on: vertical share of the velocity 0.46 in the median;
+ * rotation of the flock as a block 0.11 at most; the centre of the flock travels about 950 units across, 430 up and down and
+ * 300 in depth; 5th percentile of the nearest-neighbour distance 32 px or more on average over time; nobody alone; at most
+ * 0.99 of the way to the surface of the zone; a boid within 20 units of a tree crown 0.8 times per sampled frame on
+ * average; and the safety net corrected a boid at most 11 times over a whole run. To be tuned by eye.
  */
 export const DEFAULT_PARAMETERS_3D = Object.freeze({
     ...DEFAULT_PARAMETERS,
@@ -81,8 +101,14 @@ export const DEFAULT_PARAMETERS_3D = Object.freeze({
     separationWeight: 6,
     maxSpeed: 4,
     confinementWeight: 4,
+    // A rounded box rather than an ellipsoid: the bottom of an ellipsoid is too narrow for the flock to fly low across the
+    // width of the scene, down to the trees.
+    confinementExponent: 4,
     pointerRadius: 1400,
     pointerWeight: 2,
+    // Avoiding the trees: a longer look-ahead (about 13 bird lengths) and a stronger push than the base values.
+    avoidanceWeight: 8,
+    avoidanceLookahead: 50,
 });
 
 /**
@@ -253,6 +279,8 @@ function createWorkspace(dim, maxNeighbours, count) {
         vector: new Float64Array(dim),
         flocking: new Float64Array(dim),
         pointer: new Float64Array(dim),
+        avoidance: new Float64Array(dim),
+        highestObstacle: -Infinity,
     };
 }
 
@@ -536,6 +564,245 @@ function addCruise(out, flock, index, parameters) {
     }
 }
 
+/**
+ * The highest point of the obstacles, on the second axis (which points down, so the smallest value): a boid that is
+ * further above than it could cover within the look-ahead cannot reach any of them, which spares it testing them one by one.
+ * Minus infinity (no shortcut) when there are no obstacles or the space has a single axis.
+ */
+function highestPoint(obstacles, dim) {
+    if (!obstacles || dim < 2 || obstacles.count === 0) {
+        return -Infinity;
+    }
+
+    let highest = Infinity;
+
+    for (let k = 0; k < obstacles.count; k++) {
+        highest = Math.min(highest, obstacles.centres[k * dim + 1] - obstacles.radii[k]);
+    }
+
+    return highest;
+}
+
+/**
+ * Adds the avoidance of obstacles and of the ground: predictive, not repulsive. The boid follows its velocity for
+ * `avoidanceLookahead` frames; for each obstacle the point of that path closest to its centre is found, and if it passes
+ * within the radius plus `avoidanceClearance` the obstacle is a threat. Only the most urgent one counts (the closer in time
+ * and the deeper the intrusion, the more urgent: full depth once the path touches the obstacle itself). The boid is then steered perpendicular to its velocity, away from the
+ * obstacle: sideways, or up or down if the obstacle is above or below the path. With a clear path, nothing is added.
+ */
+function addAvoidance(out, flock, index, parameters, environment, workspace) {
+    const { dim, pos, vel } = flock;
+    const base = index * dim;
+    let speedSquared = 0;
+
+    for (let d = 0; d < dim; d++) {
+        speedSquared += vel[base + d] * vel[base + d];
+    }
+
+    if (speedSquared === 0) {
+        return;
+    }
+
+    const speed = Math.sqrt(speedSquared);
+    const lookahead = parameters.avoidanceLookahead;
+    const clearance = parameters.avoidanceClearance;
+    const strength = parameters.maxForce * parameters.avoidanceWeight;
+    const { obstacles, floorLevel } = environment;
+    const away = workspace.avoidance;
+    let bestUrgency = 0;
+    // Too high above the obstacles to reach any of them within the look-ahead: skip them all.
+    const tooHigh = pos[base + 1] + lookahead * speed + clearance < workspace.highestObstacle;
+
+    for (let k = 0; obstacles && !tooHigh && k < obstacles.count; k++) {
+        const centreBase = k * dim;
+        const reach = obstacles.radii[k] + clearance;
+        let relativeSquared = 0;
+        let along = 0;
+
+        for (let d = 0; d < dim; d++) {
+            const relative = obstacles.centres[centreBase + d] - pos[base + d];
+
+            relativeSquared += relative * relative;
+            along += relative * vel[base + d];
+        }
+
+        // An obstacle behind the boid, or too far to be reached within the look-ahead, is no threat.
+        const furthest = reach + lookahead * speed;
+
+        if (along <= 0 || relativeSquared > furthest * furthest) {
+            continue;
+        }
+
+        const time = Math.min(along / speedSquared, lookahead);
+        let closestSquared = 0;
+
+        for (let d = 0; d < dim; d++) {
+            const gap = pos[base + d] + vel[base + d] * time - obstacles.centres[centreBase + d];
+
+            closestSquared += gap * gap;
+        }
+
+        if (closestSquared >= reach * reach) {
+            continue;
+        }
+
+        // How deep the path goes: full strength as soon as it touches the obstacle itself, fading to nothing at the edge of the
+        // clearance. (Measured against the whole reach, a path through the rim of a big obstacle would hardly count.)
+        const depth = Math.min((reach - Math.sqrt(closestSquared)) / clearance, 1);
+        const urgency = (1 - time / lookahead) * depth;
+
+        if (urgency <= bestUrgency) {
+            continue;
+        }
+
+        bestUrgency = urgency;
+
+        // The direction away from the obstacle, made perpendicular to the velocity.
+        let component = 0;
+
+        for (let d = 0; d < dim; d++) {
+            away[d] = pos[base + d] + vel[base + d] * time - obstacles.centres[centreBase + d];
+            component += (away[d] * vel[base + d]) / speed;
+        }
+
+        let length = 0;
+
+        for (let d = 0; d < dim; d++) {
+            away[d] -= (component * vel[base + d]) / speed;
+            length += away[d] * away[d];
+        }
+
+        if (length < 1e-12) {
+            // Heading exactly at the centre: any direction perpendicular to the velocity will do. Take the axis the boid
+            // moves least along.
+            let axis = 0;
+
+            for (let d = 1; d < dim; d++) {
+                axis = Math.abs(vel[base + d]) < Math.abs(vel[base + axis]) ? d : axis;
+            }
+
+            for (let d = 0; d < dim; d++) {
+                away[d] = (d === axis ? 1 : 0) - (vel[base + axis] * vel[base + d]) / speedSquared;
+            }
+
+            length = 0;
+
+            for (let d = 0; d < dim; d++) {
+                length += away[d] * away[d];
+            }
+        }
+
+        const norm = Math.sqrt(length);
+
+        for (let d = 0; d < dim; d++) {
+            away[d] /= norm;
+        }
+    }
+
+    if (bestUrgency > 0) {
+        for (let d = 0; d < dim; d++) {
+            out[d] += away[d] * strength * bestUrgency;
+        }
+    }
+
+    // The ground: if the path goes below it within the look-ahead, steer up (y points down, so up is negative).
+    if (floorLevel !== undefined && dim >= 2 && vel[base + 1] > 0) {
+        const limit = floorLevel - clearance;
+        const time = pos[base + 1] >= limit ? 0 : (limit - pos[base + 1]) / vel[base + 1];
+
+        if (time < lookahead) {
+            out[1] -= strength * (1 - time / lookahead);
+        }
+    }
+}
+
+/**
+ * The safety net: puts back on the surface a boid that ended its frame inside an obstacle or under the ground, and
+ * removes the part of its velocity that goes into it. With avoidance working it hardly ever acts; `stats` counts how often.
+ * It works on the arrays of the new flock.
+ */
+function resolveEnvironment(flock, index, environment, highestObstacle) {
+    const { dim, pos, vel } = flock;
+    const base = index * dim;
+    const { obstacles, floorLevel, stats } = environment;
+    const tooHigh = dim >= 2 && pos[base + 1] < highestObstacle;
+
+    for (let k = 0; obstacles && !tooHigh && k < obstacles.count; k++) {
+        const centreBase = k * dim;
+        const radius = obstacles.radii[k];
+
+        // Cheap rejection on the first axis before the full distance.
+        if (Math.abs(pos[base] - obstacles.centres[centreBase]) >= radius) {
+            continue;
+        }
+
+        let distanceSquared = 0;
+
+        for (let d = 0; d < dim; d++) {
+            const gap = pos[base + d] - obstacles.centres[centreBase + d];
+
+            distanceSquared += gap * gap;
+        }
+
+        if (distanceSquared >= radius * radius) {
+            continue;
+        }
+
+        const distance = Math.sqrt(distanceSquared);
+        let inward = 0;
+
+        for (let d = 0; d < dim; d++) {
+            // The outward normal; any one if the boid is exactly at the centre.
+            const normal = distance > 1e-9 ? (pos[base + d] - obstacles.centres[centreBase + d]) / distance : d === 0 ? 1 : 0;
+
+            inward += vel[base + d] * normal;
+            pos[base + d] = obstacles.centres[centreBase + d] + normal * (radius + 0.01);
+        }
+
+        if (inward < 0) {
+            for (let d = 0; d < dim; d++) {
+                const normal = distance > 1e-9 ? (pos[base + d] - obstacles.centres[centreBase + d]) / (radius + 0.01) : d === 0 ? 1 : 0;
+
+                vel[base + d] -= inward * normal;
+            }
+        }
+
+        if (stats) {
+            stats.obstacles++;
+        }
+    }
+
+    if (floorLevel !== undefined && dim >= 2 && pos[base + 1] > floorLevel) {
+        pos[base + 1] = floorLevel;
+        vel[base + 1] = Math.min(vel[base + 1], 0);
+
+        if (stats) {
+            stats.floor++;
+        }
+    }
+}
+
+/**
+ * Avoidance acceleration of one boid, for tests and diagnostics: what `stepFlock` adds for the obstacles and the ground.
+ *
+ * @param {Flock} flock
+ * @param {number} index
+ * @param {Environment} environment
+ * @returns {Float64Array} One value per dimension.
+ */
+export function computeAvoidance(flock, index, parameters, environment) {
+    const out = new Float64Array(flock.dim);
+
+    if (parameters.avoidanceWeight > 0) {
+        const workspace = createWorkspace(flock.dim, 0, 0);
+
+        workspace.highestObstacle = highestPoint(environment.obstacles, flock.dim);
+        addAvoidance(out, flock, index, parameters, environment, workspace);
+    }
+
+    return out;
+}
+
 /** Writes into `out` the steering rules for one boid, each scaled by its weight, plus the cruise speed regulation. */
 function accelerationInto(out, flock, index, parameters, workspace, grid) {
     out.fill(0);
@@ -548,25 +815,50 @@ function accelerationInto(out, flock, index, parameters, workspace, grid) {
 }
 
 /**
- * Adds the soft confinement: a push towards the centre of the ellipsoid inscribed in the playfield, which grows
- * smoothly from nothing at `confinementStart` to `maxForce * confinementWeight` at the surface and stays there
- * beyond it. Distances are normalised by the half extent on each axis, so a flat playfield gives a flat ellipsoid.
+ * How far a position is from the centre of the confined zone, as a fraction of its half extent: 1 on the surface of the
+ * zone. The zone is the unit ball of the norm of exponent `exponent` stretched to the half extent of the playfield on
+ * each axis: an ellipsoid for 2, a rounded box for more.
+ *
+ * @param {ArrayLike<number>} position One value per axis, in playfield coordinates.
+ * @param {ArrayLike<number>} size Extent of the playfield on each axis.
+ * @param {number} [exponent]
+ * @returns {number}
+ */
+export function confinementReach(position, size, exponent = 2) {
+    let sum = 0;
+
+    for (let d = 0; d < size.length; d++) {
+        const normalised = Math.abs(position[d] - size[d] / 2) / (size[d] / 2);
+
+        sum += exponent === 2 ? normalised * normalised : normalised ** exponent;
+    }
+
+    return exponent === 2 ? Math.sqrt(sum) : sum ** (1 / exponent);
+}
+
+/**
+ * Adds the soft confinement: a push towards the centre of the confined zone (the shape inscribed in the playfield, see
+ * `confinementReach`), which grows smoothly from nothing at `confinementStart` to `maxForce * confinementWeight` at the
+ * surface and stays there beyond it. Distances are normalised by the half extent on each axis, so a flat playfield gives
+ * a flat zone.
  */
 function addConfinement(out, flock, index, size, parameters) {
     const { dim, pos } = flock;
     const base = index * dim;
-    let normalisedSquared = 0;
+    const exponent = parameters.confinementExponent;
+    let normalisedSum = 0;
     let distanceSquared = 0;
 
     for (let d = 0; d < dim; d++) {
         const offset = pos[base + d] - size[d] / 2;
+        const normalised = Math.abs(offset) / (size[d] / 2);
 
-        normalisedSquared += (offset / (size[d] / 2)) ** 2;
+        normalisedSum += exponent === 2 ? normalised * normalised : normalised ** exponent;
         distanceSquared += offset * offset;
     }
 
     const start = parameters.confinementStart;
-    const reach = Math.sqrt(normalisedSquared);
+    const reach = exponent === 2 ? Math.sqrt(normalisedSum) : normalisedSum ** (1 / exponent);
 
     if (reach <= start || distanceSquared === 0) {
         return;
@@ -755,15 +1047,20 @@ export function updateDirections(directions, flock, factor) {
  * @param {Flock} flock
  * @param {ArrayLike<number>} size Extent of the playfield on each axis.
  * @param {Pointer | null} [pointer]
+ * @param {Environment | null} [environment] Obstacles and ground to avoid. Needs `avoidanceWeight` above zero to be avoided
+ *   ahead of time; boids that still end a frame inside one are put back on its surface.
  * @returns {Flock}
  */
-export function stepFlock(flock, parameters, size, pointer = null) {
+export function stepFlock(flock, parameters, size, pointer = null, environment = null) {
     const { count, dim } = flock;
     const next = allocateFlock(count, dim);
     const workspace = createWorkspace(dim, parameters.maxNeighbours, count);
     const grid = buildGrid(flock, Math.max(parameters.perceptionRadius, 1), size);
     const responsiveness = 1 - parameters.smoothing;
     const confined = parameters.confinementWeight > 0;
+    const highestObstacle = environment ? highestPoint(environment.obstacles, dim) : -Infinity;
+
+    workspace.highestObstacle = highestObstacle;
 
     for (let i = 0; i < count; i++) {
         const base = i * dim;
@@ -773,6 +1070,10 @@ export function stepFlock(flock, parameters, size, pointer = null) {
 
         if (confined) {
             addConfinement(workspace.flocking, flock, i, size, parameters);
+        }
+
+        if (environment && parameters.avoidanceWeight > 0) {
+            addAvoidance(workspace.flocking, flock, i, parameters, environment, workspace);
         }
 
         pointerAccelerationInto(workspace.pointer, flock, i, pointer, parameters);
@@ -795,6 +1096,10 @@ export function stepFlock(flock, parameters, size, pointer = null) {
             const position = flock.pos[base + d] + next.vel[base + d];
 
             next.pos[base + d] = confined ? position : wrap(position, size[d]);
+        }
+
+        if (environment) {
+            resolveEnvironment(next, i, environment, highestObstacle);
         }
     }
 

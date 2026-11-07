@@ -1,12 +1,15 @@
 import { describe, expect, test } from 'vitest';
-import { SCENE_SIZE_3D } from '../../../../assets/scripts/lab/simulations/boids/flocking.js';
-import { FLIGHT_BOTTOM, LANDSCAPE_MARGIN, MAX_ELEMENT_HEIGHT, buildLandscape } from '../../../../assets/scripts/lab/simulations/boids3d/landscape.js';
+import { DEFAULT_PARAMETERS_3D, SCENE_SIZE_3D, confinementReach } from '../../../../assets/scripts/lab/simulations/boids/flocking.js';
+import { FLIGHT_BOTTOM, GROUND_CLEARANCE, MAX_ELEMENT_HEIGHT, buildEnvironment, buildLandscape } from '../../../../assets/scripts/lab/simulations/boids3d/landscape.js';
 
 const half = SCENE_SIZE_3D.map((extent) => extent / 2);
 
-// Distance of a point from the centre of the scene, as a fraction of the radius of the flight ellipsoid.
+// Distance of a point from the centre of the scene, as a fraction of the half extent of the zone the flock is confined to,
+// measured with the shape of that zone (a rounded box): 1 on its surface.
+const exponent = DEFAULT_PARAMETERS_3D.confinementExponent;
+
 function reach(x, y, z) {
-    return Math.sqrt((x / half[0]) ** 2 + (y / half[1]) ** 2 + (z / half[2]) ** 2);
+    return (Math.abs(x / half[0]) ** exponent + Math.abs(y / half[1]) ** exponent + Math.abs(z / half[2]) ** exponent) ** (1 / exponent);
 }
 
 function vertices(triangles) {
@@ -14,6 +17,8 @@ function vertices(triangles) {
 }
 
 const landscape = buildLandscape();
+// The obstacles of the landscape, for tests that read them often.
+const obstacles = () => landscape.obstacles;
 
 describe('landscape geometry', () => {
     test('is made of whole triangles with finite coordinates', () => {
@@ -50,16 +55,31 @@ describe('landscape ground', () => {
         expect(farthest).toBeGreaterThanOrEqual(hills);
     });
 
-    test('is below the lowest point the flock can reach, with room for the tallest element and a margin', () => {
+    test('is just below the lowest point the flock can reach, so the flock can come close to it', () => {
         // In p5 the y axis points down, so below means larger y.
-        // It is exactly at that limit by construction, so allow for rounding in the floating-point sums.
-        expect(landscape.groundY - MAX_ELEMENT_HEIGHT).toBeGreaterThanOrEqual(FLIGHT_BOTTOM + LANDSCAPE_MARGIN - 1e-9);
+        expect(landscape.groundY).toBeCloseTo(FLIGHT_BOTTOM + GROUND_CLEARANCE, 9);
+        expect(landscape.groundY).toBeGreaterThan(FLIGHT_BOTTOM);
+    });
+
+    test('is out of the reach of the flock, which goes at most 1.07 of the way to the confinement ellipsoid', () => {
+        expect(landscape.groundY / half[1]).toBeGreaterThan(1.1);
+    });
+
+    test('is low enough for the tallest trees to stand up into the zone the flock flies in', () => {
+        expect(landscape.groundY - MAX_ELEMENT_HEIGHT).toBeLessThan(FLIGHT_BOTTOM);
     });
 });
 
 describe('landscape silhouettes', () => {
-    test('never enter the zone the flock flies in', () => {
-        for (const [x, y, z] of [...vertices(landscape.silhouettes), ...vertices(landscape.horizon), ...vertices(landscape.ground)]) {
+    test('never enter the zone the flock flies in, except the trees, which the flock goes round', () => {
+        const points = [
+            ...vertices(landscape.horizon),
+            ...vertices(landscape.ground),
+            ...landscape.poles.flatMap((pole) => [[pole.x, landscape.groundY - pole.height, pole.z], ...pole.attachments]),
+            ...landscape.cables.flatMap((cable) => [cable.from, cable.to, [(cable.from[0] + cable.to[0]) / 2, cable.lowest, cable.from[2]]]),
+        ];
+
+        for (const [x, y, z] of points) {
             // The flock goes at most 1.07 of the way to the confinement ellipsoid; stay clear of it.
             expect(reach(x, y, z)).toBeGreaterThanOrEqual(1.15);
         }
@@ -123,12 +143,12 @@ describe('landscape trees', () => {
         }
     });
 
-    test('do not stand under the flock: a clear space under it, whatever the seed', () => {
-        // Not required for safety (they are far below), but the scene reads better with a clear space under the flock.
+    test('are numerous in the corridor the flock flies along, whatever the seed', () => {
         for (const seed of seeds) {
-            for (const tree of buildLandscape(seed).trees) {
-                expect(Math.hypot(tree.x, tree.z)).toBeGreaterThanOrEqual(150);
-            }
+            const { trees } = buildLandscape(seed);
+            const inCorridor = trees.filter((tree) => Math.abs(tree.x) <= 800 && Math.abs(tree.z) <= 350);
+
+            expect(inCorridor.length).toBeGreaterThanOrEqual(30);
         }
     });
 
@@ -136,6 +156,90 @@ describe('landscape trees', () => {
         for (const seed of seeds) {
             expect(buildLandscape(seed).trees.length).toBeGreaterThanOrEqual(50);
         }
+    });
+});
+
+describe('landscape obstacles', () => {
+    const { obstacles, trees, groundY } = landscape;
+    const sphere = (k) => ({ x: obstacles.centres[k * 3], y: obstacles.centres[k * 3 + 1], z: obstacles.centres[k * 3 + 2], radius: obstacles.radii[k] });
+
+    test('are made of three spheres for a conifer and one for a broadleaf', () => {
+        const expected = trees.reduce((sum, tree) => sum + (tree.kind === 'conifer' ? 3 : 1), 0);
+
+        expect(obstacles.count).toBe(expected);
+        expect(obstacles.centres).toHaveLength(obstacles.count * 3);
+        expect(obstacles.radii).toHaveLength(obstacles.count);
+    });
+
+    test('stand on the axis of a tree and stay inside its extent', () => {
+        for (let k = 0; k < obstacles.count; k++) {
+            const { x, y, z, radius } = sphere(k);
+            const owner = trees.find((tree) => Math.abs(tree.x - x) < 1e-3 && Math.abs(tree.z - z) < 1e-3);
+
+            expect(owner).toBeDefined();
+            expect(radius).toBeGreaterThan(0);
+            // The sphere does not go above the top of its tree, nor below the ground.
+            expect(y - radius).toBeGreaterThanOrEqual(groundY - owner.height - 1e-3);
+            expect(y + radius).toBeLessThanOrEqual(groundY + 1e-3);
+        }
+    });
+
+    test('are the same every time for the same seed', () => {
+        expect([...buildLandscape(7).obstacles.centres]).toEqual([...buildLandscape(7).obstacles.centres]);
+        expect([...buildLandscape(7).obstacles.radii]).toEqual([...buildLandscape(7).obstacles.radii]);
+    });
+
+    test('reach into the zone the flock flies in, otherwise it would never have to avoid anything', () => {
+        let inside = 0;
+
+        for (let k = 0; k < obstacles.count; k++) {
+            const { x, y, z } = sphere(k);
+
+            if (reach(x, y, z) < 1) {
+                inside++;
+            }
+        }
+
+        // 17 at the time of writing: only the crowns of the tall trees (their centre must be above the lowest the flock goes)
+        // and the top sphere of the conifers are in the zone. What matters is that there are some.
+        expect(inside).toBeGreaterThanOrEqual(10);
+    });
+});
+
+describe('landscape environment for the flock', () => {
+    const environment = buildEnvironment(landscape);
+
+    test('moves the obstacles from the centred coordinates of the landscape to those of the flock', () => {
+        const { obstacles } = landscape;
+
+        for (let k = 0; k < obstacles.count; k++) {
+            for (let axis = 0; axis < 3; axis++) {
+                expect(environment.obstacles.centres[k * 3 + axis]).toBeCloseTo(obstacles.centres[k * 3 + axis] + half[axis], 3);
+            }
+
+            expect(environment.obstacles.radii[k]).toBe(obstacles.radii[k]);
+        }
+
+        expect(environment.obstacles.count).toBe(obstacles.count);
+    });
+
+    test('keeps the shape of the landscape: an obstacle is as far from the middle of the zone in either coordinates', () => {
+        for (let k = 0; k < obstacles().count; k += 7) {
+            const centred = [obstacles().centres[k * 3], obstacles().centres[k * 3 + 1], obstacles().centres[k * 3 + 2]];
+            const moved = [environment.obstacles.centres[k * 3], environment.obstacles.centres[k * 3 + 1], environment.obstacles.centres[k * 3 + 2]];
+
+            expect(confinementReach(moved, SCENE_SIZE_3D, exponent)).toBeCloseTo(reach(...centred), 3);
+        }
+    });
+
+    test('puts the floor just above the ground, in the coordinates of the flock, below the whole zone', () => {
+        expect(environment.floorLevel).toBeCloseTo(landscape.groundY + half[1] - 8, 6);
+        // The flock cannot get below the bottom of its zone (y = SCENE_SIZE_3D[1]) by more than 7%: the floor is further down.
+        expect(environment.floorLevel).toBeGreaterThan(SCENE_SIZE_3D[1] * (1 + 0.07 / 2));
+    });
+
+    test('can be given another margin above the ground', () => {
+        expect(buildEnvironment(landscape, 20).floorLevel).toBeCloseTo(landscape.groundY + half[1] - 20, 6);
     });
 });
 

@@ -10,15 +10,29 @@
  */
 
 // Radians per frame on each axis (x, y, z). Different values keep the path from settling into a simple loop. They are low
-// so that the point never goes faster than the cruising speed of a boid (2.8 units per frame): the speed of the point
-// is the amplitude times the frequency, and the scene is wide, so across it the point is slow (a full lateral sweep
-// takes about 30 seconds at 60 frames per second).
-const FREQUENCIES = Object.freeze([0.0035, 0.0085, 0.0058]);
-// How far the point goes from the centre on each axis, as a fraction of the half extent of the scene. Kept small enough
-// for the point to stay inside the confinement ellipsoid (the root of the sum of squares must stay below 1: 0.91 here).
-const AMPLITUDES = Object.freeze([0.6, 0.55, 0.4]);
+// so that the point stays about as fast as a boid: across a wide scene it is slow (a full lateral sweep takes about 30
+// seconds at 60 frames per second), and the flock, whose top speed is 4 units per frame, can always keep up.
+const FREQUENCIES = Object.freeze([0.0035, 0.004, 0.0058]);
+// How far the point goes from where it is centred on each axis, as a fraction of the half extent of the scene. Kept small
+// enough for the point to stay inside the confined zone (a rounded box, see `confinementExponent`): 0.95 of the way to its
+// surface at the very most.
+const AMPLITUDES = Object.freeze([0.6, 0.8, 0.35]);
+// Where each axis is centred, as a fraction of the half extent. The y axis points down, so +0.1 puts the path a little low:
+// the flock goes further down, towards the trees, than up.
+const OFFSETS = Object.freeze([0, 0.1, 0]);
+// Flattening of each sine: 0 is a plain sine, larger values make the point linger near the two ends of its swing and move
+// quickly between them. On the height it makes the flock stay a while at tree height before climbing again, instead of just
+// brushing it for an instant; a plain sine hardly meets the trees at all.
+const FLATTENING = Object.freeze([0, 2.5, 0]);
 // Offsets that keep the three axes from starting in step.
 const PHASES = Object.freeze([0, 2.1, 4.2]);
+
+function swing(axis, frame) {
+    const sine = Math.sin(FREQUENCIES[axis] * frame + PHASES[axis]);
+    const k = FLATTENING[axis];
+
+    return k === 0 ? sine : Math.tanh(k * sine) / Math.tanh(k);
+}
 
 /**
  * @param {number} frame Number of frames since the start of the simulation.
@@ -26,5 +40,5 @@ const PHASES = Object.freeze([0, 2.1, 4.2]);
  * @returns {number[]} Position of the roost, one value per axis.
  */
 export function roostPosition(frame, size) {
-    return size.map((extent, axis) => extent / 2 + AMPLITUDES[axis] * (extent / 2) * Math.sin(FREQUENCIES[axis] * frame + PHASES[axis]));
+    return size.map((extent, axis) => extent / 2 + (OFFSETS[axis] + AMPLITUDES[axis] * swing(axis, frame)) * (extent / 2));
 }

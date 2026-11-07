@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { SCENE_SIZE_3D } from '../../../../assets/scripts/lab/simulations/boids/flocking.js';
+import { DEFAULT_PARAMETERS_3D, SCENE_SIZE_3D, confinementReach } from '../../../../assets/scripts/lab/simulations/boids/flocking.js';
 import { roostPosition } from '../../../../assets/scripts/lab/simulations/boids3d/roost.js';
 
 describe('roostPosition', () => {
@@ -17,11 +17,11 @@ describe('roostPosition', () => {
         expect(roostPosition(1234, SCENE_SIZE_3D)).toEqual(first);
     });
 
-    test('always stays inside the ellipsoid the flock is confined to, with room to spare', () => {
+    test('always stays inside the zone the flock is confined to, with room to spare', () => {
         for (let frame = 0; frame < 20000; frame += 7) {
-            const position = roostPosition(frame, SCENE_SIZE_3D);
-            const reach = Math.sqrt(position.reduce((sum, value, axis) => sum + ((value - SCENE_SIZE_3D[axis] / 2) / (SCENE_SIZE_3D[axis] / 2)) ** 2, 0));
+            const reach = confinementReach(roostPosition(frame, SCENE_SIZE_3D), SCENE_SIZE_3D, DEFAULT_PARAMETERS_3D.confinementExponent);
 
+            // At the very most 0.944 when every axis is at the end of its swing at once.
             expect(reach).toBeLessThan(0.95);
         }
     });
@@ -37,8 +37,8 @@ describe('roostPosition', () => {
             previous = position;
         }
 
-        // Slower than the cruising speed of a boid (2.8 px per frame), so the flock can keep up with it.
-        expect(largest).toBeLessThan(2.8);
+        // Measured at 3.47 at the quickest. The flock can keep up with it: its top speed is 4 units per frame.
+        expect(largest).toBeLessThan(DEFAULT_PARAMETERS_3D.maxSpeed * 0.9);
     });
 
     test('uses the whole height of the scene, not just the horizontal plane', () => {
@@ -47,6 +47,23 @@ describe('roostPosition', () => {
 
         // At least half of the full height.
         expect(range).toBeGreaterThan(SCENE_SIZE_3D[1] / 2);
+    });
+
+    test('lingers near the lowest point of its swing, at tree height, instead of only brushing it', () => {
+        const heights = Array.from({ length: 40000 }, (_, frame) => roostPosition(frame, SCENE_SIZE_3D)[1]);
+        const highest = Math.max(...heights);
+        const range = highest - Math.min(...heights);
+        const share = heights.filter((y) => y >= highest - 0.15 * range).length / heights.length;
+
+        // A plain sine spends 25% of its time in the lowest 15% of its range; this one 39%.
+        expect(share).toBeGreaterThan(0.33);
+    });
+
+    test('goes lower than it goes high: the path is a little low, towards the trees', () => {
+        const heights = Array.from({ length: 40000 }, (_, frame) => roostPosition(frame, SCENE_SIZE_3D)[1] - SCENE_SIZE_3D[1] / 2);
+
+        // y points down: positive is below the middle of the scene.
+        expect(Math.max(...heights)).toBeGreaterThan(-Math.min(...heights));
     });
 
     test('does not repeat itself after a short time', () => {

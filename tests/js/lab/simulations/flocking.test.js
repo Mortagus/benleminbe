@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { buildEnvironment, buildLandscape } from '../../../../assets/scripts/lab/simulations/boids3d/landscape.js';
 import { roostPosition } from '../../../../assets/scripts/lab/simulations/boids3d/roost.js';
 import {
     BOUNDARY_MARGIN,
@@ -9,6 +10,7 @@ import {
     buildGrid,
     computeAcceleration,
     computePointerAcceleration,
+    confinementReach,
     createFlock,
     resizeFlock,
     smoothAngle,
@@ -67,11 +69,10 @@ function readFlockAcceleration(flock) {
     return [...flock.acc];
 }
 
-// Distance of each boid from the centre of the playfield, as a fraction of the radius of the inscribed ellipsoid.
-function reachOfEach(flock, field) {
-    return Array.from({ length: flock.count }, (_, i) =>
-        Math.sqrt(field.reduce((sum, extent, d) => sum + ((flock.pos[i * flock.dim + d] - extent / 2) / (extent / 2)) ** 2, 0)),
-    );
+// How far each boid is from the centre of the confined zone, as a fraction of its half extent (1 on its surface), measured
+// the way the confinement measures it: with the shape of the zone, not always an ellipsoid.
+function reachOfEach(flock, field, exponent = 2) {
+    return Array.from({ length: flock.count }, (_, i) => confinementReach(Array.from(flock.pos.subarray(i * flock.dim, (i + 1) * flock.dim)), field, exponent));
 }
 
 describe('boids flocking rules', () => {
@@ -596,6 +597,45 @@ describe('boids soft confinement', () => {
         expect(pushed[2]).toBeLessThan(0);
     });
 
+    test('has the shape of an ellipsoid by default', () => {
+        expect(DEFAULT_PARAMETERS.confinementExponent).toBe(2);
+        // Half way along every axis of a 400 x 300 playfield: sqrt(0.5^2 + 0.5^2).
+        expect(confinementReach([300, 225], size)).toBeCloseTo(Math.SQRT1_2, 9);
+    });
+
+    test('reach is 1 on the surface of the zone, whatever its shape', () => {
+        expect(confinementReach([400, 150], size, 2)).toBeCloseTo(1, 9);
+        expect(confinementReach([400, 150], size, 4)).toBeCloseTo(1, 9);
+        expect(confinementReach([200, 300], size, 4)).toBeCloseTo(1, 9);
+    });
+
+    test('a larger exponent makes the zone flatter and wider near its edge, a box with rounded corners', () => {
+        // At 80% of the way along both axes: far outside an ellipsoid, still inside a rounded box.
+        const corner = [200 + 0.8 * 200, 150 + 0.8 * 150];
+
+        expect(confinementReach(corner, size, 2)).toBeCloseTo(0.8 * Math.SQRT2, 9);
+        expect(confinementReach(corner, size, 4)).toBeLessThan(confinementReach(corner, size, 2));
+        expect(confinementReach(corner, size, 4)).toBeCloseTo((2 * 0.8 ** 4) ** 0.25, 9);
+    });
+
+    test('with a larger exponent a boid near a corner is pushed back less than in an ellipsoid', () => {
+        const ellipsoid = readBoid(alone(boid(340, 255), { ...confining, confinementExponent: 2 }), 0);
+        const rounded = readBoid(alone(boid(340, 255), { ...confining, confinementExponent: 4 }), 0);
+
+        expect(Math.hypot(rounded.ax, rounded.ay)).toBeLessThan(Math.hypot(ellipsoid.ax, ellipsoid.ay));
+        // Still towards the centre.
+        expect(rounded.ax).toBeLessThan(0);
+        expect(rounded.ay).toBeLessThan(0);
+    });
+
+    test('with a larger exponent the push is still capped, however far the boid is', () => {
+        const cap = parameters.maxForce * confining.confinementWeight;
+
+        for (const x of [600, 5000]) {
+            expect(Math.hypot(readBoid(alone(boid(x, 150), { ...confining, confinementExponent: 4 }), 0).ax)).toBeCloseTo(cap, 5);
+        }
+    });
+
     test('a flat playfield gives a flat ellipsoid', () => {
         // 100 px from the centre is 0.2 of the radius along x but 0.9 along the thin y axis.
         const flat = [1000, 100];
@@ -615,7 +655,7 @@ describe('boids soft confinement', () => {
             flock = stepFlock(flock, DEFAULT_PARAMETERS_3D, field);
 
             if (frame >= 200 && frame % 20 === 0) {
-                farthest = Math.max(farthest, ...reachOfEach(flock, field));
+                farthest = Math.max(farthest, ...reachOfEach(flock, field, DEFAULT_PARAMETERS_3D.confinementExponent));
             }
         }
 
@@ -702,7 +742,7 @@ describe('boids following the roost in 3D', () => {
                 angular[1] += rz * vx - rx * vz;
                 angular[2] += rx * vy - ry * vx;
                 denominator += Math.hypot(rx, ry, rz) * speed;
-                farthest = Math.max(farthest, Math.sqrt([0, 1, 2].reduce((sum, d) => sum + ((pos[i * 3 + d] - half[d]) / half[d]) ** 2, 0)));
+                farthest = Math.max(farthest, confinementReach([pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]], field, DEFAULT_PARAMETERS_3D.confinementExponent));
             }
 
             vertical += share / count;
@@ -755,6 +795,53 @@ describe('boids following the roost in 3D', () => {
         expect(result.nearest).toBeGreaterThan(26);
         expect(result.alone).toBe(0);
         expect(result.farthest).toBeLessThan(1.15);
+    });
+});
+
+describe('boids flying among the trees of the landscape', () => {
+    const environmentOf = () => buildEnvironment(buildLandscape());
+
+    function fly(count, seed, frames) {
+        const field = SCENE_SIZE_3D;
+        const environment = { ...environmentOf(), stats: { obstacles: 0, floor: 0 } };
+        const { obstacles } = environment;
+        let flock = createFlock(count, seededRandom(seed), field);
+        let closest = Infinity;
+        let lowest = -Infinity;
+
+        for (let frame = 0; frame < frames; frame++) {
+            flock = stepFlock(flock, { ...DEFAULT_PARAMETERS_3D, count }, field, { position: roostPosition(frame, field), mode: 'pull' }, environment);
+
+            if (frame >= 300 && frame % 4 === 0) {
+                for (let i = 0; i < count; i++) {
+                    lowest = Math.max(lowest, flock.pos[i * 3 + 1]);
+
+                    for (let k = 0; k < obstacles.count; k++) {
+                        if (Math.abs(flock.pos[i * 3] - obstacles.centres[k * 3]) < 80) {
+                            closest = Math.min(closest, Math.hypot(flock.pos[i * 3] - obstacles.centres[k * 3], flock.pos[i * 3 + 1] - obstacles.centres[k * 3 + 1], flock.pos[i * 3 + 2] - obstacles.centres[k * 3 + 2]) - obstacles.radii[k]);
+                        }
+                    }
+                }
+            }
+        }
+
+        return { stats: environment.stats, closest, lowest, floorLevel: environment.floorLevel };
+    }
+
+    test.each([
+        [200, 1],
+        [200, 2],
+        [500, 1],
+    ])('a flock of %d boids (seed %d) comes close to the trees, goes round them and never needs the ground', (count, seed) => {
+        const { stats, closest, lowest, floorLevel } = fly(count, seed, 2500);
+
+        // Measured: about ten corrections at the very most over 3600 frames, none for the ground.
+        expect(stats.obstacles).toBeLessThan(60);
+        expect(stats.floor).toBe(0);
+        // It does get close to the crowns (within a bird's length or two), so the avoidance is exercised.
+        expect(closest).toBeLessThan(25);
+        // And it comes down towards the ground without reaching it.
+        expect(lowest).toBeLessThan(floorLevel);
     });
 });
 

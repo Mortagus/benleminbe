@@ -12,6 +12,11 @@
     max-width: 100%;
 }
 
+/* The 3D canvas is transparent: this fixed November sunset is the sky, whatever the site theme. */
+.boids-canvas--sunset {
+    background: linear-gradient(to top, #f7c46a 0%, #f08a3c 16%, #cf5a62 36%, #7a4378 60%, #2b2f66 100%);
+}
+
 .boids-hint {
     margin: 0;
     color: var(--muted);

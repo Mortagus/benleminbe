@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-11-07 09:24'
-updated_date: '2026-11-07 09:29'
+updated_date: '2026-11-07 09:33'
 labels:
   - lab
   - 3d
@@ -36,4 +36,6 @@ Ajouter au Lab une simulation 3D d’une nuée d’oiseaux (quelques centaines d
 
 <!-- SECTION:NOTES:BEGIN -->
 2026-11-07 : étape 1 terminée (TASK-6.1). Prochaine : TASK-6.2, rendu minimal p5 WEBGL.
+
+2026-11-07 : étape 2 codée et commitée, TASK-6.2 attend la validation visuelle de Benj (critère 4).
 <!-- SECTION:NOTES:END -->

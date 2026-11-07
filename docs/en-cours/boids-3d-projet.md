@@ -133,6 +133,17 @@ Logique 3D pure faite le 2026-11-07 (TASK-6.1).
 - **Directions lissées** : `updateDirections`, un vecteur unitaire par boid, sans saut d'angle.
 - **2D inchangé** : trajectoires strictement identiques à celles d'avant le projet, protégées par un test de non-régression.
 
+## Résultats De L'Étape 2
+
+Rendu minimal fait le 2026-11-07 (TASK-6.2), en attente de la validation visuelle de Benj.
+
+- **Fichiers** : `assets/scripts/lab/simulations/boids3d/sketch.js` (rendu p5 WEBGL, isolé du calcul), `orientation.js` (rotation du nez de l'oiseau vers sa direction, fonction pure testée) et la classe CSS `.boids-canvas--sunset` (le ciel) dans `assets/styles/lab/simulations.css`.
+- **Rendu** : canvas WEBGL transparent effacé à chaque frame, dégradé CSS de coucher de soleil derrière, oiseau construit une fois avec `buildGeometry` (corps effilé et deux ailes en flèche, statique) puis dessiné avec `model()` pour chaque boid, antialiasing activé.
+- **Vérifié** : la rotation de p5 (`rotate(angle, axe)`) donne bien la direction attendue sur 5 cas ; aucune erreur JS ni avertissement ; une capture de la scène montre des oiseaux lisibles, orientés dans le même sens, sur le dégradé.
+- **Caméra** : `orbitControl` répond à un glisser à la souris et à un glisser au doigt (tactile émulé), nuée en pause. Le zoom à la molette modifie l'image mais ce signal est faible : à confirmer à la main.
+- **Images par seconde** (Chrome headless, rendu logiciel donc pessimiste) : 55 images par seconde à 200 boids, 36 à 500 boids.
+- **À régler à l'étape 4** : la nuée est compacte et petite à l'écran (un groupe d'environ 120 px de large dans un canvas de 1000 px). Pistes : caméra plus proche, oiseaux plus grands, nuée moins resserrée (rayon de perception, séparation).
+
 ## Risques
 
 - **Coût de p5 sur les machines modestes** : mesuré en CPU seulement, avec un rendu logiciel ; le GPU réel n'est pas mesuré. Marge faible à 500 boids.

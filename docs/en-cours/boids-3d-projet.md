@@ -215,6 +215,16 @@ Rendu minimal fait le 2026-11-07 (TASK-6.2), en attente de la validation visuell
 - **Images par seconde** (Chrome headless, rendu logiciel donc pessimiste) : 55 images par seconde à 200 boids, 36 à 500 boids.
 - **Constat initial, infirmé par Benj** : j'avais jugé la nuée petite et compacte à l'écran (un groupe d'environ 120 px de large dans un canvas de 1000 px). Benj trouve au contraire sa taille et sa densité bonnes.
 
+## Résultats De L'Étape 3
+
+Orientation haut/bas faite le 2026-11-07 (TASK-6.5), en attente de la validation visuelle de Benj.
+
+- **Fichier** : `assets/scripts/lab/simulations/boids3d/orientation.js` (fonctions pures `updateUps` et `orientationMatrix`), qui remplace l'ancienne rotation la plus courte. Le rendu applique la matrice avec `applyMatrix`.
+- **Principe** : le haut d'un oiseau est le haut du monde, projeté perpendiculairement à sa direction, et lissé d'une frame à l'autre par une rotation autour de la direction (une fraction constante de l'angle restant, 0,1 par frame). Une direction exactement verticale n'a pas de haut défini : l'ancien haut est conservé. Une première version qui mélangeait linéairement les deux vecteurs restait coincée à l'envers après une boucle ; elle a été remplacée par cette rotation.
+- **Mesuré sur 690 000 boids-frames** (3 parties de 1200 frames, 200 boids) : avec l'ancienne orientation, 28 retournements de plus de 90° en une seule frame (jusqu'à 178°) et un oiseau le dos vers le bas 8,6 % du temps ; avec la nouvelle, aucun retournement, un changement maximal de 25° par frame, et 0,7 % du temps le dos vers le bas (passages quasi verticaux).
+- **Vérifié dans le navigateur** : `applyMatrix` de p5 applique exactement la matrice attendue (écart nul sur 5 attitudes), aucune erreur JS, environ 52 images par seconde à 200 boids (Chrome headless, rendu logiciel).
+- **Tests** : 17 tests dans `orientation.test.js` ; 5 défauts réinjectés volontairement sont tous détectés. L'un d'eux ne l'était pas au départ (un boid vertical aurait emprunté la cible du boid précédent) ; un test a été ajouté.
+
 ## Retour De Benj Sur L'Étape 2
 
 2026-11-07, après avoir regardé la page de test.

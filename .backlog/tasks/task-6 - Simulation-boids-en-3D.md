@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-11-07 09:24'
-updated_date: '2026-11-07 09:54'
+updated_date: '2026-11-07 09:59'
 labels:
   - lab
   - 3d
@@ -40,4 +40,8 @@ Ajouter au Lab une simulation 3D d’une nuée d’oiseaux, à côté de la simu
 2026-11-07 : étape 2 codée et commitée, TASK-6.2 attend la validation visuelle de Benj (critère 4).
 
 2026-11-07 : changement de périmètre à trancher. Après la page de test de l'étape 2, Benj attendait une scène réaliste avec sol et éléments de paysage (arbres, routes, buissons, lignes électriques), absents du cadrage ; sans eux l'orbite de la caméra n'a pas de sens. Cela rouvre le rendu (D1), la caméra (D6) et la zone de confinement, et suspend TASK-6.3 et TASK-6.4. Voir docs/en-cours/boids-3d-projet.md, section Évolution de périmètre. Les critères de TASK-6 seront révisés une fois le périmètre décidé.
+
+2026-11-07 : plan approuvé et complété par Benj (orientation haut/bas, trajectoires 3D, espacement), 8 étapes, TASK-6.5 à 6.8 créées, TASK-6.3 et 6.4 renumérotées en étapes 7 et 8. Étape 3 (TASK-6.5) démarrée. Le mécanisme des trajectoires 3D (Q12, D10) est à décider avec Benj avant TASK-6.6.
+
+2026-11-07 : étape 3 (TASK-6.5, orientation haut/bas) codée et mesurée, en attente du regard de Benj. Étape 4 (TASK-6.6) attend le choix du mécanisme des trajectoires 3D (Q12).
 <!-- SECTION:NOTES:END -->

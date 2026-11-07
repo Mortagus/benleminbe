@@ -1,11 +1,14 @@
 import p5 from 'p5';
 import { SCENE_SIZE_3D, createFlock, resizeFlock, stepFlock, updateDirections } from '../boids/flocking.js';
-import { rotationFromXAxis } from './orientation.js';
+import { orientationMatrix, updateUps } from './orientation.js';
 
 const CANVAS_RATIO = 9 / 16;
 const MAX_CANVAS_HEIGHT = 620;
 // Fraction of the remaining turn applied each frame: boids are drawn turning smoothly towards their heading.
 const DIRECTION_SMOOTHING = 0.25;
+// Fraction of the remaining roll applied each frame to the up of a boid: slower than the heading, so that a boid
+// that goes nearly vertical rolls over several frames instead of snapping.
+const UP_SMOOTHING = 0.1;
 const BIRD_COLOR = '#1b1424';
 // The camera looks at the centre of the scene, which is moved to the origin when drawing.
 const CAMERA_POSITION = [0, -60, 1050];
@@ -21,7 +24,8 @@ const FIELD_OF_VIEW = Math.PI / 3.2;
  * @param {{ paused: boolean }} initialState
  */
 export function startBoids3dSketch(container, parameters, initialState) {
-    const state = { paused: initialState.paused, flock: null, directions: new Float32Array(0), bird: null };
+    const state = { paused: initialState.paused, flock: null, directions: new Float32Array(0), ups: new Float32Array(0), bird: null };
+    const attitude = new Float64Array(16);
     const centre = SCENE_SIZE_3D.map((extent) => extent / 2);
     let instance = null;
 
@@ -66,14 +70,21 @@ export function startBoids3dSketch(container, parameters, initialState) {
 
     function drawBoid(p, index) {
         const { pos } = state.flock;
-        const { directions } = state;
-        const { angle, axis } = rotationFromXAxis(directions[index * 3], directions[index * 3 + 1], directions[index * 3 + 2]);
+        const { directions, ups } = state;
+
+        orientationMatrix(directions.subarray(index * 3, index * 3 + 3), ups.subarray(index * 3, index * 3 + 3), attitude);
 
         p.push();
         p.translate(pos[index * 3] - centre[0], pos[index * 3 + 1] - centre[1], pos[index * 3 + 2] - centre[2]);
-        p.rotate(angle, axis);
+        p.applyMatrix(...attitude);
         p.model(state.bird);
         p.pop();
+    }
+
+    // The heading and the up of every boid, smoothed for drawing only.
+    function updateAttitudes() {
+        state.directions = updateDirections(state.directions, state.flock, DIRECTION_SMOOTHING);
+        state.ups = updateUps(state.ups, state.directions, UP_SMOOTHING);
     }
 
     function sketch(p) {
@@ -90,14 +101,14 @@ export function startBoids3dSketch(container, parameters, initialState) {
             p.camera(...CAMERA_POSITION, 0, 0, 0, 0, 1, 0);
             state.bird = buildBird(p);
             state.flock = createFlock(parameters.count, Math.random, SCENE_SIZE_3D);
-            state.directions = updateDirections(state.directions, state.flock, DIRECTION_SMOOTHING);
+            updateAttitudes();
         };
 
         p.draw = () => {
             if (!state.paused) {
                 state.flock = resizeFlock(state.flock, parameters.count, Math.random, SCENE_SIZE_3D);
                 state.flock = stepFlock(state.flock, parameters, SCENE_SIZE_3D);
-                state.directions = updateDirections(state.directions, state.flock, DIRECTION_SMOOTHING);
+                updateAttitudes();
             }
 
             // Transparent background: the CSS sky shows through.
@@ -133,7 +144,8 @@ export function startBoids3dSketch(container, parameters, initialState) {
         reset() {
             state.flock = createFlock(parameters.count, Math.random, SCENE_SIZE_3D);
             state.directions = new Float32Array(0);
-            state.directions = updateDirections(state.directions, state.flock, DIRECTION_SMOOTHING);
+            state.ups = new Float32Array(0);
+            updateAttitudes();
         },
         /** Measured frame rate, for diagnostics. */
         frameRate() {

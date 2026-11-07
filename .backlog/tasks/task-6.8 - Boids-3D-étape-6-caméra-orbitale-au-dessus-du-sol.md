@@ -4,11 +4,12 @@ title: 'Boids 3D, étape 6 : caméra orbitale au-dessus du sol'
 status: To Do
 assignee: []
 created_date: '2026-11-07 09:54'
+updated_date: '2026-11-07 11:03'
 labels:
   - lab
   - 3d
 dependencies:
-  - TASK-6.7
+  - TASK-6.13
 documentation:
   - docs/en-cours/boids-3d-projet.md
 parent_task_id: TASK-6

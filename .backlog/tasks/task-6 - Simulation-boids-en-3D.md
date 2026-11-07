@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-11-07 09:24'
-updated_date: '2026-11-07 10:38'
+updated_date: '2026-11-07 11:03'
 labels:
   - lab
   - 3d
@@ -50,4 +50,8 @@ Ajouter au Lab une simulation 3D d’une nuée d’oiseaux, à côté de la simu
 2026-11-07 : à la demande de Benj, le décor (étape 5, TASK-6.7) passe avant la fin de l'étape 4 : la page de test n'avait ni sol ni repère haut/bas. TASK-6.6 est codée et mesurée (12 parties), en attente de sa validation visuelle ; TASK-6.5 aussi.
 
 2026-11-07 : décor en silhouettes (TASK-6.7) codé et mesuré, en attente du regard de Benj. Il reste : validation visuelle des étapes 3, 4 et 5 ; caméra au-dessus du sol (TASK-6.8, nécessaire car orbitControl passe sous le sol) ; intégration à la page (TASK-6.3) ; réglage visuel (TASK-6.4).
+
+2026-11-07 : 2e retour de Benj. Scène lisible (TASK-6.7 terminée), trajectoire « vraiment pas mal du tout » (TASK-6.6 terminée avec réserves). Nouvelles demandes : proportion oiseaux/décor et repère d'échelle, plus de hauteur et évitement des arbres, délai de propagation, trajectoire plus ample ; recherche faite, voir le document. TASK-6.5 reste ouverte : Benj n'a pas dit s'il voit encore des retournements. Plan à réviser après ses décisions (Q13 à Q16).
+
+2026-11-07 : décisions Q13 à Q16 de Benj enregistrées ; tâches TASK-6.9 à 6.13 créées (échelle, trajectoire plus ample, meneurs, évitement des arbres, repères d'échelle) ; exécution 6.9, 6.10, 6.12, 6.11, 6.13 puis 6.8, 6.3, 6.4. Comparaison des proportions prête (TASK-6.9).
 <!-- SECTION:NOTES:END -->

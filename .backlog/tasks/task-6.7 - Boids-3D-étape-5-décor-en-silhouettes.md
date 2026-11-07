@@ -1,11 +1,11 @@
 ---
 id: TASK-6.7
 title: 'Boids 3D, étape 5 : décor en silhouettes'
-status: In Progress
+status: Done
 assignee:
   - '@claude'
 created_date: '2026-11-07 09:54'
-updated_date: '2026-11-07 10:38'
+updated_date: '2026-11-07 10:54'
 labels:
   - lab
   - 3d
@@ -28,7 +28,7 @@ Benj attendait une scène réaliste avec un sol et des éléments de paysage ; d
 - [x] #1 Un générateur pur et déterministe produit sol, horizon, arbres, poteaux et câbles, avec des tests de placement (rien dans la zone de vol, câbles reliés aux poteaux, résultat reproductible)
 - [x] #2 Le décor est dessiné par deux géométries fusionnées construites une fois (sol, reste du décor) et le sol est sous la zone de vol : la nuée ne traverse jamais le décor
 - [x] #3 Les images par seconde avec et sans décor sont mesurées et consignées
-- [ ] #4 Benj valide l’aspect du décor
+- [x] #4 Benj valide l’aspect du décor
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -51,4 +51,12 @@ Non détecté par les tests : retirer la règle « aucun arbre sous la nuée » 
 Limite connue : orbitControl permet de passer sous le sol (le sol masque alors l'écran), à corriger à TASK-6.8.
 Non vérifié : l'aspect à l'écran par Benj (critère 4), le rendu sur un vrai GPU.
 Prochaine action : Benj regarde la page de test ; puis revenir aux étapes restantes (validation visuelle des étapes 3 et 4, caméra TASK-6.8, intégration TASK-6.3, réglage visuel TASK-6.4).
+
+Retour de Benj (2e passe, 2026-11-07) : « la scène est lisible : le paysage, le ciel, le sol, on voit clairement les éléments » : critère 4 validé. Demandes nouvelles consignées dans docs/en-cours/boids-3d-projet.md : proportion oiseau/arbre et repère d'échelle, évitement des arbres, délai de propagation, trajectoire plus ample.
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Décor en silhouettes (sol, collines, 78 arbres, 2 lignes de poteaux avec câbles) en deux géométries fusionnées, sol sous la zone de vol. Vérifié par 18 tests, 5 mutations sur 6 détectées, make check, captures sur 3 angles, mesure des fps. Lisibilité validée par Benj ; échelle du décor et repère de taille à reprendre.
+<!-- SECTION:FINAL_SUMMARY:END -->

@@ -33,8 +33,11 @@ const FIELD_OF_VIEW = Math.PI / 3.2;
  * @param {HTMLElement} container
  * @param {typeof import('../boids/flocking.js').DEFAULT_PARAMETERS_3D} parameters Mutated live by the controls.
  * @param {{ paused: boolean }} initialState
+ * @param {{ birdScale?: number }} [options] `birdScale` draws the birds at that fraction of their size (1 by default),
+ *   without touching the simulation: it changes how big a bird looks next to a tree, to compare proportions.
  */
-export function startBoids3dSketch(container, parameters, initialState) {
+export function startBoids3dSketch(container, parameters, initialState, options = {}) {
+    const birdScale = options.birdScale ?? 1;
     const state = { paused: initialState.paused, flock: null, directions: new Float32Array(0), ups: new Float32Array(0), bird: null, ground: null, scenery: null, frame: 0 };
     const attitude = new Float64Array(16);
     const centre = SCENE_SIZE_3D.map((extent) => extent / 2);
@@ -105,6 +108,15 @@ export function startBoids3dSketch(container, parameters, initialState) {
         const { directions, ups } = state;
 
         orientationMatrix(directions.subarray(index * 3, index * 3 + 3), ups.subarray(index * 3, index * 3 + 3), attitude);
+
+        if (birdScale !== 1) {
+            // A uniform scale of the three rotated axes (the translation is applied separately).
+            for (const column of [0, 4, 8]) {
+                attitude[column] *= birdScale;
+                attitude[column + 1] *= birdScale;
+                attitude[column + 2] *= birdScale;
+            }
+        }
 
         p.push();
         p.translate(pos[index * 3] - centre[0], pos[index * 3 + 1] - centre[1], pos[index * 3 + 2] - centre[2]);

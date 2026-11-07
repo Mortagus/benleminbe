@@ -212,6 +212,19 @@ Reste ouvert : les couleurs exactes du dégradé et la forme exacte de l'oiseau,
 7. **Intégration à la page** (TASK-6.3). Section dans `/lab/simulations`, entrypoint Importmap, pause, réinitialisation et nombre de boids (100 à 500, 200 par défaut), textes FR et EN, pause si `prefers-reduced-motion`, mise à jour de `simulations.md`.
 8. **Réglage visuel et finitions** (TASK-6.4). Contraste entre oiseaux et sol, couleurs du ciel (Benj : elles ne reflètent pas exactement celles qu'il avait en tête), volume des oiseaux (ils paraissent plats de face), décision finale sur Three.js d'après les mesures.
 
+### Suite Du Plan Après La Deuxième Passe De Benj
+
+**Proposé le 2026-11-07, en attente de son accord sur l'ordre** (les fonctionnalités, elles, ont été décidées par lui). Les étapes 3 à 5 sont faites (3 en attente du regard de Benj). Les nouvelles étapes viennent avant la caméra, l'intégration à la page et le réglage visuel :
+
+- **TASK-6.9, échelle et proportions** : choix de Benj sur la comparaison ci-dessus, puis application (taille des oiseaux, des arbres et des poteaux, nombre d'oiseaux).
+- **TASK-6.10, trajectoire plus ample et plus de hauteur** : zone de vol plus grande, chemin de la cible plus ample, plus de hauteur exploitée.
+- **TASK-6.12, propagation par meneurs** : seule une fraction des boids perçoit la cible ; mesure du délai de propagation et réglage de la fraction.
+- **TASK-6.11, évitement prédictif des arbres** : zone de vol abaissée jusqu'aux arbres, évitement par regard devant (cylindre le long de la vitesse), sans répulsion ; garde-fou pour le sol.
+- **TASK-6.13, repères d'échelle** : brume lointaine cuite dans les couleurs des sommets, maison ou grange, clocher ou silhouette lointaine, route avec voiture.
+- puis TASK-6.8 (caméra au-dessus du sol), TASK-6.3 (intégration à la page) et TASK-6.4 (réglage visuel).
+
+Numérotation Backlog.md : les identifiants suivent l'ordre de création, pas l'ordre d'exécution ; l'ordre d'exécution est 6.9, 6.10, 6.12, 6.11, 6.13, 6.8, 6.3, 6.4, porté par les dépendances des tâches.
+
 ## Résultats De L'Étape 1
 
 Logique 3D pure faite le 2026-11-07 (TASK-6.1).
@@ -265,6 +278,51 @@ Décor en silhouettes fait le 2026-11-07, avant la fin de l'étape 4 (TASK-6.7),
 - **Taille et densité de la nuée** : bonnes. Le constat de l'étape 2 (« nuée compacte et petite ») ne se confirme donc pas côté ressenti ; à retirer des points à régler à l'étape 4.
 - **Comportement** : « vraiment réussi ».
 - **Décor** : manquant. Benj avait en tête une scène réaliste, avec un sol et des éléments de paysage (arbres, routes, buissons, lignes électriques aériennes). Sans eux, changer l'orientation de la caméra ne veut rien dire.
+
+## Retour De Benj Sur Les Étapes 3 À 5 (Deuxième Passe)
+
+2026-11-07, après avoir regardé la scène avec le décor, le comportement et l'espacement.
+
+- **Scène** : lisible. Le paysage, le ciel, le sol, les éléments se distinguent clairement.
+- **Trajectoire** : « vraiment pas mal du tout ».
+- **Nouvelles demandes**, toutes à cadrer :
+  1. **Proportion entre oiseaux et décor** (par exemple un arbre par rapport à un oiseau) : une idée, sans certitude que ça rende bien ; Benj demande de creuser les astuces des créateurs de scènes 3D.
+  2. **Plus de hauteur exploitée** par les boids, et **interaction avec les arbres** : qu'ils puissent passer près d'un arbre sans collision. Pas une répulsion, juste un évitement.
+  3. **Propagation d'un changement de trajectoire dans le groupe** : trop rapide, « robotique ». Un délai de propagation est souhaité, sans savoir quel paramètre régler.
+  4. **Trajectoire générale plus ample** : vu la taille de la scène, la nuée pourrait parcourir plus de distance.
+  5. **Taille de la scène indéfinie** : il faudrait un élément de taille de référence facilement identifiable ; Benj ne sait pas quoi proposer.
+
+### Constats Et Sources
+
+**Échelle.** Un boid fait 21 unités de long, un arbre 60 à 140 et un poteau 110 à 130 : un arbre fait donc 3 à 7 fois la longueur d'un oiseau. Un étourneau mesure environ 20 cm et un arbre 10 à 20 m, soit 50 à 100 fois (ordres de grandeur de mémoire, non vérifiés par la recherche). En prenant 1 unité pour 1 cm, la zone de vol de 700×420×700 unités ferait 7×4×7 m et un poteau 1,3 m : le décor est environ 10 fois trop petit par rapport aux oiseaux, et ce n'est pas le décor qui définit l'échelle. Les réglages internes de la nuée, eux, sont plausibles à cette échelle (7 voisins pris en compte, comme dans les vraies nuées).
+
+**Astuces d'échelle** (sources générales d'art et de jeu vidéo ; peu de matière propre au temps réel). Un objet de taille connue (une personne, une voiture) est le moyen le plus simple de donner l'échelle. La perspective atmosphérique (les objets lointains perdent détails, saturation et contraste, on ne les floute pas) donne la distance. Les éléments modulaires répétés donnent la taille. Un petit objet se lit comme petit plutôt que lointain s'il n'y a ni recouvrement, ni atmosphère, ni sol. La perspective forcée place les grands objets près de la caméra. L'échelle marche mieux quand ces indices se combinent. Une remarque propre à notre cas : le décor est statique, donc la perspective atmosphérique peut être cuite dans les couleurs des sommets, sans brouillard au rendu.
+
+**Propagation du changement de trajectoire.** Dans de vraies nuées d'étourneaux, l'information de virage se propage à 20 à 40 m/s, et traverse une nuée de 400 oiseaux en un peu plus d'une demi-seconde ; quelques oiseaux mènent le virage. Chez nous, la cible attire tous les boids au même instant : il n'y a aucun délai, d'où l'effet robotique. Estimation (non vérifiée, elle suppose une vitesse de vol réelle de 10 à 15 m/s) : l'information va environ 2 à 3 fois plus vite que les oiseaux, soit 6 à 9 unités par frame à notre vitesse de croisière, donc 15 à 35 frames pour traverser une nuée de 100 à 250 unités.
+
+**Évitement d'obstacles.** La méthode classique de Reynolds regarde devant l'agent (un cylindre le long de sa vitesse) : si rien ne gêne, la force est nulle ; sinon on ne traite que l'obstacle le plus proche. C'est un évitement prédictif, pas une répulsion qui croît à l'approche.
+
+Sources : [Creating Vast Landscapes in 3D](https://3dartist.substack.com/p/creating-vast-landscapes-in-3d), [simple stylized environment: scale and mood (80.lv)](https://80.lv/articles/simple-stylized-environment-scale-and-mood/), [atmospheric perspective and scale](https://flipeducation.ai/curriculum/us/arts/grade-6/atmospheric-perspective-and-scale), [Superfluid transport of information in turning flocks of starlings](https://ar5iv.arxiv.org/html/1303.7097), [The seventh starling](https://contrarian.ca/2012/06/20/the-seventh-starling/), [Steering Behaviors (Reynolds 1999)](https://ics-websites.science.uu.nl/docs/vakken/mcrws/papers_new/Reynolds%20-%201999%20-%20Steering%20behaviors%20for%20autonomous%20characters.pdf).
+
+### Décisions Rouvertes
+
+Deux décisions validées plus tôt sont à rouvrir pour un motif nouveau et réel :
+
+- **D3 et D7 (« la nuée reste au-dessus du sol et du décor »)** : Benj veut maintenant que les boids passent près des arbres. La zone de vol et la hauteur des arbres doivent donc se recouvrir, au lieu d'être séparées.
+- **Le point de départ du comportement** : une règle de plus (l'évitement des arbres), en plus de la cible déjà ajoutée.
+
+### Décisions De Benj (Q13 À Q16)
+
+- **Q13. Échelle du décor :** comparer des variantes à l'œil avant de trancher. *Validé* ; la comparaison est prête (voir plus bas), le choix reste à faire.
+- **Q14. Arbres :** évitement prédictif (chaque boid regarde devant lui et ne dévie que si sa trajectoire va toucher un arbre) ; la zone de vol est abaissée vers la hauteur des arbres. Cela remplace « la nuée reste au-dessus du décor » (D3, D7). *Validé.*
+- **Q15. Propagation du changement de trajectoire :** meneurs, c'est-à-dire que seule une petite fraction des boids (environ 10 à 20 %) perçoit la cible, les autres suivent par alignement et cohésion, donc le délai naît tout seul. *Validé.*
+- **Q16. Repères de taille :** brume lointaine (perspective atmosphérique), maison ou grange, clocher ou silhouette lointaine, route avec voiture. Les quatre. *Validé.*
+
+### Comparaison Des Proportions Oiseau Et Arbre
+
+Méthode : j'avais proposé d'agrandir arbres et poteaux de ×2, ×4 et ×10. Ce n'est pas une comparaison propre : des arbres plus hauts entrent dans la zone de vol ou obligent à descendre le sol, ce qui change le cadrage, et un décor ×10 sort du cadre avec la même caméra (c'est le vrai dilemme du réalisme : nuée grande à l'écran ou paysage entier à l'écran, pas les deux). La comparaison est donc faite à l'envers, avec le même rapport de taille et le **même cadrage** : les oiseaux sont dessinés plus petits (option `birdScale` du rendu, sans toucher au calcul) à 100 %, 50 %, 25 % et 10 %, soit des arbres de 5, 10, 20 et 50 fois la longueur d'un oiseau.
+
+Constat sur captures : à 25 % la nuée se lit comme un nuage de points, proche d'une photo de murmuration vue de loin ; à 10 % les oiseaux deviennent de la poussière et la nuée disparaît. Plus les oiseaux sont petits, plus il faut d'oiseaux ou un espacement plus serré pour que la nuée garde de la présence ; c'est un choix de goût que Benj tranche sur son écran.
 
 ## Évolution De Périmètre (Tranchée Le 2026-11-07)
 

@@ -101,7 +101,7 @@ C'est une force de plus que les « règles actuelles » : elle sert uniquement �
 
 Le ciel est fixe : pas de cycle jour/nuit, pas de lien avec le thème du site. Le canvas est effacé avec transparence à chaque frame et le dégradé est un fond CSS. Coût nul, identique avec p5 ou Three.js. Risque : le canvas transparent en WEBGL avec p5 est à vérifier dans la première étape du rendu.
 
-### D5. Orientation et rendu des boids — Validé (forme à affiner)
+### D5. Orientation et rendu des boids — Validé (forme à affiner ; taille : 50 %)
 
 Chaque boid est une forme 3D simple et statique évoquant un petit oiseau (corps effilé et deux ailes fixes, par exemple), orientée selon sa vitesse. Le cap dessiné est lissé comme en 2D, mais en gardant pour chaque boid un vecteur direction lissé plutôt qu'un angle, ce qui évite les sauts d'angle et le blocage de cardan. Silhouettes en couleur unie, sans éclairage. Risque esthétique : sans éclairage, la profondeur ne se lit que par la taille ; une légère variation de teinte selon la distance à la caméra pourrait être nécessaire.
 
@@ -323,6 +323,8 @@ Deux décisions validées plus tôt sont à rouvrir pour un motif nouveau et ré
 Méthode : j'avais proposé d'agrandir arbres et poteaux de ×2, ×4 et ×10. Ce n'est pas une comparaison propre : des arbres plus hauts entrent dans la zone de vol ou obligent à descendre le sol, ce qui change le cadrage, et un décor ×10 sort du cadre avec la même caméra (c'est le vrai dilemme du réalisme : nuée grande à l'écran ou paysage entier à l'écran, pas les deux). La comparaison est donc faite à l'envers, avec le même rapport de taille et le **même cadrage** : les oiseaux sont dessinés plus petits (option `birdScale` du rendu, sans toucher au calcul) à 100 %, 50 %, 25 % et 10 %, soit des arbres de 5, 10, 20 et 50 fois la longueur d'un oiseau.
 
 Constat sur captures : à 25 % la nuée se lit comme un nuage de points, proche d'une photo de murmuration vue de loin ; à 10 % les oiseaux deviennent de la poussière et la nuée disparaît. Plus les oiseaux sont petits, plus il faut d'oiseaux ou un espacement plus serré pour que la nuée garde de la présence ; c'est un choix de goût que Benj tranche sur son écran.
+
+**Choix de Benj le 2026-11-07 : 50 %.** Les oiseaux sont dessinés à la moitié de la taille de leur modèle, soit un arbre d'environ 10 fois la longueur d'un oiseau. En dessous (25 % et 10 %), les boids ne se voient plus du tout. C'est un choix de rendu : la simulation (espacement, rayon de perception, vitesse) ne change pas. Ce rapport reste très en deçà du réel (50 à 100 fois) : le décor est stylisé, et les repères d'échelle à venir (grange, clocher, voiture) devront avoir une taille cohérente avec ce rapport de 10, pas avec des tailles réelles. Les arbres et les poteaux gardent leur taille.
 
 ## Évolution De Périmètre (Tranchée Le 2026-11-07)
 

@@ -14,6 +14,10 @@ const UP_SMOOTHING = 0.1;
 // Birds are the darkest, the scenery a little lighter and the ground lighter still, so that a bird in front of a tree
 // or the ground can still be told apart. To be tuned by eye.
 const BIRD_COLOR = '#140e1a';
+// Birds are drawn at half the size of their model: a tree is then about ten times as long as a bird, which Benj chose
+// by comparing 100, 50, 25 and 10 %. Below that the birds stop being visible; real proportions would be 50 to 100 times.
+// It changes only how big a bird looks, not the simulation.
+const DEFAULT_BIRD_SCALE = 0.5;
 const SCENERY_COLOR = '#2a1e2b';
 const GROUND_COLOR = '#43303a';
 // The ground stretches to 6000 units, so the far plane of the camera has to reach beyond it.
@@ -33,11 +37,11 @@ const FIELD_OF_VIEW = Math.PI / 3.2;
  * @param {HTMLElement} container
  * @param {typeof import('../boids/flocking.js').DEFAULT_PARAMETERS_3D} parameters Mutated live by the controls.
  * @param {{ paused: boolean }} initialState
- * @param {{ birdScale?: number }} [options] `birdScale` draws the birds at that fraction of their size (1 by default),
- *   without touching the simulation: it changes how big a bird looks next to a tree, to compare proportions.
+ * @param {{ birdScale?: number }} [options] `birdScale` draws the birds at that fraction of their model size (half by
+ *   default), without touching the simulation: it changes how big a bird looks next to a tree.
  */
 export function startBoids3dSketch(container, parameters, initialState, options = {}) {
-    const birdScale = options.birdScale ?? 1;
+    const birdScale = options.birdScale ?? DEFAULT_BIRD_SCALE;
     const state = { paused: initialState.paused, flock: null, directions: new Float32Array(0), ups: new Float32Array(0), bird: null, ground: null, scenery: null, frame: 0 };
     const attitude = new Float64Array(16);
     const centre = SCENE_SIZE_3D.map((extent) => extent / 2);

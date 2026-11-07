@@ -1,11 +1,11 @@
 ---
 id: TASK-6.5
 title: 'Boids 3D, étape 3 : orientation haut/bas des oiseaux'
-status: In Progress
+status: Done
 assignee:
   - '@claude'
 created_date: '2026-11-07 09:54'
-updated_date: '2026-11-07 09:59'
+updated_date: '2026-11-07 11:15'
 labels:
   - lab
   - 3d
@@ -28,7 +28,7 @@ Retour de Benj le 2026-11-07 : les boids font parfois un retournement sans sens 
 - [x] #1 Le haut d’un oiseau ne se retourne pas en vol à peu près horizontal, y compris lors d’un demi-tour complet, vérifié par des tests
 - [x] #2 Près de la verticale le haut change progressivement, sans saut brusque, vérifié par des tests
 - [x] #3 La rotation appliquée par p5 donne bien le repère attendu, vérifié dans le navigateur
-- [ ] #4 make check passe et Benj ne voit plus de retournement à l’écran
+- [x] #4 make check passe et Benj ne voit plus de retournement à l’écran
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -51,4 +51,12 @@ Incident : ma première version mélangeait linéairement le haut et sa cible ; 
 Validé : 17 tests orientation, 5 mutations détectées, make check OK (243 tests) ; mesure sur 690 000 boids-frames : retournements >90° en une frame 28 -> 0 (max 178° -> 25°), oiseau dos vers le bas 8,6 % -> 0,7 % ; applyMatrix de p5 conforme (écart nul) ; aucune erreur JS ; ~52 fps à 200 boids en rendu logiciel.
 Non vérifié : l'aspect à l'écran, par Benj (critère 4).
 Prochaine action : Benj regarde la page de test et valide ; puis TASK-6.6 (comportement 3D), qui attend sa décision sur le mécanisme des trajectoires 3D (Q12).
+
+Benj le 2026-11-07 : « je n'ai plus vu de boids se retourner de manière non naturelle » : critère 4 validé.
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Orientation haut/bas : repère avec haut lissé par rotation autour de la direction. Mesuré sur 690 000 boids-frames : retournements de plus de 90 degrés en une frame 28 -> 0, oiseau le dos vers le bas 8,6 % -> 0,7 %. 17 tests orientation, 5 mutations détectées, make check. Validé à l’écran par Benj : plus de retournement non naturel.
+<!-- SECTION:FINAL_SUMMARY:END -->

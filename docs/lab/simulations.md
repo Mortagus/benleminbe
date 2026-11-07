@@ -11,7 +11,7 @@ Présenter des simulations interactives où des règles simples produisent un co
 - `app_lab_simulations` -> `/lab/simulations` (`LabController::simulations`)
 - Template : `templates/lab/simulations/index.html.twig`
 - Carte de présentation sur `/lab` : `templates/lab/index.html.twig`
-- Textes FR/EN : clés `simulations.*` et `tools.simulations.*` dans `translations/lab.*.yaml`, libellé de navigation `header.navigation.simulations` dans `translations/layout.*.yaml`
+- Textes FR/EN : clés `simulations.*` et `tools.simulations.*` dans `translations/lab.*.yaml` (les unités affichées à côté des valeurs des curseurs sont dans `simulations.boids.controls.units.*` : `px` pour le rayon de perception, `°` pour le champ de vision, `px/image` ou `px/frame` pour la vitesse ; les autres réglages sont des comptes, des multiplicateurs ou des ratios, sans unité), libellé de navigation `header.navigation.simulations` dans `translations/layout.*.yaml`
 
 Les routes du Lab ne portent pas de préfixe de langue et ne sont pas dans le sitemap, comme le tracker DnD.
 

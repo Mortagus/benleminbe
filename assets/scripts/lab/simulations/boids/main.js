@@ -29,7 +29,8 @@ if (root) {
         const output = root.querySelector(`[data-boids-output="${name}"]`);
         const apply = () => {
             parameters[name] = Number(input.value);
-            output.textContent = input.value;
+            // The unit comes translated from the template and already carries any space it needs ("300°", "50 px").
+            output.textContent = input.value + (output.dataset.unit ?? '');
         };
 
         // Lets the stylesheet draw a tick at the default value, as a fraction of the slider range.

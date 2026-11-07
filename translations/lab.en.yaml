@@ -70,13 +70,17 @@ simulations:
             count: "Number of boids"
             perception: "Perception radius"
             speed: "Maximum speed"
-            angle: "Field of view (°)"
+            angle: "Field of view"
             neighbours: "Neighbours considered"
             smoothing: "Turn smoothing"
             force: "Maximum steering force"
             alignment_weight: "Alignment weight"
             separation_weight: "Separation weight"
             cohesion_weight: "Cohesion weight"
+            units:
+                pixels: "\u00a0px"
+                degrees: "°"
+                pixels_per_frame: "\u00a0px/frame"
         rules:
             title: "The three rules"
             alignment: "**Alignment**: match the average heading of neighbours."

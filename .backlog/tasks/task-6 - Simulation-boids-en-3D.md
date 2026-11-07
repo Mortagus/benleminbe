@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-11-07 09:24'
-updated_date: '2026-11-07 11:15'
+updated_date: '2026-11-07 11:25'
 labels:
   - lab
   - 3d
@@ -56,4 +56,6 @@ Ajouter au Lab une simulation 3D d’une nuée d’oiseaux, à côté de la simu
 2026-11-07 : décisions Q13 à Q16 de Benj enregistrées ; tâches TASK-6.9 à 6.13 créées (échelle, trajectoire plus ample, meneurs, évitement des arbres, repères d'échelle) ; exécution 6.9, 6.10, 6.12, 6.11, 6.13 puis 6.8, 6.3, 6.4. Comparaison des proportions prête (TASK-6.9).
 
 2026-11-07 : TASK-6.5 (plus de retournement, validé par Benj) et TASK-6.9 (oiseaux à 50 %) terminées. Prochaine étape : TASK-6.10 (trajectoire plus ample et plus de hauteur). Benj constate que la nuée ne s'approche jamais des arbres : normal, la zone de vol est au-dessus du décor jusqu'à TASK-6.11.
+
+2026-11-07 : TASK-6.10 (trajectoire plus ample) codée et mesurée, en attente du regard de Benj. Prochaine : TASK-6.12 (meneurs), puis 6.11 (évitement des arbres).
 <!-- SECTION:NOTES:END -->

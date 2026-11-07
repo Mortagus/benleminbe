@@ -24,9 +24,14 @@ const GROUND_COLOR = '#43303a';
 const NEAR_PLANE = 20;
 const FAR_PLANE = 15000;
 // The camera looks at the centre of the scene, which is moved to the origin when drawing.
-// Close to the ground (it is at y = 421, y pointing down) and looking up at the flock, so that trees and power lines
-// stand out against the sky as in a photograph of a murmuration. The camera can still be moved by the user.
-const CAMERA_POSITION = [0, 325, 1150];
+// Close to the ground and looking up at the flock, so that trees and power lines stand out against the sky as in a
+// photograph of a murmuration (the y axis points down, so the camera is below the flock, above the ground). The camera
+// can still be moved by the user.
+const CAMERA_HEIGHT_ABOVE_GROUND = 91;
+const CAMERA_DISTANCE = 1150;
+// The camera aims a little below the centre of the flock (y points down), so that the ground and the trees stay in the
+// frame now that the flight zone is tall and the ground is far below its centre.
+const LOOK_AT_HEIGHT = 200;
 const FIELD_OF_VIEW = Math.PI / 3.2;
 
 /**
@@ -146,12 +151,12 @@ export function startBoids3dSketch(container, parameters, initialState, options 
             canvas.attribute('aria-label', container.dataset.canvasLabel ?? 'Boids 3D simulation');
             p.noStroke();
             p.fill(BIRD_COLOR);
-            p.camera(...CAMERA_POSITION, 0, 0, 0, 0, 1, 0);
             p.fill(BIRD_COLOR);
             state.bird = buildBird(p);
 
             const landscape = buildLandscape();
 
+            p.camera(0, landscape.groundY - CAMERA_HEIGHT_ABOVE_GROUND, CAMERA_DISTANCE, 0, LOOK_AT_HEIGHT, 0, 0, 1, 0);
             state.ground = buildTriangles(p, GROUND_COLOR, landscape.ground);
             state.scenery = buildTriangles(p, SCENERY_COLOR, landscape.horizon, landscape.silhouettes);
             state.flock = createFlock(parameters.count, Math.random, SCENE_SIZE_3D);

@@ -55,9 +55,11 @@ export const DEFAULT_PARAMETERS = Object.freeze({
 
 /**
  * Playfield of the 3D simulation (width, height, depth). It is the bounding box of the ellipsoid in which the
- * confinement keeps the flock; the camera looks at its centre.
+ * confinement keeps the flock; the camera looks at its centre. It is wide and tall but shallow: the camera stays about
+ * 1200 units from the flock, so a flock that also moved a lot in depth would come very close to the camera or go far
+ * from it, and the apparent size of the birds would vary too much. Wide and tall gives long sweeps across the view.
  */
-export const SCENE_SIZE_3D = Object.freeze([700, 420, 700]);
+export const SCENE_SIZE_3D = Object.freeze([1800, 700, 700]);
 
 /**
  * Starting point for the 3D simulation. With the 2D radii a few hundred boids would almost never see each other in
@@ -65,11 +67,11 @@ export const SCENE_SIZE_3D = Object.freeze([700, 420, 700]);
  * settings are those of the roost (see boids3d/roost.js): a weak spring-like `pull` towards a point that wanders through
  * the scene, which makes the flock climb, dive and turn instead of circling.
  *
- * Measured over 12 runs (6 seeds, 200 and 500 boids, 1800 frames) with the roost on: vertical share of the velocity
- * 0.44 to 0.47 in the median, from 0.33 to 0.57 depending on the run (0.04 without the roost); rotation of the flock
- * as a block 0.14 at most; vertical travel of its centre 0.55 of the half height at least; 5th percentile of the
- * nearest-neighbour distance 28.5 px or more on average over time; nobody alone; at most 1.07 of the confinement
- * radius. To be tuned by eye.
+ * Measured over 6 runs (3 seeds, 200 and 500 boids, 3600 frames) in the playfield above with the roost on: vertical
+ * share of the velocity 0.46 in the median (0.44 at the lowest); rotation of the flock as a block 0.11 at most; the
+ * centre of the flock travels about 1000 units across, 330 up and down and 290 in depth; 5th percentile of the
+ * nearest-neighbour distance 33 px or more on average over time; nobody alone; at most 0.97 of the confinement radius.
+ * To be tuned by eye.
  */
 export const DEFAULT_PARAMETERS_3D = Object.freeze({
     ...DEFAULT_PARAMETERS,
@@ -79,7 +81,7 @@ export const DEFAULT_PARAMETERS_3D = Object.freeze({
     separationWeight: 6,
     maxSpeed: 4,
     confinementWeight: 4,
-    pointerRadius: 800,
+    pointerRadius: 1400,
     pointerWeight: 2,
 });
 

@@ -9,11 +9,14 @@
  * random state: the same frame always gives the same position. Pure maths, kept apart from the renderer.
  */
 
-// Radians per frame on each axis (x, y, z). Different values keep the path from settling into a simple loop.
-const FREQUENCIES = Object.freeze([0.01, 0.0137, 0.0079]);
+// Radians per frame on each axis (x, y, z). Different values keep the path from settling into a simple loop. They are low
+// so that the point never goes faster than the cruising speed of a boid (2.8 units per frame): the speed of the point
+// is the amplitude times the frequency, and the scene is wide, so across it the point is slow (a full lateral sweep
+// takes about 30 seconds at 60 frames per second).
+const FREQUENCIES = Object.freeze([0.0035, 0.0085, 0.0058]);
 // How far the point goes from the centre on each axis, as a fraction of the half extent of the scene. Kept small enough
-// for the point to stay inside the confinement ellipsoid (the root of the sum of squares must stay below 1).
-const AMPLITUDES = Object.freeze([0.5, 0.55, 0.5]);
+// for the point to stay inside the confinement ellipsoid (the root of the sum of squares must stay below 1: 0.91 here).
+const AMPLITUDES = Object.freeze([0.6, 0.55, 0.4]);
 // Offsets that keep the three axes from starting in step.
 const PHASES = Object.freeze([0, 2.1, 4.2]);
 

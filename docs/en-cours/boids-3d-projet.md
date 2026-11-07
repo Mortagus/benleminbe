@@ -269,6 +269,28 @@ Décor en silhouettes fait le 2026-11-07, avant la fin de l'étape 4 (TASK-6.7),
 - **Limite connue** : `orbitControl` n'a pas de limite d'angle, donc la caméra peut passer sous le sol, qui la masque alors entièrement. C'est l'objet de l'étape « caméra » (TASK-6.8).
 - **Tests** : 18 tests dans `landscape.test.js` ; 5 défauts réinjectés sur 6 sont détectés. Le sixième (retirer la règle « aucun arbre sous la nuée ») ne l'est pas : avec ce placement par bosquets, la règle ne se déclenche presque jamais, donc les tests ne peuvent pas la faire échouer. C'est une garde défensive non exercée.
 
+## Résultats De TASK-6.10 (Trajectoire Plus Ample)
+
+Fait le 2026-11-07, en attente de la validation visuelle de Benj.
+
+- **Zone de vol** : de 700×420×700 à **1800×700×700** (`SCENE_SIZE_3D`). Large et haute mais peu profonde : la caméra est fixe à environ 1200 unités de la nuée et Benj a choisi la taille apparente des oiseaux à cette distance (50 %) ; une nuée qui bougerait aussi beaucoup en profondeur passerait très près de la caméra (énorme) ou très loin (minuscule). Une caméra qui suit la nuée serait l'autre solution (étape caméra).
+- **Chemin de la cible** : amplitudes 0,6, 0,55 et 0,4 de la demi-étendue (la cible reste dans l'ellipsoïde, racine de la somme des carrés 0,91), fréquences basses (0,0035, 0,0085 et 0,0058 rad par frame) pour que la cible n'aille jamais plus vite que la vitesse de croisière des boids (2,6 au plus contre 2,8) ; un balayage latéral complet dure environ 30 secondes à 60 images par seconde.
+- **Rayon d'attraction** `pull` de 1400 (800 avant), choisi parmi quatre variantes mesurées.
+- **Mesuré sur 6 parties de 3600 frames** (3 graines, 200 et 500 boids), référence = ancienne zone et ancien chemin :
+
+| Mesure                                               | Avant                | Après                |
+| ---------------------------------------------------- | -------------------- | -------------------- |
+| Parcours du centre en largeur                        | 300 unités           | **980 unités**       |
+| Parcours du centre en hauteur                        | 180 unités           | **315 unités**       |
+| Part verticale de la vitesse (médiane, minimum)      | 0,47 (0,44)          | 0,46 (0,44)          |
+| Rotation en bloc (pire cas)                          | 0,11                 | 0,11                 |
+| Espacement, 5e centile du plus proche voisin (px)    | 28,5                 | 33,0                 |
+| Boids isolés                                         | 0                    | 0                    |
+| Éloignement maximal du centre                        | 1,05                 | 0,97                 |
+
+- **Caméra** : la hauteur de la caméra suit le sol (91 unités au-dessus) et elle vise un point un peu plus bas que le centre de la nuée (200 unités sous le centre) : sans cela, le sol plus bas ne tenait plus que dans 9 % du bas de l'image au lieu de 22 %, ce que les captures ont montré.
+- **Limite** : le parcours en profondeur reste modeste (290 unités), par choix. Les arbres sont toujours sous la zone de vol : l'évitement (TASK-6.11) les rapprochera.
+
 ## Retour De Benj Sur L'Étape 2
 
 2026-11-07, après avoir regardé la page de test.

@@ -52,7 +52,8 @@ describe('landscape ground', () => {
 
     test('is below the lowest point the flock can reach, with room for the tallest element and a margin', () => {
         // In p5 the y axis points down, so below means larger y.
-        expect(landscape.groundY - MAX_ELEMENT_HEIGHT).toBeGreaterThanOrEqual(FLIGHT_BOTTOM + LANDSCAPE_MARGIN);
+        // It is exactly at that limit by construction, so allow for rounding in the floating-point sums.
+        expect(landscape.groundY - MAX_ELEMENT_HEIGHT).toBeGreaterThanOrEqual(FLIGHT_BOTTOM + LANDSCAPE_MARGIN - 1e-9);
     });
 });
 

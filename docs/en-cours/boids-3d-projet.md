@@ -24,7 +24,7 @@ Statut global au 2026-11-07 : étapes 1 et 2 faites. Le retour de Benj sur l'ét
 | Comportement         | Validé  | Règles actuelles (voisins topologiques, angle mort, lissage) passées en 3D, jugées « vraiment réussies » par Benj. Deux ajouts le 2026-11-07 : espacement entre voisins et trajectoires qui exploitent les 3 dimensions (voir ci-dessous). |
 | Orientation          | Validé  | Les oiseaux ont un haut et un bas : ventre vers le bas, jamais de retournement qui n'aurait pas de sens dans la vraie vie. L'inclinaison dans les virages reste hors périmètre. |
 | Espacement           | Validé  | Un oiseau garde un peu d'espace avec ses voisins : à 350 à 500 boids, ils sont aujourd'hui trop rapprochés. Réglage mesuré proposé : D9. |
-| Trajectoires 3D      | **Ouvert** | La vision finale de Benj : les boids varient leurs trajectoires en exploitant les 3 dimensions. Aujourd'hui ils tournent en ronds comme un banc de poissons. Le mécanisme est à choisir (D10, Q12). |
+| Trajectoires 3D      | Validé  | La vision finale de Benj : les boids varient leurs trajectoires en exploitant les 3 dimensions, alors qu'ils tournent en ronds comme un banc de poissons. Mécanisme retenu : une cible mobile en 3D qui attire faiblement la nuée (D10). |
 | Mobile               | Validé  | Ordinateur d'abord. Le mobile ne doit pas planter ; son confort relève de TASK-5. Pause au démarrage si `prefers-reduced-motion`, comme en 2D. |
 | Calcul               | Validé  | Version générique en N dimensions : le calcul de `flocking.js` est réutilisé tel quel avec `dim = 3`, sans duplication.        |
 | Forme du boid        | Validé  | Une forme 3D simple et statique qui évoque un petit oiseau. Aucun battement d'ailes ni animation.                              |
@@ -35,7 +35,7 @@ Statut global au 2026-11-07 : étapes 1 et 2 faites. Le retour de Benj sur l'ét
 | Décor                | Validé  | Benj attendait une scène réaliste avec un sol et des éléments de paysage. Retenu : **silhouettes sombres** sur le ciel (style photo de murmuration à la tombée du jour). Première version : sol ou champ avec horizon, arbres, lignes électriques aériennes. Routes, buissons et bâtiments viendront plus tard. |
 | Caméra               | Validé  | Orbite autour de la scène **au-dessus du sol** : elle ne passe jamais sous le sol, le décor est tout autour de la zone de vol. Remplace l'orbite libre de l'étape 2.          |
 | Nuée et décor        | Validé  | La nuée reste au-dessus du sol et du décor, sans s'y poser. Pas de nouvelle règle de comportement (le point d'attraction du dortoir reste hors périmètre). |
-| Hors périmètre       | Validé  | Inclinaison dans les virages, battement d'ailes ou toute animation du corps, pointeur 3D, simulateur de fluide. Le bruit de direction et le point d'attraction étaient hors périmètre : ils sont à réexaminer selon le mécanisme choisi pour les trajectoires 3D (D10). |
+| Hors périmètre       | Validé  | Inclinaison dans les virages, battement d'ailes ou toute animation du corps, pointeur 3D, simulateur de fluide. Le bruit de direction reste hors périmètre. Le point d'attraction l'était aussi, mais la cible mobile choisie pour les trajectoires 3D (D10) en est une forme : c'est la seule règle de comportement ajoutée, sans dortoir fixe. |
 
 ## Faits Établis
 
@@ -119,7 +119,7 @@ La zone de vol reste l'ellipsoïde du confinement (D3) ; le **sol est placé sou
 
 Pause, réinitialisation et nombre de boids (100 à 500, 200 par défaut). Benj : « suis ton idée pour le moment », les ajouts viendront plus tard. Les valeurs par défaut du calcul sont celles du 2D : elles seront à réajuster à l'œil pour la 3D (par exemple, rayon de perception et poids de cohésion), ce qui fait partie de la première étape.
 
-### D9. Espacement entre voisins — Proposé : séparation de 40 px, poids 4
+### D9. Espacement entre voisins — Validé : séparation de 46 px, poids 6 (avec la cible)
 
 Constat mesuré le 2026-11-07, avec les réglages 3D actuels (séparation de 26 px) : le plus proche voisin est à 21 px au 5e centile à 200 boids, 18 à 350 et 17 à 500, et 94 boids sur 350 puis 170 sur 500 sont à moins de 20 px d'un voisin. Un oiseau fait environ 21 px de long et 34 px d'envergure : les silhouettes se chevauchent. La séparation (26 px) est plus petite que l'envergure.
 
@@ -134,9 +134,9 @@ Candidats mesurés (moyenne de 3 graines, 800 frames) :
 | **40 / 4**         | 500      | 29,4 px                          | 11 sur 500                         | 0,95                      |
 | 48 / 4             | 500      | 30,2 px                          | 11 sur 500                         | 1,03 (sort de la zone)    |
 
-Dans tous les cas, personne n'est isolé (aucun boid sans voisin dans le rayon de perception). Proposition : séparation 40 px et poids 4, qui gardent au moins ~29 px entre voisins jusqu'à 500 boids sans casser la cohésion. À confirmer à l'écran.
+Dans tous ces cas, personne n'est isolé (aucun boid sans voisin dans le rayon de perception). **Ces valeurs (40 px, poids 4) ont été mesurées sans la cible mobile de D10.** Avec la cible, la nuée est tirée en bloc et se tasse : à 40 px et poids 4, le 5e centile de distance au plus proche voisin tombe à 17 à 25 px selon la forme de l'attraction. Le réglage final, mesuré avec la cible en forme de ressort (voir D10), est **séparation 46 px et poids 6** : au moins 28,5 px en moyenne dans le temps jusqu'à 500 boids (34,8 px à 200 boids), nuée d'un seul tenant. À confirmer à l'écran par Benj.
 
-### D10. Trajectoires qui exploitent les 3 dimensions — Ouvert
+### D10. Trajectoires qui exploitent les 3 dimensions — Validé : cible mobile en 3D
 
 Constat mesuré le 2026-11-07 sur 6 parties de 1200 frames (200 et 500 boids) : la part verticale de la vitesse est de 31 à 36 % (un mouvement réellement 3D donnerait environ 50 %), la nuée est moins étalée en hauteur qu'en largeur (écart type vertical de 30 à 75 px contre 30 à 120 en largeur et profondeur), et dans 3 parties sur 6 elle tourne en bloc autour d'un axe (rotation de 0,48 à 0,60 sur une échelle de 0 à 1) : c'est l'effet « banc de poissons » que décrit Benj.
 
@@ -149,7 +149,22 @@ Mécanismes possibles :
 | Bruit de direction par boid (« wander ») | Chaque boid reçoit un petit bruit de direction, avec une composante verticale                                   | Simple                                                 | Agite les individus plus qu'il ne déforme le groupe ; peu de trajectoires collectives |
 | Volume plus haut, sans nouvelle règle  | Agrandir la hauteur de la zone de vol et ajuster cohésion et alignement                                         | Aucune règle de plus                                   | N'empêche pas le tournoiement ; effet limité                                     |
 
-Recommandation : la cible mobile en 3D, éventuellement avec un volume un peu plus haut, car elle produit des trajectoires collectives qui exploitent la hauteur (une nuée réelle monte, plonge et tourne ensemble) avec une seule règle, déterministe et testable. Critères de réussite mesurables proposés : part verticale de la vitesse d'au moins 45 %, rotation en bloc inférieure à 0,3 dans toutes les parties testées, déplacement vertical du centre de la nuée d'au moins 40 % de la demi-hauteur de la zone. Le jugement final reste visuel, par Benj.
+Décision de Benj le 2026-11-07 : la cible mobile en 3D, qui produit des trajectoires collectives exploitant la hauteur (une nuée réelle monte, plonge et tourne ensemble) avec une seule règle, déterministe et testable : une attraction vers un point virtuel qui suit un chemin lisse et déterministe en 3D (`boids3d/roost.js`).
+
+**Forme de l'attraction (constat de l'étape 4).** J'avais prévu de réutiliser l'attraction du pointeur du 2D, la plus forte au point. Mesurée, elle tasse la nuée autour du point (espacement de 17 à 25 px) et la fait sortir de sa zone, parce que deux oiseaux de part et d'autre du point sont tirés l'un vers l'autre avec une force presque constante ; renforcer la séparation n'y suffisait pas. Un troisième mode du pointeur, `pull`, en forme de ressort (nulle au point, croissante avec la distance jusqu'à `pointerRadius`, constante au-delà), ramène le groupe entier vers la cible sans le comprimer : à vitesses comparables, l'espacement moyen passe de 17 à 29,5 px. Les modes `repel` et `attract` du 2D ne changent pas.
+
+**Résultats, avec les réglages par défaut 3D** (cible `pull`, rayon 800, poids 2, séparation 46 px et poids 6), sur 12 parties de 1800 frames (6 graines, 200 et 500 boids) :
+
+| Mesure                                         | Sans cible (pire cas) | Avec cible (12 parties)                              | Critère        |
+| ---------------------------------------------- | --------------------- | ---------------------------------------------------- | -------------- |
+| Part verticale de la vitesse                   | 0,04                  | médiane 0,44 à 0,47, de 0,33 à 0,57 selon la partie  | médiane ≥ 0,45 |
+| Rotation en bloc                               | 0,03                  | 0,14 au plus                                         | < 0,30         |
+| Déplacement vertical du centre (demi-hauteur)  | 0,07                  | 0,55 au moins                                        | ≥ 0,40         |
+| 5e centile du plus proche voisin, moyenne (px) | 28,8                  | 28,5 au moins                                        | ≥ 28           |
+| Boids isolés                                   | 0                     | 0                                                    | 0              |
+| Éloignement maximal du centre                  | 0,96                  | 1,07                                                 | zone de vol    |
+
+Correction à noter : une première mesure sur 4 parties donnait une part verticale de 0,50 ; sur 12 parties elle varie de 0,33 à 0,57, avec une médiane de 0,45 environ. Le critère est donc tenu en médiane et pas à chaque partie. Le minimum de 0,33 reste très au-dessus de 0,04 (sans cible). Le jugement final reste visuel, par Benj. Critères de réussite mesurables : part verticale de la vitesse d'au moins 45 % en médiane, rotation en bloc inférieure à 0,3 dans toutes les parties testées, déplacement vertical du centre de la nuée d'au moins 40 % de la demi-hauteur de la zone. Le jugement final reste visuel, par Benj.
 
 ### D11. Orientation haut/bas des oiseaux — Proposé
 
@@ -163,7 +178,7 @@ Questions du 2026-11-07 après un second essai de Benj :
 
 - **Q10. Haut et bas des oiseaux :** à ajouter, pas de retournement sans sens physique (D11). *Validé.*
 - **Q11. Espacement :** à ajouter, un oiseau garde de l'espace avec ses voisins, surtout entre 350 et 500 boids (D9). *Validé.*
-- **Q12. Trajectoires 3D :** la vision finale est que les boids exploitent les 3 dimensions ; le mécanisme est à choisir (D10). *Ouvert.*
+- **Q12. Trajectoires 3D :** la vision finale est que les boids exploitent les 3 dimensions ; mécanisme choisi : cible mobile en 3D (D10). *Validé.*
 
 Questions du 2026-11-07 sur le décor, après le retour de Benj sur l'étape 2 :
 
@@ -184,12 +199,14 @@ Reste ouvert : les couleurs exactes du dégradé et la forme exacte de l'oiseau,
 
 ## Plan D'Implémentation
 
+**Ordre modifié le 2026-11-07, à la demande de Benj** : le décor (étape 5) passe avant la fin de l'étape 4. Constat de Benj : la page de test ne montrait ni sol, ni arbres, ni repère haut/bas, ce qui rend l'orientation et les trajectoires difficiles à juger. L'étape 4 est faite côté code et mesures (cible `pull`, espacement), commitée, en attente de sa validation visuelle ; on y reviendra après le décor, avec l'étape 3 qui attend elle aussi son regard. Rien n'est refait : la zone de vol, qui fixe la hauteur du sol, ne change pas.
+
 **Approuvé par Benj le 2026-11-07, puis complété par ses trois ajouts le même jour** : le plan compte 8 étapes. Chaque étape est un commit séparé, vérifiée par `make check`, sans push. Le comportement passe avant le décor, car la hauteur de la zone de vol, qui dépend du comportement, fixe la hauteur du sol.
 
 1. **Logique 3D pure.** *Faite* (TASK-6.1).
 2. **Rendu minimal.** *Fait* (TASK-6.2), validé par Benj avec réserves.
 3. **Orientation haut/bas des oiseaux** (TASK-6.5, D11). Remplacer l'orientation par rotation la plus courte par une orientation à haut lissé, fonction pure testée. Vérification : tests sur le haut en vol horizontal, sur un demi-tour complet et près de la verticale ; vérification que la rotation appliquée par p5 donne bien le repère attendu ; capture d'écran.
-4. **Comportement 3D** (TASK-6.6, D9 et D10). Espacement : séparation 40 et poids 4 sauf mesure contraire. Trajectoires 3D : mécanisme à décider (Q12). Vérification : les mesures de D9 et de D10 refaites avec les critères proposés, tests Vitest, trajectoires 2D inchangées, validation visuelle de Benj.
+4. **Comportement 3D** (TASK-6.6, D9 et D10). Espacement : séparation 40 et poids 4 sauf mesure contraire. Trajectoires 3D : cible mobile en 3D (D10). Vérification : les mesures de D9 et de D10 refaites avec les critères proposés, tests Vitest, trajectoires 2D inchangées, validation visuelle de Benj.
 5. **Décor en silhouettes** (TASK-6.7, D7). Générateur pur et déterministe (sol, horizon, arbres, poteaux et câbles) avec tests de placement, puis géométrie fusionnée dessinée par un seul appel ; sol placé sous la zone de vol. Vérification : tests Vitest, mesure des images par seconde avec et sans décor, capture d'écran, validation de Benj.
 6. **Caméra orbitale au-dessus du sol** (TASK-6.8, D6). Remplacer `orbitControl` : état azimut, hauteur d'angle et distance, fonction pure de position de caméra avec limites, souris, tactile et molette. Vérification : tests sur la fonction pure, essai souris et tactile émulé, essai manuel de Benj.
 7. **Intégration à la page** (TASK-6.3). Section dans `/lab/simulations`, entrypoint Importmap, pause, réinitialisation et nombre de boids (100 à 500, 200 par défaut), textes FR et EN, pause si `prefers-reduced-motion`, mise à jour de `simulations.md`.

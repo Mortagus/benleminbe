@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { roostPosition } from '../../../../assets/scripts/lab/simulations/boids3d/roost.js';
 import {
     BOUNDARY_MARGIN,
     DEFAULT_PARAMETERS,
@@ -234,6 +235,36 @@ describe('boids pointer interaction', () => {
         const far = boid(100 + parameters.pointerRadius + 1, 100);
 
         expect(pointerAccelerationOn(far, at('repel'))).toEqual({ x: 0, y: 0 });
+    });
+
+    test('a pulling point does nothing at the point itself', () => {
+        expect(pointerAccelerationOn(boid(100, 100), at('pull'))).toEqual({ x: 0, y: 0 });
+    });
+
+    test('a pulling point draws a boid in, harder the further away it is', () => {
+        const near = pointerAccelerationOn(boid(150, 100), at('pull'));
+        const far = pointerAccelerationOn(boid(100 + parameters.pointerRadius / 2, 100), at('pull'));
+
+        expect(near.x).toBeLessThan(0);
+        expect(Math.abs(far.x)).toBeGreaterThan(Math.abs(near.x));
+    });
+
+    test('a pulling point keeps its full strength beyond the pointer radius instead of fading', () => {
+        const cap = parameters.maxForce * parameters.pointerWeight;
+
+        for (const distance of [parameters.pointerRadius, parameters.pointerRadius * 2, parameters.pointerRadius * 10]) {
+            expect(pointerAccelerationOn(boid(100 + distance, 100), at('pull')).x).toBeCloseTo(-cap, 6);
+        }
+    });
+
+    test('a pulling point does not squeeze boids together the way an attracting one does', () => {
+        // Two boids on either side of the point: the attraction makes them rush towards each other, the pull barely does.
+        const left = pointerAccelerationOn(boid(95, 100), at('attract'));
+        const right = pointerAccelerationOn(boid(105, 100), at('attract'));
+        const pullLeft = pointerAccelerationOn(boid(95, 100), at('pull'));
+        const pullRight = pointerAccelerationOn(boid(105, 100), at('pull'));
+
+        expect(Math.abs(right.x - left.x)).toBeGreaterThan(Math.abs(pullRight.x - pullLeft.x) * 10);
     });
 
     test('stepFlock moves boids away from a repelling pointer', () => {
@@ -629,6 +660,101 @@ describe('boids soft confinement', () => {
         }
 
         expect(alone).toBe(0);
+    });
+});
+
+describe('boids following the roost in 3D', () => {
+    // How a 3D flock behaves over time with the default settings and the roost pulling it along.
+    function measure(count, seed) {
+        const field = SCENE_SIZE_3D;
+        const half = field.map((extent) => extent / 2);
+        let flock = createFlock(count, seededRandom(seed), field);
+        let vertical = 0;
+        let rotation = 0;
+        let nearest = 0;
+        let nearestSamples = 0;
+        let lowest = Infinity;
+        let highest = -Infinity;
+        let farthest = 0;
+        let alone = 0;
+        let samples = 0;
+
+        for (let frame = 0; frame < 1500; frame++) {
+            flock = stepFlock(flock, { ...DEFAULT_PARAMETERS_3D, count }, field, { position: roostPosition(frame, field), mode: 'pull' });
+
+            if (frame < 400 || frame % 10) {
+                continue;
+            }
+
+            const { pos, vel } = flock;
+            const centre = [0, 1, 2].map((d) => Array.from({ length: count }, (_, i) => pos[i * 3 + d]).reduce((a, b) => a + b, 0) / count);
+            const angular = [0, 0, 0];
+            let denominator = 0;
+            let share = 0;
+
+            for (let i = 0; i < count; i++) {
+                const [rx, ry, rz] = [0, 1, 2].map((d) => pos[i * 3 + d] - centre[d]);
+                const [vx, vy, vz] = [vel[i * 3], vel[i * 3 + 1], vel[i * 3 + 2]];
+                const speed = Math.hypot(vx, vy, vz) || 1;
+
+                share += Math.abs(vy) / speed;
+                angular[0] += ry * vz - rz * vy;
+                angular[1] += rz * vx - rx * vz;
+                angular[2] += rx * vy - ry * vx;
+                denominator += Math.hypot(rx, ry, rz) * speed;
+                farthest = Math.max(farthest, Math.sqrt([0, 1, 2].reduce((sum, d) => sum + ((pos[i * 3 + d] - half[d]) / half[d]) ** 2, 0)));
+            }
+
+            vertical += share / count;
+            rotation += Math.max(...angular.map((value) => Math.abs(value) / denominator));
+            lowest = Math.min(lowest, centre[1]);
+            highest = Math.max(highest, centre[1]);
+            samples++;
+
+            if (frame % 100 === 0) {
+                const distances = [];
+
+                for (let i = 0; i < count; i++) {
+                    let closest = Infinity;
+                    let neighbours = 0;
+
+                    for (let j = 0; j < count; j++) {
+                        if (i !== j) {
+                            const distance = Math.hypot(pos[i * 3] - pos[j * 3], pos[i * 3 + 1] - pos[j * 3 + 1], pos[i * 3 + 2] - pos[j * 3 + 2]);
+
+                            closest = Math.min(closest, distance);
+                            neighbours += distance < DEFAULT_PARAMETERS_3D.perceptionRadius ? 1 : 0;
+                        }
+                    }
+
+                    distances.push(closest);
+                    alone += neighbours === 0 ? 1 : 0;
+                }
+
+                distances.sort((a, b) => a - b);
+                nearest += distances[Math.floor(count * 0.05)];
+                nearestSamples++;
+            }
+        }
+
+        return { vertical: vertical / samples, rotation: rotation / samples, travel: (highest - lowest) / half[1], nearest: nearest / nearestSamples, farthest, alone };
+    }
+
+    test.each([
+        [200, 1],
+        [200, 2],
+        [500, 1],
+    ])('a flock of %d boids (seed %d) climbs and dives, keeps its distance and stays together', (count, seed) => {
+        const result = measure(count, seed);
+
+        // Measured over many seeds: vertical share between 0.3 and 0.57, median about 0.45 (0.04 without the roost),
+        // rotation 0.14 at most, vertical travel 0.55 or more. The thresholds keep a margin under the lowest values seen.
+        expect(result.vertical).toBeGreaterThan(0.27);
+        expect(result.rotation).toBeLessThan(0.3);
+        expect(result.travel).toBeGreaterThan(0.4);
+        expect(result.nearest).toBeGreaterThan(26);
+        expect(result.alone).toBe(0);
+        expect(result.farthest).toBeLessThan(1.15);
     });
 });
 

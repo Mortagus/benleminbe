@@ -1,6 +1,7 @@
 import p5 from 'p5';
 import { SCENE_SIZE_3D, createFlock, resizeFlock, stepFlock, updateDirections } from '../boids/flocking.js';
 import { orientationMatrix, updateUps } from './orientation.js';
+import { roostPosition } from './roost.js';
 
 const CANVAS_RATIO = 9 / 16;
 const MAX_CANVAS_HEIGHT = 620;
@@ -24,7 +25,7 @@ const FIELD_OF_VIEW = Math.PI / 3.2;
  * @param {{ paused: boolean }} initialState
  */
 export function startBoids3dSketch(container, parameters, initialState) {
-    const state = { paused: initialState.paused, flock: null, directions: new Float32Array(0), ups: new Float32Array(0), bird: null };
+    const state = { paused: initialState.paused, flock: null, directions: new Float32Array(0), ups: new Float32Array(0), bird: null, frame: 0 };
     const attitude = new Float64Array(16);
     const centre = SCENE_SIZE_3D.map((extent) => extent / 2);
     let instance = null;
@@ -107,7 +108,11 @@ export function startBoids3dSketch(container, parameters, initialState) {
         p.draw = () => {
             if (!state.paused) {
                 state.flock = resizeFlock(state.flock, parameters.count, Math.random, SCENE_SIZE_3D);
-                state.flock = stepFlock(state.flock, parameters, SCENE_SIZE_3D);
+                // The roost pulls the whole flock gently along a path through the three dimensions.
+                const roost = { position: roostPosition(state.frame, SCENE_SIZE_3D), mode: 'pull' };
+
+                state.frame++;
+                state.flock = stepFlock(state.flock, parameters, SCENE_SIZE_3D, roost);
                 updateAttitudes();
             }
 
@@ -143,6 +148,7 @@ export function startBoids3dSketch(container, parameters, initialState) {
         },
         reset() {
             state.flock = createFlock(parameters.count, Math.random, SCENE_SIZE_3D);
+            state.frame = 0;
             state.directions = new Float32Array(0);
             state.ups = new Float32Array(0);
             updateAttitudes();

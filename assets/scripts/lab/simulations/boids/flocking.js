@@ -19,8 +19,11 @@
  * @property {Int32Array} cellOf Cell index of each boid.
  * @property {Int32Array} cellStart Boids of cell `c` are `items[cellStart[c]]` to `items[cellStart[c + 1] - 1]`.
  * @property {Int32Array} items Boid indices grouped by cell.
- * @typedef {{ position: ArrayLike<number>, mode: 'repel' | 'attract' }} Pointer
- *   Position of the pointer, with as many coordinates as the flock has dimensions.
+ * @typedef {{ position: ArrayLike<number>, mode: 'repel' | 'attract' | 'pull' }} Pointer
+ *   A point that acts on the boids, with as many coordinates as the flock has dimensions. `repel` and `attract` act
+ *   within `pointerRadius` and are strongest at the point. `pull` is a spring-like attraction instead: nothing at the
+ *   point, growing with the distance up to `pointerRadius`, and constant beyond it, so it brings a whole flock towards
+ *   the point without squeezing it together around it.
  */
 
 export const DEFAULT_PARAMETERS = Object.freeze({
@@ -57,17 +60,27 @@ export const DEFAULT_PARAMETERS = Object.freeze({
 export const SCENE_SIZE_3D = Object.freeze([700, 420, 700]);
 
 /**
- * Starting point for the 3D simulation: with the 2D radii a few hundred boids would almost never see each other in
- * this volume. Measured over 12 runs of 800 frames (100, 200 and 500 boids, 4 seeds): the flock stays in one group,
- * never goes beyond 0.92 of the confinement radius and keeps at least 13 px between boids. To be tuned by eye.
+ * Starting point for the 3D simulation. With the 2D radii a few hundred boids would almost never see each other in
+ * this volume, and with the 2D personal space (22 px) birds that are 21 px long and 34 px across overlap. The pointer
+ * settings are those of the roost (see boids3d/roost.js): a weak spring-like `pull` towards a point that wanders through
+ * the scene, which makes the flock climb, dive and turn instead of circling.
+ *
+ * Measured over 12 runs (6 seeds, 200 and 500 boids, 1800 frames) with the roost on: vertical share of the velocity
+ * 0.44 to 0.47 in the median, from 0.33 to 0.57 depending on the run (0.04 without the roost); rotation of the flock
+ * as a block 0.14 at most; vertical travel of its centre 0.55 of the half height at least; 5th percentile of the
+ * nearest-neighbour distance 28.5 px or more on average over time; nobody alone; at most 1.07 of the confinement
+ * radius. To be tuned by eye.
  */
 export const DEFAULT_PARAMETERS_3D = Object.freeze({
     ...DEFAULT_PARAMETERS,
     count: 200,
     perceptionRadius: 100,
-    separationRadius: 26,
+    separationRadius: 46,
+    separationWeight: 6,
     maxSpeed: 4,
     confinementWeight: 4,
+    pointerRadius: 800,
+    pointerWeight: 2,
 });
 
 /**
@@ -565,7 +578,10 @@ function addConfinement(out, flock, index, size, parameters) {
     }
 }
 
-/** Writes into `out` the force exerted by the pointer: it fades to nothing at `pointerRadius`. */
+/**
+ * Writes into `out` the force exerted by the pointer. `repel` and `attract` fade to nothing at `pointerRadius`; `pull`
+ * grows from nothing at the point to its full strength at `pointerRadius`, and stays there beyond.
+ */
 function pointerAccelerationInto(out, flock, index, pointer, parameters) {
     out.fill(0);
 
@@ -583,13 +599,16 @@ function pointerAccelerationInto(out, flock, index, pointer, parameters) {
         distanceSquared += towards * towards;
     }
 
-    if (distanceSquared === 0 || distanceSquared >= parameters.pointerRadius * parameters.pointerRadius) {
+    const pull = pointer.mode === 'pull';
+
+    if (distanceSquared === 0 || (!pull && distanceSquared >= parameters.pointerRadius * parameters.pointerRadius)) {
         return;
     }
 
     const distance = Math.sqrt(distanceSquared);
     const direction = pointer.mode === 'repel' ? -1 : 1;
-    const strength = (1 - distance / parameters.pointerRadius) * parameters.maxForce * parameters.pointerWeight;
+    const reach = pull ? Math.min(distance / parameters.pointerRadius, 1) : 1 - distance / parameters.pointerRadius;
+    const strength = reach * parameters.maxForce * parameters.pointerWeight;
 
     for (let d = 0; d < dim; d++) {
         out[d] = ((pointer.position[d] - pos[base + d]) / distance) * strength * direction;

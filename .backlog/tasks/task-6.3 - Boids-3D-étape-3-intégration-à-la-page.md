@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-11-07 09:24'
-updated_date: '2026-11-07 13:25'
+updated_date: '2026-11-07 13:41'
 labels:
   - lab
   - 3d
@@ -27,11 +27,11 @@ Intégrer la simulation 3D comme seconde section de `/lab/simulations`, avec son
 <!-- AC:BEGIN -->
 - [ ] #1 La section 3D est dans `/lab/simulations` avec son entrypoint Importmap, le 2D est inchangé
 - [ ] #2 Pause, réinitialisation et nombre de boids (100 à 500, 200 par défaut) fonctionnent, la simulation démarre en pause si prefers-reduced-motion
-- [ ] #3 Textes FR et EN ajoutés, `docs/lab/simulations.md` mis à jour
-- [ ] #4 make check passe et un essai manuel confirme le fonctionnement
+- [x] #3 Textes FR et EN ajoutés, `docs/lab/simulations.md` mis à jour
+- [x] #4 make check passe et un essai manuel confirme le fonctionnement
 - [ ] #5 La version 3D est déployable en ligne avec le site (make deploy : p5 et les entrypoints compilés, aucune dépendance de plus) et fonctionne en production, vérifié après déploiement
-- [ ] #6 Deux curseurs agissent en direct sur la nuée : le pourcentage de meneurs (`pointerFraction`) et l’intensité de l’ondulation (`waveWeight`), avec leurs textes FR et EN
-- [ ] #7 /lab/simulations est un index des simulations ; le 2D est sur /lab/simulations/boids et la 3D sur /lab/simulations/boids3d (décision de Benj), le menu « Simulations » reste actif sur les trois pages
+- [x] #6 Deux curseurs agissent en direct sur la nuée : le pourcentage de meneurs (`pointerFraction`) et l’intensité de l’ondulation (`waveWeight`), avec leurs textes FR et EN
+- [x] #7 /lab/simulations est un index des simulations ; le 2D est sur /lab/simulations/boids et la 3D sur /lab/simulations/boids3d (décision de Benj), le menu « Simulations » reste actif sur les trois pages
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -53,4 +53,6 @@ Intégrer la simulation 3D comme seconde section de `/lab/simulations`, avec son
 Benj le 2026-11-07 : l'idée est de pouvoir déployer cette version 3D en ligne ; à garder dans cette étape (critère 5 ajouté).
 
 Benj le 2026-11-07 : un curseur pour chacun des deux paramètres (meneurs, ondulation), en temps réel ; à intégrer à la page finale avec la pause, la réinitialisation et le nombre de boids (critère 6 ajouté).
+
+2026-11-07 : intégré au commit 6e40a53 (index, 2D sur /boids, 3D sur /boids3d, 3 curseurs, FR/EN, docs). make check OK, LabWebTest 7 tests, 3 pages en 200 en local. AC1 remplacé par AC7 (décision de Benj : index + une page par simulation). Restent ouverts : AC2 (démarrage en pause avec prefers-reduced-motion, pas vérifié en navigateur) et AC5 (vérification en production par Benj après make deploy).
 <!-- SECTION:NOTES:END -->

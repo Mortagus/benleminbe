@@ -7,7 +7,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-11-07 12:28'
-updated_date: '2026-11-07 12:59'
+updated_date: '2026-11-07 13:41'
 labels:
   - lab
   - 3d
@@ -31,7 +31,7 @@ Retour de Benj le 2026-11-07 : la trajectoire est très bien, mais la nuée rest
 - [x] #2 La cohésion se défait et se reforme : la part des boids dans le plus grand groupe varie dans le temps (mesurée) sans qu’un boid reste isolé durablement
 - [x] #3 Au sein de la nuée, des boids montent pendant que d’autres descendent (part des boids qui vont dans le sens opposé à la moyenne, mesurée)
 - [x] #4 Les changements de direction se propagent en vague (délai mesuré, avec TASK-6.12)
-- [ ] #5 La trajectoire d’ensemble, l’espacement entre voisins et l’évitement des arbres sont conservés, le 2D est strictement inchangé, tests ajoutés, make check passe
+- [x] #5 La trajectoire d’ensemble, l’espacement entre voisins et l’évitement des arbres sont conservés, le 2D est strictement inchangé, tests ajoutés, make check passe
 - [x] #6 Benj valide visuellement
 <!-- AC:END -->
 
@@ -51,4 +51,6 @@ Mesuré (6 parties de 3600 frames) : épaisseur 0,43 en moyenne (0,83 au plus) c
 Causes : l'alignement rend la nuée rigide (polarisation 0,98) ; réduire la perception n'a aucun effet ; moins de meneurs étire sans varier ; l'onde crée les variations de hauteur. Poids 0,5 trop discret (scissions rares), 1,0 scinde en colonnes verticales : 0,7 retenu.
 Critère 5 NON coché : « la trajectoire d'ensemble est conservée » est discutable : le parcours du centre est passé de 1,05 / 1,23 à 0,70 / 0,65 (fraction de la demi-étendue) et les rapprochements des arbres de 0,79 à 0,22 par image, parce que seuls 15 % des boids sentent la cible. Renforcer l'attraction dégrade la cohésion (essais à 3,5 et 5). À confirmer par Benj.
 Benj : « je valide » + demande de deux curseurs en direct (meneurs, onde), ajoutés à la page de test ; à reprendre dans la page finale (TASK-6.3).
+
+2026-11-07 : Benj confirme que l'amplitude de la trajectoire est bonne. AC5 coché : make check passe (360 tests JS au commit 6e40a53), 2D inchangé.
 <!-- SECTION:NOTES:END -->

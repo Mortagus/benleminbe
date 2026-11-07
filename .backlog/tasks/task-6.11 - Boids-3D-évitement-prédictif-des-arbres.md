@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-11-07 11:02'
-updated_date: '2026-11-07 12:20'
+updated_date: '2026-11-07 13:41'
 labels:
   - lab
   - 3d
@@ -28,7 +28,7 @@ Retour de Benj le 2026-11-07 : les boids pourraient interagir avec les arbres et
 - [x] #1 La zone de vol est abaissée jusqu’à la hauteur des arbres, et un sol sûr empêche de le traverser
 - [x] #2 Les boids évitent les arbres sans en traverser aucun, vérifié par des tests sur de nombreuses parties, et aucune force n’agit quand la voie est libre
 - [x] #3 Le coût du calcul avec l’évitement est mesuré et reste acceptable à 500 boids
-- [ ] #4 Benj valide visuellement
+- [x] #4 Benj valide visuellement
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -50,4 +50,6 @@ Validé : 168 tests simulation, 8 mutations détectées, make check OK (331 test
 Incidents : première formule d'urgence trop faible (corrigée) ; mesure faussée par un décalage de repères (corrigée par buildEnvironment) ; seuil de test posé sans mesure (20 sphères, 17 réelles, passé à 10) ; fond d'ellipsoïde trop étroit, d'où la zone à fond plat.
 Non vérifié : l'aspect à l'écran par Benj (critère 4), le rendu sur un vrai GPU.
 Prochaine action : Benj regarde la nuée raser les arbres et valide ; puis TASK-6.12 (meneurs).
+
+2026-11-07 : Benj : l'évitement semble correct, aucun bug constaté, mais la scène est très sombre et rend la vérification visuelle difficile. Validation prise comme « pas de défaut observé » ; une scène plus claire ou un mode de démonstration serait à voir dans TASK-6.4.
 <!-- SECTION:NOTES:END -->

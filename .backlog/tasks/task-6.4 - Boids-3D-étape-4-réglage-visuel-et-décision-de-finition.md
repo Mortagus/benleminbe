@@ -4,7 +4,7 @@ title: 'Boids 3D, étape 8 : réglage visuel et finitions'
 status: To Do
 assignee: []
 created_date: '2026-11-07 09:24'
-updated_date: '2026-11-07 09:54'
+updated_date: '2026-11-07 13:41'
 labels:
   - lab
   - 3d
@@ -27,3 +27,9 @@ Régler à l’œil le contraste entre oiseaux et sol, les couleurs du ciel (ell
 - [ ] #1 Les valeurs par défaut et l’aspect (dégradé, forme, teinte) sont validés par Benj à l’écran
 - [ ] #2 La décision sur Three.js est consignée avec les mesures qui la justifient
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+2026-11-07 : retour de Benj : la scène est très sombre, ce qui gêne la lecture de l'évitement des arbres. À traiter avec les couleurs du ciel et le contraste oiseaux/sol.
+<!-- SECTION:NOTES:END -->

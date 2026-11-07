@@ -2,7 +2,7 @@
 
 Note de suivi des évolutions envisagées pour la simulation des boids du Lab. La référence stable de l'existant est [simulations.md](../lab/simulations.md).
 
-Statut au 2026-11-07 : le lot A est livré, le lot B est en cours (suivi : TASK-3 dans Backlog.md, tableaux plats et grille faits, reste le rendu et le curseur), la piste 3D est un projet séparé à cadrer.
+Statut au 2026-11-07 : le lot A est livré, le lot B est livré (suivi : TASK-3 dans Backlog.md) avec un curseur limité à 1000 boids, la piste 3D est un projet séparé à cadrer.
 
 ## État Actuel
 
@@ -20,19 +20,17 @@ Constat à garder en tête : sans perturbation, le groupe converge vers un bloc 
 
 Point technique ouvert : des tests JS (DnD, Simon, et même ceux des boids) expirent de façon intermittente sous charge et peuvent bloquer le hook pre-commit. Sans lien avec les boids ; un contournement est en place, voir [vitest-timeouts-notes.md](vitest-timeouts-notes.md).
 
-## Lot B : Jusqu'à 5000 Boids
+## Lot B : Performance À Grand Effectif
 
-Objectif : pouvoir monter le curseur du nombre de boids jusqu'à 5000.
+Objectif initial : pouvoir monter le curseur du nombre de boids jusqu'à 5000. Résultat : tableaux plats et grille spatiale livrés, 5000 boids testés puis abandonnés comme plafond. Le calcul est passé de 1422 ms à environ 35 ms par frame à 5000 boids, mais le rendu complet tombe à 13,5 images par seconde (Chrome headless), et à cette densité le groupe ressemble à un fluide de particules plus qu'à une nuée. Décision de Benj le 2026-11-07 : le curseur va de 100 à 1000 par pas de 50, le reste du calcul est conservé. Un simulateur de fluide serait un autre projet.
 
-Pistes techniques :
+Travail réalisé :
 
 - grille spatiale (cellules de la taille du rayon de perception) pour passer d'environ O(n²) à environ O(n) : faite, 35 ms par frame à 5000 boids (logique seule) contre 1422 ms avant ;
 - tableaux plats (`Float32Array`) pour éviter une allocation d'objet par boid et par frame : faits ; le double buffer a été écarté après mesure (l'allocation d'un groupe coûte environ 0,05 ms sur 36 ms) ;
 - les deux passes par boid (voisins puis séparation) parcourent maintenant la même liste de candidats de la grille ;
-- le rendu p5 en mode 2D de 5000 triangles peut devenir le goulot : à mesurer, un rendu simplifié à grand effectif est possible ;
-- les tests et `sketch.js` seront à adapter, et la doc `simulations.md` à mettre à jour.
-
-Ne pas promettre la fluidité à 5000 avant d'avoir mesuré.
+- rendu p5 : mesuré, 60 images par seconde jusqu'à 1000 boids, 30 à 2500, 13,5 à 5000 ; pas de rendu simplifié, la limite à 1000 suffit ;
+- tests, `sketch.js` et `simulations.md` : adaptés.
 
 ## Piste 3D
 

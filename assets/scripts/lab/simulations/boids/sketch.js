@@ -16,7 +16,7 @@ const HEADING_SMOOTHING = 0.25;
  * @param {{ paused: boolean }} initialState
  */
 export function startBoidsSketch(container, parameters, initialState) {
-    const state = { paused: initialState.paused, flock: [], headings: [], colors: null, pointer: null };
+    const state = { paused: initialState.paused, flock: null, headings: new Float32Array(0), colors: null, pointer: null };
     let instance = null;
 
     function canvasSize() {
@@ -35,15 +35,21 @@ export function startBoidsSketch(container, parameters, initialState) {
     }
 
     // Drawn angles are kept per boid (same index as in the flock) and only affect rendering, not the simulation.
+    // A boid without a previous angle (new, or after a reset) starts directly at its heading.
     function updateHeadings() {
-        state.headings = state.flock.map((boid, index) => {
-            const target = Math.atan2(boid.vy, boid.vx);
+        const { count, vel } = state.flock;
+        const headings = new Float32Array(count);
 
-            return smoothAngle(state.headings[index] ?? target, target, HEADING_SMOOTHING);
-        });
+        for (let i = 0; i < count; i++) {
+            const target = Math.atan2(vel[i * 2 + 1], vel[i * 2]);
+
+            headings[i] = i < state.headings.length ? smoothAngle(state.headings[i], target, HEADING_SMOOTHING) : target;
+        }
+
+        state.headings = headings;
     }
 
-    function drawBoid(p, { x, y }, heading) {
+    function drawBoid(p, x, y, heading) {
         p.push();
         p.translate(x, y);
         p.rotate(heading);
@@ -58,7 +64,7 @@ export function startBoidsSketch(container, parameters, initialState) {
         }
 
         p.drawingContext.globalAlpha = 0.35;
-        p.circle(state.pointer.x, state.pointer.y, parameters.pointerRadius * 2);
+        p.circle(state.pointer.position[0], state.pointer.position[1], parameters.pointerRadius * 2);
         p.drawingContext.globalAlpha = 1;
     }
 
@@ -69,7 +75,7 @@ export function startBoidsSketch(container, parameters, initialState) {
 
             canvas.attribute('role', 'img');
             canvas.attribute('aria-label', container.dataset.canvasLabel ?? 'Boids simulation');
-            state.flock = createFlock(parameters.count, Math.random, width, height);
+            state.flock = createFlock(parameters.count, Math.random, [width, height]);
             updateHeadings();
             state.colors = readColors();
         };
@@ -80,8 +86,10 @@ export function startBoidsSketch(container, parameters, initialState) {
             }
 
             if (!state.paused) {
-                state.flock = resizeFlock(state.flock, parameters.count, Math.random, p.width, p.height);
-                state.flock = stepFlock(state.flock, parameters, p.width, p.height, state.pointer);
+                const size = [p.width, p.height];
+
+                state.flock = resizeFlock(state.flock, parameters.count, Math.random, size);
+                state.flock = stepFlock(state.flock, parameters, size, state.pointer);
                 updateHeadings();
             }
 
@@ -89,7 +97,13 @@ export function startBoidsSketch(container, parameters, initialState) {
             p.stroke(state.colors.boid);
             p.strokeWeight(1);
             p.noFill();
-            state.flock.forEach((boid, index) => drawBoid(p, boid, state.headings[index] ?? 0));
+
+            const { count, pos } = state.flock;
+
+            for (let i = 0; i < count; i++) {
+                drawBoid(p, pos[i * 2], pos[i * 2 + 1], state.headings[i]);
+            }
+
             drawPointer(p);
         };
     }
@@ -116,8 +130,8 @@ export function startBoidsSketch(container, parameters, initialState) {
             state.pointer = pointer;
         },
         reset() {
-            state.flock = createFlock(parameters.count, Math.random, instance.width, instance.height);
-            state.headings = [];
+            state.flock = createFlock(parameters.count, Math.random, [instance.width, instance.height]);
+            state.headings = new Float32Array(0);
             updateHeadings();
         },
     };

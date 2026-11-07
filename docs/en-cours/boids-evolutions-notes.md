@@ -2,7 +2,7 @@
 
 Note de suivi des évolutions envisagées pour la simulation des boids du Lab. La référence stable de l'existant est [simulations.md](../lab/simulations.md).
 
-Statut au 2026-11-06 : le lot A est livré, le lot B est prévu, la piste 3D est à cadrer.
+Statut au 2026-11-07 : le lot A est livré, le lot B est en cours (suivi : TASK-3 dans Backlog.md, étape 1 faite), la piste 3D est un projet séparé à cadrer.
 
 ## État Actuel
 
@@ -28,7 +28,7 @@ Pistes techniques :
 
 - grille spatiale (cellules de la taille du rayon de perception) pour passer d'environ O(n²) à environ O(n) ;
 - tableaux plats (`Float32Array`) pour éviter une allocation d'objet par boid et par frame ;
-- les deux passes actuelles sur le groupe par boid (voisins puis séparation) sont à revoir au passage ;
+- les deux passes actuelles sur le groupe par boid (voisins puis séparation) sont à revoir au passage, avec la grille ;
 - le rendu p5 en mode 2D de 5000 triangles peut devenir le goulot : à mesurer, un rendu simplifié à grand effectif est possible ;
 - les tests et `sketch.js` seront à adapter, et la doc `simulations.md` à mettre à jour.
 

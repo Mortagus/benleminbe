@@ -4,9 +4,17 @@
  * Each rule returns an acceleration whose length is at most `maxForce` and that fades smoothly with distance,
  * so a boid never gets a sudden kick when a neighbour crosses a threshold.
  *
- * @typedef {{ x: number, y: number, vx: number, vy: number, ax: number, ay: number }} Boid
- *   Position, velocity and the smoothed acceleration applied on the previous frame.
- * @typedef {{ x: number, y: number, mode: 'repel' | 'attract' }} Pointer
+ * The flock is stored as flat typed arrays, `dim` numbers per boid (2 for the 2D simulation): boid `i` owns the
+ * slots `i * dim` to `i * dim + dim - 1` of each array. The rules are written for any number of dimensions.
+ *
+ * @typedef {object} Flock
+ * @property {number} count Number of boids.
+ * @property {number} dim Number of coordinates per boid.
+ * @property {Float32Array} pos Positions.
+ * @property {Float32Array} vel Velocities.
+ * @property {Float32Array} acc Smoothed accelerations applied on the previous frame.
+ * @typedef {{ position: ArrayLike<number>, mode: 'repel' | 'attract' }} Pointer
+ *   Position of the pointer, with as many coordinates as the flock has dimensions.
  */
 
 export const DEFAULT_PARAMETERS = Object.freeze({
@@ -40,234 +48,394 @@ export const BOUNDARY_MARGIN = 25;
 // Acceleration per unit of speed difference with the cruise speed, before it is capped by maxForce.
 const CRUISE_GAIN = 0.5;
 
-const NO_FORCE = Object.freeze({ x: 0, y: 0 });
-
 /**
- * @param {() => number} random Returns a number in [0, 1).
- * @returns {Boid}
+ * @param {number} count
+ * @param {number} dim
+ * @returns {Flock} A flock of `count` boids with every value set to zero.
  */
-export function createBoid(random, width, height) {
-    const angle = random() * Math.PI * 2;
-    const speed = 0.5 + random();
-
+export function allocateFlock(count, dim) {
     return {
-        x: random() * width,
-        y: random() * height,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        ax: 0,
-        ay: 0,
+        count,
+        dim,
+        pos: new Float32Array(count * dim),
+        vel: new Float32Array(count * dim),
+        acc: new Float32Array(count * dim),
     };
 }
 
-export function createFlock(count, random, width, height) {
-    return Array.from({ length: count }, () => createBoid(random, width, height));
+/**
+ * Fills the boids from `first` (included) to `flock.count` with a random position inside `size`
+ * and a random velocity of 0.5 to 1.5 in a uniformly random direction.
+ */
+function randomiseBoids(flock, first, random, size) {
+    const { count, dim, pos, vel } = flock;
+
+    for (let i = first; i < count; i++) {
+        const base = i * dim;
+
+        for (let d = 0; d < dim; d++) {
+            pos[base + d] = random() * size[d];
+        }
+
+        // Rejection sampling in the unit ball gives a uniform direction whatever the number of dimensions.
+        let lengthSquared = 0;
+
+        do {
+            lengthSquared = 0;
+
+            for (let d = 0; d < dim; d++) {
+                vel[base + d] = random() * 2 - 1;
+                lengthSquared += vel[base + d] * vel[base + d];
+            }
+        } while (lengthSquared === 0 || lengthSquared > 1);
+
+        const scale = (0.5 + random()) / Math.sqrt(lengthSquared);
+
+        for (let d = 0; d < dim; d++) {
+            vel[base + d] *= scale;
+        }
+    }
+}
+
+/**
+ * @param {() => number} random Returns a number in [0, 1).
+ * @param {ArrayLike<number>} size Extent of the playfield on each axis, e.g. `[width, height]`; it sets the dimension.
+ * @returns {Flock}
+ */
+export function createFlock(count, random, size) {
+    const flock = allocateFlock(count, size.length);
+
+    randomiseBoids(flock, 0, random, size);
+
+    return flock;
 }
 
 /**
  * Adds or removes boids so the flock matches the requested size, keeping existing boids untouched.
+ * Returns the same flock when its size is already right.
+ *
+ * @param {Flock} flock
+ * @returns {Flock}
  */
-export function resizeFlock(flock, count, random, width, height) {
-    if (count < flock.length) {
-        return flock.slice(0, count);
+export function resizeFlock(flock, count, random, size) {
+    if (count === flock.count) {
+        return flock;
     }
 
-    return [...flock, ...createFlock(count - flock.length, random, width, height)];
+    const resized = allocateFlock(count, flock.dim);
+    const kept = Math.min(count, flock.count) * flock.dim;
+
+    resized.pos.set(flock.pos.subarray(0, kept));
+    resized.vel.set(flock.vel.subarray(0, kept));
+    resized.acc.set(flock.acc.subarray(0, kept));
+    randomiseBoids(resized, flock.count, random, size);
+
+    return resized;
 }
 
-function limitLength(x, y, maxLength) {
-    const length = Math.hypot(x, y);
+/**
+ * Scratch memory reused for every boid of a frame, so the rules allocate nothing per boid.
+ * `neighbourIds` and `neighbourDistances` hold the nearest visible neighbours, sorted by distance.
+ */
+function createWorkspace(dim, maxNeighbours) {
+    const capacity = Math.max(0, Math.floor(maxNeighbours));
 
-    return length > maxLength ? { x: (x / length) * maxLength, y: (y / length) * maxLength } : { x, y };
+    return {
+        neighbourCount: 0,
+        neighbourIds: new Int32Array(capacity),
+        neighbourDistances: new Float64Array(capacity),
+        vector: new Float64Array(dim),
+        flocking: new Float64Array(dim),
+        pointer: new Float64Array(dim),
+    };
+}
+
+/**
+ * Adds `vector * scale` to `out`, after shortening `vector` to `maxLength` if it is longer.
+ */
+function addLimited(out, vector, maxLength, scale) {
+    let lengthSquared = 0;
+
+    for (let d = 0; d < vector.length; d++) {
+        lengthSquared += vector[d] * vector[d];
+    }
+
+    const length = Math.sqrt(lengthSquared);
+    const factor = (length > maxLength ? maxLength / length : 1) * scale;
+
+    for (let d = 0; d < vector.length; d++) {
+        out[d] += vector[d] * factor;
+    }
 }
 
 /**
  * The boids this one reacts to for alignment and cohesion: within the perception radius, inside the field of view,
- * and at most `maxNeighbours` of them, the nearest first.
- *
- * @param {Boid} boid
- * @param {Boid[]} flock
- * @returns {{ boid: Boid, distance: number }[]}
+ * and at most `maxNeighbours` of them, the nearest first. The result is left in the workspace.
  */
-function findNeighbours(boid, flock, parameters) {
-    const heading = Math.hypot(boid.vx, boid.vy);
+function findNeighbours(flock, index, parameters, workspace) {
+    const { count, dim, pos, vel } = flock;
+    const base = index * dim;
+    const capacity = workspace.neighbourIds.length;
+    const ids = workspace.neighbourIds;
+    const distances = workspace.neighbourDistances;
+    const radiusSquared = parameters.perceptionRadius * parameters.perceptionRadius;
     const seesEverything = parameters.perceptionAngle >= 360;
     // The field of view is centred on the heading, so a neighbour is visible when the angle between the heading
     // and the direction to it is at most half the field of view.
     const cosHalfAngle = Math.cos((parameters.perceptionAngle * Math.PI) / 360);
-    const visible = [];
+    let headingSquared = 0;
+    let found = 0;
 
-    for (const other of flock) {
-        if (other === boid) {
+    for (let d = 0; d < dim; d++) {
+        headingSquared += vel[base + d] * vel[base + d];
+    }
+
+    const heading = Math.sqrt(headingSquared);
+
+    for (let other = 0; other < count && capacity > 0; other++) {
+        if (other === index) {
             continue;
         }
 
-        const towardsX = other.x - boid.x;
-        const towardsY = other.y - boid.y;
-        const distance = Math.hypot(towardsX, towardsY);
+        const otherBase = other * dim;
+        let distanceSquared = 0;
+        let dot = 0;
 
-        if (distance >= parameters.perceptionRadius) {
+        for (let d = 0; d < dim; d++) {
+            const towards = pos[otherBase + d] - pos[base + d];
+
+            distanceSquared += towards * towards;
+            dot += vel[base + d] * towards;
+        }
+
+        if (distanceSquared >= radiusSquared) {
             continue;
         }
+
+        const distance = Math.sqrt(distanceSquared);
 
         // dot(velocity, towards) = |velocity| * |towards| * cos(angle between them), so comparing it with
         // cos(half angle) * |velocity| * |towards| tells whether the angle is small enough, without any trigonometry
         // per pair. A smaller field of view means a larger blind spot behind the boid.
-        const dot = boid.vx * towardsX + boid.vy * towardsY;
-
         if (!seesEverything && dot < cosHalfAngle * heading * distance) {
             continue;
         }
 
-        visible.push({ boid: other, distance });
-    }
+        // Insertion into the short sorted list: keeps the `capacity` nearest, earlier boids first on ties.
+        let slot;
 
-    return visible.sort((a, b) => a.distance - b.distance).slice(0, parameters.maxNeighbours);
-}
-
-/** Match the average velocity of the neighbours: the larger the difference, the stronger the correction. */
-function alignmentForce(boid, neighbours, parameters) {
-    if (neighbours.length === 0) {
-        return NO_FORCE;
-    }
-
-    let velocityX = 0;
-    let velocityY = 0;
-
-    for (const { boid: other } of neighbours) {
-        velocityX += other.vx;
-        velocityY += other.vy;
-    }
-
-    return limitLength(
-        velocityX / neighbours.length - boid.vx,
-        velocityY / neighbours.length - boid.vy,
-        parameters.maxForce,
-    );
-}
-
-/** Head for the centre of the neighbours: the farther from it, the stronger the pull, so there is no overshoot. */
-function cohesionForce(boid, neighbours, parameters) {
-    if (neighbours.length === 0) {
-        return NO_FORCE;
-    }
-
-    let centreX = 0;
-    let centreY = 0;
-
-    for (const { boid: other } of neighbours) {
-        centreX += other.x;
-        centreY += other.y;
-    }
-
-    const towardsX = centreX / neighbours.length - boid.x;
-    const towardsY = centreY / neighbours.length - boid.y;
-    const distance = Math.hypot(towardsX, towardsY);
-
-    if (distance === 0) {
-        return NO_FORCE;
-    }
-
-    const strength = Math.min(distance / parameters.perceptionRadius, 1) * parameters.maxForce;
-
-    return { x: (towardsX / distance) * strength, y: (towardsY / distance) * strength };
-}
-
-/** Move away from boids inside the personal space: the push fades from full strength (touching) to nothing (edge). */
-function separationForce(boid, flock, parameters) {
-    const radius = Math.min(parameters.separationRadius, parameters.perceptionRadius);
-    let pushX = 0;
-    let pushY = 0;
-
-    for (const other of flock) {
-        const awayX = boid.x - other.x;
-        const awayY = boid.y - other.y;
-        const distance = Math.hypot(awayX, awayY);
-
-        if (distance === 0 || distance >= radius) {
+        if (found < capacity) {
+            slot = found++;
+        } else if (distance < distances[capacity - 1]) {
+            slot = capacity - 1;
+        } else {
             continue;
         }
 
-        const closeness = 1 - distance / radius;
+        while (slot > 0 && distances[slot - 1] > distance) {
+            distances[slot] = distances[slot - 1];
+            ids[slot] = ids[slot - 1];
+            slot--;
+        }
 
-        pushX += (awayX / distance) * closeness;
-        pushY += (awayY / distance) * closeness;
+        distances[slot] = distance;
+        ids[slot] = other;
     }
 
-    const push = limitLength(pushX, pushY, 1);
+    workspace.neighbourCount = found;
+}
 
-    return { x: push.x * parameters.maxForce, y: push.y * parameters.maxForce };
+/** Match the average velocity of the neighbours: the larger the difference, the stronger the correction. */
+function addAlignment(out, flock, index, parameters, workspace) {
+    const { dim, vel } = flock;
+    const { neighbourCount, neighbourIds, vector } = workspace;
+
+    if (neighbourCount === 0) {
+        return;
+    }
+
+    vector.fill(0);
+
+    for (let k = 0; k < neighbourCount; k++) {
+        for (let d = 0; d < dim; d++) {
+            vector[d] += vel[neighbourIds[k] * dim + d];
+        }
+    }
+
+    for (let d = 0; d < dim; d++) {
+        vector[d] = vector[d] / neighbourCount - vel[index * dim + d];
+    }
+
+    addLimited(out, vector, parameters.maxForce, parameters.alignmentWeight);
+}
+
+/** Head for the centre of the neighbours: the farther from it, the stronger the pull, so there is no overshoot. */
+function addCohesion(out, flock, index, parameters, workspace) {
+    const { dim, pos } = flock;
+    const { neighbourCount, neighbourIds, vector } = workspace;
+
+    if (neighbourCount === 0) {
+        return;
+    }
+
+    vector.fill(0);
+
+    for (let k = 0; k < neighbourCount; k++) {
+        for (let d = 0; d < dim; d++) {
+            vector[d] += pos[neighbourIds[k] * dim + d];
+        }
+    }
+
+    let distanceSquared = 0;
+
+    for (let d = 0; d < dim; d++) {
+        vector[d] = vector[d] / neighbourCount - pos[index * dim + d];
+        distanceSquared += vector[d] * vector[d];
+    }
+
+    if (distanceSquared === 0) {
+        return;
+    }
+
+    const distance = Math.sqrt(distanceSquared);
+    const strength = Math.min(distance / parameters.perceptionRadius, 1) * parameters.maxForce;
+
+    for (let d = 0; d < dim; d++) {
+        out[d] += (vector[d] / distance) * strength * parameters.cohesionWeight;
+    }
+}
+
+/** Move away from boids inside the personal space: the push fades from full strength (touching) to nothing (edge). */
+function addSeparation(out, flock, index, parameters, workspace) {
+    const { count, dim, pos } = flock;
+    const { vector } = workspace;
+    const base = index * dim;
+    const radius = Math.min(parameters.separationRadius, parameters.perceptionRadius);
+    const radiusSquared = radius * radius;
+
+    vector.fill(0);
+
+    for (let other = 0; other < count; other++) {
+        const otherBase = other * dim;
+        let distanceSquared = 0;
+
+        for (let d = 0; d < dim; d++) {
+            const away = pos[base + d] - pos[otherBase + d];
+
+            distanceSquared += away * away;
+        }
+
+        if (distanceSquared === 0 || distanceSquared >= radiusSquared) {
+            continue;
+        }
+
+        const distance = Math.sqrt(distanceSquared);
+        const closeness = 1 - distance / radius;
+
+        for (let d = 0; d < dim; d++) {
+            vector[d] += ((pos[base + d] - pos[otherBase + d]) / distance) * closeness;
+        }
+    }
+
+    addLimited(out, vector, 1, parameters.maxForce * parameters.separationWeight);
 }
 
 /**
  * Gently brings the speed back to the cruise speed, along the heading. Without it the field of view makes the
  * flock accelerate (the visible neighbours are mostly ahead, so cohesion always pulls forwards) up to the maximum speed.
  */
-function cruiseForce(boid, parameters) {
-    const speed = Math.hypot(boid.vx, boid.vy);
+function addCruise(out, flock, index, parameters) {
+    const { dim, vel } = flock;
+    const base = index * dim;
+    let speedSquared = 0;
 
-    if (speed === 0) {
-        return NO_FORCE;
+    for (let d = 0; d < dim; d++) {
+        speedSquared += vel[base + d] * vel[base + d];
     }
 
+    if (speedSquared === 0) {
+        return;
+    }
+
+    const speed = Math.sqrt(speedSquared);
     const cruiseSpeed = parameters.maxSpeed * parameters.cruiseSpeedRatio;
     const strength = Math.max(-parameters.maxForce, Math.min((cruiseSpeed - speed) * CRUISE_GAIN, parameters.maxForce));
 
-    return { x: (boid.vx / speed) * strength, y: (boid.vy / speed) * strength };
+    for (let d = 0; d < dim; d++) {
+        out[d] += (vel[base + d] / speed) * strength;
+    }
 }
 
-/**
- * Reynolds steering rules for one boid, each scaled by its weight, plus the cruise speed regulation.
- *
- * @param {Boid} boid
- * @param {Boid[]} flock
- * @returns {{ x: number, y: number }}
- */
-export function computeAcceleration(boid, flock, parameters) {
-    const neighbours = findNeighbours(boid, flock, parameters);
-    const alignment = alignmentForce(boid, neighbours, parameters);
-    const cohesion = cohesionForce(boid, neighbours, parameters);
-    const separation = separationForce(boid, flock, parameters);
-    const cruise = cruiseForce(boid, parameters);
-
-    return {
-        x:
-            alignment.x * parameters.alignmentWeight +
-            cohesion.x * parameters.cohesionWeight +
-            separation.x * parameters.separationWeight +
-            cruise.x,
-        y:
-            alignment.y * parameters.alignmentWeight +
-            cohesion.y * parameters.cohesionWeight +
-            separation.y * parameters.separationWeight +
-            cruise.y,
-    };
+/** Writes into `out` the steering rules for one boid, each scaled by its weight, plus the cruise speed regulation. */
+function accelerationInto(out, flock, index, parameters, workspace) {
+    out.fill(0);
+    findNeighbours(flock, index, parameters, workspace);
+    addAlignment(out, flock, index, parameters, workspace);
+    addCohesion(out, flock, index, parameters, workspace);
+    addSeparation(out, flock, index, parameters, workspace);
+    addCruise(out, flock, index, parameters);
 }
 
-/**
- * Force exerted by the pointer: it pushes boids away or pulls them in, fading to nothing at `pointerRadius`.
- *
- * @param {Boid} boid
- * @param {Pointer | null} pointer
- * @returns {{ x: number, y: number }}
- */
-export function computePointerAcceleration(boid, pointer, parameters) {
+/** Writes into `out` the force exerted by the pointer: it fades to nothing at `pointerRadius`. */
+function pointerAccelerationInto(out, flock, index, pointer, parameters) {
+    out.fill(0);
+
     if (!pointer) {
-        return NO_FORCE;
+        return;
     }
 
-    const towardsX = pointer.x - boid.x;
-    const towardsY = pointer.y - boid.y;
-    const distance = Math.hypot(towardsX, towardsY);
+    const { dim, pos } = flock;
+    const base = index * dim;
+    let distanceSquared = 0;
 
-    if (distance === 0 || distance >= parameters.pointerRadius) {
-        return NO_FORCE;
+    for (let d = 0; d < dim; d++) {
+        const towards = pointer.position[d] - pos[base + d];
+
+        distanceSquared += towards * towards;
     }
 
+    if (distanceSquared === 0 || distanceSquared >= parameters.pointerRadius * parameters.pointerRadius) {
+        return;
+    }
+
+    const distance = Math.sqrt(distanceSquared);
     const direction = pointer.mode === 'repel' ? -1 : 1;
     const strength = (1 - distance / parameters.pointerRadius) * parameters.maxForce * parameters.pointerWeight;
 
-    return { x: (towardsX / distance) * strength * direction, y: (towardsY / distance) * strength * direction };
+    for (let d = 0; d < dim; d++) {
+        out[d] = ((pointer.position[d] - pos[base + d]) / distance) * strength * direction;
+    }
+}
+
+/**
+ * Steering acceleration of one boid: the Reynolds rules, each scaled by its weight, plus the cruise speed regulation.
+ *
+ * @param {Flock} flock
+ * @param {number} index Index of the boid in the flock.
+ * @returns {Float64Array} One value per dimension.
+ */
+export function computeAcceleration(flock, index, parameters) {
+    const out = new Float64Array(flock.dim);
+
+    accelerationInto(out, flock, index, parameters, createWorkspace(flock.dim, parameters.maxNeighbours));
+
+    return out;
+}
+
+/**
+ * Force exerted on one boid by the pointer: it pushes boids away or pulls them in, fading to nothing at `pointerRadius`.
+ *
+ * @param {Flock} flock
+ * @param {number} index
+ * @param {Pointer | null} pointer
+ * @returns {Float64Array} One value per dimension.
+ */
+export function computePointerAcceleration(flock, index, pointer, parameters) {
+    const out = new Float64Array(flock.dim);
+
+    pointerAccelerationInto(out, flock, index, pointer, parameters);
+
+    return out;
 }
 
 /**
@@ -296,27 +464,46 @@ export function smoothAngle(current, target, factor) {
 }
 
 /**
- * Advances the simulation by one frame and returns a new flock.
+ * Advances the simulation by one frame and returns a new flock; the previous one is left untouched.
  * Every acceleration is computed from the same snapshot, so the result does not depend on boid order.
  * The flocking acceleration is blended with the previous one to avoid abrupt turns; the pointer is applied as is
  * so that clicks stay responsive.
  *
- * @param {Boid[]} flock
+ * @param {Flock} flock
+ * @param {ArrayLike<number>} size Extent of the playfield on each axis.
  * @param {Pointer | null} [pointer]
- * @returns {Boid[]}
+ * @returns {Flock}
  */
-export function stepFlock(flock, parameters, width, height, pointer = null) {
+export function stepFlock(flock, parameters, size, pointer = null) {
+    const { count, dim } = flock;
+    const next = allocateFlock(count, dim);
+    const workspace = createWorkspace(dim, parameters.maxNeighbours);
     const responsiveness = 1 - parameters.smoothing;
 
-    return flock.map((boid) => {
-        const flocking = computeAcceleration(boid, flock, parameters);
-        const fromPointer = computePointerAcceleration(boid, pointer, parameters);
-        const ax = boid.ax + (flocking.x - boid.ax) * responsiveness;
-        const ay = boid.ay + (flocking.y - boid.ay) * responsiveness;
-        const velocity = limitLength(boid.vx + ax + fromPointer.x, boid.vy + ay + fromPointer.y, parameters.maxSpeed);
-        const vx = velocity.x;
-        const vy = velocity.y;
+    for (let i = 0; i < count; i++) {
+        const base = i * dim;
+        let speedSquared = 0;
 
-        return { x: wrap(boid.x + vx, width), y: wrap(boid.y + vy, height), vx, vy, ax, ay };
-    });
+        accelerationInto(workspace.flocking, flock, i, parameters, workspace);
+        pointerAccelerationInto(workspace.pointer, flock, i, pointer, parameters);
+
+        for (let d = 0; d < dim; d++) {
+            const acceleration = flock.acc[base + d] + (workspace.flocking[d] - flock.acc[base + d]) * responsiveness;
+
+            next.acc[base + d] = acceleration;
+            // Temporarily holds the new velocity, before it is limited to maxSpeed.
+            next.vel[base + d] = flock.vel[base + d] + acceleration + workspace.pointer[d];
+            speedSquared += next.vel[base + d] * next.vel[base + d];
+        }
+
+        const speed = Math.sqrt(speedSquared);
+        const limit = speed > parameters.maxSpeed ? parameters.maxSpeed / speed : 1;
+
+        for (let d = 0; d < dim; d++) {
+            next.vel[base + d] *= limit;
+            next.pos[base + d] = wrap(flock.pos[base + d] + next.vel[base + d], size[d]);
+        }
+    }
+
+    return next;
 }

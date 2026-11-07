@@ -49,8 +49,7 @@ if (root) {
         const rect = container.getBoundingClientRect();
 
         simulation.setPointer({
-            x: event.clientX - rect.left,
-            y: event.clientY - rect.top,
+            position: [event.clientX - rect.left, event.clientY - rect.top],
             mode: POINTER_MODES[activeButton],
         });
     };

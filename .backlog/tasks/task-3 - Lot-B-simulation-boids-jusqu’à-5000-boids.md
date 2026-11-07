@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-11-07 07:32'
-updated_date: '2026-11-07 07:38'
+updated_date: '2026-11-07 08:08'
 labels:
   - lab
   - performance
@@ -37,4 +37,6 @@ Le curseur du nombre de boids plafonne à quelques centaines car `stepFlock` est
 
 <!-- SECTION:NOTES:BEGIN -->
 2026-11-07 : TASK-3.1 implémentée (critères 1 et 2 cochés, critère 3 en attente de vérification navigateur). Mesure de départ avant lot B : 500 boids 15,8 ms, 1000 boids 59 ms, 5000 boids 1422 ms par frame (logique seule). Après tableaux plats : 3,3 / 13 / 321 ms.
+
+2026-11-07 : TASK-3.2 terminée. 5000 boids : 35 ms par frame de calcul (logique seule), contre 1422 ms au départ. Reste TASK-3.3 : mesure du rendu et curseur ; viser 60 fps à 5000 demandera probablement plus que la grille (calcul seul à ~35 ms).
 <!-- SECTION:NOTES:END -->

@@ -3,6 +3,7 @@ import {
     BOUNDARY_MARGIN,
     DEFAULT_PARAMETERS,
     allocateFlock,
+    buildGrid,
     computeAcceleration,
     computePointerAcceleration,
     createFlock,
@@ -354,6 +355,106 @@ describe('boids flock lifecycle', () => {
         }
 
         expect(overlapping).toBe(0);
+    });
+});
+
+describe('boids spatial grid', () => {
+    // A flock spread over the playfield and its margin, plus a few boids well outside it.
+    function scatteredFlock(count, field, seed) {
+        const random = seededRandom(seed);
+        const flock = allocateFlock(count, field.length);
+
+        for (let i = 0; i < count; i++) {
+            for (let d = 0; d < field.length; d++) {
+                const outside = i % 10 === 0 ? 120 : 0;
+
+                flock.pos[i * field.length + d] = random() * (field[d] + 2 * BOUNDARY_MARGIN + 2 * outside) - BOUNDARY_MARGIN - outside;
+                flock.vel[i * field.length + d] = (random() - 0.5) * 6;
+            }
+        }
+
+        return flock;
+    }
+
+    function expectSameAccelerations(flock, field, testParameters) {
+        const grid = buildGrid(flock, testParameters.perceptionRadius, field);
+
+        for (let i = 0; i < flock.count; i++) {
+            const naive = computeAcceleration(flock, i, testParameters);
+            const gridded = computeAcceleration(flock, i, testParameters, grid);
+
+            gridded.forEach((value, d) => expect(value).toBeCloseTo(naive[d], 9));
+        }
+    }
+
+    test('puts every boid in exactly one cell, the one that contains it', () => {
+        const flock = scatteredFlock(300, size, 11);
+        const grid = buildGrid(flock, 50, size);
+        const seen = new Set();
+
+        for (let cell = 0; cell < grid.cellStart.length - 1; cell++) {
+            for (let k = grid.cellStart[cell]; k < grid.cellStart[cell + 1]; k++) {
+                expect(grid.cellOf[grid.items[k]]).toBe(cell);
+                seen.add(grid.items[k]);
+            }
+        }
+
+        expect(seen.size).toBe(flock.count);
+        expect(grid.cellStart[grid.cellStart.length - 1]).toBe(flock.count);
+    });
+
+    test('covers the playfield and its margin with cells of the requested size', () => {
+        const grid = buildGrid(allocateFlock(0, 2), 50, size);
+
+        expect([...grid.cells]).toEqual([Math.ceil((400 + 2 * BOUNDARY_MARGIN) / 50), Math.ceil((300 + 2 * BOUNDARY_MARGIN) / 50)]);
+    });
+
+    test('gives the same accelerations as testing every boid, for a dense flock', () => {
+        expectSameAccelerations(scatteredFlock(400, size, 21), size, parameters);
+    });
+
+    test('gives the same accelerations when boids are outside the covered area', () => {
+        // Every tenth boid of the scattered flock sits up to 120px beyond the margin.
+        expectSameAccelerations(scatteredFlock(300, [200, 150], 22), [200, 150], parameters);
+    });
+
+    test('gives the same accelerations for other perception settings', () => {
+        const flock = scatteredFlock(300, size, 23);
+
+        expectSameAccelerations(flock, size, { ...parameters, perceptionRadius: 10, separationRadius: 8, maxNeighbours: 3 });
+        expectSameAccelerations(flock, size, { ...parameters, perceptionRadius: 150, perceptionAngle: 360, maxNeighbours: 20 });
+        expectSameAccelerations(flock, size, { ...parameters, perceptionAngle: 90 });
+    });
+
+    test('gives the same accelerations in three dimensions', () => {
+        const field = [300, 200, 100];
+
+        expectSameAccelerations(scatteredFlock(300, field, 24), field, parameters);
+    });
+
+    test('finds a neighbour across a cell boundary', () => {
+        // 49.5 and 50.5 are in different cells of a 50px grid but only 1px apart.
+        const flock = flockOf(boid(49.5 - BOUNDARY_MARGIN, 100), boid(50.5 - BOUNDARY_MARGIN, 100));
+        const grid = buildGrid(flock, 50, size);
+        const separationOnly = { ...parameters, alignmentWeight: 0, cohesionWeight: 0, cruiseSpeedRatio: 0 };
+
+        expect(grid.cellOf[0]).not.toBe(grid.cellOf[1]);
+        expect(computeAcceleration(flock, 0, separationOnly, grid)[0]).toBeLessThan(0);
+    });
+
+    test('stepFlock keeps the same behaviour as testing every boid', () => {
+        const flock = scatteredFlock(200, size, 25);
+        const next = stepFlock(flock, parameters, size);
+
+        // Rebuild the first step by hand from naive accelerations.
+        for (let i = 0; i < flock.count; i++) {
+            const naive = computeAcceleration(flock, i, parameters);
+            const responsiveness = 1 - parameters.smoothing;
+
+            for (let d = 0; d < 2; d++) {
+                expect(next.acc[i * 2 + d]).toBeCloseTo(naive[d] * responsiveness, 5);
+            }
+        }
     });
 });
 

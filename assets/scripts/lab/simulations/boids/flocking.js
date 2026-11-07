@@ -13,6 +13,12 @@
  * @property {Float32Array} pos Positions.
  * @property {Float32Array} vel Velocities.
  * @property {Float32Array} acc Smoothed accelerations applied on the previous frame.
+ * @typedef {object} Grid
+ * @property {number} cellSize Side of a cell.
+ * @property {Int32Array} cells Number of cells along each axis.
+ * @property {Int32Array} cellOf Cell index of each boid.
+ * @property {Int32Array} cellStart Boids of cell `c` are `items[cellStart[c]]` to `items[cellStart[c + 1] - 1]`.
+ * @property {Int32Array} items Boid indices grouped by cell.
  * @typedef {{ position: ArrayLike<number>, mode: 'repel' | 'attract' }} Pointer
  *   Position of the pointer, with as many coordinates as the flock has dimensions.
  */
@@ -134,13 +140,73 @@ export function resizeFlock(flock, count, random, size) {
 }
 
 /**
- * Scratch memory reused for every boid of a frame, so the rules allocate nothing per boid.
- * `neighbourIds` and `neighbourDistances` hold the nearest visible neighbours, sorted by distance.
+ * Sorts the boids into square cells of side `cellSize` covering the playfield and its margin, with a counting sort
+ * (no array per cell). With `cellSize` at least the perception radius, every boid a given boid can react to lies in
+ * its own cell or one of the adjacent ones. Boids outside the covered area are clamped to the nearest edge cell:
+ * clamping never moves two boids further apart in cell units, so no neighbour is missed.
+ *
+ * @param {Flock} flock
+ * @param {number} cellSize
+ * @param {ArrayLike<number>} size Extent of the playfield on each axis.
+ * @returns {Grid}
  */
-function createWorkspace(dim, maxNeighbours) {
+export function buildGrid(flock, cellSize, size) {
+    const { count, dim, pos } = flock;
+    const cells = new Int32Array(dim);
+    let total = 1;
+
+    for (let d = 0; d < dim; d++) {
+        cells[d] = Math.max(1, Math.ceil((size[d] + 2 * BOUNDARY_MARGIN) / cellSize));
+        total *= cells[d];
+    }
+
+    const cellOf = new Int32Array(count);
+    const cellStart = new Int32Array(total + 1);
+    const items = new Int32Array(count);
+
+    for (let i = 0; i < count; i++) {
+        let cell = 0;
+
+        for (let d = 0; d < dim; d++) {
+            const coordinate = Math.floor((pos[i * dim + d] + BOUNDARY_MARGIN) / cellSize);
+
+            cell = cell * cells[d] + Math.min(Math.max(coordinate, 0), cells[d] - 1);
+        }
+
+        cellOf[i] = cell;
+        cellStart[cell + 1]++;
+    }
+
+    for (let c = 0; c < total; c++) {
+        cellStart[c + 1] += cellStart[c];
+    }
+
+    // `cellStart` is used as a write cursor while filling, then restored by shifting it back.
+    for (let i = 0; i < count; i++) {
+        items[cellStart[cellOf[i]]++] = i;
+    }
+
+    for (let c = total; c > 0; c--) {
+        cellStart[c] = cellStart[c - 1];
+    }
+
+    cellStart[0] = 0;
+
+    return { cellSize, cells, cellOf, cellStart, items };
+}
+
+/**
+ * Scratch memory reused for every boid of a frame, so the rules allocate nothing per boid.
+ * `candidates` lists the boids worth testing for the current boid; `neighbourIds` and `neighbourDistances` hold
+ * the nearest visible neighbours, sorted by distance.
+ */
+function createWorkspace(dim, maxNeighbours, count) {
     const capacity = Math.max(0, Math.floor(maxNeighbours));
 
     return {
+        candidateCount: 0,
+        candidates: new Int32Array(count),
+        cellCoordinates: new Int32Array(dim),
         neighbourCount: 0,
         neighbourIds: new Int32Array(capacity),
         neighbourDistances: new Float64Array(capacity),
@@ -169,11 +235,77 @@ function addLimited(out, vector, maxLength, scale) {
 }
 
 /**
+ * Lists in the workspace the boids that may be within the perception radius of this one: all the others without a
+ * grid, otherwise those in its cell and the adjacent ones (3^dim cells).
+ */
+function gatherCandidates(flock, index, grid, workspace) {
+    const { count, dim } = flock;
+    const { candidates } = workspace;
+    let found = 0;
+
+    if (!grid) {
+        for (let other = 0; other < count; other++) {
+            if (other !== index) {
+                candidates[found++] = other;
+            }
+        }
+
+        workspace.candidateCount = found;
+
+        return;
+    }
+
+    const { cells, cellOf, cellStart, items } = grid;
+    const coordinates = workspace.cellCoordinates;
+    let rest = cellOf[index];
+    let combinations = 1;
+
+    for (let d = dim - 1; d >= 0; d--) {
+        coordinates[d] = rest % cells[d];
+        rest = Math.floor(rest / cells[d]);
+        combinations *= 3;
+    }
+
+    // Each combination is a base-3 number whose digits (minus one) are the offsets along each axis.
+    for (let combination = 0; combination < combinations; combination++) {
+        let digits = combination;
+        let cell = 0;
+        let inside = true;
+
+        for (let d = 0; d < dim; d++) {
+            const coordinate = coordinates[d] + (digits % 3) - 1;
+
+            digits = Math.floor(digits / 3);
+
+            if (coordinate < 0 || coordinate >= cells[d]) {
+                inside = false;
+                break;
+            }
+
+            cell = cell * cells[d] + coordinate;
+        }
+
+        if (!inside) {
+            continue;
+        }
+
+        for (let k = cellStart[cell]; k < cellStart[cell + 1]; k++) {
+            if (items[k] !== index) {
+                candidates[found++] = items[k];
+            }
+        }
+    }
+
+    workspace.candidateCount = found;
+}
+
+/**
  * The boids this one reacts to for alignment and cohesion: within the perception radius, inside the field of view,
  * and at most `maxNeighbours` of them, the nearest first. The result is left in the workspace.
  */
 function findNeighbours(flock, index, parameters, workspace) {
-    const { count, dim, pos, vel } = flock;
+    const { dim, pos, vel } = flock;
+    const { candidates, candidateCount } = workspace;
     const base = index * dim;
     const capacity = workspace.neighbourIds.length;
     const ids = workspace.neighbourIds;
@@ -192,11 +324,8 @@ function findNeighbours(flock, index, parameters, workspace) {
 
     const heading = Math.sqrt(headingSquared);
 
-    for (let other = 0; other < count && capacity > 0; other++) {
-        if (other === index) {
-            continue;
-        }
-
+    for (let k = 0; k < candidateCount && capacity > 0; k++) {
+        const other = candidates[k];
         const otherBase = other * dim;
         let distanceSquared = 0;
         let dot = 0;
@@ -307,15 +436,16 @@ function addCohesion(out, flock, index, parameters, workspace) {
 
 /** Move away from boids inside the personal space: the push fades from full strength (touching) to nothing (edge). */
 function addSeparation(out, flock, index, parameters, workspace) {
-    const { count, dim, pos } = flock;
-    const { vector } = workspace;
+    const { dim, pos } = flock;
+    const { candidates, candidateCount, vector } = workspace;
     const base = index * dim;
     const radius = Math.min(parameters.separationRadius, parameters.perceptionRadius);
     const radiusSquared = radius * radius;
 
     vector.fill(0);
 
-    for (let other = 0; other < count; other++) {
+    for (let k = 0; k < candidateCount; k++) {
+        const other = candidates[k];
         const otherBase = other * dim;
         let distanceSquared = 0;
 
@@ -367,8 +497,9 @@ function addCruise(out, flock, index, parameters) {
 }
 
 /** Writes into `out` the steering rules for one boid, each scaled by its weight, plus the cruise speed regulation. */
-function accelerationInto(out, flock, index, parameters, workspace) {
+function accelerationInto(out, flock, index, parameters, workspace, grid) {
     out.fill(0);
+    gatherCandidates(flock, index, grid, workspace);
     findNeighbours(flock, index, parameters, workspace);
     addAlignment(out, flock, index, parameters, workspace);
     addCohesion(out, flock, index, parameters, workspace);
@@ -412,12 +543,14 @@ function pointerAccelerationInto(out, flock, index, pointer, parameters) {
  *
  * @param {Flock} flock
  * @param {number} index Index of the boid in the flock.
+ * @param {Grid | null} [grid] Grid built from this flock with `buildGrid`. Without one, every boid of the flock is
+ *   tested, which gives the same result more slowly.
  * @returns {Float64Array} One value per dimension.
  */
-export function computeAcceleration(flock, index, parameters) {
+export function computeAcceleration(flock, index, parameters, grid = null) {
     const out = new Float64Array(flock.dim);
 
-    accelerationInto(out, flock, index, parameters, createWorkspace(flock.dim, parameters.maxNeighbours));
+    accelerationInto(out, flock, index, parameters, createWorkspace(flock.dim, parameters.maxNeighbours, flock.count), grid);
 
     return out;
 }
@@ -466,6 +599,7 @@ export function smoothAngle(current, target, factor) {
 /**
  * Advances the simulation by one frame and returns a new flock; the previous one is left untouched.
  * Every acceleration is computed from the same snapshot, so the result does not depend on boid order.
+ * Neighbours are looked up through a grid rebuilt each frame, so the cost grows roughly linearly with the flock size.
  * The flocking acceleration is blended with the previous one to avoid abrupt turns; the pointer is applied as is
  * so that clicks stay responsive.
  *
@@ -477,14 +611,15 @@ export function smoothAngle(current, target, factor) {
 export function stepFlock(flock, parameters, size, pointer = null) {
     const { count, dim } = flock;
     const next = allocateFlock(count, dim);
-    const workspace = createWorkspace(dim, parameters.maxNeighbours);
+    const workspace = createWorkspace(dim, parameters.maxNeighbours, count);
+    const grid = buildGrid(flock, Math.max(parameters.perceptionRadius, 1), size);
     const responsiveness = 1 - parameters.smoothing;
 
     for (let i = 0; i < count; i++) {
         const base = i * dim;
         let speedSquared = 0;
 
-        accelerationInto(workspace.flocking, flock, i, parameters, workspace);
+        accelerationInto(workspace.flocking, flock, i, parameters, workspace, grid);
         pointerAccelerationInto(workspace.pointer, flock, i, pointer, parameters);
 
         for (let d = 0; d < dim; d++) {

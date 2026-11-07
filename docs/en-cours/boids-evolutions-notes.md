@@ -2,7 +2,7 @@
 
 Note de suivi des évolutions envisagées pour la simulation des boids du Lab. La référence stable de l'existant est [simulations.md](../lab/simulations.md).
 
-Statut au 2026-11-07 : le lot A est livré, le lot B est en cours (suivi : TASK-3 dans Backlog.md, étape 1 faite), la piste 3D est un projet séparé à cadrer.
+Statut au 2026-11-07 : le lot A est livré, le lot B est en cours (suivi : TASK-3 dans Backlog.md, tableaux plats et grille faits, reste le rendu et le curseur), la piste 3D est un projet séparé à cadrer.
 
 ## État Actuel
 
@@ -26,9 +26,9 @@ Objectif : pouvoir monter le curseur du nombre de boids jusqu'à 5000.
 
 Pistes techniques :
 
-- grille spatiale (cellules de la taille du rayon de perception) pour passer d'environ O(n²) à environ O(n) ;
-- tableaux plats (`Float32Array`) pour éviter une allocation d'objet par boid et par frame ;
-- les deux passes actuelles sur le groupe par boid (voisins puis séparation) sont à revoir au passage, avec la grille ;
+- grille spatiale (cellules de la taille du rayon de perception) pour passer d'environ O(n²) à environ O(n) : faite, 35 ms par frame à 5000 boids (logique seule) contre 1422 ms avant ;
+- tableaux plats (`Float32Array`) pour éviter une allocation d'objet par boid et par frame : faits ; le double buffer a été écarté après mesure (l'allocation d'un groupe coûte environ 0,05 ms sur 36 ms) ;
+- les deux passes par boid (voisins puis séparation) parcourent maintenant la même liste de candidats de la grille ;
 - le rendu p5 en mode 2D de 5000 triangles peut devenir le goulot : à mesurer, un rendu simplifié à grand effectif est possible ;
 - les tests et `sketch.js` seront à adapter, et la doc `simulations.md` à mettre à jour.
 
@@ -50,8 +50,8 @@ Idée : une scène 3D avec quelques centaines de boids imitant une nuée d'oisea
 | --- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
 | 1   | Bibliothèque de rendu    | p5.js en mode WEBGL (déjà présent, aucune nouvelle dépendance, plus limité pour ciel et effets) ou Three.js (mieux adapté, mais nouvelle dépendance dans l'importmap, plusieurs centaines de Ko) | Commencer en p5 WEBGL ; passer à Three.js si le rendu ne suffit pas, la logique pure restant inchangée                   |
 | 2   | Emplacement              | Deuxième simulation sur `/lab/simulations`, à côté du 2D, ou remplacement du 2D                                                                                                                  | Deuxième simulation, le 2D reste comme version pédagogique                                                               |
-| 3   | Code partagé ou dupliqué | `flocking3d.js` séparé (simple, duplication des règles) ou version générique en N dimensions (pas de duplication, plus d'abstraction)                                                            | À trancher : c'est le second cas d'usage réel, ce qui lève la règle « pas d'abstraction avant un second cas »            |
-| 4   | Ordre avec le lot B      | Lot B en 2D d'abord, ou lot B conçu dès maintenant avec une dimension paramétrable                                                                                                               | À trancher : le lot B fixe le nombre de composantes par boid (2 ou 3) dans les tableaux plats                            |
+| 3   | Code partagé ou dupliqué | `flocking3d.js` séparé (simple, duplication des règles) ou version générique en N dimensions (pas de duplication, plus d'abstraction)                                                            | Tranché le 2026-11-07 : version générique en N dimensions (les règles sont écrites sur `dim`)                          |
+| 4   | Ordre avec le lot B      | Lot B en 2D d'abord, ou lot B conçu dès maintenant avec une dimension paramétrable                                                                                                               | Tranché le 2026-11-07 : lot B en 2D d'abord, avec un stride `dim` paramétrable dans les tableaux plats                 |
 | 5   | Méthode                  | Utiliser `~/.ai-context/project-start.md` pour cadrer le chantier, ou procéder directement                                                                                                       | Le chantier est large et touche une dépendance possible : le workflow prévoit de le proposer, sans le lancer sans accord |
 
 ### Questions Ouvertes
@@ -62,4 +62,4 @@ Idée : une scène 3D avec quelques centaines de boids imitant une nuée d'oisea
 
 ## Prochaine Action
 
-Benj réfléchit aux décisions ci-dessus. À la reprise : trancher les points 3, 4 et 5, puis démarrer le lot B (ou la conception 3D) selon l'ordre retenu.
+Finir le lot B (TASK-3.3 : mesure du rendu p5, puis curseur à 5000). La piste 3D est un projet séparé : décisions 1, 2 et 5 à reprendre quand elle sera cadrée.

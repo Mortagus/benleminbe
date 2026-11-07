@@ -19,7 +19,7 @@ Les routes du Lab ne portent pas de préfixe de langue et ne sont pas dans le si
 
 ```text
 assets/scripts/lab/simulations/boids/
-├── flocking.js  # règles de Reynolds et force du pointeur, logique pure sur tableaux plats
+├── flocking.js  # règles de Reynolds, grille spatiale et force du pointeur, logique pure sur tableaux plats
 ├── sketch.js    # rendu p5.js (mode instance), canvas responsive
 └── main.js      # branchement DOM : pause, reset, curseurs, clics sur le canvas
 assets/styles/lab/simulations.css
@@ -46,7 +46,8 @@ Choix de conception :
 - La vitesse est plafonnée à `maxSpeed` (absent de la version d'origine).
 - Les couleurs sont lues depuis les variables CSS du site (`--card`, `--accent-text`) pour suivre le thème clair/sombre.
 - Si `prefers-reduced-motion` est actif, la simulation démarre en pause.
-- La complexité est toujours en O(n²) par frame (mesure du 2026-11-07 : environ 3 ms par frame à 500 boids, 13 ms à 1000, 320 ms à 5000, logique seule). La grille spatiale du lot B n'est pas encore en place.
+- Les voisins sont cherchés à travers une grille rebâtie à chaque frame (`buildGrid`) : des cellules de côté `perceptionRadius` (au moins aussi grand que le rayon de séparation), remplies par tri par comptage, sans tableau par cellule. Pour chaque boid, `gatherCandidates` rassemble dans un tampon les boids de sa cellule et des cellules voisines (3^dim), puis la perception et la séparation parcourent cette courte liste. Sans grille, les candidats sont tous les autres boids : c'est la version naïve, gardée comme référence pour les tests, qui donne exactement le même résultat. La grille ne regarde pas à travers le rebouclage, comme avant. Les boids hors de la zone couverte sont rangés dans la cellule de bord la plus proche, ce qui ne fait manquer aucun voisin.
+- Coût mesuré le 2026-11-07, logique seule (Node 24, canvas 924×520, `maxNeighbours` à 7) : environ 0,8 ms par frame à 500 boids, 1,8 ms à 1000, 7 ms à 2000 et 35 ms à 5000, soit à peu près linéaire au lieu de quadratique (avant la grille : 59 ms à 1000 et 1422 ms à 5000). À 5000 boids le calcul seul dépasse encore le budget d'une frame à 60 images par seconde ; le rendu p5 n'est pas encore mesuré.
 
 ## p5.js
 

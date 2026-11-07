@@ -41,7 +41,7 @@ tools:
     simulations:
         label: "Simulations"
         title: "Simulations"
-        description: "Des **simulations interactives** en JavaScript : comportements émergents, règles simples et paramètres à ajuster en direct. La première, les boids, reproduit un vol d’oiseaux."
+        description: "Des **simulations interactives** en JavaScript : comportements émergents, règles simples et paramètres à ajuster en direct. Les boids reproduisent un vol d’oiseaux, en 2D et en 3D."
         meta_label: "Métadonnées des simulations"
         meta:
             1: "Outil public"
@@ -50,15 +50,42 @@ tools:
         action: "Voir les simulations"
 
 simulations:
+    back: "← Toutes les simulations"
     meta:
         title: "Simulations"
-        description: "Simulations interactives en JavaScript et p5.js : boids et comportements émergents."
+        description: "Simulations interactives en JavaScript et p5.js : boids en 2D et en 3D, comportements émergents."
+    index:
+        title: "Choisir une simulation"
+        boids2d:
+            label: "2D"
+            title: "Boids en 2D"
+            description: "Les trois règles de Reynolds sur un fond uni : alignement, séparation et cohésion, avec dix curseurs et le pointeur pour repousser ou attirer les boids."
+            meta_label: "Métadonnées des boids en 2D"
+            meta:
+                1: "p5.js"
+                2: "Curseurs en direct"
+                3: "Souris"
+            action: "Voir les boids 2D"
+        boids3d:
+            label: "3D"
+            title: "Boids en 3D"
+            description: "Une nuée d’oiseaux au coucher du soleil, avec des meneurs, une onde et l’évitement des arbres : elle s’étire en nappe, ondule et se défait par moments."
+            meta_label: "Métadonnées des boids en 3D"
+            meta:
+                1: "p5.js"
+                2: "Caméra libre"
+                3: "Évitement des arbres"
+            action: "Voir les boids 3D"
     hero:
         eyebrow: "Lab"
         title: "Simulations"
         intro: "Des simulations interactives où **des règles simples** produisent des comportements d’ensemble. Chacune se règle en direct et reste intégrée au code du site."
     boids:
         title: "Boids"
+        page_title: "Boids en 2D"
+        meta:
+            title: "Boids en 2D"
+            description: "Simulation interactive des boids en 2D (modèle de Reynolds) en JavaScript et p5.js."
         description: "Chaque boid ne suit que **trois règles locales** : s’aligner sur ses voisins, s’en éloigner s’ils sont trop proches et rejoindre leur centre. Le vol de groupe en émerge sans chef ni plan global. Modèle de Craig Reynolds (1986)."
         canvas_label: "Simulation de boids : des triangles se déplacent en groupe sur un fond uni."
         pointer_hint: "Clic gauche maintenu : repousse les boids. Clic droit maintenu : les attire."
@@ -86,3 +113,27 @@ simulations:
             alignment: "**Alignement** : prendre la direction moyenne des voisins."
             separation: "**Séparation** : s’écarter des voisins trop proches."
             cohesion: "**Cohésion** : se rapprocher du centre des voisins."
+    boids3d:
+        title: "Boids en 3D"
+        page_title: "Boids en 3D"
+        meta:
+            title: "Boids en 3D"
+            description: "Simulation 3D d’une nuée d’oiseaux au coucher du soleil en JavaScript et p5.js : meneurs, onde et évitement des arbres."
+        description: "Une **nuée d’oiseaux en 3D** au coucher du soleil. Aux trois règles des boids s’ajoutent **quelques meneurs** qui sentent une cible invisible, une **onde** qui fait onduler le groupe et l’**évitement** des arbres : la nuée s’étire en nappe, ondule, se défait et se reforme."
+        canvas_label: "Simulation de boids en 3D : une nuée d’oiseaux vole au-dessus d’un paysage d’arbres et de lignes électriques, sur un ciel de coucher de soleil."
+        camera_hint: "Glissez pour tourner autour de la scène, molette ou pincement pour zoomer. La caméra reste au-dessus du sol."
+        controls:
+            label: "Contrôles de la simulation"
+            pause: "Pause"
+            resume: "Reprendre"
+            reset: "Réinitialiser"
+            count: "Nombre de boids"
+            leaders: "Meneurs (part des boids qui sentent la cible)"
+            wave: "Ondulation"
+            units:
+                percent: "\u00a0%"
+        rules:
+            title: "Ce qui se passe"
+            leaders: "**Meneurs** : seule une petite part des oiseaux sent la cible invisible, les autres suivent par alignement et cohésion, donc un virage se propage dans le groupe avec un délai."
+            wave: "**Onde** : une poussée verticale qui voyage dans l’espace fait monter certains oiseaux pendant que d’autres descendent."
+            avoidance: "**Évitement** : un oiseau regarde devant lui et ne dévie que si sa trajectoire va toucher un arbre ; sinon il ne ressent aucune force."

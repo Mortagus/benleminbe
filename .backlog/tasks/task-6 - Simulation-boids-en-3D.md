@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-11-07 09:24'
-updated_date: '2026-11-07 12:59'
+updated_date: '2026-11-07 13:25'
 labels:
   - lab
   - 3d
@@ -64,4 +64,6 @@ Ajouter au Lab une simulation 3D d’une nuée d’oiseaux, à côté de la simu
 2026-11-07 : TASK-6.11 (évitement des arbres, nuée plus près du sol) codée et mesurée, en attente du regard de Benj ; TASK-6.8 terminée (caméra validée). Prochaine : TASK-6.12 (meneurs) puis TASK-6.13 (repères d'échelle), 6.3 (intégration) et 6.4 (réglage visuel).
 
 2026-11-07 : TASK-6.12 (meneurs) terminée, TASK-6.14 (forme de la nuée) en attente d'une confirmation de Benj sur l'ampleur de la trajectoire (critère 5). Deux curseurs demandés pour la page finale (TASK-6.3). TASK-6.11 attend toujours la validation de Benj sur l'évitement des arbres. Prochaines : 6.13 (repères d'échelle), 6.3 (intégration et déploiement en ligne), 6.4 (réglage visuel).
+
+2026-11-07 : Benj demande l'intégration dans une nouvelle page du site : /lab/simulations/boids3d. Il trouve bizarre que le 2D n'ait pas d'adresse propre (il est aujourd'hui directement sur /lab/simulations) : décision (Benj) : /lab/simulations devient un index, le 2D passe sur /lab/simulations/boids, la 3D sur /lab/simulations/boids3d. TASK-6.3 démarrée.
 <!-- SECTION:NOTES:END -->

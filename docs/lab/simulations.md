@@ -1,15 +1,17 @@
 # Simulations Du Lab
 
-Ce document décrit la page `/lab/simulations` et la simulation des boids.
+Ce document décrit les pages `/lab/simulations` (index), `/lab/simulations/boids` (boids en 2D) et `/lab/simulations/boids3d` (boids en 3D), et les simulations elles-mêmes.
 
 ## Rôle
 
-Présenter des simulations interactives où des règles simples produisent un comportement d'ensemble. La première simulation est celle des boids (modèle de Craig Reynolds, 1986), reprise d'un ancien projet personnel de coding challenges.
+Présenter des simulations interactives où des règles simples produisent un comportement d'ensemble. La première simulation est celle des boids en 2D (modèle de Craig Reynolds, 1986), reprise d'un ancien projet personnel de coding challenges ; la seconde, une nuée d'oiseaux en 3D au coucher du soleil, réutilise le même calcul.
 
 ## Routes Et Templates
 
-- `app_lab_simulations` -> `/lab/simulations` (`LabController::simulations`)
-- Template : `templates/lab/simulations/index.html.twig`
+- `app_lab_simulations` -> `/lab/simulations` (`LabController::simulations`) : index qui présente chaque simulation par une carte ; il ne charge aucun script de simulation. Template : `templates/lab/simulations/index.html.twig`.
+- `app_lab_simulations_boids` -> `/lab/simulations/boids` (`LabController::simulationsBoids`) : boids en 2D. Template : `templates/lab/simulations/boids.html.twig`, entrypoint `lab_simulations_boids`. C'était l'adresse `/lab/simulations` avant l'arrivée de la 3D ; l'ancienne adresse répond maintenant par l'index.
+- `app_lab_simulations_boids3d` -> `/lab/simulations/boids3d` (`LabController::simulationsBoids3d`) : boids en 3D. Template : `templates/lab/simulations/boids3d.html.twig`, entrypoint `lab_simulations_boids3d`. L'adresse est en minuscules (les adresses sont sensibles à la casse : `/boids3D` donne une 404).
+- Le menu « Simulations » reste actif sur les trois pages (routes qui commencent par `app_lab_simulations`).
 - Carte de présentation sur `/lab` : `templates/lab/index.html.twig`
 - Textes FR/EN : clés `simulations.*` et `tools.simulations.*` dans `translations/lab.*.yaml` (les unités affichées à côté des valeurs des curseurs sont dans `simulations.boids.controls.units.*` : `px` pour le rayon de perception, `°` pour le champ de vision, `px/image` ou `px/frame` pour la vitesse ; les autres réglages sont des comptes, des multiplicateurs ou des ratios, sans unité), libellé de navigation `header.navigation.simulations` dans `translations/layout.*.yaml`
 
@@ -27,6 +29,20 @@ tests/js/lab/simulations/flocking.test.js
 ```
 
 Entrypoint Importmap : `lab_simulations_boids`.
+
+```text
+assets/scripts/lab/simulations/boids3d/
+├── sketch.js      # rendu p5.js WEBGL : canvas transparent, oiseaux, décor, caméra, entrées souris et tactile
+├── main.js        # branchement DOM de la page 3D : pause, réinitialisation, trois curseurs
+├── sliders.js     # conversion pure entre la valeur d'un curseur et le paramètre (le pourcentage de meneurs)
+├── orientation.js # haut et bas des oiseaux, repère de chaque oiseau (maths pures)
+├── camera.js      # caméra orbitale limitée au-dessus du sol (maths pures)
+├── landscape.js   # générateur du paysage : sol, arbres, lignes électriques, obstacles (pur, déterministe)
+└── roost.js       # chemin de la cible qui attire la nuée (pur, déterministe)
+tests/js/lab/simulations/*.test.js  # un fichier par module, plus avoidance, shape et flock-metrics.js
+```
+
+Entrypoint Importmap de la 3D : `lab_simulations_boids3d`. Il charge le calcul de `boids/flocking.js`, sans le dupliquer. La page 3D a trois curseurs, qui agissent en direct parce que la simulation relit ses paramètres à chaque image : le nombre de boids (100 à 500, 200 par défaut), la part de meneurs (5 à 100 %, 15 % par défaut) et l'intensité de l'ondulation (0 à 1,5, 0,7 par défaut). Comme le 2D, elle démarre en pause si `prefers-reduced-motion` est actif. Le canvas est transparent : le ciel est le fond CSS `.boids-canvas--sunset` du conteneur, quel que soit le thème du site.
 
 Choix de conception :
 

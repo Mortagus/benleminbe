@@ -41,7 +41,7 @@ tools:
     simulations:
         label: "Simulations"
         title: "Simulations"
-        description: "**Interactive simulations** in JavaScript: emergent behaviour, simple rules and parameters you can tweak live. The first one, boids, reproduces a flock of birds."
+        description: "**Interactive simulations** in JavaScript: emergent behaviour, simple rules and parameters you can tweak live. Boids reproduce a flock of birds, in 2D and in 3D."
         meta_label: "Simulations metadata"
         meta:
             1: "Public tool"
@@ -50,15 +50,42 @@ tools:
         action: "View simulations"
 
 simulations:
+    back: "← All simulations"
     meta:
         title: "Simulations"
-        description: "Interactive simulations in JavaScript and p5.js: boids and emergent behaviour."
+        description: "Interactive simulations in JavaScript and p5.js: boids in 2D and in 3D, emergent behaviour."
+    index:
+        title: "Choose a simulation"
+        boids2d:
+            label: "2D"
+            title: "2D boids"
+            description: "Reynolds' three rules on a plain background: alignment, separation and cohesion, with ten sliders and the pointer to repel or attract the boids."
+            meta_label: "2D boids metadata"
+            meta:
+                1: "p5.js"
+                2: "Live sliders"
+                3: "Mouse"
+            action: "View the 2D boids"
+        boids3d:
+            label: "3D"
+            title: "3D boids"
+            description: "A flock of birds at sunset, with leaders, a wave and tree avoidance: it stretches into a sheet, ripples and breaks apart at times."
+            meta_label: "3D boids metadata"
+            meta:
+                1: "p5.js"
+                2: "Free camera"
+                3: "Tree avoidance"
+            action: "View the 3D boids"
     hero:
         eyebrow: "Lab"
         title: "Simulations"
         intro: "Interactive simulations where **simple rules** produce collective behaviour. Each one can be tuned live and lives inside the site's own code."
     boids:
         title: "Boids"
+        page_title: "2D boids"
+        meta:
+            title: "2D boids"
+            description: "Interactive 2D boids simulation (Reynolds model) in JavaScript and p5.js."
         description: "Each boid follows only **three local rules**: align with its neighbours, move away from those that are too close, and steer towards their centre. Flocking emerges with no leader and no global plan. Model by Craig Reynolds (1986)."
         canvas_label: "Boids simulation: triangles move together over a plain background."
         pointer_hint: "Hold left click to repel the boids. Hold right click to attract them."
@@ -86,3 +113,27 @@ simulations:
             alignment: "**Alignment**: match the average heading of neighbours."
             separation: "**Separation**: move away from neighbours that are too close."
             cohesion: "**Cohesion**: steer towards the centre of neighbours."
+    boids3d:
+        title: "3D boids"
+        page_title: "3D boids"
+        meta:
+            title: "3D boids"
+            description: "3D simulation of a flock of birds at sunset in JavaScript and p5.js: leaders, a wave and tree avoidance."
+        description: "A **3D flock of birds** at sunset. On top of the three boids rules come **a few leaders** that sense an invisible target, a **wave** that makes the group ripple and **avoidance** of the trees: the flock stretches into a sheet, ripples, breaks apart and comes back together."
+        canvas_label: "3D boids simulation: a flock of birds flies over a landscape of trees and power lines under a sunset sky."
+        camera_hint: "Drag to turn around the scene, wheel or pinch to zoom. The camera stays above the ground."
+        controls:
+            label: "Simulation controls"
+            pause: "Pause"
+            resume: "Resume"
+            reset: "Reset"
+            count: "Number of boids"
+            leaders: "Leaders (share of boids that sense the target)"
+            wave: "Wave"
+            units:
+                percent: "%"
+        rules:
+            title: "What is going on"
+            leaders: "**Leaders**: only a small share of the birds senses the invisible target, the others follow through alignment and cohesion, so a turn spreads through the group with a delay."
+            wave: "**Wave**: a vertical push that travels through space makes some birds climb while others dive."
+            avoidance: "**Avoidance**: a bird looks ahead and only veers off if its path would hit a tree; otherwise it feels no force."

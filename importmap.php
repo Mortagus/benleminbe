@@ -76,6 +76,10 @@ return [
         'path' => './assets/scripts/lab/simulations/boids/main.js',
         'entrypoint' => true,
     ],
+    'lab_simulations_boids3d' => [
+        'path' => './assets/scripts/lab/simulations/boids3d/main.js',
+        'entrypoint' => true,
+    ],
     'private' => [
         'path' => './assets/scripts/private/private.js',
         'entrypoint' => true,

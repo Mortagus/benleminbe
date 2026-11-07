@@ -77,7 +77,7 @@ docs/lab/
 
 `LabController` sert de point d'entrée général pour les outils publics du lab et porte aussi les routes du tracker DnD et des simulations.
 
-Les simulations (`/lab/simulations`) vivent dans `assets/scripts/lab/simulations/`. Elles séparent la logique pure (testée avec Vitest, sans p5) du rendu p5.js. Détails dans [simulations.md](lab/simulations.md).
+Les simulations (index `/lab/simulations`, boids en 2D sur `/lab/simulations/boids` et en 3D sur `/lab/simulations/boids3d`) vivent dans `assets/scripts/lab/simulations/`. Elles séparent la logique pure (testée avec Vitest, sans p5) du rendu p5.js. Détails dans [simulations.md](lab/simulations.md).
 
 Le lab reste public, mais séparé du contenu professionnel par ses routes, templates, styles, scripts et documents dédiés.
 

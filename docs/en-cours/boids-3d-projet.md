@@ -85,9 +85,9 @@ Impact du décor, réexaminé le 2026-11-07 : le coût de p5 vient d'un appel de
 
 Ajouter Three.js est une nouvelle dépendance : elle demandera ton accord explicite si on y vient.
 
-### D2. Emplacement — Validé : seconde section sur `/lab/simulations`
+### D2. Emplacement — Validé, révisé le 2026-11-07 : une page à part, `/lab/simulations/boids3d`
 
-Une deuxième simulation sous le 2D, avec son propre entrypoint Importmap (`lab_simulations_boids3d`). p5 est déjà chargé par la page, donc aucun coût de bibliothèque supplémentaire avec D1. Pas de nouvelle route. Le 2D n'est pas remplacé.
+Décision initiale : une seconde section sur `/lab/simulations`, sous le 2D. Révisée à l'intégration : Benj trouve bizarre que le 2D n'ait pas d'adresse propre (il était directement sur `/lab/simulations`). Structure retenue : `/lab/simulations` devient un **index** qui présente chaque simulation, le 2D passe sur `/lab/simulations/boids` et la 3D sur `/lab/simulations/boids3d` (en minuscules). Chaque page a son propre entrypoint Importmap ; p5 est déjà vendoré, aucune dépendance de plus. Seul le 2D change d'adresse.
 
 ### D3. Bords du terrain — Validé : confinement doux, pas de rebouclage
 
@@ -356,6 +356,17 @@ Faits le 2026-11-07. Benj a validé le principe (« je valide ») après avoir c
 **Tests** : 190 tests de simulation, dont `shape.test.js` (la nuée par défaut est une nappe qui ondule ; sans meneurs ni onde elle redevient une boule, ce qui montre que les deux paramètres sont bien la cause) et des tests unitaires de `isInformed` et de l'onde ; les défauts réinjectés (retirer les meneurs, retirer l'onde, onde qui ne voyage pas, mauvais axe, poids ignoré) sont tous détectés. Les indicateurs de forme sont dans `tests/js/lab/simulations/flock-metrics.js`.
 
 **Les indicateurs sont des proxies** de l'effet visuel que décrit Benj ; le réglage se juge à l'écran, d'où les curseurs. **Pour la page finale (TASK-6.3)** : deux curseurs, meneurs (en pourcentage) et onde (intensité), en plus de la pause, de la réinitialisation et du nombre de boids.
+
+## Résultats De TASK-6.3 (Intégration Au Site)
+
+Fait le 2026-11-07, en attente de la validation de Benj en production.
+
+- **Structure d'adresses** (décision de Benj) : `/lab/simulations` est un index, le 2D est sur `/lab/simulations/boids` (gabarit déplacé avec `git mv`, historique conservé), la 3D sur `/lab/simulations/boids3d`. Le menu « Simulations » reste actif sur les trois pages ; la carte du Lab et le menu pointent toujours vers l'index.
+- **Page 3D** : conteneur du canvas (ciel en fond CSS), aide à la caméra, pause, réinitialisation, trois curseurs en direct (nombre de boids, part de meneurs, ondulation), explication des trois ingrédients (meneurs, onde, évitement). Textes en français et en anglais (le Lab n'est pas atteignable en anglais aujourd'hui, mais les textes existent dans les deux langues comme partout).
+- **Vérifié dans un navigateur, sur le vrai serveur Symfony avec les assets compilés** (`make cc`) : les trois pages se chargent sans erreur JS ni erreur HTTP ; l'index liste les deux cartes ; le 2D fonctionne à sa nouvelle adresse (canvas, 10 curseurs) ; sur la 3D, le canvas est un contexte WebGL, les curseurs affichent 200, 15 % et 0,7 et se mettent à jour, la pause fige l'image et la reprise la fait repartir, la caméra se manipule à la souris, et avec `prefers-reduced-motion` la simulation démarre en pause.
+- **Tests** : 7 tests fonctionnels PHP (index, 2D, 3D, curseurs, menu actif, adresse en minuscules) et 7 tests Vitest de la conversion des curseurs ; 6 défauts réinjectés sont tous détectés. Un test préexistant (« la page charge l'entrypoint ») cherchait le nom de l'entrypoint dans la page : ce nom figure dans la carte des modules de **toutes** les pages, donc il aurait réussi n'importe où. Les nouveaux tests cherchent l'instruction `import '…'`.
+- **Déploiement en ligne** : rien de plus que `make deploy` (p5 est déjà vendoré, les entrypoints sont compilés avec les autres assets). La vérification en production reste à faire par Benj après déploiement.
+- **Limites** : le canvas bloque le défilement de la page au toucher (`touch-action: none`), ce qui gêne sur téléphone (TASK-5, mobile) ; la caméra n'a pas d'alternative au clavier ; au démarrage les oiseaux sont dispersés dans toute la zone avant de se regrouper, comme sur le 2D.
 
 ## Retour De Benj Sur L'Étape 2
 

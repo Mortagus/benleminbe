@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'lab' %}
+
+{% block title %}{{ 'simulations.boids3d.meta.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'simulations.boids3d.meta.description'|trans }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_lab', 'lab_simulations_boids3d']) }}{% endblock %}
+
+{% block body %}
+    <main class="lab-home lab-simulations">
+        <header class="lab-home__hero">
+            <p class="eyebrow">
+                <a href="{{ path('app_lab_simulations') }}">{{ 'simulations.back'|trans }}</a>
+            </p>
+
+            <h1>{{ 'simulations.boids3d.page_title'|trans }}</h1>
+
+            <p class="lab-home__intro">
+                {{ 'simulations.boids3d.description'|trans|highlight_keywords }}
+            </p>
+        </header>
+
+        <section class="content-section" aria-label="{{ 'simulations.boids3d.title'|trans }}">
+            <div class="card lab-panel" data-boids3d-simulation>
+                {# The sky is the CSS background of the container: the canvas is transparent. #}
+                <div
+                    class="boids-canvas boids-canvas--sunset"
+                    data-boids3d-canvas
+                    data-canvas-label="{{ 'simulations.boids3d.canvas_label'|trans }}"
+                ></div>
+
+                <p class="boids-hint">{{ 'simulations.boids3d.camera_hint'|trans }}</p>
+
+                <div class="boids-controls" role="group" aria-label="{{ 'simulations.boids3d.controls.label'|trans }}">
+                    <div class="boids-controls__buttons">
+                        <button
+                            type="button"
+                            class="button"
+                            data-boids3d-toggle
+                            data-label-pause="{{ 'simulations.boids3d.controls.pause'|trans }}"
+                            data-label-resume="{{ 'simulations.boids3d.controls.resume'|trans }}"
+                        >
+                            {{ 'simulations.boids3d.controls.pause'|trans }}
+                        </button>
+
+                        <button type="button" class="button button-secondary" data-boids3d-reset>
+                            {{ 'simulations.boids3d.controls.reset'|trans }}
+                        </button>
+                    </div>
+
+                    <div class="boids-controls__sliders">
+                        {# `scale` turns the value of the slider into the parameter: the share of leaders is shown as a percentage. #}
+                        {% for slider in [
+                            { name: 'count', label: 'count', min: 100, max: 500, step: 50, scale: 1 },
+                            { name: 'pointerFraction', label: 'leaders', min: 5, max: 100, step: 5, scale: 0.01, unit: 'percent' },
+                            { name: 'waveWeight', label: 'wave', min: 0, max: 1.5, step: 0.05, scale: 1 },
+                        ] %}
+                            <label class="boids-slider">
+                                <span class="boids-slider__label">
+                                    {{ ('simulations.boids3d.controls.' ~ slider.label)|trans }}
+                                    <output data-boids3d-output="{{ slider.name }}"{% if slider.unit is defined %} data-unit="{{ ('simulations.boids3d.controls.units.' ~ slider.unit)|trans }}"{% endif %}></output>
+                                </span>
+                                <input
+                                    type="range"
+                                    min="{{ slider.min }}"
+                                    max="{{ slider.max }}"
+                                    step="{{ slider.step }}"
+                                    data-boids3d-parameter="{{ slider.name }}"
+                                    data-scale="{{ slider.scale }}"
+                                >
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="lab-panel__intro">
+                    <h2>{{ 'simulations.boids3d.rules.title'|trans }}</h2>
+
+                    <ul class="boids-rules">
+                        <li>{{ 'simulations.boids3d.rules.leaders'|trans|highlight_keywords }}</li>
+                        <li>{{ 'simulations.boids3d.rules.wave'|trans|highlight_keywords }}</li>
+                        <li>{{ 'simulations.boids3d.rules.avoidance'|trans|highlight_keywords }}</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

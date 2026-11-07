@@ -6,7 +6,7 @@ Ce dossier regroupe la documentation stable du Lab public de `benlemin.be`.
 
 - [Univers du site et navigation](../site-universes-and-navigation.md) : cadrage global des univers, routes et navigation.
 - [DnD Initiative Tracker](dnd-initiative-audit.md) : état actuel du module principal du Lab.
-- [Simulations](simulations.md) : page `/lab/simulations` et simulation des boids.
+- [Simulations](simulations.md) : index `/lab/simulations`, boids en 2D (`/lab/simulations/boids`) et en 3D (`/lab/simulations/boids3d`).
 - [Pipeline bestiaire](dnd-bestiary-pipeline.md) : génération du catalogue de monstres du tracker.
 - [Contrats DOM](dnd-dom-contracts.md) : sélecteurs critiques entre Twig et JavaScript.
 - [Cartographie JavaScript](dnd-initiative-js-map.md) : lecture du code front du tracker.

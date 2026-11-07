@@ -21,8 +21,8 @@
         {
             href: path('app_lab_simulations'),
             label: 'header.navigation.simulations'|trans,
-            active: currentRoute == 'app_lab_simulations',
-            aria_current: currentRoute == 'app_lab_simulations',
+            active: currentRoute starts with 'app_lab_simulations',
+            aria_current: currentRoute starts with 'app_lab_simulations',
         },
     ],
 } only %}

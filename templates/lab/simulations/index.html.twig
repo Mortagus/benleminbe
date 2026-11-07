@@ -4,7 +4,7 @@
 
 {% block title %}{{ 'simulations.meta.title'|trans }}{% endblock %}
 {% block meta_description %}{{ 'simulations.meta.description'|trans }}{% endblock %}
-{% block importmap %}{{ importmap(['app', 'page_lab', 'lab_simulations_boids']) }}{% endblock %}
+{% block importmap %}{{ importmap(['app', 'page_lab']) }}{% endblock %}
 
 {% block body %}
     <main class="lab-home lab-simulations">
@@ -18,77 +18,37 @@
             </p>
         </header>
 
-        <section class="content-section" aria-labelledby="simulation-boids-title">
-            <div class="card lab-panel" data-boids-simulation>
+        <section class="content-section" aria-labelledby="simulations-list-title">
+            <div class="card lab-panel">
                 <div class="lab-panel__intro">
-                    <h2 id="simulation-boids-title">{{ 'simulations.boids.title'|trans }}</h2>
-
-                    <p>{{ 'simulations.boids.description'|trans|highlight_keywords }}</p>
+                    <h2 id="simulations-list-title">{{ 'simulations.index.title'|trans }}</h2>
                 </div>
 
-                <div
-                    class="boids-canvas"
-                    data-boids-canvas
-                    data-canvas-label="{{ 'simulations.boids.canvas_label'|trans }}"
-                ></div>
+                <div class="lab-tool-grid">
+                    {% for simulation in [
+                        { key: 'boids2d', route: 'app_lab_simulations_boids' },
+                        { key: 'boids3d', route: 'app_lab_simulations_boids3d' },
+                    ] %}
+                        <article class="lab-tool-card">
+                            <p class="lab-tool-card__eyebrow">{{ ('simulations.index.' ~ simulation.key ~ '.label')|trans }}</p>
 
-                <p class="boids-hint">{{ 'simulations.boids.pointer_hint'|trans }}</p>
+                            <h3>{{ ('simulations.index.' ~ simulation.key ~ '.title')|trans }}</h3>
 
-                <div class="boids-controls" role="group" aria-label="{{ 'simulations.boids.controls.label'|trans }}">
-                    <div class="boids-controls__buttons">
-                        <button
-                            type="button"
-                            class="button"
-                            data-boids-toggle
-                            data-label-pause="{{ 'simulations.boids.controls.pause'|trans }}"
-                            data-label-resume="{{ 'simulations.boids.controls.resume'|trans }}"
-                        >
-                            {{ 'simulations.boids.controls.pause'|trans }}
-                        </button>
+                            <p>{{ ('simulations.index.' ~ simulation.key ~ '.description')|trans|highlight_keywords }}</p>
 
-                        <button type="button" class="button button-secondary" data-boids-reset>
-                            {{ 'simulations.boids.controls.reset'|trans }}
-                        </button>
-                    </div>
+                            <ul class="lab-tool-card__meta" aria-label="{{ ('simulations.index.' ~ simulation.key ~ '.meta_label')|trans }}">
+                                <li>{{ ('simulations.index.' ~ simulation.key ~ '.meta.1')|trans }}</li>
+                                <li>{{ ('simulations.index.' ~ simulation.key ~ '.meta.2')|trans }}</li>
+                                <li>{{ ('simulations.index.' ~ simulation.key ~ '.meta.3')|trans }}</li>
+                            </ul>
 
-                    <div class="boids-controls__sliders">
-                        {% for slider in [
-                            { name: 'count', label: 'count', min: 100, max: 1000, step: 50 },
-                            { name: 'perceptionRadius', label: 'perception', min: 10, max: 150, step: 5, unit: 'pixels' },
-                            { name: 'perceptionAngle', label: 'angle', min: 60, max: 360, step: 10, unit: 'degrees' },
-                            { name: 'maxNeighbours', label: 'neighbours', min: 1, max: 20, step: 1 },
-                            { name: 'maxSpeed', label: 'speed', min: 1, max: 8, step: 0.5, unit: 'pixels_per_frame' },
-                            { name: 'maxForce', label: 'force', min: 0.05, max: 1, step: 0.05 },
-                            { name: 'alignmentWeight', label: 'alignment_weight', min: 0, max: 3, step: 0.1 },
-                            { name: 'separationWeight', label: 'separation_weight', min: 0, max: 5, step: 0.1 },
-                            { name: 'cohesionWeight', label: 'cohesion_weight', min: 0, max: 3, step: 0.1 },
-                            { name: 'smoothing', label: 'smoothing', min: 0, max: 0.95, step: 0.05 },
-                        ] %}
-                            <label class="boids-slider">
-                                <span class="boids-slider__label">
-                                    {{ ('simulations.boids.controls.' ~ slider.label)|trans }}
-                                    <output data-boids-output="{{ slider.name }}"{% if slider.unit is defined %} data-unit="{{ ('simulations.boids.controls.units.' ~ slider.unit)|trans }}"{% endif %}></output>
-                                </span>
-                                <input
-                                    type="range"
-                                    min="{{ slider.min }}"
-                                    max="{{ slider.max }}"
-                                    step="{{ slider.step }}"
-                                    data-boids-parameter="{{ slider.name }}"
-                                >
-                            </label>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="lab-panel__intro">
-                    <h3>{{ 'simulations.boids.rules.title'|trans }}</h3>
-
-                    <ul class="boids-rules">
-                        <li>{{ 'simulations.boids.rules.alignment'|trans|highlight_keywords }}</li>
-                        <li>{{ 'simulations.boids.rules.separation'|trans|highlight_keywords }}</li>
-                        <li>{{ 'simulations.boids.rules.cohesion'|trans|highlight_keywords }}</li>
-                    </ul>
+                            <div class="lab-tool-card__actions">
+                                <a href="{{ path(simulation.route) }}" class="button">
+                                    {{ ('simulations.index.' ~ simulation.key ~ '.action')|trans }}
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
                 </div>
             </div>
         </section>

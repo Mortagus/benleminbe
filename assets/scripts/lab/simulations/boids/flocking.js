@@ -55,6 +55,17 @@ export const DEFAULT_PARAMETERS = Object.freeze({
     smoothing: 0.6,
     pointerRadius: 150,
     pointerWeight: 3,
+    // The fraction of boids that sense the pointer (or the roost): 1 is all of them. With less, only some boids feel it and the
+    // others follow through alignment and cohesion, so a change of direction spreads through the flock instead of reaching
+    // every boid at the same instant, as in real flocks where a few birds lead a turn.
+    pointerFraction: 1,
+    // A wave that travels through space along the first axis and pushes boids up and down (the second axis) according to
+    // where they are: boids on a crest are pushed one way while those a half wavelength further are pushed the other, so the
+    // flock ripples instead of moving as one block. `waveWeight` is a multiple of maxForce (0 disables it); the wave has a
+    // length in units and a period in frames.
+    waveWeight: 0,
+    waveLength: 250,
+    wavePeriod: 240,
     // Soft confinement: 0 disables it and boids wrap around the playfield instead. Otherwise boids are pushed back
     // towards the centre of the ellipsoid inscribed in the playfield, from `confinementStart` (a fraction of its radius)
     // to its surface, where the push reaches `maxForce * confinementWeight`.
@@ -109,6 +120,11 @@ export const DEFAULT_PARAMETERS_3D = Object.freeze({
     // Avoiding the trees: a longer look-ahead (about 13 bird lengths) and a stronger push than the base values.
     avoidanceWeight: 8,
     avoidanceLookahead: 50,
+    // Only a small share of the flock senses the roost, and a vertical wave runs through the flock: it stretches into a sheet,
+    // ripples, and its cohesion comes and goes, instead of being a ball that moves as one block. Both are meant to be changed
+    // live with sliders.
+    pointerFraction: 0.15,
+    waveWeight: 0.7,
 });
 
 /**
@@ -873,6 +889,22 @@ function addConfinement(out, flock, index, size, parameters) {
 }
 
 /**
+ * Adds the wave: a force on the second axis that depends on the position along the first axis and on the time, so that its
+ * crests travel along the first axis at `waveLength / wavePeriod` units per frame.
+ */
+function addWave(out, flock, index, parameters, time) {
+    const { dim, pos } = flock;
+
+    if (dim < 2) {
+        return;
+    }
+
+    const phase = 2 * Math.PI * (pos[index * dim] / parameters.waveLength - time / parameters.wavePeriod);
+
+    out[1] += Math.sin(phase) * parameters.maxForce * parameters.waveWeight;
+}
+
+/**
  * Writes into `out` the force exerted by the pointer. `repel` and `attract` fade to nothing at `pointerRadius`; `pull`
  * grows from nothing at the point to its full strength at `pointerRadius`, and stays there beyond.
  */
@@ -1037,6 +1069,19 @@ export function updateDirections(directions, flock, factor) {
 }
 
 /**
+ * Whether a boid is one of those that sense the pointer: a stable, evenly spread subset of the flock, of the given fraction.
+ * It spreads the indices with the golden ratio, so any run of consecutive boids holds about that fraction, whatever the size
+ * of the flock, and growing the flock does not change who was informed.
+ *
+ * @param {number} index
+ * @param {number} fraction From 0 to 1; 1 means every boid.
+ * @returns {boolean}
+ */
+export function isInformed(index, fraction) {
+    return (index * 0.6180339887498949) % 1 < fraction;
+}
+
+/**
  * Advances the simulation by one frame and returns a new flock; the previous one is left untouched.
  * Every acceleration is computed from the same snapshot, so the result does not depend on boid order.
  * Neighbours are looked up through a grid rebuilt each frame, so the cost grows roughly linearly with the flock size.
@@ -1049,9 +1094,10 @@ export function updateDirections(directions, flock, factor) {
  * @param {Pointer | null} [pointer]
  * @param {Environment | null} [environment] Obstacles and ground to avoid. Needs `avoidanceWeight` above zero to be avoided
  *   ahead of time; boids that still end a frame inside one are put back on its surface.
+ * @param {number} [time] Frames since the start, which the wave needs to travel.
  * @returns {Flock}
  */
-export function stepFlock(flock, parameters, size, pointer = null, environment = null) {
+export function stepFlock(flock, parameters, size, pointer = null, environment = null, time = 0) {
     const { count, dim } = flock;
     const next = allocateFlock(count, dim);
     const workspace = createWorkspace(dim, parameters.maxNeighbours, count);
@@ -1072,11 +1118,15 @@ export function stepFlock(flock, parameters, size, pointer = null, environment =
             addConfinement(workspace.flocking, flock, i, size, parameters);
         }
 
+        if (parameters.waveWeight > 0) {
+            addWave(workspace.flocking, flock, i, parameters, time);
+        }
+
         if (environment && parameters.avoidanceWeight > 0) {
             addAvoidance(workspace.flocking, flock, i, parameters, environment, workspace);
         }
 
-        pointerAccelerationInto(workspace.pointer, flock, i, pointer, parameters);
+        pointerAccelerationInto(workspace.pointer, flock, i, isInformed(i, parameters.pointerFraction) ? pointer : null, parameters);
 
         for (let d = 0; d < dim; d++) {
             const acceleration = flock.acc[base + d] + (workspace.flocking[d] - flock.acc[base + d]) * responsiveness;

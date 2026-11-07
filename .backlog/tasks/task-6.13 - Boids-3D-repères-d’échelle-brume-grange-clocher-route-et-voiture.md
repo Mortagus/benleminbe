@@ -4,11 +4,12 @@ title: 'Boids 3D : repères d’échelle (brume, grange, clocher, route et voitu
 status: To Do
 assignee: []
 created_date: '2026-11-07 11:03'
+updated_date: '2026-11-07 12:28'
 labels:
   - lab
   - 3d
 dependencies:
-  - TASK-6.11
+  - TASK-6.14
 documentation:
   - docs/en-cours/boids-3d-projet.md
 parent_task_id: TASK-6

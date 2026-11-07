@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-11-07 09:24'
-updated_date: '2026-11-07 12:20'
+updated_date: '2026-11-07 12:59'
 labels:
   - lab
   - 3d
@@ -62,4 +62,6 @@ Ajouter au Lab une simulation 3D d’une nuée d’oiseaux, à côté de la simu
 2026-11-07 : TASK-6.8 (caméra au-dessus du sol) codée, mesurée et testée, en attente du regard de Benj. Benj demande aussi une trajectoire plus proche du sol : cela relève de TASK-6.11 (évitement des arbres), à placer avant TASK-6.12 si Benj est d'accord.
 
 2026-11-07 : TASK-6.11 (évitement des arbres, nuée plus près du sol) codée et mesurée, en attente du regard de Benj ; TASK-6.8 terminée (caméra validée). Prochaine : TASK-6.12 (meneurs) puis TASK-6.13 (repères d'échelle), 6.3 (intégration) et 6.4 (réglage visuel).
+
+2026-11-07 : TASK-6.12 (meneurs) terminée, TASK-6.14 (forme de la nuée) en attente d'une confirmation de Benj sur l'ampleur de la trajectoire (critère 5). Deux curseurs demandés pour la page finale (TASK-6.3). TASK-6.11 attend toujours la validation de Benj sur l'évitement des arbres. Prochaines : 6.13 (repères d'échelle), 6.3 (intégration et déploiement en ligne), 6.4 (réglage visuel).
 <!-- SECTION:NOTES:END -->

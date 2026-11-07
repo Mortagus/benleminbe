@@ -4,7 +4,8 @@ import { buildEnvironment, buildLandscape } from '../../../../assets/scripts/lab
 import { roostPosition } from '../../../../assets/scripts/lab/simulations/boids3d/roost.js';
 
 // Parameters that isolate the avoidance: no other rule acts on a lone boid, and nothing smooths its reaction.
-const parameters = { ...DEFAULT_PARAMETERS_3D, avoidanceWeight: 4, avoidanceLookahead: 30, avoidanceClearance: 12, smoothing: 0, confinementWeight: 0 };
+// (The wave is switched off too: these tests are about avoidance, and a wave would push a lone boid up and down as well.)
+const parameters = { ...DEFAULT_PARAMETERS_3D, avoidanceWeight: 4, avoidanceLookahead: 30, avoidanceClearance: 12, smoothing: 0, confinementWeight: 0, waveWeight: 0 };
 const size = [4000, 4000, 4000];
 
 function spheres(...list) {
@@ -196,7 +197,7 @@ describe('the shortcut for boids flying high above the obstacles', () => {
         let flock = createFlock(120, (() => { let state = 11; return () => { state = (state * 1664525 + 1013904223) % 4294967296; return state / 4294967296; }; })(), SCENE_SIZE_3D);
 
         for (let frame = 0; frame < 700; frame++) {
-            flock = stepFlock(flock, { ...DEFAULT_PARAMETERS_3D, count: 120 }, SCENE_SIZE_3D, { position: roostPosition(frame, SCENE_SIZE_3D), mode: 'pull' }, environment);
+            flock = stepFlock(flock, { ...DEFAULT_PARAMETERS_3D, count: 120 }, SCENE_SIZE_3D, { position: roostPosition(frame, SCENE_SIZE_3D), mode: 'pull' }, environment, frame);
         }
 
         return flock;

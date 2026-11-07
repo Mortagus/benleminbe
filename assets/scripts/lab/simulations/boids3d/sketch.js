@@ -147,11 +147,13 @@ export function startBoids3dSketch(container, parameters, initialState, options 
 
     /** One step of the simulation: the roost pulls the whole flock gently along a path through the three dimensions. */
     function advanceFlock(count) {
-        const roost = { position: roostPosition(state.frame, SCENE_SIZE_3D), mode: 'pull' };
+        const frame = state.frame;
+        const roost = { position: roostPosition(frame, SCENE_SIZE_3D), mode: 'pull' };
 
         state.frame++;
         state.flock = resizeFlock(state.flock, count, Math.random, SCENE_SIZE_3D);
-        state.flock = stepFlock(state.flock, parameters, SCENE_SIZE_3D, roost, state.environment);
+        // The frame number is the time the wave needs to travel.
+        state.flock = stepFlock(state.flock, parameters, SCENE_SIZE_3D, roost, state.environment, frame);
     }
 
     // The heading and the up of every boid, smoothed for drawing only.

@@ -219,7 +219,7 @@ Reste ouvert : les couleurs exactes du dégradé et la forme exacte de l'oiseau,
 - **TASK-6.9, échelle et proportions** : choix de Benj sur la comparaison ci-dessus, puis application (taille des oiseaux, des arbres et des poteaux, nombre d'oiseaux).
 - **TASK-6.10, trajectoire plus ample et plus de hauteur** : zone de vol plus grande, chemin de la cible plus ample, plus de hauteur exploitée.
 - **TASK-6.12, propagation par meneurs** : seule une fraction des boids perçoit la cible ; mesure du délai de propagation et réglage de la fraction.
-- **TASK-6.11, évitement prédictif des arbres** (fait, en attente de la validation de Benj) : zone de vol abaissée jusqu'aux arbres, évitement par regard devant (cylindre le long de la vitesse), sans répulsion ; garde-fou pour le sol.
+- **TASK-6.11, évitement prédictif des arbres** (fait, en attente de la validation de Benj) :  zone de vol abaissée jusqu'aux arbres, évitement par regard devant (cylindre le long de la vitesse), sans répulsion ; garde-fou pour le sol.
 - **TASK-6.13, repères d'échelle** : brume lointaine cuite dans les couleurs des sommets, maison ou grange, clocher ou silhouette lointaine, route avec voiture.
 - puis TASK-6.8 (caméra au-dessus du sol), TASK-6.3 (intégration à la page) et TASK-6.4 (réglage visuel).
 
@@ -317,6 +317,45 @@ Fait le 2026-11-07, en attente de la validation visuelle de Benj. Remplace la d�
 - **Caméra** : elle vise le milieu de la plage de vol (30 unités sous le centre) pour que l'horizon soit aux trois quarts de la hauteur de l'image ; sans cela le sol vide en occupait près de la moitié.
 - **Incidents notés** : une première mesure était fausse (le paysage est en repère centré, la nuée en repère de terrain : décalage de 350 unités en hauteur), ce qui m'a fait voir un « y médian de 297 » intrigant ; corrigé par `buildEnvironment`, fonction pure testée. Un seuil de test (« au moins 20 sphères dans la zone ») avait été posé sans mesure : il y en a 17, il est passé à 10 avec la raison écrite.
 - **Tests** : 168 tests de simulation, dont les nouveaux sur l'évitement, le sol, le filet, l'équivalence du raccourci, la forme de la zone, la conversion de repères, des parties de 2500 frames à travers les arbres ; 8 défauts réinjectés sont tous détectés.
+
+## Résultats De TASK-6.12 Et TASK-6.14 (Meneurs, Onde, Forme De La Nuée)
+
+Faits le 2026-11-07. Benj a validé le principe (« je valide ») après avoir comparé des variantes à l'écran, et demande un curseur pour chacun des deux paramètres, à régler en direct : le pourcentage de meneurs et l'intensité de l'onde.
+
+**Retour de Benj** : la trajectoire est très bien, mais la nuée reste une boule, avec des mouvements fluides mais tous dans une direction trop similaire. Une vraie nuée est parfois une boule, mais le plus souvent une nappe de quelques oiseaux d'épaisseur, étendue, qui bouge de façon coordonnée avec plus de variation de hauteur au sein du groupe, avec un effet de vague, des moments où la cohésion disparaît puis se reforme, des boids qui montent pendant que d'autres descendent. Ses pistes : moins de meneurs, et peut-être moins de perception.
+
+**Constat de départ**, mesuré sur 200 boids, 2 graines, 2400 frames dans la vraie scène : épaisseur 0,67 (axes 77, 69 et 52 : presque une sphère), polarisation 0,98 (tous les boids vont dans la même direction), aucun boid en sens vertical opposé, plus grand groupe à 100 % en permanence. Les observations de Benj sont confirmées par les chiffres.
+
+**Ses deux pistes**, mesurées :
+- *Moins de meneurs* : étire la nuée (épaisseur 0,49 à 15 %, axe long de 77 à 109) mais la polarisation reste à 0,98.
+- *Moins de perception* : aucun effet mesurable (épaisseur 0,69 contre 0,67 avec un rayon de 60) ; les 7 voisins retenus sont de toute façon les plus proches.
+
+**Verrou identifié** : l'alignement, la nuée se comporte comme un corps rigide. Il fallait une règle qui varie la hauteur à l'intérieur du groupe : une **onde verticale** qui traverse la nuée (`waveWeight`, `waveLength`, `wavePeriod`). C'est une règle de plus que Benj n'avait pas demandée en ces termes ; il l'a validée.
+
+**Réglages par défaut** : meneurs 15 % (`pointerFraction` 0,15), onde de poids 0,7. Le poids 0,5 donnait des scissions de la cohésion trop rares (0 à 10 % du temps, jamais pour la graine 1) ; 0,7 en donne dans les six parties. À 1,0 la nuée se scinde en colonnes verticales plus qu'en nappe.
+
+**Mesuré avec ces défauts** (6 parties de 3600 frames, 200 et 500 boids, dans la vraie scène) :
+
+| Mesure                                             | Avant (sans meneurs ni onde) | Maintenant              |
+| -------------------------------------------------- | ---------------------------- | ----------------------- |
+| Épaisseur (1 = boule)                              | 0,67                         | 0,43 en moyenne, 0,83 au plus |
+| Polarisation                                       | 0,98                         | 0,81                    |
+| Boids en sens vertical opposé à la moyenne         | 0,00                         | 0,17                    |
+| Plus grand groupe                                  | 1,00                         | 0,97 en moyenne, 0,54 au pire |
+| Plus long isolement d'un boid                      | 0                            | 80 images (1,3 s)       |
+| Espacement, 5e centile du plus proche voisin       | 32 px                        | 35 px (28,1 au pire instant) |
+| Part verticale de la vitesse (médiane, minimum)    | 0,46 (0,44)                  | 0,48 (0,42)             |
+| Parcours du centre : largeur / hauteur             | 1,05 / 1,23                  | **0,70 / 0,65**         |
+| Rapprochements d'une couronne par image            | 0,79                         | 0,22                    |
+| Rotation en bloc (pire cas)                        | 0,11                         | 0,30                    |
+
+**Compromis à connaître** : la nuée suit moins fort sa trajectoire, car seuls 15 % des boids sentent la cible : le parcours du centre est réduit de 30 à 50 % et elle rase les arbres moins souvent. La rotation en bloc, au pire à 0,30, est à la limite du seuil retenu (0,30) : une partie de ce mouvement est désormais l'onde. Renforcer l'attraction des meneurs pour compenser dégrade la cohésion : à un poids de 3,5, des boids restent isolés jusqu'à 10 s ; à 5, la rotation atteint 0,36.
+
+**Délai de propagation** (cible renversée d'un coup, 200 boids) : avec tous les boids informés, le groupe entier tourne de 45° en 11 images d'écart ; avec 15 % de meneurs, les derniers boids tournent environ 70 images (1,2 s) après la médiane des meneurs. Les vraies nuées sont plus rapides (autour de 0,5 s d'après la littérature citée plus haut) : la nôtre est un peu plus lente.
+
+**Tests** : 190 tests de simulation, dont `shape.test.js` (la nuée par défaut est une nappe qui ondule ; sans meneurs ni onde elle redevient une boule, ce qui montre que les deux paramètres sont bien la cause) et des tests unitaires de `isInformed` et de l'onde ; les défauts réinjectés (retirer les meneurs, retirer l'onde, onde qui ne voyage pas, mauvais axe, poids ignoré) sont tous détectés. Les indicateurs de forme sont dans `tests/js/lab/simulations/flock-metrics.js`.
+
+**Les indicateurs sont des proxies** de l'effet visuel que décrit Benj ; le réglage se juge à l'écran, d'où les curseurs. **Pour la page finale (TASK-6.3)** : deux curseurs, meneurs (en pourcentage) et onde (intensité), en plus de la pause, de la réinitialisation et du nombre de boids.
 
 ## Retour De Benj Sur L'Étape 2
 

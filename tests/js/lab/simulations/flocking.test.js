@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { lonelyBoids } from './flock-metrics.js';
 import { buildEnvironment, buildLandscape } from '../../../../assets/scripts/lab/simulations/boids3d/landscape.js';
 import { roostPosition } from '../../../../assets/scripts/lab/simulations/boids3d/roost.js';
 import {
@@ -12,6 +13,7 @@ import {
     computePointerAcceleration,
     confinementReach,
     createFlock,
+    isInformed,
     resizeFlock,
     smoothAngle,
     stepFlock,
@@ -652,7 +654,7 @@ describe('boids soft confinement', () => {
         let farthest = 0;
 
         for (let frame = 0; frame < 800; frame++) {
-            flock = stepFlock(flock, DEFAULT_PARAMETERS_3D, field);
+            flock = stepFlock(flock, DEFAULT_PARAMETERS_3D, field, null, null, frame);
 
             if (frame >= 200 && frame % 20 === 0) {
                 farthest = Math.max(farthest, ...reachOfEach(flock, field, DEFAULT_PARAMETERS_3D.confinementExponent));
@@ -679,27 +681,11 @@ describe('boids soft confinement', () => {
         let flock = createFlock(DEFAULT_PARAMETERS_3D.count, seededRandom(6), field);
 
         for (let frame = 0; frame < 600; frame++) {
-            flock = stepFlock(flock, DEFAULT_PARAMETERS_3D, field);
+            flock = stepFlock(flock, DEFAULT_PARAMETERS_3D, field, null, null, frame);
         }
 
-        // Every boid has a good number of others within perception range, so nobody is flying alone.
-        let alone = 0;
-
-        for (let i = 0; i < flock.count; i++) {
-            let near = 0;
-
-            for (let j = 0; j < flock.count; j++) {
-                if (i !== j && Math.hypot(flock.pos[i * 3] - flock.pos[j * 3], flock.pos[i * 3 + 1] - flock.pos[j * 3 + 1], flock.pos[i * 3 + 2] - flock.pos[j * 3 + 2]) < DEFAULT_PARAMETERS_3D.perceptionRadius) {
-                    near++;
-                }
-            }
-
-            if (near === 0) {
-                alone++;
-            }
-        }
-
-        expect(alone).toBe(0);
+        // The cohesion comes and goes on purpose, so a few boids may be on their own for a moment, but not many.
+        expect(lonelyBoids(flock, DEFAULT_PARAMETERS_3D.perceptionRadius).length / flock.count).toBeLessThan(0.03);
     });
 });
 
@@ -717,10 +703,11 @@ describe('boids following the roost in 3D', () => {
         let highest = -Infinity;
         let farthest = 0;
         let alone = 0;
+        let aloneChecked = 0;
         let samples = 0;
 
         for (let frame = 0; frame < 1500; frame++) {
-            flock = stepFlock(flock, { ...DEFAULT_PARAMETERS_3D, count }, field, { position: roostPosition(frame, field), mode: 'pull' });
+            flock = stepFlock(flock, { ...DEFAULT_PARAMETERS_3D, count }, field, { position: roostPosition(frame, field), mode: 'pull' }, null, frame);
 
             if (frame < 400 || frame % 10) {
                 continue;
@@ -769,6 +756,7 @@ describe('boids following the roost in 3D', () => {
 
                     distances.push(closest);
                     alone += neighbours === 0 ? 1 : 0;
+                    aloneChecked++;
                 }
 
                 distances.sort((a, b) => a - b);
@@ -777,7 +765,7 @@ describe('boids following the roost in 3D', () => {
             }
         }
 
-        return { vertical: vertical / samples, rotation: rotation / samples, travel: (highest - lowest) / half[1], nearest: nearest / nearestSamples, farthest, alone };
+        return { vertical: vertical / samples, rotation: rotation / samples, travel: (highest - lowest) / half[1], nearest: nearest / nearestSamples, farthest, lonelyShare: alone / aloneChecked };
     }
 
     test.each([
@@ -793,8 +781,113 @@ describe('boids following the roost in 3D', () => {
         expect(result.rotation).toBeLessThan(0.3);
         expect(result.travel).toBeGreaterThan(0.4);
         expect(result.nearest).toBeGreaterThan(26);
-        expect(result.alone).toBe(0);
+        // A few boids on their own for a moment are part of the effect; many are not.
+        expect(result.lonelyShare).toBeLessThan(0.03);
         expect(result.farthest).toBeLessThan(1.15);
+    });
+});
+
+describe('boids that sense the pointer', () => {
+    test('every boid does at a fraction of 1, and none at 0', () => {
+        for (let index = 0; index < 500; index++) {
+            expect(isInformed(index, 1)).toBe(true);
+            expect(isInformed(index, 0)).toBe(false);
+        }
+    });
+
+    test('is 1 by default, so the 2D simulation is unchanged', () => {
+        expect(DEFAULT_PARAMETERS.pointerFraction).toBe(1);
+    });
+
+    test.each([0.08, 0.15, 0.3, 0.6])('about the given share of a large flock is informed at %d', (fraction) => {
+        const informed = Array.from({ length: 2000 }, (_, index) => isInformed(index, fraction)).filter(Boolean).length;
+
+        expect(informed / 2000).toBeGreaterThan(fraction - 0.01);
+        expect(informed / 2000).toBeLessThan(fraction + 0.01);
+    });
+
+    test('is stable, so growing or shrinking the flock does not change who is informed', () => {
+        const before = Array.from({ length: 100 }, (_, index) => isInformed(index, 0.15));
+        const after = Array.from({ length: 300 }, (_, index) => isInformed(index, 0.15)).slice(0, 100);
+
+        expect(after).toEqual(before);
+    });
+
+    test('is spread out: every run of boids holds some, none of them forms a long stretch of all or none', () => {
+        const flags = Array.from({ length: 1000 }, (_, index) => isInformed(index, 0.15));
+
+        for (let start = 0; start + 20 <= flags.length; start += 3) {
+            const informed = flags.slice(start, start + 20).filter(Boolean).length;
+
+            expect(informed).toBeGreaterThanOrEqual(1);
+            expect(informed).toBeLessThanOrEqual(6);
+        }
+    });
+
+    test('only the informed boids feel the pointer in stepFlock', () => {
+        const members = [boid(120, 100), boid(120, 110), boid(120, 120), boid(120, 130), boid(120, 140), boid(120, 150), boid(120, 160), boid(120, 170)];
+        const withPointer = stepFlock(flockOf(...members), { ...parameters, pointerFraction: 0.5 }, size, { position: [100, 120], mode: 'repel' });
+        const without = stepFlock(flockOf(...members), { ...parameters, pointerFraction: 0.5 }, size);
+
+        for (let index = 0; index < members.length; index++) {
+            const moved = Math.abs(withPointer.vel[index * 2] - without.vel[index * 2]) > 1e-9;
+
+            expect(moved).toBe(isInformed(index, 0.5));
+        }
+    });
+
+    test('nobody feels it at a fraction of 0', () => {
+        const members = [boid(120, 100), boid(120, 110), boid(120, 120)];
+        const withPointer = stepFlock(flockOf(...members), { ...parameters, pointerFraction: 0 }, size, { position: [100, 110], mode: 'repel' });
+        const without = stepFlock(flockOf(...members), { ...parameters, pointerFraction: 0 }, size);
+
+        expect([...withPointer.vel]).toEqual([...without.vel]);
+    });
+});
+
+describe('boids wave', () => {
+    // A lone boid at rest: no other rule acts on it, so its acceleration is the wave alone.
+    const wavy = { ...parameters, smoothing: 0, waveWeight: 1, waveLength: 250, wavePeriod: 240 };
+    const lift = (x, time, testParameters = wavy) => stepFlock(flockOf(boid(x, 100)), testParameters, size, null, null, time).acc;
+
+    test('is off by default', () => {
+        expect(DEFAULT_PARAMETERS.waveWeight).toBe(0);
+        expect(lift(100, 37, { ...wavy, waveWeight: 0 })[1]).toBe(0);
+    });
+
+    test('pushes only along the second axis, with at most maxForce times its weight', () => {
+        for (const time of [0, 17, 60, 119]) {
+            const acc = lift(137, time);
+
+            expect(acc[0]).toBe(0);
+            expect(Math.abs(acc[1])).toBeLessThanOrEqual(parameters.maxForce * wavy.waveWeight + 1e-6);
+        }
+    });
+
+    test('is the same one wavelength further along, and one period later', () => {
+        expect(lift(100 + 250, 40)[1]).toBeCloseTo(lift(100, 40)[1], 4);
+        expect(lift(100, 40 + 240)[1]).toBeCloseTo(lift(100, 40)[1], 4);
+    });
+
+    test('pushes the opposite way half a wavelength further along', () => {
+        expect(lift(100 + 125, 40)[1]).toBeCloseTo(-lift(100, 40)[1], 4);
+    });
+
+    test('travels: a crest moves along the first axis as time passes', () => {
+        const speed = 250 / 240;
+
+        expect(lift(100 + speed * 30, 40 + 30)[1]).toBeCloseTo(lift(100, 40)[1], 3);
+    });
+
+    test('scales with its weight', () => {
+        expect(lift(100, 40, { ...wavy, waveWeight: 0.5 })[1]).toBeCloseTo(lift(100, 40)[1] / 2, 6);
+    });
+
+    test('pushes boids at different places in opposite directions at the same time: the flock ripples', () => {
+        const members = [boid(100, 100), boid(225, 100)];
+        const next = stepFlock(flockOf(...members), wavy, size, null, null, 40);
+
+        expect(next.acc[1] * next.acc[3]).toBeLessThan(0);
     });
 });
 
@@ -810,7 +903,7 @@ describe('boids flying among the trees of the landscape', () => {
         let lowest = -Infinity;
 
         for (let frame = 0; frame < frames; frame++) {
-            flock = stepFlock(flock, { ...DEFAULT_PARAMETERS_3D, count }, field, { position: roostPosition(frame, field), mode: 'pull' }, environment);
+            flock = stepFlock(flock, { ...DEFAULT_PARAMETERS_3D, count }, field, { position: roostPosition(frame, field), mode: 'pull' }, environment, frame);
 
             if (frame >= 300 && frame % 4 === 0) {
                 for (let i = 0; i < count; i++) {
